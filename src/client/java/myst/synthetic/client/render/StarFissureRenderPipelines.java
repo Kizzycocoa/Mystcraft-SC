@@ -1,10 +1,9 @@
 package myst.synthetic.client.render;
 
 import com.mojang.blaze3d.pipeline.RenderPipeline;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.platform.DepthTestFunction;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.rendertype.RenderSetup;
@@ -12,22 +11,15 @@ import net.minecraft.client.renderer.rendertype.RenderType;
 
 public final class StarFissureRenderPipelines {
 
-    public static final RenderPipeline.Snippet STAR_FISSURE_SNIPPET = RenderPipeline.builder(
-                    RenderPipelines.MATRICES_PROJECTION_SNIPPET
-            )
-            .withVertexShader("core/star_fissure_test")
-            .withFragmentShader("core/star_fissure_test")
-            .withVertexFormat(DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS)
-            .buildSnippet();
-
     public static final RenderPipeline STAR_FISSURE_PIPELINE = RenderPipelines.register(
-            RenderPipeline.builder(STAR_FISSURE_SNIPPET)
-                    .withLocation("pipeline/star_fissure_test")
+            RenderPipeline.builder(RenderPipelines.DEBUG_FILLED_SNIPPET)
+                    .withLocation("pipeline/star_fissure_debug")
+                    .withDepthTestFunction(DepthTestFunction.NO_DEPTH_TEST)
                     .build()
     );
 
     private static final RenderType STAR_FISSURE = RenderType.create(
-            "star_fissure_test",
+            "star_fissure_debug",
             RenderSetup.builder(STAR_FISSURE_PIPELINE).createRenderSetup()
     );
 
