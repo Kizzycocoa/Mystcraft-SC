@@ -9,7 +9,10 @@ out vec4 fragColor;
 
 void main() {
     vec2 baseUv = vertexColor.xy;
-    float scroll = vertexColor.z;
+
+    float scrollHi = round(vertexColor.z * 255.0);
+    float scrollLo = round(vertexColor.w * 255.0);
+    float scroll = (scrollHi * 256.0 + scrollLo) / 65535.0;
 
     vec2 skyUv = fract(baseUv * 0.25);
     vec2 portalUv = fract(baseUv * 8.0 + vec2(0.0, scroll));
