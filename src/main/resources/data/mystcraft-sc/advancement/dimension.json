@@ -1,0 +1,22 @@
+{
+    "display": {
+        "icon": {
+            "id": "mystcraft-sc:linkbook"
+        },
+        "title": {
+            "translate": "advancements.mystcraft-sc.safe.title"
+        },
+        "description": {
+            "translate": "advancements.mystcraft-sc.safe.description"
+        },
+        "frame": "task",
+        "show_toast": true,
+        "announce_to_chat": false
+    },
+    "parent": "mystcraft-sc:linkbook",
+    "criteria": {
+        "placeholder": {
+            "trigger": "minecraft:impossible"
+        }
+    }
+}

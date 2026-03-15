@@ -1,0 +1,55 @@
+{
+  "model": {
+    "type": "minecraft:select",
+    "property": "minecraft:block_state",
+    "block_state_property": "decay",
+    "cases": [
+      {
+        "when": "red",
+        "model": {
+          "type": "minecraft:model",
+          "model": "mystcraft-sc:block/blockdecay_red"
+        }
+      },
+      {
+        "when": "green",
+        "model": {
+          "type": "minecraft:model",
+          "model": "mystcraft-sc:block/blockdecay_green"
+        }
+      },
+      {
+        "when": "blue",
+        "model": {
+          "type": "minecraft:model",
+          "model": "mystcraft-sc:block/blockdecay_blue"
+        }
+      },
+      {
+        "when": "purple",
+        "model": {
+          "type": "minecraft:model",
+          "model": "mystcraft-sc:block/blockdecay_purple"
+        }
+      },
+      {
+        "when": "yellow",
+        "model": {
+          "type": "minecraft:model",
+          "model": "mystcraft-sc:block/blockdecay_yellow"
+        }
+      },
+      {
+        "when": "white",
+        "model": {
+          "type": "minecraft:model",
+          "model": "mystcraft-sc:block/blockdecay_white"
+        }
+      }
+    ],
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "mystcraft-sc:block/blockdecay_black"
+    }
+  }
+}

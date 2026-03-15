@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " l ",
+    "s  ",
+    " l "
+  ],
+  "key": {
+    "s": "minecraft:string",
+    "l": "minecraft:leather"
+  },
+  "result": {
+    "id": "mystcraft-sc:folder",
+    "count": 1
+  }
+}

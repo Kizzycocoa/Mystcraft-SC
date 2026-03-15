@@ -1,0 +1,62 @@
+{
+    "commands.myst.tpx.usage": "/tpx [subject:player] <targer:player | target:dim [x y z]>",
+    "commands.myst.tpx.fail.nosubject": "Teleport subject invalid. No sailin' t'day.",
+    "commands.myst.tpx.fail.noworld": "There be no such sea as number %d. No sailin' t'day.",
+
+    "commands.myst.time.usage": "/time <set|add> <value> [dim]",
+    "commands.myst.time.fail.noworld": "Those seas be unknown.  Here be monsters.",
+    "commands.myst.time.set": "Set the time to %d in dimension %d",
+    "commands.myst.time.set.all": "Set the time to %d in all the lands.",
+    "commands.myst.time.added": "Added %d to the time in dimension %d",
+    "commands.myst.time.added.all": "Added %d to the time in all the lands.",
+
+    "commands.myst.toggledownfall.usage": "/toggledownfall [dim]",
+    "commands.myst.downfall.success": "Toggled downfall in dimension %d",
+    "commands.myst.downfall.fail.nodim": "No dimension set.",
+
+    "commands.myst.agebook.usage": "/myst-agebook [dim]",
+    "commands.myst.twi.usage": "/myst-twi [dim] [true|false]",
+    "commands.myst.meteor.usage": "/myst-spawnmeteor",
+    "commands.myst.permissions.usage": "/myst-permissions <player> <restrict|permit> <entry|depart> <all|dimid>",
+    "commands.myst.chunkregen.usage": "/myst-regenchunk [range] [dimId] [chunkX] [chunkZ]",
+
+    "block.myst.receptacle": "Port o' Books",
+    "block.myst.unstable": "Death Effect",
+    "block.myst.unstable.blue": "Blue Death",
+    "block.myst.unstable.red": "Scarlet Death",
+    "block.myst.unstable.purple": "Evenin's Death",
+    "block.myst.unstable.white": "White Death",
+    "block.myst.unstable.black": "Black Death",
+    "block.myst.crystal": "Sparkly Stuff",
+    "block.myst.lectern": "Treasarrr Map Holder",
+    "block.myst.bookstand": "Stand o' Books",
+    "block.myst.linkmodifier": "Link Modifier",
+    "block.myst.bookbinder": "Book Binder",
+    "block.myst.inkmixer": "Kraken Blood Mixer",
+    "block.myst.linkportal": "Link Portal",
+    "block.myst.starfissure": "Fairies' Pit",
+    "block.myst.writing_desk": "Scribblen' Table",
+
+    "block.myst.ink.black": "Kraken's Blood",
+
+    "fluid.myst.ink.black": "Kraken's Blood",
+
+    "item.myst.agebook": "Descriptive Book",
+    "item.myst.linkbook": "Return t' Port",
+    "item.myst.notebook": "Scribblen' Book",
+    "item.myst.page": "Magic Paper",
+    "item.myst.unlinkedbook": "Unlinked Link Book",
+    "item.myst.writingdesk": "Writing Desk",
+    "item.myst.vial": "Bottle o' Kraken Blood",
+
+    "achievement.myst.symbol": "Sailin' On a Pond",
+    "achievement.myst.symbol.desc": "Find Some Fool's Notes",
+    "achievement.myst.write": "The Art: A Primer",
+    "achievement.myst.write.desc": "Steal Some Fool's Notes",
+    "achievement.myst.agebook": "One Way Ticket",
+    "achievement.myst.agebook.desc": "Craft a Descriptive Book. Thar be no sailin' back without a way home!",
+    "achievement.myst.linkbook": "Tie a String",
+    "achievement.myst.linkbook.desc": "Craft a Linking Book. Good, now ye won't be stuck in strange lands!",
+    "achievement.myst.quinn": "Yer name wouldn't be Quinn?",
+    "achievement.myst.quinn.desc": "Take a one way journey towards Davy Jones' Locker. Be there a way back?"
+}

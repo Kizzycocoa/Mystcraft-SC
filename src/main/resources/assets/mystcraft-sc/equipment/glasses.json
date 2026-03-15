@@ -1,0 +1,14 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "mystcraft-sc:glasses"
+      }
+    ],
+    "humanoid_leggings": [
+      {
+        "texture": "mystcraft-sc:glasses"
+      }
+    ]
+  }
+}

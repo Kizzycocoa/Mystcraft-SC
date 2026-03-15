@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "lll",
+    "s  ",
+    "lll"
+  ],
+  "key": {
+    "s": "minecraft:string",
+    "l": "minecraft:leather"
+  },
+  "result": {
+    "id": "mystcraft-sc:portfolio",
+    "count": 1
+  }
+}

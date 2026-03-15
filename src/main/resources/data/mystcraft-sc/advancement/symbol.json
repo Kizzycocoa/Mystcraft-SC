@@ -1,0 +1,31 @@
+{
+    "display": {
+        "icon": {
+            "id": "mystcraft-sc:page"
+        },
+        "title": {
+            "translate": "advancements.mystcraft-sc.symbol.title"
+        },
+        "description": {
+            "translate": "advancements.mystcraft-sc.symbol.description"
+        },
+        "frame": "task",
+        "show_toast": true,
+        "announce_to_chat": false
+    },
+    "parent": "mystcraft-sc:root",
+    "criteria": {
+        "myst_symbol_page_in_inventory": {
+            "trigger": "minecraft:inventory_changed",
+            "conditions": {
+                "items": [
+                    {
+                        "items": [
+                            "mystcraft-sc:page"
+                        ]
+                    }
+                ]
+            }
+        }
+    }
+}

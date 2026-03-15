@@ -1,0 +1,22 @@
+{
+    "display": {
+        "icon": {
+            "id": "mystcraft-sc:portfolio"
+        },
+        "title": {
+            "translate": "advancements.mystcraft-sc.write.title"
+        },
+        "description": {
+            "translate": "advancements.mystcraft-sc.write.description"
+        },
+        "frame": "task",
+        "show_toast": true,
+        "announce_to_chat": false
+    },
+    "parent": "mystcraft-sc:symbol",
+    "criteria": {
+        "placeholder": {
+            "trigger": "minecraft:impossible"
+        }
+    }
+}

@@ -1,0 +1,22 @@
+{
+    "display": {
+        "icon": {
+            "id": "mystcraft-sc:agebook"
+        },
+        "title": {
+            "translate": "advancements.mystcraft-sc.root.title"
+        },
+        "description": {
+            "translate": "advancements.mystcraft-sc.root.description"
+        },
+        "background": "minecraft:gui/advancements/backgrounds/stone",
+        "frame": "task",
+        "show_toast": false,
+        "announce_to_chat": false
+    },
+    "criteria": {
+        "mystcraft_present": {
+            "trigger": "minecraft:tick"
+        }
+    }
+}

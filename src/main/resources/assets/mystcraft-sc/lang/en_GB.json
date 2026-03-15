@@ -1,0 +1,16 @@
+{
+    "myst.symbol.colorcloud": "Cloud Colour",
+    "myst.symbol.colorcloudnat": "Natural Cloud Colour",
+    "myst.symbol.colorfog": "Fog Colour",
+    "myst.symbol.colorfognat": "Natural Fog Colour",
+    "myst.symbol.colorfoliage": "Foliage Colour",
+    "myst.symbol.colorfoliagenat": "Natural Foliage Colour",
+    "myst.symbol.colorgrass": "Grass Colour",
+    "myst.symbol.colorgrassnat": "Natural Grass Colour",
+    "myst.symbol.colorhorizon": "Sunset Colour",
+    "myst.symbol.colorsky": "Sky Colour",
+    "myst.symbol.colorskynat": "Natural Sky Colour",
+    "myst.symbol.colorskynight": "Night Sky Colour",
+    "myst.symbol.colorwater": "Water Colour",
+    "myst.symbol.colorwaternat": "Natural Water Colour"
+}
