@@ -50,26 +50,30 @@ public class StarFissureBlockEntityRenderer implements BlockEntityRenderer<StarF
     ) {
         poseStack.pushPose();
         poseStack.translate(0.0F, 0.1F, 0.0F);
-        StarFissureRenderPipelines.submitStarFissure(queue, poseStack, this::renderTopFace);
+        StarFissureRenderPipelines.submitStarFissure(queue, poseStack, (pose, consumer) -> renderTopFace(pose, consumer, state.animationTime));
         poseStack.popPose();
 
         poseStack.pushPose();
         poseStack.translate(0.0F, 0.0F, 0.0F);
-        StarFissureRenderPipelines.submitStarFissure(queue, poseStack, this::renderBottomFace);
+        StarFissureRenderPipelines.submitStarFissure(queue, poseStack, (pose, consumer) -> renderBottomFace(pose, consumer, state.animationTime));
         poseStack.popPose();
     }
 
-    private void renderTopFace(PoseStack.Pose pose, VertexConsumer consumer) {
-        consumer.addVertex(pose, 0.0F, 0.0F, 0.0F).setColor(0.0F, 0.0F, 0.0F, 1.0F);
-        consumer.addVertex(pose, 0.0F, 0.0F, 1.0F).setColor(0.0F, 1.0F, 0.0F, 1.0F);
-        consumer.addVertex(pose, 1.0F, 0.0F, 1.0F).setColor(1.0F, 1.0F, 0.0F, 1.0F);
-        consumer.addVertex(pose, 1.0F, 0.0F, 0.0F).setColor(1.0F, 0.0F, 0.0F, 1.0F);
+    private void renderTopFace(PoseStack.Pose pose, VertexConsumer consumer, float animationTime) {
+        float scroll = (animationTime * 0.01F) % 1.0F;
+
+        consumer.addVertex(pose, 0.0F, 0.0F, 0.0F).setColor(0.0F, 0.0F, 0.0F, scroll);
+        consumer.addVertex(pose, 0.0F, 0.0F, 1.0F).setColor(0.0F, 1.0F, 0.0F, 1.0F + scroll);
+        consumer.addVertex(pose, 1.0F, 0.0F, 1.0F).setColor(1.0F, 1.0F, 1.0F, 1.0F + scroll);
+        consumer.addVertex(pose, 1.0F, 0.0F, 0.0F).setColor(1.0F, 0.0F, 1.0F, scroll);
     }
 
-    private void renderBottomFace(PoseStack.Pose pose, VertexConsumer consumer) {
-        consumer.addVertex(pose, 1.0F, 0.0F, 0.0F).setColor(1.0F, 0.0F, 0.0F, 1.0F);
-        consumer.addVertex(pose, 1.0F, 0.0F, 1.0F).setColor(1.0F, 1.0F, 0.0F, 1.0F);
-        consumer.addVertex(pose, 0.0F, 0.0F, 1.0F).setColor(0.0F, 1.0F, 0.0F, 1.0F);
-        consumer.addVertex(pose, 0.0F, 0.0F, 0.0F).setColor(0.0F, 0.0F, 0.0F, 1.0F);
+    private void renderBottomFace(PoseStack.Pose pose, VertexConsumer consumer, float animationTime) {
+        float scroll = (animationTime * 0.01F) % 1.0F;
+
+        consumer.addVertex(pose, 1.0F, 0.0F, 0.0F).setColor(1.0F, 0.0F, 1.0F, scroll);
+        consumer.addVertex(pose, 1.0F, 0.0F, 1.0F).setColor(1.0F, 1.0F, 1.0F, 1.0F + scroll);
+        consumer.addVertex(pose, 0.0F, 0.0F, 1.0F).setColor(0.0F, 1.0F, 0.0F, 1.0F + scroll);
+        consumer.addVertex(pose, 0.0F, 0.0F, 0.0F).setColor(0.0F, 0.0F, 0.0F, scroll);
     }
 }
