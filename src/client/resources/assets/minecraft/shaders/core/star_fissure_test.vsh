@@ -8,6 +8,7 @@ in vec4 Color;
 out vec4 vertexColor;
 
 void main() {
-gl_Position = ProjMat * vec4(Position, 1.0);
+vec4 worldPos = vec4(Position, 1.0);
+gl_Position = ProjMat * ModelViewMat * worldPos;
 vertexColor = Color;
 }
