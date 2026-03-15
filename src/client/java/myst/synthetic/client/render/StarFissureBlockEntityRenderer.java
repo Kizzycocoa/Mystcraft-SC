@@ -62,18 +62,18 @@ public class StarFissureBlockEntityRenderer implements BlockEntityRenderer<StarF
     private void renderTopFace(PoseStack.Pose pose, VertexConsumer consumer, float animationTime) {
         float scroll = (animationTime * 0.0015F) % 1.0F;
 
-        consumer.addVertex(pose, 0.0F, 0.0F, 0.0F).setColor(0.0F, 0.0F, 0.0F, scroll);
-        consumer.addVertex(pose, 0.0F, 0.0F, 1.0F).setColor(0.0F, 1.0F, 0.0F, 1.0F + scroll);
-        consumer.addVertex(pose, 1.0F, 0.0F, 1.0F).setColor(1.0F, 1.0F, 1.0F, 1.0F + scroll);
-        consumer.addVertex(pose, 1.0F, 0.0F, 0.0F).setColor(1.0F, 0.0F, 1.0F, scroll);
+        consumer.addVertex(pose, 0.0F, 0.0F, 0.0F).setColor(0.0F, 0.0F, scroll, 1.0F);
+        consumer.addVertex(pose, 0.0F, 0.0F, 1.0F).setColor(0.0F, 1.0F, scroll, 1.0F);
+        consumer.addVertex(pose, 1.0F, 0.0F, 1.0F).setColor(1.0F, 1.0F, scroll, 1.0F);
+        consumer.addVertex(pose, 1.0F, 0.0F, 0.0F).setColor(1.0F, 0.0F, scroll, 1.0F);
     }
 
     private void renderBottomFace(PoseStack.Pose pose, VertexConsumer consumer, float animationTime) {
         float scroll = (animationTime * 0.0015F) % 1.0F;
 
-        consumer.addVertex(pose, 1.0F, 0.0F, 0.0F).setColor(1.0F, 0.0F, 1.0F, scroll);
-        consumer.addVertex(pose, 1.0F, 0.0F, 1.0F).setColor(1.0F, 1.0F, 1.0F, 1.0F + scroll);
-        consumer.addVertex(pose, 0.0F, 0.0F, 1.0F).setColor(0.0F, 1.0F, 0.0F, 1.0F + scroll);
-        consumer.addVertex(pose, 0.0F, 0.0F, 0.0F).setColor(0.0F, 0.0F, 0.0F, scroll);
+        consumer.addVertex(pose, 1.0F, 0.0F, 0.0F).setColor(1.0F, 0.0F, scroll, 1.0F);
+        consumer.addVertex(pose, 1.0F, 0.0F, 1.0F).setColor(1.0F, 1.0F, scroll, 1.0F);
+        consumer.addVertex(pose, 0.0F, 0.0F, 1.0F).setColor(0.0F, 1.0F, scroll, 1.0F);
+        consumer.addVertex(pose, 0.0F, 0.0F, 0.0F).setColor(0.0F, 0.0F, scroll, 1.0F);
     }
 }
