@@ -23,8 +23,7 @@ public final class StarFissureRenderPipelines {
             RenderSetup.builder(STAR_FISSURE_PIPELINE).createRenderSetup()
     );
 
-    private StarFissureRenderPipelines() {
-    }
+    private StarFissureRenderPipelines() {}
 
     @FunctionalInterface
     public interface QuadEmitter {
