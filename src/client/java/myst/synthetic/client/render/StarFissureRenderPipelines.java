@@ -19,7 +19,7 @@ public final class StarFissureRenderPipelines {
                     .withFragmentShader("core/rendertype_star_fissure")
                     .withSampler("Sampler0")
                     .withSampler("Sampler1")
-                    .withDepthTestFunction(DepthTestFunction.NO_DEPTH_TEST)
+                    .withDepthTestFunction(DepthTestFunction.LEQUAL_DEPTH_TEST)
                     .build()
     );
 
