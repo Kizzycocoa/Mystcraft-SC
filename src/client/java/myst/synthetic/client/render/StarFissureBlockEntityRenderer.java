@@ -13,8 +13,8 @@ import org.jetbrains.annotations.Nullable;
 
 public class StarFissureBlockEntityRenderer implements BlockEntityRenderer<StarFissureBlockEntity, StarFissureRenderState> {
 
-    private static final float TOP_Y = 0.1F;
-    private static final float BOTTOM_Y = 0.0F;
+    private static final float TOP_Y = 0.001F;
+    private static final float BOTTOM_Y = 0.099F;
 
     public StarFissureBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
     }

@@ -1,7 +1,6 @@
 #version 150
 
 #moj_import <minecraft:fog.glsl>
-#moj_import <minecraft:matrix.glsl>
 #moj_import <minecraft:globals.glsl>
 
 uniform sampler2D Sampler0;
@@ -13,55 +12,76 @@ in float cylindricalVertexDistance;
 
 out vec4 fragColor;
 
-const vec3[] COLORS = vec3[](
-vec3(0.022087, 0.098399, 0.110818),
-vec3(0.011892, 0.095924, 0.089485),
-vec3(0.027636, 0.101689, 0.100326),
-vec3(0.046564, 0.109883, 0.114838),
-vec3(0.064901, 0.117696, 0.097189),
-vec3(0.063761, 0.086895, 0.123646),
-vec3(0.084817, 0.111994, 0.166380),
-vec3(0.097489, 0.154120, 0.091064)
+// Closest practical approximation to the old deterministic 1.12 tint stack.
+// Pass 0 = faint white sky.
+// Passes 1-7 = portal passes based on the old seeded random ranges * colorShift.
+const vec3 LEGACY_COLORS[8] = vec3[](
+vec3(0.10, 0.10, 0.10),
+vec3(0.50, 0.54, 0.74),
+vec3(0.40, 0.64, 0.72),
+vec3(0.33, 0.56, 0.60),
+vec3(0.18, 0.40, 0.54),
+vec3(0.12, 0.28, 0.38),
+vec3(0.08, 0.22, 0.26),
+vec3(0.05, 0.15, 0.18)
 );
 
-const mat4 SCALE_TRANSLATE = mat4(
-0.5, 0.0, 0.0, 0.25,
-0.0, 0.5, 0.0, 0.25,
-0.0, 0.0, 1.0, 0.0,
-0.0, 0.0, 0.0, 1.0
-);
+float legacy_scale(int passIndex) {
+if (passIndex == 0) return 0.125; // sky pass
+if (passIndex == 1) return 0.5;   // first portal pass
+return 0.04;                      // remaining portal passes
+}
 
-mat4 end_portal_layer(float layer) {
-mat4 translate = mat4(
-1.0, 0.0, 0.0, 17.0 / layer,
-0.0, 1.0, 0.0, (2.0 + layer / 1.5) * (GameTime * 1.5),
-0.0, 0.0, 1.0, 0.0,
-0.0, 0.0, 0.0, 1.0
-);
+float legacy_angle_degrees(int passIndex) {
+if (passIndex == 0) return 0.0;
+float i = float(passIndex);
+return (i * i + i * 9.0) * 2.0;
+}
 
-mat2 rotate = mat2_rotate_z(radians((layer * layer * 4321.0 + layer * 9.0) * 2.0));
+vec2 rotate_around_center(vec2 uv, float degrees) {
+float r = radians(degrees);
+float s = sin(r);
+float c = cos(r);
 
-float s = (4.5 - layer / 4.0) * 2.0;
-mat2 scaledRot = mat2(
-rotate[0][0] * s, rotate[0][1] * s,
-rotate[1][0] * s, rotate[1][1] * s
-);
+uv -= vec2(0.5, 0.5);
+uv = mat2(c, -s, s, c) * uv;
+uv += vec2(0.5, 0.5);
 
-mat4 layerMat = mat4(
-scaledRot[0][0], scaledRot[0][1], 0.0, 0.0,
-scaledRot[1][0], scaledRot[1][1], 0.0, 0.0,
-0.0,            0.0,            1.0, 0.0,
-0.0,            0.0,            0.0, 1.0
-);
+return uv;
+}
 
-return layerMat * translate * SCALE_TRANSLATE;
+vec2 legacy_transform(vec2 uv, int passIndex, float timeScroll) {
+float scale = legacy_scale(passIndex);
+float angle = legacy_angle_degrees(passIndex);
+
+// Old shader scrolled in Y, then scaled, then rotated around center.
+uv.y += timeScroll;
+uv *= scale;
+uv = rotate_around_center(uv, angle);
+
+return uv;
 }
 
 void main() {
-vec3 color = textureProj(Sampler0, texProj0).rgb * COLORS[0];
+// The modern equivalent of the old projected/texgen coords.
+vec2 baseUv = texProj0.xy / texProj0.w;
 
-for (int i = 0; i < PORTAL_LAYERS; i++) {
-color += textureProj(Sampler1, texProj0 * end_portal_layer(float(i + 1))).rgb * COLORS[i];
+// Old code used wall-clock time:
+// (System.currentTimeMillis() % 700000L) / 200000F
+// We don't have wall-clock in shader, so use GameTime as the nearest modern equivalent.
+// This constant is deliberately slow so it behaves more like the old long-cycle drift.
+float timeScroll = GameTime * 0.03;
+
+vec3 color = vec3(0.0);
+
+// Pass 0: end_sky, faint
+vec2 skyUv = fract(legacy_transform(baseUv, 0, timeScroll));
+color += texture(Sampler0, skyUv).rgb * LEGACY_COLORS[0];
+
+// Passes 1-7: end_portal, additive-style accumulation
+for (int i = 1; i < PORTAL_LAYERS; i++) {
+vec2 portalUv = fract(legacy_transform(baseUv, i, timeScroll));
+color += texture(Sampler1, portalUv).rgb * LEGACY_COLORS[i];
 }
 
 fragColor = apply_fog(
