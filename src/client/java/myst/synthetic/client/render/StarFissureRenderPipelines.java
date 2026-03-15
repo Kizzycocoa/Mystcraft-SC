@@ -14,6 +14,7 @@ public final class StarFissureRenderPipelines {
     public static final RenderPipeline STAR_FISSURE_PIPELINE = RenderPipelines.register(
             RenderPipeline.builder(RenderPipelines.DEBUG_FILLED_SNIPPET)
                     .withLocation("pipeline/star_fissure_debug")
+                    .withVertexShader("core/star_fissure_test")
                     .withFragmentShader("core/star_fissure_test")
                     .withDepthTestFunction(DepthTestFunction.NO_DEPTH_TEST)
                     .build()
