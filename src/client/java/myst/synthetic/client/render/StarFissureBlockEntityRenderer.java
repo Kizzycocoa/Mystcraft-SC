@@ -8,7 +8,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.CameraRenderState;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.Vec3;;
 import org.jetbrains.annotations.Nullable;
 
 public class StarFissureBlockEntityRenderer implements BlockEntityRenderer<StarFissureBlockEntity, StarFissureRenderState> {
