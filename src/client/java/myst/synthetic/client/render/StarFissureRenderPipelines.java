@@ -13,7 +13,10 @@ import net.minecraft.client.renderer.rendertype.RenderType;
 public final class StarFissureRenderPipelines {
 
     public static final RenderPipeline STAR_FISSURE_PIPELINE = RenderPipelines.register(
-            RenderPipeline.builder(RenderPipelines.DEBUG_FILLED_SNIPPET)
+            RenderPipeline.builder(
+                            RenderPipelines.DEBUG_FILLED_SNIPPET,
+                            RenderPipelines.GLOBALS_SNIPPET
+                    )
                     .withLocation("pipeline/star_fissure_debug")
                     .withVertexShader("core/position_color")
                     .withFragmentShader("core/rendertype_star_fissure")
