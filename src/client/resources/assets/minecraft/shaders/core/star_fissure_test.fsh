@@ -3,9 +3,9 @@
 uniform sampler2D Sampler0;
 uniform sampler2D Sampler1;
 
-in vec4 vertexColor;
 out vec4 fragColor;
 
 void main() {
-    fragColor = vec4(0.2, 0.0, 0.4, 1.0);
+    vec2 uv = fract(gl_FragCoord.xy * 0.01);
+    fragColor = texture(Sampler1, uv);
 }

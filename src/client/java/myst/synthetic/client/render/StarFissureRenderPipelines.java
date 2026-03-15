@@ -6,6 +6,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.blockentity.AbstractEndPortalRenderer;
 import net.minecraft.client.renderer.rendertype.RenderSetup;
 import net.minecraft.client.renderer.rendertype.RenderType;
 
@@ -15,14 +16,19 @@ public final class StarFissureRenderPipelines {
             RenderPipeline.builder(RenderPipelines.DEBUG_FILLED_SNIPPET)
                     .withLocation("pipeline/star_fissure_debug")
                     .withVertexShader("core/position_color")
-                    .withFragmentShader("core/star_fissure_test")
+                    .withFragmentShader("core/rendertype_star_fissure")
+                    .withSampler("Sampler0")
+                    .withSampler("Sampler1")
                     .withDepthTestFunction(DepthTestFunction.NO_DEPTH_TEST)
                     .build()
     );
 
     private static final RenderType STAR_FISSURE = RenderType.create(
             "star_fissure_debug",
-            RenderSetup.builder(STAR_FISSURE_PIPELINE).createRenderSetup()
+            RenderSetup.builder(STAR_FISSURE_PIPELINE)
+                    .withTexture("Sampler0", AbstractEndPortalRenderer.END_SKY_LOCATION)
+                    .withTexture("Sampler1", AbstractEndPortalRenderer.END_PORTAL_LOCATION)
+                    .createRenderSetup()
     );
 
     private StarFissureRenderPipelines() {}
