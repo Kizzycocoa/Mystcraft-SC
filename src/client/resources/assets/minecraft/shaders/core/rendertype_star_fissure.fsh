@@ -9,7 +9,9 @@ out vec4 fragColor;
 
 void main() {
     vec2 skyUv = fract(vertexColor.xy * 0.25);
-    vec2 portalUv = fract(vertexColor.zw);
+
+    vec2 portalBaseUv = vertexColor.zw;
+    vec2 portalUv = fract(portalBaseUv * 6.0);
 
     vec3 sky = texture(Sampler0, skyUv).rgb;
     vec3 portal = texture(Sampler1, portalUv).rgb;
