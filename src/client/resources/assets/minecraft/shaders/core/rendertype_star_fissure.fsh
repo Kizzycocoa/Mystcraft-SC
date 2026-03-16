@@ -74,38 +74,40 @@ return vec3(r, g, b);
 }
 
 float legacy_portal_weight(int passIndex) {
-if (passIndex == 1) return 1.35;
-if (passIndex == 2) return 1.20;
-if (passIndex == 3) return 1.10;
+if (passIndex == 1) return 1.45;
+if (passIndex == 2) return 1.28;
+if (passIndex == 3) return 1.14;
 if (passIndex == 4) return 1.00;
-if (passIndex == 5) return 0.90;
-if (passIndex == 6) return 0.82;
-return 0.75;
+if (passIndex == 5) return 0.88;
+if (passIndex == 6) return 0.78;
+return 0.70;
 }
 
 void main() {
 vec2 baseUv = texProj0.xy / texProj0.w;
 
-// Legacy-equivalent timing:
-// old: (System.currentTimeMillis() % 700000L) / 200000F
-// modern approximation using GameTime:
+// Legacy-equivalent timing approximation
 float timeScroll = mod(GameTime * 0.00025, 3.5);
 
 float faceSeed = step(0.0, viewPos.y);
 
+// Pass 0: faint sky backdrop
 vec2 skyUv = fract(legacy_transform(baseUv, 0, timeScroll));
-vec3 sky = texture(Sampler0, skyUv).rgb * legacy_color(0, faceSeed);
+vec3 skyBase = texture(Sampler0, skyUv).rgb * legacy_color(0, faceSeed);
 
-vec3 color = sky;
+// Passes 1-7: additive portal buildup
+vec3 portalAccum = vec3(0.0);
 
 for (int i = 1; i < PORTAL_LAYERS; i++) {
 vec2 portalUv = fract(legacy_transform(baseUv, i, timeScroll));
 vec3 portal = texture(Sampler1, portalUv).rgb;
-vec3 tinted = portal * legacy_color(i, faceSeed) * legacy_portal_weight(i);
-color += tinted;
+portalAccum += portal * legacy_color(i, faceSeed) * legacy_portal_weight(i);
 }
 
-color = 1.0 - exp(-color * 1.15);
+// Treat portal buildup separately from sky, closer to old alpha+additive passes
+vec3 portalGlow = 1.0 - exp(-portalAccum * 1.35);
+
+vec3 color = skyBase + portalGlow;
 
 fragColor = apply_fog(
 vec4(color, 1.0),
