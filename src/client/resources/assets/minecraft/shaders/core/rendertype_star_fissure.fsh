@@ -74,25 +74,44 @@ float b = (legacy_hash(base + i * 3.0 + 2.0) * 0.5 + 0.5) * f7;
 return vec3(r, g, b);
 }
 
+float legacy_portal_weight(int passIndex) {
+// Slight emphasis on earlier portal passes, taper toward later ones.
+if (passIndex == 1) return 1.35;
+if (passIndex == 2) return 1.20;
+if (passIndex == 3) return 1.10;
+if (passIndex == 4) return 1.00;
+if (passIndex == 5) return 0.90;
+if (passIndex == 6) return 0.82;
+return 0.75;
+}
+
 void main() {
 vec2 baseUv = texProj0.xy / texProj0.w;
 
-// Approximate per-face divergence using which side of the fissure we're sampling.
-// One face tends toward texProj0.w-based branch, the other toward the opposite.
-float faceSeed = step(0.0, viewPos.y);
-
+// Still GameTime for now; wall-clock comes later.
 float timeScroll = GameTime * 0.03;
 
-vec3 color = vec3(0.0);
+// Approximate per-face divergence.
+float faceSeed = step(0.0, viewPos.y);
 
+// Pass 0: faint sky base, treated more like the old alpha-blended backdrop.
 vec2 skyUv = fract(legacy_transform(baseUv, 0, timeScroll));
-color += texture(Sampler0, skyUv).rgb * legacy_color(0, faceSeed);
+vec3 sky = texture(Sampler0, skyUv).rgb * legacy_color(0, faceSeed);
 
+vec3 color = sky;
+
+// Passes 1-7: portal passes, treated more aggressively like additive buildup.
 for (int i = 1; i < PORTAL_LAYERS; i++) {
 vec2 portalUv = fract(legacy_transform(baseUv, i, timeScroll));
 vec3 portal = texture(Sampler1, portalUv).rgb;
-color += portal * legacy_color(i, faceSeed) * 1.35;
+vec3 tinted = portal * legacy_color(i, faceSeed) * legacy_portal_weight(i);
+
+color += tinted;
 }
+
+// Gentle additive-style bloom/compression so bright portal layers feel
+// more like stacked GL ONE,ONE passes instead of flat summed texture math.
+color = 1.0 - exp(-color * 1.15);
 
 fragColor = apply_fog(
 vec4(color, 1.0),
