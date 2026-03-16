@@ -13,19 +13,6 @@ in float cylindricalVertexDistance;
 
 out vec4 fragColor;
 
-// Legacy-like brightness/tint stack.
-// Pass 0 is faint sky, passes 1-7 are portal layers.
-const vec3 LEGACY_COLORS[8] = vec3[](
-vec3(0.10, 0.10, 0.10),
-vec3(0.50, 0.54, 0.74),
-vec3(0.40, 0.64, 0.72),
-vec3(0.33, 0.56, 0.60),
-vec3(0.18, 0.40, 0.54),
-vec3(0.12, 0.28, 0.38),
-vec3(0.08, 0.22, 0.26),
-vec3(0.05, 0.15, 0.18)
-);
-
 float legacy_scale(int passIndex) {
 if (passIndex == 0) return 0.125;
 if (passIndex == 1) return 0.5;
@@ -56,8 +43,8 @@ return uv;
 }
 
 vec2 legacy_transform(vec2 uv, int passIndex, float timeScroll) {
-// Closer to old order:
-// scroll -> scale -> center-rotate -> camera-relative shift
+// Legacy order approximation:
+// scroll -> scale -> center rotate -> camera-relative shift
 uv.y += timeScroll;
 uv *= legacy_scale(passIndex);
 uv = rotate_around_center(uv, legacy_angle_degrees(passIndex));
@@ -68,23 +55,53 @@ uv += vec2(viewPos.x, viewPos.z) / depth;
 return uv;
 }
 
+// Deterministic pseudo-random, standing in for the old Random(31100L).
+float legacy_hash(float n) {
+return fract(sin(n) * 43758.5453123);
+}
+
+vec3 legacy_color(int passIndex) {
+// Pass 0 was forced white, then dimmed to 0.1
+if (passIndex == 0) {
+return vec3(0.10, 0.10, 0.10);
+}
+
+float i = float(passIndex);
+
+// Old f7 brightness curve:
+// pass 1 = 0.9, pass 2 = 0.8, ... pass 7 = 0.3
+float f7 = 1.0 - i * 0.1;
+
+// Approximate the old deterministic random ranges:
+// R: 0.1 .. 0.6
+// G: 0.4 .. 0.9
+// B: 0.5 .. 1.0
+float r = (legacy_hash(31100.0 + i * 3.0 + 0.0) * 0.5 + 0.1) * f7;
+float g = (legacy_hash(31100.0 + i * 3.0 + 1.0) * 0.5 + 0.4) * f7;
+float b = (legacy_hash(31100.0 + i * 3.0 + 2.0) * 0.5 + 0.5) * f7;
+
+return vec3(r, g, b);
+}
+
 void main() {
 vec2 baseUv = texProj0.xy / texProj0.w;
 
-// Keep slow for now; timing fidelity comes later.
+// Still using GameTime for now; wall-clock comes later.
 float timeScroll = GameTime * 0.03;
 
-// Legacy pass 0: faint sky base
-vec3 color = texture(Sampler0, fract(legacy_transform(baseUv, 0, timeScroll))).rgb
-* LEGACY_COLORS[0];
+vec3 color = vec3(0.0);
 
-// Legacy passes 1-7: portal accumulation
+// Pass 0: sky
+vec2 skyUv = fract(legacy_transform(baseUv, 0, timeScroll));
+color += texture(Sampler0, skyUv).rgb * legacy_color(0);
+
+// Passes 1-7: portal
 for (int i = 1; i < PORTAL_LAYERS; i++) {
 vec2 portalUv = fract(legacy_transform(baseUv, i, timeScroll));
 vec3 portal = texture(Sampler1, portalUv).rgb;
 
-// Push the portal passes a bit harder to imitate the old additive feel.
-color += portal * LEGACY_COLORS[i] * 1.35;
+// Slight boost to mimic old additive multipass feel
+color += portal * legacy_color(i) * 1.35;
 }
 
 fragColor = apply_fog(
