@@ -18,4 +18,6 @@ public class StarFissureRenderState extends BlockEntityRenderState {
     public float cameraPosX;
     public float cameraPosY;
     public float cameraPosZ;
+
+    public float time;
 }

@@ -45,6 +45,7 @@ public class StarFissureBlockEntityRenderer implements BlockEntityRenderer<StarF
 
         long millis = System.currentTimeMillis() % 700000L;
         state.legacyTimeScroll = millis / 200000.0F;
+        state.time = millis / 200000.0F;
 
         state.topFaceIndex = StarFissureRenderPipelines.FACE_TOP;
         state.bottomFaceIndex = StarFissureRenderPipelines.FACE_BOTTOM;
