@@ -13,8 +13,8 @@ import org.jetbrains.annotations.Nullable;
 
 public class StarFissureBlockEntityRenderer implements BlockEntityRenderer<StarFissureBlockEntity, StarFissureRenderState> {
 
-    private static final float TOP_Y = 0.001F;
-    private static final float BOTTOM_Y = 0.099F;
+    private static final float TOP_Y = 0.1F;
+    private static final float BOTTOM_Y = 0.0F;
 
     public StarFissureBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
     }
@@ -44,7 +44,6 @@ public class StarFissureBlockEntityRenderer implements BlockEntityRenderer<StarF
         state.seedOffset = (seed & 1023L) / 1023.0F;
 
         long millis = System.currentTimeMillis() % 700000L;
-        state.legacyTimeScroll = millis / 200000.0F;
         state.time = millis / 200000.0F;
 
         state.topFaceIndex = StarFissureRenderPipelines.FACE_TOP;

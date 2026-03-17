@@ -5,6 +5,7 @@
 
 uniform sampler2D Sampler0;
 uniform sampler2D Sampler1;
+uniform float time;
 
 in vec4 texProj0;
 in vec3 viewPos;
@@ -105,14 +106,10 @@ vec3 legacy_color(int passIndex) {
 }
 
 void main() {
+float timeScroll = time;
 int passIndex = STAR_FISSURE_PASS_INDEX;
 
 vec2 baseUv = texProj0.xy / texProj0.w;
-
-// Closest current stand-in for:
-// (System.currentTimeMillis() % 700000L) / 200000F
-// Assuming GameTime advances in ticks, this preserves the old 0.005 / second rate.
-float timeScroll = mod(GameTime * 0.00025, 3.5);
 
 vec2 uv = fract(legacy_transform(baseUv, passIndex, timeScroll));
 
