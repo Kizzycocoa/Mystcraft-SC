@@ -13,8 +13,8 @@ import org.jetbrains.annotations.Nullable;
 
 public class StarFissureBlockEntityRenderer implements BlockEntityRenderer<StarFissureBlockEntity, StarFissureRenderState> {
 
-    private static final float TOP_Y = 0.1F;
-    private static final float BOTTOM_Y = 0.0F;
+    private static final float TOP_Y = 0.001F;
+    private static final float BOTTOM_Y = 0.099F;
 
     public StarFissureBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
     }
@@ -45,6 +45,13 @@ public class StarFissureBlockEntityRenderer implements BlockEntityRenderer<StarF
 
         long millis = System.currentTimeMillis() % 700000L;
         state.legacyTimeScroll = millis / 200000.0F;
+
+        state.topFaceIndex = StarFissureRenderPipelines.FACE_TOP;
+        state.bottomFaceIndex = StarFissureRenderPipelines.FACE_BOTTOM;
+
+        state.cameraPosX = (float) cameraPos.x;
+        state.cameraPosY = (float) cameraPos.y;
+        state.cameraPosZ = (float) cameraPos.z;
     }
 
     @Override
@@ -54,14 +61,49 @@ public class StarFissureBlockEntityRenderer implements BlockEntityRenderer<StarF
             SubmitNodeCollector queue,
             CameraRenderState cameraState
     ) {
+        submitTopFace(state, poseStack, queue);
+        submitBottomFace(state, poseStack, queue);
+    }
+
+    private void submitTopFace(
+            StarFissureRenderState state,
+            PoseStack poseStack,
+            SubmitNodeCollector queue
+    ) {
         poseStack.pushPose();
         poseStack.translate(0.0F, TOP_Y, 0.0F);
-        StarFissureRenderPipelines.submitStarFissure(queue, poseStack, this::renderTopFace);
-        poseStack.popPose();
 
+        // Sky pass
+        StarFissureRenderPipelines.submitSkyTop(queue, poseStack, this::renderTopFace);
+
+        // Portal passes 1..7
+        for (int pass = StarFissureRenderPipelines.FIRST_PORTAL_PASS;
+             pass <= StarFissureRenderPipelines.LAST_PORTAL_PASS;
+             pass++) {
+            StarFissureRenderPipelines.submitPortalTop(queue, poseStack, pass, this::renderTopFace);
+        }
+
+        poseStack.popPose();
+    }
+
+    private void submitBottomFace(
+            StarFissureRenderState state,
+            PoseStack poseStack,
+            SubmitNodeCollector queue
+    ) {
         poseStack.pushPose();
         poseStack.translate(0.0F, BOTTOM_Y, 0.0F);
-        StarFissureRenderPipelines.submitStarFissure(queue, poseStack, this::renderBottomFace);
+
+        // Sky pass
+        StarFissureRenderPipelines.submitSkyBottom(queue, poseStack, this::renderBottomFace);
+
+        // Portal passes 1..7
+        for (int pass = StarFissureRenderPipelines.FIRST_PORTAL_PASS;
+             pass <= StarFissureRenderPipelines.LAST_PORTAL_PASS;
+             pass++) {
+            StarFissureRenderPipelines.submitPortalBottom(queue, poseStack, pass, this::renderBottomFace);
+        }
+
         poseStack.popPose();
     }
 
