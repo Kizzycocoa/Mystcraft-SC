@@ -26,6 +26,7 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.level.LevelReader;
+import net.minecraft.server.level.ServerLevel;
 import org.jetbrains.annotations.Nullable;
 
 public class BlockWritingDesk extends BaseEntityBlock {
@@ -164,16 +165,11 @@ public class BlockWritingDesk extends BaseEntityBlock {
 	}
 
 	@Override
-	public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
-		if (state.is(newState.getBlock())) {
-			super.onRemove(state, level, pos, newState, movedByPiston);
-			return;
-		}
-
+	protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel level, BlockPos pos, boolean movedByPiston) {
 		BlockPos anchor = getAnchorPos(state, pos);
 		removeWholeDesk(level, anchor);
 
-		super.onRemove(state, level, pos, newState, movedByPiston);
+		super.affectNeighborsAfterRemoval(state, level, pos, movedByPiston);
 	}
 
 	public static void removeWholeDesk(Level level, BlockPos anchor) {

@@ -29,6 +29,8 @@ public class MystcraftItemGroups {
                         output.accept(MystcraftItems.FOLDER);
                         output.accept(MystcraftItems.PORTFOLIO);
                         output.accept(MystcraftItems.GLASSES);
+                        output.accept(MystcraftBlocks.WRITING_DESK_BLOCK.asItem());
+                        output.accept(MystcraftItems.WRITING_DESK_TOP);
 
                         output.accept(MystcraftBlocks.CRYSTAL);
                         for (DecayType type : DecayType.values()) {
