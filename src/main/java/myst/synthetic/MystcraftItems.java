@@ -50,8 +50,6 @@ public class MystcraftItems {
     public static void initialize() {
         ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.TOOLS_AND_UTILITIES).register(entries -> {
             entries.accept(LINKBOOK);
-            entries.accept(MystcraftBlocks.WRITING_DESK_BLOCK.asItem());
-            entries.accept(WRITING_DESK_TOP);
         });
 
         ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.COMBAT).register(entries -> {
