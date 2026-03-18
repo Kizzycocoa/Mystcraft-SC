@@ -48,7 +48,7 @@
     "block.mystcraft-sc.inkmixer": "Ink Mixer",
     "block.mystcraft-sc.linkportal": "Link Portal",
     "block.mystcraft-sc.blockstarfissure": "Star Fissure",
-    "block.mystcraft-sc.writing_desk": "Writing Desk",
+    "block.mystcraft-sc.writingdesk": "Writing Desk",
 
     "block.mystcraft-sc.ink.black": "Black Ink",
 
@@ -64,7 +64,7 @@
     "item.mystcraft-sc.page.symbol": "Page",
     "item.mystcraft-sc.unlinkedbook": "Unlinked Link Book",
     "item.mystcraft-sc.writingdesk": "Writing Desk",
-    "item.mystcraft-sc.writingdesk.top": "Writing Desk Backboard",
+    "item.mystcraft-sc.writingdesk_top": "Writing Desk Backboard",
     "item.mystcraft-sc.vial": "Ink Vial",
     "item.mystcraft-sc.glasses": "XComp's Glasses",
 

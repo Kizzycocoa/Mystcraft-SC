@@ -75,10 +75,10 @@ public class BlockWritingDesk extends BaseEntityBlock {
 
 	public static BlockPos getFootOffset(Direction facing) {
 		return switch (facing) {
-			case NORTH -> new BlockPos(0, 0, 1);
-			case WEST -> new BlockPos(1, 0, 0);
-			case SOUTH -> new BlockPos(0, 0, -1);
-			case EAST -> new BlockPos(-1, 0, 0);
+			case NORTH -> new BlockPos(0, 0, -1);
+			case WEST -> new BlockPos(-1, 0, 0);
+			case SOUTH -> new BlockPos(0, 0, 1);
+			case EAST -> new BlockPos(1, 0, 0);
 			default -> BlockPos.ZERO;
 		};
 	}
