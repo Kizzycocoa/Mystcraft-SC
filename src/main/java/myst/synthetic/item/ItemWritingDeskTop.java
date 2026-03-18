@@ -20,6 +20,7 @@ public class ItemWritingDeskTop extends Item {
 
 	@Override
 	public InteractionResult useOn(UseOnContext context) {
+		throw new RuntimeException("ItemWritingDeskTop.useOn reached");
 		Level level = context.getLevel();
 
 		if (level.isClientSide()) {
