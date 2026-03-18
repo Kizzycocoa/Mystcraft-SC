@@ -65,6 +65,11 @@ public class ItemWritingDeskTop extends Item {
 
 		BlockPlaceContext placeContext = new BlockPlaceContext(context);
 
+		System.out.println("clicked=" + clickedState.getBlock());
+		System.out.println("anchor=" + anchor);
+		System.out.println("topHead=" + topHead + " replace=" + level.getBlockState(topHead).canBeReplaced(placeContext));
+		System.out.println("topFoot=" + topFoot + " replace=" + level.getBlockState(topFoot).canBeReplaced(placeContext));
+
 		if (!player.mayUseItemAt(topHead, context.getClickedFace(), context.getItemInHand())) {
 			return InteractionResult.FAIL;
 		}
