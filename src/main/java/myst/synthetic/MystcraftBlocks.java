@@ -3,18 +3,21 @@ package myst.synthetic;
 import java.util.function.Function;
 
 import myst.synthetic.block.BlockDecay;
+import myst.synthetic.block.BlockStarFissure;
+import myst.synthetic.block.BlockWritingDesk;
 import myst.synthetic.item.DecayBlockItem;
+import myst.synthetic.item.ItemWritingDesk;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
-import myst.synthetic.block.BlockStarFissure;
 
 public class MystcraftBlocks {
 
@@ -73,9 +76,16 @@ public class MystcraftBlocks {
                     .noCollision()
                     .noOcclusion()
     );
+
     public static final BlockWritingDesk WRITING_DESK_BLOCK = register(
             "writingdesk",
-            new BlockWritingDesk()
+            BlockWritingDesk::new,
+            BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.WOOD)
+                    .strength(2.5F)
+                    .sound(SoundType.WOOD)
+                    .noOcclusion(),
+            ItemWritingDesk::new
     );
 
     public static void initialize() {

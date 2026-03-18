@@ -1,23 +1,21 @@
 package myst.synthetic.item;
 
 import myst.synthetic.block.BlockWritingDesk;
-import myst.synthetic.init.ModBlocks;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class ItemWritingDesk extends BlockItem {
 
-	public ItemWritingDesk() {
-		super(ModBlocks.WRITING_DESK_BLOCK, new Item.Properties());
+	public ItemWritingDesk(Block block, Item.Properties properties) {
+		super(block, properties);
 	}
 
 	@Override
@@ -32,29 +30,21 @@ public class ItemWritingDesk extends BlockItem {
 			return InteractionResult.FAIL;
 		}
 
-		BlockPos clickedPos = context.getClickedPos();
-		Direction clickedFace = context.getClickedFace();
-
-		BlockPos basePos = clickedPos;
-		if (level.getBlockState(clickedPos).canBeReplaced(context)) {
-			basePos = clickedPos.below();
-			clickedFace = Direction.UP;
-		}
-
-		if (clickedFace != Direction.UP) {
-			return InteractionResult.FAIL;
+		BlockPos basePos = context.getClickedPos();
+		if (!level.getBlockState(basePos).canBeReplaced(context)) {
+			basePos = basePos.relative(context.getClickedFace());
 		}
 
 		Direction facing = player.getDirection().getClockWise();
 		BlockPos footOffset = BlockWritingDesk.getFootOffset(facing);
 
-		BlockPos bottomHead = basePos.above();
+		BlockPos bottomHead = basePos;
 		BlockPos bottomFoot = bottomHead.offset(footOffset);
 
-		if (!player.mayUseItemAt(bottomHead, clickedFace, context.getItemInHand())) {
+		if (!player.mayUseItemAt(bottomHead, context.getClickedFace(), context.getItemInHand())) {
 			return InteractionResult.FAIL;
 		}
-		if (!player.mayUseItemAt(bottomFoot, clickedFace, context.getItemInHand())) {
+		if (!player.mayUseItemAt(bottomFoot, context.getClickedFace(), context.getItemInHand())) {
 			return InteractionResult.FAIL;
 		}
 
@@ -65,7 +55,7 @@ public class ItemWritingDesk extends BlockItem {
 			return InteractionResult.FAIL;
 		}
 
-		BlockState baseState = ModBlocks.WRITING_DESK_BLOCK.defaultBlockState()
+		BlockState baseState = this.getBlock().defaultBlockState()
 				.setValue(BlockWritingDesk.FACING, facing)
 				.setValue(BlockWritingDesk.IS_TOP, false)
 				.setValue(BlockWritingDesk.IS_FOOT, false);

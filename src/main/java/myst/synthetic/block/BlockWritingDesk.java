@@ -1,40 +1,30 @@
 package myst.synthetic.block;
 
-import javax.annotation.Nullable;
-
 import com.mojang.serialization.MapCodec;
+import myst.synthetic.MystcraftItems;
 import myst.synthetic.block.entity.BlockEntityDesk;
-import myst.synthetic.init.ModItems;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.RenderShape;
-import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraft.world.level.material.MapColor;
-import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.Nullable;
 
 public class BlockWritingDesk extends BaseEntityBlock {
 
@@ -44,13 +34,8 @@ public class BlockWritingDesk extends BaseEntityBlock {
 	public static final BooleanProperty IS_TOP = BooleanProperty.create("istop");
 	public static final BooleanProperty IS_FOOT = BooleanProperty.create("isfoot");
 
-	public BlockWritingDesk() {
-		super(BlockBehaviour.Properties.of()
-				.mapColor(MapColor.WOOD)
-				.strength(2.5F)
-				.sound(SoundType.WOOD)
-				.noOcclusion()
-				.pushReaction(PushReaction.BLOCK));
+	public BlockWritingDesk(BlockBehaviour.Properties properties) {
+		super(properties);
 
 		this.registerDefaultState(this.stateDefinition.any()
 				.setValue(FACING, Direction.NORTH)
@@ -86,7 +71,6 @@ public class BlockWritingDesk extends BaseEntityBlock {
 	}
 
 	public static BlockPos getFootOffset(Direction facing) {
-		// Legacy behavior: when facing north, foot is south, etc.
 		return switch (facing) {
 			case NORTH -> new BlockPos(0, 0, 1);
 			case WEST -> new BlockPos(-1, 0, 0);
@@ -99,7 +83,6 @@ public class BlockWritingDesk extends BaseEntityBlock {
 	public static BlockPos getAnchorPos(BlockState state, BlockPos pos) {
 		if (isTop(state)) {
 			pos = pos.below();
-			state = state.setValue(IS_TOP, false);
 		}
 
 		if (isFoot(state)) {
@@ -123,8 +106,6 @@ public class BlockWritingDesk extends BaseEntityBlock {
 
 	@Override
 	public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-		// Temporary placeholder shape.
-		// Replace later when the real desk model/shape is ready.
 		if (isTop(state)) {
 			return Shapes.box(0.0, 0.0, 0.0, 1.0, 0.75, 1.0);
 		}
@@ -133,13 +114,6 @@ public class BlockWritingDesk extends BaseEntityBlock {
 
 	@Override
 	public InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
-		BlockPos anchorPos = getAnchorPos(state, pos);
-
-		if (!level.isClientSide) {
-			// Later: open the Writing Desk screen from the anchor.
-			// For now, just succeed so we know anchor resolution works.
-		}
-
 		return InteractionResult.sidedSuccess(level.isClientSide);
 	}
 
@@ -188,7 +162,7 @@ public class BlockWritingDesk extends BaseEntityBlock {
 	}
 
 	@Override
-	public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
+	protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
 		if (state.is(newState.getBlock())) {
 			super.onRemove(state, level, pos, newState, movedByPiston);
 			return;
@@ -229,9 +203,9 @@ public class BlockWritingDesk extends BaseEntityBlock {
 	}
 
 	@Override
-	public ItemStack getCloneItemStack(LevelAccessor level, BlockPos pos, BlockState state) {
+	public ItemStack getCloneItemStack(Level level, BlockPos pos, BlockState state) {
 		return isTop(state)
-				? new ItemStack(ModItems.WRITING_DESK_TOP)
-				: new ItemStack(ModItems.WRITING_DESK);
+				? new ItemStack(MystcraftItems.WRITING_DESK_TOP)
+				: new ItemStack(this.asItem());
 	}
 }

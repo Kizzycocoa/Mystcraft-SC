@@ -1,5 +1,6 @@
 package myst.synthetic;
 
+import myst.synthetic.block.entity.BlockEntityDesk;
 import myst.synthetic.block.entity.StarFissureBlockEntity;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.core.Registry;
@@ -14,10 +15,11 @@ public final class MystcraftBlockEntities {
             Identifier.fromNamespaceAndPath("mystcraft-sc", "blockstarfissure"),
             FabricBlockEntityTypeBuilder.create(StarFissureBlockEntity::new, MystcraftBlocks.STARFISSURE).build()
     );
+
     public static final BlockEntityType<BlockEntityDesk> WRITING_DESK = Registry.register(
             BuiltInRegistries.BLOCK_ENTITY_TYPE,
-            id("writingdesk"),
-            BlockEntityType.Builder.of(BlockEntityDesk::new, ModBlocks.WRITING_DESK_BLOCK).build(null)
+            Identifier.fromNamespaceAndPath("mystcraft-sc", "writingdesk"),
+            FabricBlockEntityTypeBuilder.create(BlockEntityDesk::new, MystcraftBlocks.WRITING_DESK_BLOCK).build()
     );
 
     public static void initialize() {
