@@ -37,6 +37,15 @@ public class MystcraftItems {
     public static final Item VIAL = register("vial", Item::new, new Item.Properties().stacksTo(16));
     public static final Item GLASSES = register("glasses", Item::new, new Item.Properties().humanoidArmor(MystcraftArmorMaterials.GLASSES, ArmorType.HELMET).stacksTo(1));
     // public static final Item PAGE = register("page", Item::new, new Item.Properties());
+    public static final Item WRITING_DESK = register(
+            "writingdesk",
+            new ItemWritingDesk()
+    );
+
+    public static final Item WRITING_DESK_TOP = register(
+            "writingdesk_top",
+            new ItemWritingDeskTop()
+    );
 
     public static void initialize() {
         ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.TOOLS_AND_UTILITIES).register(entries -> {

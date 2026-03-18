@@ -14,9 +14,11 @@ public final class MystcraftBlockEntities {
             Identifier.fromNamespaceAndPath("mystcraft-sc", "blockstarfissure"),
             FabricBlockEntityTypeBuilder.create(StarFissureBlockEntity::new, MystcraftBlocks.STARFISSURE).build()
     );
-
-    private MystcraftBlockEntities() {
-    }
+    public static final BlockEntityType<BlockEntityDesk> WRITING_DESK = Registry.register(
+            BuiltInRegistries.BLOCK_ENTITY_TYPE,
+            id("writingdesk"),
+            BlockEntityType.Builder.of(BlockEntityDesk::new, ModBlocks.WRITING_DESK_BLOCK).build(null)
+    );
 
     public static void initialize() {
     }

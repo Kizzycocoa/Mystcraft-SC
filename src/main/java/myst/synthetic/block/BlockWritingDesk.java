@@ -1,0 +1,237 @@
+package myst.synthetic.block;
+
+import javax.annotation.Nullable;
+
+import com.mojang.serialization.MapCodec;
+import myst.synthetic.block.entity.BlockEntityDesk;
+import myst.synthetic.init.ModItems;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.level.material.PushReaction;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
+
+public class BlockWritingDesk extends BaseEntityBlock {
+
+	public static final MapCodec<BlockWritingDesk> CODEC = simpleCodec(BlockWritingDesk::new);
+
+	public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
+	public static final BooleanProperty IS_TOP = BooleanProperty.create("istop");
+	public static final BooleanProperty IS_FOOT = BooleanProperty.create("isfoot");
+
+	public BlockWritingDesk() {
+		super(BlockBehaviour.Properties.of()
+				.mapColor(MapColor.WOOD)
+				.strength(2.5F)
+				.sound(SoundType.WOOD)
+				.noOcclusion()
+				.pushReaction(PushReaction.BLOCK));
+
+		this.registerDefaultState(this.stateDefinition.any()
+				.setValue(FACING, Direction.NORTH)
+				.setValue(IS_TOP, false)
+				.setValue(IS_FOOT, false));
+	}
+
+	@Override
+	protected MapCodec<? extends BaseEntityBlock> codec() {
+		return CODEC;
+	}
+
+	@Override
+	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+		builder.add(FACING, IS_TOP, IS_FOOT);
+	}
+
+	@Override
+	public RenderShape getRenderShape(BlockState state) {
+		return RenderShape.MODEL;
+	}
+
+	public static boolean isTop(BlockState state) {
+		return state.getBlock() instanceof BlockWritingDesk && state.getValue(IS_TOP);
+	}
+
+	public static boolean isFoot(BlockState state) {
+		return state.getBlock() instanceof BlockWritingDesk && state.getValue(IS_FOOT);
+	}
+
+	public static Direction getDeskFacing(BlockState state) {
+		return state.getValue(FACING);
+	}
+
+	public static BlockPos getFootOffset(Direction facing) {
+		// Legacy behavior: when facing north, foot is south, etc.
+		return switch (facing) {
+			case NORTH -> new BlockPos(0, 0, 1);
+			case WEST -> new BlockPos(-1, 0, 0);
+			case SOUTH -> new BlockPos(0, 0, -1);
+			case EAST -> new BlockPos(1, 0, 0);
+			default -> BlockPos.ZERO;
+		};
+	}
+
+	public static BlockPos getAnchorPos(BlockState state, BlockPos pos) {
+		if (isTop(state)) {
+			pos = pos.below();
+			state = state.setValue(IS_TOP, false);
+		}
+
+		if (isFoot(state)) {
+			Direction facing = getDeskFacing(state);
+			BlockPos footOffset = getFootOffset(facing);
+			return pos.offset(-footOffset.getX(), 0, -footOffset.getZ());
+		}
+
+		return pos;
+	}
+
+	public static boolean isAnchor(BlockState state) {
+		return !state.getValue(IS_TOP) && !state.getValue(IS_FOOT);
+	}
+
+	@Nullable
+	@Override
+	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+		return isAnchor(state) ? new BlockEntityDesk(pos, state) : null;
+	}
+
+	@Override
+	public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+		// Temporary placeholder shape.
+		// Replace later when the real desk model/shape is ready.
+		if (isTop(state)) {
+			return Shapes.box(0.0, 0.0, 0.0, 1.0, 0.75, 1.0);
+		}
+		return Shapes.block();
+	}
+
+	@Override
+	public InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
+		BlockPos anchorPos = getAnchorPos(state, pos);
+
+		if (!level.isClientSide) {
+			// Later: open the Writing Desk screen from the anchor.
+			// For now, just succeed so we know anchor resolution works.
+		}
+
+		return InteractionResult.sidedSuccess(level.isClientSide);
+	}
+
+	@Override
+	public void neighborChanged(BlockState state, Level level, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean movedByPiston) {
+		super.neighborChanged(state, level, pos, neighborBlock, neighborPos, movedByPiston);
+
+		if (!isStructureStillValid(level, pos, state)) {
+			level.removeBlock(pos, false);
+		}
+	}
+
+	private boolean isStructureStillValid(Level level, BlockPos pos, BlockState state) {
+		Direction facing = getDeskFacing(state);
+		BlockPos anchor = getAnchorPos(state, pos);
+		BlockPos footOffset = getFootOffset(facing);
+
+		BlockPos bottomHead = anchor;
+		BlockPos bottomFoot = anchor.offset(footOffset);
+		BlockPos topHead = bottomHead.above();
+		BlockPos topFoot = bottomFoot.above();
+
+		BlockState bh = level.getBlockState(bottomHead);
+		BlockState bf = level.getBlockState(bottomFoot);
+		BlockState th = level.getBlockState(topHead);
+		BlockState tf = level.getBlockState(topFoot);
+
+		boolean bottomOk =
+				bh.getBlock() instanceof BlockWritingDesk &&
+						!bh.getValue(IS_TOP) &&
+						!bh.getValue(IS_FOOT) &&
+						bf.getBlock() instanceof BlockWritingDesk &&
+						!bf.getValue(IS_TOP) &&
+						bf.getValue(IS_FOOT);
+
+		boolean topMissing = th.isAir() && tf.isAir();
+		boolean topOk =
+				th.getBlock() instanceof BlockWritingDesk &&
+						th.getValue(IS_TOP) &&
+						!th.getValue(IS_FOOT) &&
+						tf.getBlock() instanceof BlockWritingDesk &&
+						tf.getValue(IS_TOP) &&
+						tf.getValue(IS_FOOT);
+
+		return bottomOk && (topMissing || topOk);
+	}
+
+	@Override
+	public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
+		if (state.is(newState.getBlock())) {
+			super.onRemove(state, level, pos, newState, movedByPiston);
+			return;
+		}
+
+		BlockPos anchor = getAnchorPos(state, pos);
+		removeWholeDesk(level, anchor);
+
+		super.onRemove(state, level, pos, newState, movedByPiston);
+	}
+
+	public static void removeWholeDesk(Level level, BlockPos anchor) {
+		BlockState anchorState = level.getBlockState(anchor);
+		if (!(anchorState.getBlock() instanceof BlockWritingDesk)) {
+			return;
+		}
+
+		Direction facing = getDeskFacing(anchorState);
+		BlockPos footOffset = getFootOffset(facing);
+
+		BlockPos bottomHead = anchor;
+		BlockPos bottomFoot = anchor.offset(footOffset);
+		BlockPos topHead = bottomHead.above();
+		BlockPos topFoot = bottomFoot.above();
+
+		if (level.getBlockState(topFoot).getBlock() instanceof BlockWritingDesk) {
+			level.removeBlock(topFoot, false);
+		}
+		if (level.getBlockState(topHead).getBlock() instanceof BlockWritingDesk) {
+			level.removeBlock(topHead, false);
+		}
+		if (level.getBlockState(bottomFoot).getBlock() instanceof BlockWritingDesk) {
+			level.removeBlock(bottomFoot, false);
+		}
+		if (level.getBlockState(bottomHead).getBlock() instanceof BlockWritingDesk) {
+			level.removeBlock(bottomHead, false);
+		}
+	}
+
+	@Override
+	public ItemStack getCloneItemStack(LevelAccessor level, BlockPos pos, BlockState state) {
+		return isTop(state)
+				? new ItemStack(ModItems.WRITING_DESK_TOP)
+				: new ItemStack(ModItems.WRITING_DESK);
+	}
+}

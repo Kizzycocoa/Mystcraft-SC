@@ -73,6 +73,10 @@ public class MystcraftBlocks {
                     .noCollision()
                     .noOcclusion()
     );
+    public static final BlockWritingDesk WRITING_DESK_BLOCK = register(
+            "writingdesk",
+            new BlockWritingDesk()
+    );
 
     public static void initialize() {
     }
