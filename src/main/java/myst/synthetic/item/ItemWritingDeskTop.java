@@ -11,17 +11,19 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.item.context.BlockPlaceContext;
 
-public class ItemWritingDesk extends BlockItem {
+public class ItemWritingDeskTop extends BlockItem {
 
-	public ItemWritingDesk(Block block, Item.Properties properties) {
+	public ItemWritingDeskTop(Block block, Item.Properties properties) {
 		super(block, properties);
 	}
 
 	@Override
 	public InteractionResult useOn(UseOnContext context) {
 		Level level = context.getLevel();
-		if (level.isClientSide) {
+		BlockPlaceContext placeContext = new BlockPlaceContext(context);
+		if (level.isClientSide()) {
 			return InteractionResult.SUCCESS;
 		}
 
@@ -30,38 +32,45 @@ public class ItemWritingDesk extends BlockItem {
 			return InteractionResult.FAIL;
 		}
 
-		BlockPos basePos = context.getClickedPos();
-		if (!level.getBlockState(basePos).canBeReplaced(context)) {
-			basePos = basePos.relative(context.getClickedFace());
+		BlockPos pos = context.getClickedPos();
+		BlockState clicked = level.getBlockState(pos);
+
+		if (!(clicked.getBlock() instanceof BlockWritingDesk)) {
+			return InteractionResult.FAIL;
+		}
+		if (BlockWritingDesk.isTop(clicked)) {
+			return InteractionResult.FAIL;
 		}
 
-		Direction facing = player.getDirection().getClockWise();
+		BlockPos anchor = BlockWritingDesk.getAnchorPos(clicked, pos);
+		BlockState anchorState = level.getBlockState(anchor);
+		Direction facing = BlockWritingDesk.getDeskFacing(anchorState);
 		BlockPos footOffset = BlockWritingDesk.getFootOffset(facing);
 
-		BlockPos bottomHead = basePos;
-		BlockPos bottomFoot = bottomHead.offset(footOffset);
+		BlockPos topHead = anchor.above();
+		BlockPos topFoot = topHead.offset(footOffset);
 
-		if (!player.mayUseItemAt(bottomHead, context.getClickedFace(), context.getItemInHand())) {
+		if (!player.mayUseItemAt(topHead, context.getClickedFace(), context.getItemInHand())) {
 			return InteractionResult.FAIL;
 		}
-		if (!player.mayUseItemAt(bottomFoot, context.getClickedFace(), context.getItemInHand())) {
-			return InteractionResult.FAIL;
-		}
-
-		if (!level.getBlockState(bottomHead).canBeReplaced(context)) {
-			return InteractionResult.FAIL;
-		}
-		if (!level.getBlockState(bottomFoot).canBeReplaced(context)) {
+		if (!player.mayUseItemAt(topFoot, context.getClickedFace(), context.getItemInHand())) {
 			return InteractionResult.FAIL;
 		}
 
-		BlockState baseState = this.getBlock().defaultBlockState()
+		if (!level.getBlockState(topHead).canBeReplaced(placeContext)) {
+			return InteractionResult.FAIL;
+		}
+		if (!level.getBlockState(topFoot).canBeReplaced(placeContext)) {
+			return InteractionResult.FAIL;
+		}
+
+		BlockState topState = this.getBlock().defaultBlockState()
 				.setValue(BlockWritingDesk.FACING, facing)
-				.setValue(BlockWritingDesk.IS_TOP, false)
+				.setValue(BlockWritingDesk.IS_TOP, true)
 				.setValue(BlockWritingDesk.IS_FOOT, false);
 
-		level.setBlock(bottomHead, baseState, 3);
-		level.setBlock(bottomFoot, baseState.setValue(BlockWritingDesk.IS_FOOT, true), 3);
+		level.setBlock(topHead, topState, 3);
+		level.setBlock(topFoot, topState.setValue(BlockWritingDesk.IS_FOOT, true), 3);
 
 		if (!player.getAbilities().instabuild) {
 			context.getItemInHand().shrink(1);

@@ -11,6 +11,7 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.item.context.BlockPlaceContext;
 
 public class ItemWritingDesk extends BlockItem {
 
@@ -21,7 +22,8 @@ public class ItemWritingDesk extends BlockItem {
 	@Override
 	public InteractionResult useOn(UseOnContext context) {
 		Level level = context.getLevel();
-		if (level.isClientSide) {
+		BlockPlaceContext placeContext = new BlockPlaceContext(context);
+		if (level.isClientSide()) {
 			return InteractionResult.SUCCESS;
 		}
 
@@ -31,7 +33,7 @@ public class ItemWritingDesk extends BlockItem {
 		}
 
 		BlockPos basePos = context.getClickedPos();
-		if (!level.getBlockState(basePos).canBeReplaced(context)) {
+		if (!level.getBlockState(basePos).canBeReplaced(placeContext)) {
 			basePos = basePos.relative(context.getClickedFace());
 		}
 
@@ -48,10 +50,10 @@ public class ItemWritingDesk extends BlockItem {
 			return InteractionResult.FAIL;
 		}
 
-		if (!level.getBlockState(bottomHead).canBeReplaced(context)) {
+		if (!level.getBlockState(bottomHead).canBeReplaced(placeContext)) {
 			return InteractionResult.FAIL;
 		}
-		if (!level.getBlockState(bottomFoot).canBeReplaced(context)) {
+		if (!level.getBlockState(bottomFoot).canBeReplaced(placeContext)) {
 			return InteractionResult.FAIL;
 		}
 
