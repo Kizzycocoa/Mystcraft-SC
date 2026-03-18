@@ -43,7 +43,7 @@ public class MystcraftItems {
     // Base writing desk item is registered via MystcraftBlocks as the block item.
     public static final Item WRITING_DESK_TOP = register(
             "writingdesk_top",
-            settings -> new ItemWritingDeskTop(MystcraftBlocks.WRITING_DESK_BLOCK, settings),
+            ItemWritingDeskTop::new,
             new Item.Properties()
     );
 

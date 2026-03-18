@@ -1,28 +1,26 @@
 package myst.synthetic.item;
 
 import myst.synthetic.block.BlockWritingDesk;
+import myst.synthetic.MystcraftBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.item.context.BlockPlaceContext;
 
-public class ItemWritingDeskTop extends BlockItem {
+public class ItemWritingDeskTop extends Item {
 
-	public ItemWritingDeskTop(Block block, Item.Properties properties) {
-		super(block, properties);
+	public ItemWritingDeskTop(Item.Properties properties) {
+		super(properties);
 	}
 
 	@Override
 	public InteractionResult useOn(UseOnContext context) {
 		Level level = context.getLevel();
-		BlockPlaceContext placeContext = new BlockPlaceContext(context);
 		if (level.isClientSide()) {
 			return InteractionResult.SUCCESS;
 		}
@@ -50,6 +48,8 @@ public class ItemWritingDeskTop extends BlockItem {
 		BlockPos topHead = anchor.above();
 		BlockPos topFoot = topHead.offset(footOffset);
 
+		BlockPlaceContext placeContext = new BlockPlaceContext(context);
+
 		if (!player.mayUseItemAt(topHead, context.getClickedFace(), context.getItemInHand())) {
 			return InteractionResult.FAIL;
 		}
@@ -64,7 +64,7 @@ public class ItemWritingDeskTop extends BlockItem {
 			return InteractionResult.FAIL;
 		}
 
-		BlockState topState = this.getBlock().defaultBlockState()
+		BlockState topState = MystcraftBlocks.WRITING_DESK_BLOCK.defaultBlockState()
 				.setValue(BlockWritingDesk.FACING, facing)
 				.setValue(BlockWritingDesk.IS_TOP, true)
 				.setValue(BlockWritingDesk.IS_FOOT, false);
