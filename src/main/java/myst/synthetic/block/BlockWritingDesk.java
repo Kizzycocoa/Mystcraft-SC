@@ -19,18 +19,20 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.world.level.redstone.Orientation;
+import net.minecraft.world.level.LevelReader;
 import org.jetbrains.annotations.Nullable;
 
 public class BlockWritingDesk extends BaseEntityBlock {
 
 	public static final MapCodec<BlockWritingDesk> CODEC = simpleCodec(BlockWritingDesk::new);
 
-	public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
+	public static final EnumProperty<Direction> FACING = HorizontalDirectionalBlock.FACING;
 	public static final BooleanProperty IS_TOP = BooleanProperty.create("istop");
 	public static final BooleanProperty IS_FOOT = BooleanProperty.create("isfoot");
 
@@ -114,12 +116,12 @@ public class BlockWritingDesk extends BaseEntityBlock {
 
 	@Override
 	public InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
-		return InteractionResult.sidedSuccess(level.isClientSide());
+		return InteractionResult.SUCCESS;
 	}
 
 	@Override
-	public void neighborChanged(BlockState state, Level level, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean movedByPiston) {
-		super.neighborChanged(state, level, pos, neighborBlock, neighborPos, movedByPiston);
+	protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block neighborBlock, @Nullable Orientation orientation, boolean movedByPiston) {
+		super.neighborChanged(state, level, pos, neighborBlock, orientation, movedByPiston);
 
 		if (!isStructureStillValid(level, pos, state)) {
 			level.removeBlock(pos, false);
@@ -203,7 +205,7 @@ public class BlockWritingDesk extends BaseEntityBlock {
 	}
 
 	@Override
-	public ItemStack getCloneItemStack(Level level, BlockPos pos, BlockState state) {
+	protected ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state, boolean includeData) {
 		return isTop(state)
 				? new ItemStack(MystcraftItems.WRITING_DESK_TOP)
 				: new ItemStack(this.asItem());
