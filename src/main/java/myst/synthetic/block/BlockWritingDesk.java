@@ -156,25 +156,31 @@ public class BlockWritingDesk extends BaseEntityBlock {
 						!bf.getValue(IS_TOP) &&
 						bf.getValue(IS_FOOT);
 
-		boolean topHeadOk =
+		boolean topHeadIsDeskTop =
 				th.getBlock() instanceof BlockWritingDesk &&
-						th.getValue(IS_TOP) &&
+						th.getValue(IS_TOP);
+
+		boolean topFootIsDeskTop =
+				tf.getBlock() instanceof BlockWritingDesk &&
+						tf.getValue(IS_TOP);
+
+		boolean topHeadOk =
+				topHeadIsDeskTop &&
 						!th.getValue(IS_FOOT);
 
 		boolean topFootOk =
-				tf.getBlock() instanceof BlockWritingDesk &&
-						tf.getValue(IS_TOP) &&
+				topFootIsDeskTop &&
 						tf.getValue(IS_FOOT);
 
 		boolean topHeadEmpty = th.isAir();
 		boolean topFootEmpty = tf.isAir();
 
-		// Allow:
-		// - no top at all
-		// - full top
-		// - partial top during placement/removal
+		// Valid cases:
+		// - no desk-top attached (including another desk stacked above)
+		// - full valid attached top
+		// - partial attached top during placement/removal
 		boolean topStateOk =
-				(topHeadEmpty && topFootEmpty) ||
+				(!topHeadIsDeskTop && !topFootIsDeskTop) ||
 						(topHeadOk && topFootOk) ||
 						(topHeadOk && topFootEmpty) ||
 						(topHeadEmpty && topFootOk);
