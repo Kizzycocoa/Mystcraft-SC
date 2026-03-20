@@ -208,18 +208,27 @@ public class BlockWritingDesk extends BaseEntityBlock {
 				BlockPos topHead = bottomHead.above();
 				BlockPos topFoot = bottomFoot.above();
 
+				BlockState topHeadState = level.getBlockState(topHead);
+				BlockState topFootState = level.getBlockState(topFoot);
+
 				boolean hasTop =
-						level.getBlockState(topHead).getBlock() instanceof BlockWritingDesk &&
-								level.getBlockState(topFoot).getBlock() instanceof BlockWritingDesk &&
-								level.getBlockState(topHead).getValue(IS_TOP) &&
-								level.getBlockState(topFoot).getValue(IS_TOP);
+						topHeadState.getBlock() instanceof BlockWritingDesk &&
+								topFootState.getBlock() instanceof BlockWritingDesk &&
+								topHeadState.getValue(IS_TOP) &&
+								topFootState.getValue(IS_TOP) &&
+								!topHeadState.getValue(IS_FOOT) &&
+								topFootState.getValue(IS_FOOT);
 
 				if (isTop(state)) {
-					// Remove only the top.
-					if (!pos.equals(topHead) && level.getBlockState(topHead).getBlock() instanceof BlockWritingDesk) {
+					// Remove only the attached top, not any stacked desk above.
+					if (!pos.equals(topHead)
+							&& topHeadState.getBlock() instanceof BlockWritingDesk
+							&& topHeadState.getValue(IS_TOP)) {
 						level.setBlock(topHead, Blocks.AIR.defaultBlockState(), 35);
 					}
-					if (!pos.equals(topFoot) && level.getBlockState(topFoot).getBlock() instanceof BlockWritingDesk) {
+					if (!pos.equals(topFoot)
+							&& topFootState.getBlock() instanceof BlockWritingDesk
+							&& topFootState.getValue(IS_TOP)) {
 						level.setBlock(topFoot, Blocks.AIR.defaultBlockState(), 35);
 					}
 
@@ -227,17 +236,19 @@ public class BlockWritingDesk extends BaseEntityBlock {
 						Block.popResource(level, pos, new ItemStack(MystcraftItems.WRITING_DESK_TOP));
 					}
 				} else {
-					// Remove whole structure.
+					// Remove the bottom structure.
 					if (!pos.equals(bottomHead) && level.getBlockState(bottomHead).getBlock() instanceof BlockWritingDesk) {
 						level.setBlock(bottomHead, Blocks.AIR.defaultBlockState(), 35);
 					}
 					if (!pos.equals(bottomFoot) && level.getBlockState(bottomFoot).getBlock() instanceof BlockWritingDesk) {
 						level.setBlock(bottomFoot, Blocks.AIR.defaultBlockState(), 35);
 					}
-					if (level.getBlockState(topHead).getBlock() instanceof BlockWritingDesk) {
+
+					// Remove only this desk's attached top, not another stacked desk's bottom.
+					if (topHeadState.getBlock() instanceof BlockWritingDesk && topHeadState.getValue(IS_TOP)) {
 						level.setBlock(topHead, Blocks.AIR.defaultBlockState(), 35);
 					}
-					if (level.getBlockState(topFoot).getBlock() instanceof BlockWritingDesk) {
+					if (topFootState.getBlock() instanceof BlockWritingDesk && topFootState.getValue(IS_TOP)) {
 						level.setBlock(topFoot, Blocks.AIR.defaultBlockState(), 35);
 					}
 
