@@ -28,6 +28,7 @@ import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.server.level.ServerLevel;
 import org.jetbrains.annotations.Nullable;
+import net.minecraft.world.InteractionHand;
 
 public class BlockWritingDesk extends BaseEntityBlock {
 
@@ -219,5 +220,59 @@ public class BlockWritingDesk extends BaseEntityBlock {
 		return isTop(state)
 				? new ItemStack(MystcraftItems.WRITING_DESK_TOP)
 				: new ItemStack(this.asItem());
+	}
+	@Override
+	protected InteractionResult useItemOn(
+			ItemStack stack,
+			BlockState state,
+			Level level,
+			BlockPos pos,
+			Player player,
+			InteractionHand hand,
+			BlockHitResult hit
+	) {
+		if (!stack.is(MystcraftItems.WRITING_DESK_TOP)) {
+			return InteractionResult.PASS;
+		}
+
+		if (isTop(state)) {
+			return InteractionResult.FAIL;
+		}
+
+		BlockPos anchor = getAnchorPos(state, pos);
+		BlockState anchorState = level.getBlockState(anchor);
+
+		if (!(anchorState.getBlock() instanceof BlockWritingDesk)) {
+			return InteractionResult.FAIL;
+		}
+
+		Direction facing = getDeskFacing(anchorState);
+		BlockPos footOffset = getFootOffset(facing);
+
+		BlockPos topHead = anchor.above();
+		BlockPos topFoot = topHead.offset(footOffset);
+
+		if (!level.getBlockState(topHead).isAir()) {
+			return InteractionResult.FAIL;
+		}
+		if (!level.getBlockState(topFoot).isAir()) {
+			return InteractionResult.FAIL;
+		}
+
+		BlockState topState = defaultBlockState()
+				.setValue(FACING, facing)
+				.setValue(IS_TOP, true)
+				.setValue(IS_FOOT, false);
+
+		if (!level.isClientSide()) {
+			level.setBlock(topHead, topState, 3);
+			level.setBlock(topFoot, topState.setValue(IS_FOOT, true), 3);
+
+			if (!player.getAbilities().instabuild) {
+				stack.shrink(1);
+			}
+		}
+
+		return InteractionResult.SUCCESS;
 	}
 }
