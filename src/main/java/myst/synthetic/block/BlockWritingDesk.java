@@ -26,9 +26,12 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.server.level.ServerLevel;
 import org.jetbrains.annotations.Nullable;
 import net.minecraft.world.InteractionHand;
+import java.util.Collections;
+import java.util.List;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.storage.loot.LootParams;
 
 public class BlockWritingDesk extends BaseEntityBlock {
 
@@ -180,54 +183,70 @@ public class BlockWritingDesk extends BaseEntityBlock {
 	}
 
 	@Override
-	protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel level, BlockPos pos, boolean movedByPiston) {
-		BlockPos anchor = getAnchorPos(state, pos);
-		Direction facing = getDeskFacing(state);
-		BlockPos footOffset = getFootOffset(facing);
+	protected List<ItemStack> getDrops(BlockState state, LootParams.Builder builder) {
+		return Collections.emptyList();
+	}
 
-		BlockPos bottomHead = anchor;
-		BlockPos bottomFoot = anchor.offset(footOffset);
-		BlockPos topHead = bottomHead.above();
-		BlockPos topFoot = bottomFoot.above();
+	@Override
+	public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
+		if (!level.isClientSide()) {
+			BlockPos anchor = getAnchorPos(state, pos);
+			BlockState anchorState = level.getBlockState(anchor);
 
-		if (isTop(state)) {
-			// Breaking any top piece should only remove the top and drop one headboard.
-			if (!pos.equals(topHead) && level.getBlockState(topHead).getBlock() instanceof BlockWritingDesk) {
-				level.removeBlock(topHead, false);
-			}
-			if (!pos.equals(topFoot) && level.getBlockState(topFoot).getBlock() instanceof BlockWritingDesk) {
-				level.removeBlock(topFoot, false);
-			}
+			if (anchorState.getBlock() instanceof BlockWritingDesk) {
+				Direction facing = getDeskFacing(anchorState);
+				BlockPos footOffset = getFootOffset(facing);
 
-			Block.popResource(level, pos, new ItemStack(MystcraftItems.WRITING_DESK_TOP));
-		} else {
-			// Breaking any bottom piece should remove the whole desk,
-			// drop one desk base, and drop one headboard if the top exists.
-			boolean hasTop =
-					level.getBlockState(topHead).getBlock() instanceof BlockWritingDesk ||
-							level.getBlockState(topFoot).getBlock() instanceof BlockWritingDesk;
+				BlockPos bottomHead = anchor;
+				BlockPos bottomFoot = anchor.offset(footOffset);
+				BlockPos topHead = bottomHead.above();
+				BlockPos topFoot = bottomFoot.above();
 
-			if (!pos.equals(bottomHead) && level.getBlockState(bottomHead).getBlock() instanceof BlockWritingDesk) {
-				level.removeBlock(bottomHead, false);
-			}
-			if (!pos.equals(bottomFoot) && level.getBlockState(bottomFoot).getBlock() instanceof BlockWritingDesk) {
-				level.removeBlock(bottomFoot, false);
-			}
-			if (level.getBlockState(topHead).getBlock() instanceof BlockWritingDesk) {
-				level.removeBlock(topHead, false);
-			}
-			if (level.getBlockState(topFoot).getBlock() instanceof BlockWritingDesk) {
-				level.removeBlock(topFoot, false);
-			}
+				boolean hasTop =
+						level.getBlockState(topHead).getBlock() instanceof BlockWritingDesk &&
+								level.getBlockState(topFoot).getBlock() instanceof BlockWritingDesk &&
+								level.getBlockState(topHead).getValue(IS_TOP) &&
+								level.getBlockState(topFoot).getValue(IS_TOP);
 
-			Block.popResource(level, pos, new ItemStack(this.asItem()));
+				if (isTop(state)) {
+					// Remove only the top.
+					if (!pos.equals(topHead) && level.getBlockState(topHead).getBlock() instanceof BlockWritingDesk) {
+						level.setBlock(topHead, Blocks.AIR.defaultBlockState(), 35);
+					}
+					if (!pos.equals(topFoot) && level.getBlockState(topFoot).getBlock() instanceof BlockWritingDesk) {
+						level.setBlock(topFoot, Blocks.AIR.defaultBlockState(), 35);
+					}
 
-			if (hasTop) {
-				Block.popResource(level, pos.above(), new ItemStack(MystcraftItems.WRITING_DESK_TOP));
+					if (!player.isCreative()) {
+						Block.popResource(level, pos, new ItemStack(MystcraftItems.WRITING_DESK_TOP));
+					}
+				} else {
+					// Remove whole structure.
+					if (!pos.equals(bottomHead) && level.getBlockState(bottomHead).getBlock() instanceof BlockWritingDesk) {
+						level.setBlock(bottomHead, Blocks.AIR.defaultBlockState(), 35);
+					}
+					if (!pos.equals(bottomFoot) && level.getBlockState(bottomFoot).getBlock() instanceof BlockWritingDesk) {
+						level.setBlock(bottomFoot, Blocks.AIR.defaultBlockState(), 35);
+					}
+					if (level.getBlockState(topHead).getBlock() instanceof BlockWritingDesk) {
+						level.setBlock(topHead, Blocks.AIR.defaultBlockState(), 35);
+					}
+					if (level.getBlockState(topFoot).getBlock() instanceof BlockWritingDesk) {
+						level.setBlock(topFoot, Blocks.AIR.defaultBlockState(), 35);
+					}
+
+					if (!player.isCreative()) {
+						Block.popResource(level, pos, new ItemStack(this.asItem()));
+
+						if (hasTop) {
+							Block.popResource(level, pos.above(), new ItemStack(MystcraftItems.WRITING_DESK_TOP));
+						}
+					}
+				}
 			}
 		}
 
-		super.affectNeighborsAfterRemoval(state, level, pos, movedByPiston);
+		return super.playerWillDestroy(level, pos, state, player);
 	}
 
 	@Override
