@@ -129,7 +129,7 @@ public class LinkBookScreen extends Screen {
                 title,
                 x + 40,
                 y + 40,
-                0x3F2A17,
+                0xFF3F2A17,
                 false
         );
 
@@ -144,7 +144,7 @@ public class LinkBookScreen extends Screen {
                 author,
                 0,
                 0,
-                0x3F2A17,
+                0xFF3F2A17,
                 false
         );
 
@@ -162,7 +162,7 @@ public class LinkBookScreen extends Screen {
                     ageName,
                     panelCenterX - (width / 2),
                     y + PANEL_Y + PANEL_H + 6,
-                    0x3F2A17,
+                    0xFF3F2A17,
                     false
             );
         }
