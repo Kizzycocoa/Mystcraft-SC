@@ -10,6 +10,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
+import myst.synthetic.network.LinkBookUsePayload;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.minecraft.client.Minecraft;
 
 public class LinkBookScreen extends Screen {
 
@@ -187,8 +190,15 @@ public class LinkBookScreen extends Screen {
     }
 
     private void onLinkPanelClicked() {
-        // Dummy for now.
-        // Later this is where the teleport request packet should be sent.
+        Minecraft client = Minecraft.getInstance();
+        if (client.player == null) {
+            return;
+        }
+
+        boolean mainHand = client.player.getMainHandItem().is(this.bookStack.getItem());
+        ClientPlayNetworking.send(new LinkBookUsePayload(mainHand));
+
+        this.onClose();
     }
 
     private CompoundTag getBookTag() {

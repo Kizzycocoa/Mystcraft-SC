@@ -18,6 +18,7 @@ public class MystcraftSyntheticCodex implements ModInitializer {
 		MystcraftItems.initialize();
 		MystcraftItemGroups.initialize();
 		MystcraftRecipeSerializers.initialize();
+		MystcraftNetworking.initialize();
 
 		LOGGER.info("Mystcraft config directory: {}", MystcraftConfig.getConfigDir());
 		LOGGER.info("Mystcraft: The Synthetic Codex initialized.");
