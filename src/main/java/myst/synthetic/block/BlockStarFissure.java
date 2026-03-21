@@ -17,6 +17,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.InsideBlockEffectApplier;
 import org.jetbrains.annotations.Nullable;
 
 public class BlockStarFissure extends BaseEntityBlock {
@@ -75,7 +76,7 @@ public class BlockStarFissure extends BaseEntityBlock {
 	}
 
 	@Override
-	protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
+	protected void entityInside(Level level, BlockPos pos, Entity entity, InsideBlockEffectApplier applier) {
 		if (level.isClientSide()) {
 			return;
 		}
