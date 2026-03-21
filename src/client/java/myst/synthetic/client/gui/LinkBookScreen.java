@@ -12,10 +12,10 @@ import net.minecraft.client.input.MouseButtonEvent;
 
 public class LinkBookScreen extends Screen {
 
-    private static final Identifier BOOK_COVER = Identifier.fromNamespaceAndPath("mystcraft-sc", "gui/bookui_cover");
-    private static final Identifier BOOK_PAGE_LEFT = Identifier.fromNamespaceAndPath("mystcraft-sc", "gui/bookui_pagel");
-    private static final Identifier BOOK_PAGE_RIGHT = Identifier.fromNamespaceAndPath("mystcraft-sc", "gui/bookui_pager");
-    private static final Identifier BOOK_PAGE_RIGHT_FULL = Identifier.fromNamespaceAndPath("mystcraft-sc", "gui/bookui_rpage_full");
+    private static final Identifier BOOK_COVER = Identifier.fromNamespaceAndPath("mystcraft-sc", "textures/gui/bookui_cover.png");
+    private static final Identifier BOOK_PAGE_LEFT = Identifier.fromNamespaceAndPath("mystcraft-sc", "textures/gui/bookui_pagel.png");
+    private static final Identifier BOOK_PAGE_RIGHT = Identifier.fromNamespaceAndPath("mystcraft-sc", "textures/gui/bookui_pager.png");
+    private static final Identifier BOOK_PAGE_RIGHT_FULL = Identifier.fromNamespaceAndPath("mystcraft-sc", "textures/gui/bookui_rpage_full.png");
 
     private static final int GUI_WIDTH = 327;
     private static final int GUI_HEIGHT = 199;
