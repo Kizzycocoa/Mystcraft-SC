@@ -39,18 +39,12 @@ public class StarFissureBlockEntity extends BlockEntity {
 				continue;
 			}
 
-			if (!entity.canUsePortal(false)) {
-				continue;
-			}
-
 			ILinkInfo info = createStarFissureLink(level, entity);
 			if (info == null) {
 				continue;
 			}
 			info.setSpawnYaw(entity.getYRot());
 
-			// TODO: Port legacy StarFissureLinkEvent hook.
-			// Legacy Mystcraft fired an event here before travel.
 			LinkController.travelEntity(level, entity, info);
 		}
 	}
@@ -74,6 +68,15 @@ public class StarFissureBlockEntity extends BlockEntity {
 			return null;
 		}
 
+		if (!(level instanceof net.minecraft.server.level.ServerLevel serverLevel)) {
+			return null;
+		}
+
+		net.minecraft.server.level.ServerLevel overworld = serverLevel.getServer().overworld();
+		if (overworld == null) {
+			return null;
+		}
+
 		int baseX = entity.blockPosition().getX();
 		int baseZ = entity.blockPosition().getZ();
 
@@ -89,10 +92,16 @@ public class StarFissureBlockEntity extends BlockEntity {
 		int targetX = baseX + offsetX;
 		int targetZ = baseZ + offsetZ;
 
-		LinkOptions info = new LinkOptions(null);
+		int surfaceY = overworld.getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, targetX, targetZ);
+
+		LinkOptions info = new LinkOptions(new net.minecraft.nbt.CompoundTag());
 		info.setDimensionUID("minecraft:overworld");
-		info.setSpawn(new BlockPos(targetX, entity.blockPosition().getY(), targetZ));
-		info.setFlag(LinkPropertyAPI.FLAG_NATURAL, true);
+
+		// Give the fissure an already-safe exact target.
+		info.setSpawn(new BlockPos(targetX, surfaceY + 1, targetZ));
+
+		// Not natural: we want the exact safe spot we just computed.
+		info.setFlag(LinkPropertyAPI.FLAG_NATURAL, false);
 		info.setFlag(LinkPropertyAPI.FLAG_EXTERNAL, true);
 		info.setProperty(LinkPropertyAPI.PROP_SOUND, "mystcraft-sc:linking.link-fissure");
 
