@@ -76,7 +76,14 @@ public class BlockStarFissure extends BaseEntityBlock {
 	}
 
 	@Override
-	protected void entityInside(Level level, BlockPos pos, Entity entity, InsideBlockEffectApplier applier) {
+	protected void entityInside(
+			BlockState state,
+			Level level,
+			BlockPos pos,
+			Entity entity,
+			InsideBlockEffectApplier applier,
+			boolean pastEdges
+	) {
 		if (level.isClientSide()) {
 			return;
 		}
