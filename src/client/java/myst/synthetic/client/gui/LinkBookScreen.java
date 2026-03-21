@@ -108,30 +108,64 @@ public class LinkBookScreen extends Screen {
         int x = this.leftPos;
         int y = this.topPos;
 
-        String title = getDisplayName();
-        String author = getAuthor();
-        String ageName = getAgeName();
+        CompoundTag tag = getBookTag();
 
-        guiGraphics.drawString(this.font, title, x + 40, y + 40, 0x000000, false);
+        String title = "Linking Book";
+        String author = "";
+        String ageName = "";
 
-        if (!author.isEmpty()) {
-            guiGraphics.pose().pushMatrix();
-            guiGraphics.pose().translate(x + 50, y + 50);
-            guiGraphics.pose().scale(0.5F, 0.5F);
-            guiGraphics.drawString(this.font, author, 0, 0, 0x000000, false);
-            guiGraphics.pose().popMatrix();
+        if (tag != null) {
+
+            author = tag.getString("Author").orElse("");
+
+            ageName = tag.getString("AgeName").orElse("");
+
+            title = tag.getString("DisplayName").orElse("Linking Book");
         }
 
-        // Age name text on the linking panel page
-        int ageTextWidth = this.font.width(ageName);
-        int ageTextX = x + PANEL_X + (PANEL_W - ageTextWidth) / 2;
-        int ageTextY = y + PANEL_Y + PANEL_H + 8;
-        guiGraphics.drawString(this.font, ageName, ageTextX, ageTextY, 0x000000, false);
+        // Title
+        guiGraphics.drawString(
+                this.font,
+                title,
+                x + 40,
+                y + 40,
+                0x3F2A17,
+                false
+        );
 
-        // Page counter, matching legacy placement
-        String pageText = "0/0";
-        int pageWidth = this.font.width(pageText);
-        guiGraphics.drawString(this.font, pageText, x + 165 - (pageWidth / 2), y + 185, 0x000000, false);
+        // Author (half scale like legacy)
+        guiGraphics.pose().pushMatrix();
+
+        guiGraphics.pose().translate(x + 50, y + 50);
+        guiGraphics.pose().scale(0.5f, 0.5f);
+
+        guiGraphics.drawString(
+                this.font,
+                author,
+                0,
+                0,
+                0x3F2A17,
+                false
+        );
+
+        guiGraphics.pose().popMatrix();
+
+        // Age name centered inside linking panel
+        if (!ageName.isEmpty()) {
+
+            int panelCenterX = x + PANEL_X + (PANEL_W / 2);
+
+            int width = this.font.width(ageName);
+
+            guiGraphics.drawString(
+                    this.font,
+                    ageName,
+                    panelCenterX - (width / 2),
+                    y + PANEL_Y + PANEL_H + 6,
+                    0x3F2A17,
+                    false
+            );
+        }
     }
 
     @Override
