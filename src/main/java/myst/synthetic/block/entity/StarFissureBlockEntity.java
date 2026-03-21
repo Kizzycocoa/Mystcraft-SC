@@ -27,26 +27,25 @@ public class StarFissureBlockEntity extends BlockEntity {
 	}
 
 	public static void tick(Level level, BlockPos pos, BlockState state, StarFissureBlockEntity blockEntity) {
-		if (level.isClientSide()) {
+		// Intentionally unused for now.
+		// Star fissure teleport is triggered immediately in BlockStarFissure.entityInside(...).
+	}
+	public void teleportEntity(Entity entity) {
+		if (this.level == null || this.level.isClientSide()) {
 			return;
 		}
 
-		AABB area = TELEPORT_BOX.move(pos);
-		List<Entity> entities = level.getEntities((Entity) null, area);
-
-		for (Entity entity : entities) {
-			if (entity == null) {
-				continue;
-			}
-
-			ILinkInfo info = createStarFissureLink(level, entity);
-			if (info == null) {
-				continue;
-			}
-			info.setSpawnYaw(entity.getYRot());
-
-			LinkController.travelEntity(level, entity, info);
+		if (entity == null) {
+			return;
 		}
+
+		ILinkInfo info = createStarFissureLink(this.level, entity);
+		if (info == null) {
+			return;
+		}
+
+		info.setSpawnYaw(entity.getYRot());
+		LinkController.travelEntity(this.level, entity, info);
 	}
 
 	private static String extractDimensionId(String raw) {
@@ -63,16 +62,16 @@ public class StarFissureBlockEntity extends BlockEntity {
 	private static ILinkInfo createStarFissureLink(Level level, Entity entity) {
 		String currentDimension = extractDimensionId(level.dimension().toString());
 
-		// Debug rule: do not teleport if already in the overworld.
+		// Debug rule: do nothing if already in the overworld.
 		if ("minecraft:overworld".equals(currentDimension)) {
 			return null;
 		}
 
-		if (!(level instanceof net.minecraft.server.level.ServerLevel serverLevel)) {
+		if (!(level instanceof net.minecraft.server.level.ServerLevel origin)) {
 			return null;
 		}
 
-		net.minecraft.server.level.ServerLevel overworld = serverLevel.getServer().overworld();
+		net.minecraft.server.level.ServerLevel overworld = origin.getServer().overworld();
 		if (overworld == null) {
 			return null;
 		}
@@ -80,7 +79,7 @@ public class StarFissureBlockEntity extends BlockEntity {
 		int baseX = entity.blockPosition().getX();
 		int baseZ = entity.blockPosition().getZ();
 
-		// Nether and future compressed dimensions can scale outward.
+		// Nether and future compressed dimensions scale outward first.
 		if ("minecraft:the_nether".equals(currentDimension)) {
 			baseX *= 8;
 			baseZ *= 8;
@@ -92,15 +91,20 @@ public class StarFissureBlockEntity extends BlockEntity {
 		int targetX = baseX + offsetX;
 		int targetZ = baseZ + offsetZ;
 
-		int surfaceY = overworld.getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, targetX, targetZ);
+		// Force/generate the target chunk first so height is real, not fallback junk.
+		overworld.getChunk(targetX >> 4, targetZ >> 4);
+
+		int surfaceY = overworld.getHeight(
+				net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+				targetX,
+				targetZ
+		);
 
 		LinkOptions info = new LinkOptions(new net.minecraft.nbt.CompoundTag());
 		info.setDimensionUID("minecraft:overworld");
 
-		// Give the fissure an already-safe exact target.
+		// We already computed a safe target, so use it exactly.
 		info.setSpawn(new BlockPos(targetX, surfaceY + 1, targetZ));
-
-		// Not natural: we want the exact safe spot we just computed.
 		info.setFlag(LinkPropertyAPI.FLAG_NATURAL, false);
 		info.setFlag(LinkPropertyAPI.FLAG_EXTERNAL, true);
 		info.setProperty(LinkPropertyAPI.PROP_SOUND, "mystcraft-sc:linking.link-fissure");

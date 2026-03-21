@@ -16,6 +16,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.Nullable;
 
 public class BlockStarFissure extends BaseEntityBlock {
@@ -71,5 +72,17 @@ public class BlockStarFissure extends BaseEntityBlock {
 	@Override
 	protected boolean propagatesSkylightDown(BlockState state) {
 		return true;
+	}
+
+	@Override
+	protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
+		if (level.isClientSide()) {
+			return;
+		}
+
+		BlockEntity blockEntity = level.getBlockEntity(pos);
+		if (blockEntity instanceof StarFissureBlockEntity fissure) {
+			fissure.teleportEntity(entity);
+		}
 	}
 }

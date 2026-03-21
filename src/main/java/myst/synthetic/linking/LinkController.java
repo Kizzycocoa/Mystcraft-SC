@@ -94,19 +94,15 @@ public final class LinkController {
     public static BlockPos resolveTargetPos(ServerLevel destination, ILinkInfo info, Entity entity) {
         BlockPos configuredSpawn = info.getSpawn();
 
-        // If the link explicitly stores a target position and it is not a natural link,
-        // use it exactly. This is the behavior you want for linking books.
-        if (configuredSpawn != null && !info.getFlag(LinkPropertyAPI.FLAG_NATURAL)) {
-            return configuredSpawn;
-        }
-
         if (configuredSpawn != null) {
+            if (!info.getFlag(LinkPropertyAPI.FLAG_NATURAL)) {
+                return configuredSpawn;
+            }
+
             return findSafeLanding(destination, configuredSpawn);
         }
 
         BlockPos entityPos = entity.blockPosition();
-
-        // Natural / generated links fall back to a safe search.
         return findSafeLanding(destination, entityPos);
     }
 
