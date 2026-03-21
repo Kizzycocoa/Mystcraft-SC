@@ -16,6 +16,7 @@ import net.minecraft.world.level.portal.TeleportTransition;
 import net.minecraft.world.level.storage.LevelData;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
+import myst.synthetic.api.hook.LinkPropertyAPI;
 
 public final class LinkController {
 
@@ -92,14 +93,20 @@ public final class LinkController {
 
     public static BlockPos resolveTargetPos(ServerLevel destination, ILinkInfo info, Entity entity) {
         BlockPos configuredSpawn = info.getSpawn();
+
+        // If the link explicitly stores a target position and it is not a natural link,
+        // use it exactly. This is the behavior you want for linking books.
+        if (configuredSpawn != null && !info.getFlag(LinkPropertyAPI.FLAG_NATURAL)) {
+            return configuredSpawn;
+        }
+
         if (configuredSpawn != null) {
             return findSafeLanding(destination, configuredSpawn);
         }
 
         BlockPos entityPos = entity.blockPosition();
 
-        // TODO: Legacy Mystcraft had richer coordinate and age-link logic.
-        // For now we mirror position into the destination dimension and make it safe.
+        // Natural / generated links fall back to a safe search.
         return findSafeLanding(destination, entityPos);
     }
 

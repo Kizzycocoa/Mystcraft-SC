@@ -3,17 +3,13 @@ package myst.synthetic;
 import myst.synthetic.network.LinkBookUsePayload;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
 import myst.synthetic.linking.LinkController;
 import myst.synthetic.linking.LinkOptions;
-import net.minecraft.world.phys.Vec3;
 
 public final class MystcraftNetworking {
 
