@@ -85,7 +85,7 @@ public class MystcraftBlocks {
                     .strength(2.5F)
                     .sound(SoundType.WOOD)
                     .noOcclusion(),
-            ItemWritingDesk::new
+            (block, properties) -> new ItemWritingDesk(block, properties.stacksTo(1))
     );
 
     public static void initialize() {
