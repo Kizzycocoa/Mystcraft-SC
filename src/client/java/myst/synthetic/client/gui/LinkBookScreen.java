@@ -9,6 +9,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 
 public class LinkBookScreen extends Screen {
 
@@ -54,23 +55,51 @@ public class LinkBookScreen extends Screen {
         super.render(guiGraphics, mouseX, mouseY, partialTick);
     }
 
+    private void drawRegion(
+            GuiGraphics guiGraphics,
+            Identifier texture,
+            int x,
+            int y,
+            int u,
+            int v,
+            int width,
+            int height,
+            int textureWidth,
+            int textureHeight
+    ) {
+        guiGraphics.blit(
+                RenderPipelines.GUI_TEXTURED,
+                texture,
+                x,
+                y,
+                u,
+                v,
+                width,
+                height,
+                width,
+                height,
+                textureWidth,
+                textureHeight
+        );
+    }
+
     private void drawBook(GuiGraphics guiGraphics) {
         int x = this.leftPos;
         int y = this.topPos;
 
-        // Legacy cover layout
-        guiGraphics.blit(BOOK_COVER, x + 0, y + 7, 152, 0, 34, 192, 256, 256);
-        guiGraphics.blit(BOOK_COVER, x + 34, y + 7, 49, 0, 103, 192, 256, 256);
-        guiGraphics.blit(BOOK_COVER, x + 137, y + 7, 45, 0, 4, 192, 256, 256);
-        guiGraphics.blit(BOOK_COVER, x + 141, y + 7, 0, 0, 186, 192, 256, 256);
+        // Legacy cover assembly from bookui_cover.png (256x256)
+        drawRegion(guiGraphics, BOOK_COVER, x + 0,   y + 7, 152, 0,  34, 192, 256, 256);
+        drawRegion(guiGraphics, BOOK_COVER, x + 34,  y + 7, 49,  0, 103, 192, 256, 256);
+        drawRegion(guiGraphics, BOOK_COVER, x + 137, y + 7, 45,  0,   4, 192, 256, 256);
+        drawRegion(guiGraphics, BOOK_COVER, x + 141, y + 7, 0,   0, 186, 192, 256, 256);
 
-        // Left page
-        guiGraphics.blit(BOOK_PAGE_LEFT, x + 7, y + 0, 0, 0, 156, 195, 256, 256);
+        // Left page (legacy always shown on page 0 book view)
+        drawRegion(guiGraphics, BOOK_PAGE_LEFT, x + 7, y + 0, 0, 0, 156, 195, 256, 256);
 
-        // Right page with panel layout
-        guiGraphics.blit(BOOK_PAGE_RIGHT, x + 163, y + 0, 0, 0, 156, 195, 256, 256);
+        // Right page: use panel page for now, since this is the linking panel view
+        drawRegion(guiGraphics, BOOK_PAGE_RIGHT, x + 163, y + 0, 0, 0, 156, 195, 256, 256);
 
-        // Dummy link panel area, close to legacy panel region
+        // Dummy link panel fill, inside the exact legacy hotspot region
         guiGraphics.fill(x + PANEL_X, y + PANEL_Y, x + PANEL_X + PANEL_W, y + PANEL_Y + PANEL_H, 0xFF101020);
         guiGraphics.fill(x + PANEL_X + 1, y + PANEL_Y + 1, x + PANEL_X + PANEL_W - 1, y + PANEL_Y + PANEL_H - 1, 0xFF1E2B38);
     }
