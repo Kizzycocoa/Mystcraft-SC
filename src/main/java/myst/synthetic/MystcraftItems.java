@@ -14,6 +14,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.equipment.ArmorType;
 import myst.synthetic.item.ItemLinkbook;
 import myst.synthetic.item.ItemUnlinkedLinkbook;
+import myst.synthetic.item.ItemPage;
 
 public class MystcraftItems {
 
@@ -31,6 +32,7 @@ public class MystcraftItems {
     public static final Item AGEBOOK = register("agebook", Item::new, new Item.Properties().stacksTo(1));
     public static final Item LINKBOOK = register("linkbook", ItemLinkbook::new, new Item.Properties().stacksTo(1));
     public static final Item UNLINKEDBOOK = register("unlinkedbook", ItemUnlinkedLinkbook::new, new Item.Properties().stacksTo(16));
+    public static final Item PAGE = register("page", ItemPage::new, new Item.Properties());
     public static final Item BOOSTER = register("booster", Item::new, new Item.Properties());
     public static final Item FOLDER = register("folder", Item::new, new Item.Properties());
     public static final Item PORTFOLIO = register("portfolio", Item::new, new Item.Properties());

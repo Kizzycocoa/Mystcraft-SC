@@ -58,8 +58,7 @@ public class MystcraftItemGroups {
                     .title(Component.translatable("itemGroup.mystcraft-sc.pages"))
                     .icon(() -> new ItemStack(MystcraftItems.AGEBOOK)) // swap to AGEBOOK later if desired
                     .displayItems((parameters, output) -> {
-                        // Future pages:
-                        // output.accept(MystcraftItems.PAGE);
+                        output.accept(MystcraftItems.PAGE);
                     })
                     .build()
     );
