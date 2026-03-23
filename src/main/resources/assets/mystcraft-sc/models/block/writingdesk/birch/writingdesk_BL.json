@@ -1,0 +1,82 @@
+{
+	"format_version": "1.21.6",
+	"credit": "Made with Blockbench",
+	"texture_size": [256, 128],
+	"textures": {
+		"1": "mystcraft-sc:models/writingdesk/birchwritingdesk",
+		"particle": "mystcraft-sc:models/writingdesk/birchwritingdesk"
+	},
+	"elements": [
+		{
+			"name": "bottomShelf",
+			"from": [1, 0, 0],
+			"to": [15, 1, 15],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 0, 8]},
+			"faces": {
+				"north": {"uv": [1.0625, 3.875, 1.9375, 4], "texture": "#1"},
+				"up": {"uv": [3.9375, 6, 3.0625, 4.125], "texture": "#1"},
+				"down": {"uv": [1.9375, 6.125, 1.0625, 8], "texture": "#1"}
+			}
+		},
+		{
+			"name": "bottomShelf",
+			"from": [1, 7, 0],
+			"to": [15, 9, 15],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 7, 8]},
+			"faces": {
+				"north": {"uv": [1.0625, 2.875, 1.9375, 3.125], "texture": "#1"},
+				"up": {"uv": [3.9375, 6, 3.0625, 4.125], "texture": "#1"},
+				"down": {"uv": [2, 5.875, 1.125, 4], "texture": "#1"}
+			}
+		},
+		{
+			"name": "bottomShelf",
+			"from": [0, 15, 0],
+			"to": [16, 16, 16],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 15, 8]},
+			"faces": {
+				"north": {"uv": [1, 2, 2, 2.125], "texture": "#1"},
+				"east": {"uv": [0, 2, 1, 2.125], "texture": "#1"},
+				"south": {"uv": [5, 2, 6, 2.125], "texture": "#1"},
+				"up": {"uv": [2, 2, 1, 0], "texture": "#1"},
+				"down": {"uv": [2.0625, 6, 1.0625, 4], "texture": "#1"}
+			}
+		},
+		{
+			"name": "bottomShelf",
+			"from": [15, 0, 0],
+			"to": [16, 15, 16],
+			"rotation": {"angle": 0, "axis": "y", "origin": [23, 0, 8]},
+			"faces": {
+				"north": {"uv": [1, 2.125, 1.0625, 4], "texture": "#1"},
+				"east": {"uv": [0, 2.125, 1, 4], "texture": "#1"},
+				"south": {"uv": [5.9375, 2.125, 6, 4], "texture": "#1"},
+				"west": {"uv": [0, 6.125, 1, 8], "texture": "#1"},
+				"down": {"uv": [1.0625, 6, 1, 8], "texture": "#1"}
+			}
+		},
+		{
+			"name": "bottomShelf",
+			"from": [0, 0, 15],
+			"to": [15, 15, 16],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 0, 23]},
+			"faces": {
+				"north": {"uv": [1.0625, 6.125, 2, 8], "texture": "#1"},
+				"south": {"uv": [5, 2.125, 5.9375, 4], "texture": "#1"},
+				"down": {"uv": [2, 6, 1.0625, 6.125], "texture": "#1"}
+			}
+		},
+		{
+			"name": "bottomShelf",
+			"from": [0, 0, 0],
+			"to": [1, 15, 15],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 0, 8]},
+			"faces": {
+				"north": {"uv": [1.9375, 2.125, 2, 4], "texture": "#1"},
+				"east": {"uv": [3.0625, 6, 4, 7.875], "texture": "#1"},
+				"west": {"uv": [0, 6.125, 0.9375, 8], "texture": "#1"},
+				"down": {"uv": [2, 6.125, 1.9375, 8], "texture": "#1"}
+			}
+		}
+	]
+}
