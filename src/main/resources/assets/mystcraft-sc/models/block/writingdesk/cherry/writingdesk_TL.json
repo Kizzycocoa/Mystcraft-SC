@@ -2,7 +2,6 @@
 	"format_version": "1.21.6",
 	"credit": "Made with Blockbench",
 	"texture_size": [256, 128],
-	"render_type": "minecraft:cutout",
 	"textures": {
 		"1": "mystcraft-sc:block/writingdesk/cherrywritingdesk",
 		"particle": "mystcraft-sc:block/writingdesk/cherrywritingdesk"
@@ -29,7 +28,7 @@
 			"faces": {
 				"north": {"uv": [2.0625, 10.625, 1.0625, 12], "texture": "#1"},
 				"east": {"uv": [1.0625, 10.625, 1, 12], "texture": "#1"},
-				"south": {"uv": [2.0625, 14.625, 1.0625, 16], "texture": "#1"}
+				"south": {"uv": [16, 0, 0, 16], "texture": "#1"}
 			}
 		},
 		{
