@@ -51,8 +51,17 @@
 				"north": {"uv": [1, 2.125, 1.0625, 4], "texture": "#1"},
 				"east": {"uv": [0, 2.125, 1, 4], "texture": "#1"},
 				"south": {"uv": [5.9375, 2.125, 6, 4], "texture": "#1"},
-				"west": {"uv": [0, 6.125, 1, 8], "texture": "#1"},
 				"down": {"uv": [1.0625, 6, 1, 8], "texture": "#1"}
+			}
+		},
+		{
+			"name": "bottomShelf",
+			"from": [14.97, 0, 0],
+			"to": [15.97, 15, 16],
+			"rotation": {"angle": 0, "axis": "y", "origin": [23, 0, 8]},
+			"faces": {
+				"north": {"uv": [1, 2.125, 1.0625, 4], "texture": "#1"},
+				"west": {"uv": [0, 6.125, 1, 8], "texture": "#1"}
 			}
 		},
 		{

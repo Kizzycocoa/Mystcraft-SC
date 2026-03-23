@@ -249,6 +249,6 @@
         "wood=warped,istop=true,isfoot=true,facing=north": { "model": "mystcraft-sc:block/writingdesk/warped/writingdesk_tr", "y": 90 },
         "wood=warped,istop=true,isfoot=true,facing=east":  { "model": "mystcraft-sc:block/writingdesk/warped/writingdesk_tr", "y": 180 },
         "wood=warped,istop=true,isfoot=true,facing=south": { "model": "mystcraft-sc:block/writingdesk/warped/writingdesk_tr", "y": 270 },
-        "wood=warped,istop=true,isfoot=true,facing=west":  { "model": "mystcraft-sc:block/writingdesk/warped/writingdesk_tr", "y": 270 }
+        "wood=warped,istop=true,isfoot=true,facing=west":  { "model": "mystcraft-sc:block/writingdesk/warped/writingdesk_tr" }
     }
 }
