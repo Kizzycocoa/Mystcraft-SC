@@ -11,9 +11,28 @@ import net.minecraft.world.item.ItemStack;
 import myst.synthetic.block.DecayType;
 import myst.synthetic.block.BlockDecay;
 import net.minecraft.world.level.block.state.BlockState;
+import myst.synthetic.block.BlockWritingDesk;
+import myst.synthetic.block.property.WoodType;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.component.CustomData;
 
 public class MystcraftItemGroups {
 
+    private static ItemStack createWoodVariant(ItemStack stack, WoodType wood) {
+        CompoundTag tag = new CompoundTag();
+        tag.putString("wood", wood.getSerializedName());
+        stack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
+        return stack;
+    }
+
+    private static ItemStack createDeskVariant(WoodType wood) {
+        return createWoodVariant(new ItemStack(MystcraftBlocks.WRITING_DESK_BLOCK), wood);
+    }
+
+    private static ItemStack createDeskTopVariant(WoodType wood) {
+        return createWoodVariant(new ItemStack(MystcraftItems.WRITING_DESK_TOP), wood);
+    }
     public static final CreativeModeTab MYSTCRAFT_COMMON = Registry.register(
             BuiltInRegistries.CREATIVE_MODE_TAB,
             Identifier.fromNamespaceAndPath("mystcraft-sc", "common"),
@@ -29,8 +48,12 @@ public class MystcraftItemGroups {
                         output.accept(MystcraftItems.FOLDER);
                         output.accept(MystcraftItems.PORTFOLIO);
                         output.accept(MystcraftItems.GLASSES);
-                        output.accept(MystcraftBlocks.WRITING_DESK_BLOCK.asItem());
-                        output.accept(MystcraftItems.WRITING_DESK_TOP);
+                        for (WoodType wood : WoodType.values()) {
+                            output.accept(createDeskVariant(wood));
+                        }
+                        for (WoodType wood : WoodType.values()) {
+                            output.accept(createDeskTopVariant(wood));
+                        }
 
                         output.accept(MystcraftBlocks.CRYSTAL);
                         for (DecayType type : DecayType.values()) {

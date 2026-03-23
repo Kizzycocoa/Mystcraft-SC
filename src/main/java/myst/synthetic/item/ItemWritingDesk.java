@@ -1,12 +1,15 @@
 package myst.synthetic.item;
 
 import myst.synthetic.block.BlockWritingDesk;
+import myst.synthetic.block.property.WoodType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -17,6 +20,23 @@ public class ItemWritingDesk extends BlockItem {
 
 	public ItemWritingDesk(Block block, Item.Properties properties) {
 		super(block, properties);
+	}
+
+	private static WoodType getWoodTypeFromStack(ItemStack stack) {
+		var customData = stack.get(DataComponents.CUSTOM_DATA);
+		if (customData == null) {
+			return WoodType.OAK;
+		}
+
+		String name = customData.copyTag().getString("wood").orElse("oak");
+
+		for (WoodType type : WoodType.values()) {
+			if (type.getSerializedName().equals(name)) {
+				return type;
+			}
+		}
+
+		return WoodType.OAK;
 	}
 
 	@Override
@@ -57,10 +77,13 @@ public class ItemWritingDesk extends BlockItem {
 			return InteractionResult.FAIL;
 		}
 
+		WoodType wood = getWoodTypeFromStack(context.getItemInHand());
+
 		BlockState baseState = this.getBlock().defaultBlockState()
 				.setValue(BlockWritingDesk.FACING, facing)
 				.setValue(BlockWritingDesk.IS_TOP, false)
-				.setValue(BlockWritingDesk.IS_FOOT, false);
+				.setValue(BlockWritingDesk.IS_FOOT, false)
+				.setValue(BlockWritingDesk.WOOD, wood);
 
 		level.setBlock(bottomHead, baseState, 3);
 		level.setBlock(bottomFoot, baseState.setValue(BlockWritingDesk.IS_FOOT, true), 3);

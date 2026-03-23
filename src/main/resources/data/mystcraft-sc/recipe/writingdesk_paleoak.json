@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "v f",
+    "ppp",
+    "p p"
+  ],
+  "key": {
+    "f": "minecraft:feather",
+    "v": "minecraft:glass_bottle",
+    "p": "minecraft:pale_oak_planks"
+  },
+  "result": {
+    "id": "mystcraft-sc:writingdesk",
+    "count": 1,
+    "components": {
+      "minecraft:custom_data": {
+        "wood": "pale_oak"
+      }
+    }
+  }
+}

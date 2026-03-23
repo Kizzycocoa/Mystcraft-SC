@@ -7,10 +7,15 @@
   ],
   "key": {
     "f": "minecraft:item_frame",
-    "p": "#minecraft:planks"
+    "p": "minecraft:jungle_planks"
   },
   "result": {
     "id": "mystcraft-sc:writingdesk_top",
-    "count": 1
+    "count": 1,
+    "components": {
+      "minecraft:custom_data": {
+        "wood": "jungle"
+      }
+    }
   }
 }

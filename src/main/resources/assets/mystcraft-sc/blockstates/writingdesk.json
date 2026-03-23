@@ -1,12 +1,254 @@
 {
-    "forge_marker": 0,
-    "multipart": [
-        {
-            "apply": [
-                {
-                    "model": "mystcraft:blockmodel_unrendered_desk"
-                }
-            ]
-        }
-    ]
+    "variants": {
+        "wood=acacia,istop=false,isfoot=false,facing=north": { "model": "mystcraft-sc:block/writingdesk/acacia/writingdesk_BL" },
+        "wood=acacia,istop=false,isfoot=false,facing=east":  { "model": "mystcraft-sc:block/writingdesk/acacia/writingdesk_BL", "y": 90 },
+        "wood=acacia,istop=false,isfoot=false,facing=south": { "model": "mystcraft-sc:block/writingdesk/acacia/writingdesk_BL", "y": 180 },
+        "wood=acacia,istop=false,isfoot=false,facing=west":  { "model": "mystcraft-sc:block/writingdesk/acacia/writingdesk_BL", "y": 270 },
+
+        "wood=acacia,istop=false,isfoot=true,facing=north": { "model": "mystcraft-sc:block/writingdesk/acacia/writingdesk_BR" },
+        "wood=acacia,istop=false,isfoot=true,facing=east":  { "model": "mystcraft-sc:block/writingdesk/acacia/writingdesk_BR", "y": 90 },
+        "wood=acacia,istop=false,isfoot=true,facing=south": { "model": "mystcraft-sc:block/writingdesk/acacia/writingdesk_BR", "y": 180 },
+        "wood=acacia,istop=false,isfoot=true,facing=west":  { "model": "mystcraft-sc:block/writingdesk/acacia/writingdesk_BR", "y": 270 },
+
+        "wood=acacia,istop=true,isfoot=false,facing=north": { "model": "mystcraft-sc:block/writingdesk/acacia/writingdesk_TL" },
+        "wood=acacia,istop=true,isfoot=false,facing=east":  { "model": "mystcraft-sc:block/writingdesk/acacia/writingdesk_TL", "y": 90 },
+        "wood=acacia,istop=true,isfoot=false,facing=south": { "model": "mystcraft-sc:block/writingdesk/acacia/writingdesk_TL", "y": 180 },
+        "wood=acacia,istop=true,isfoot=false,facing=west":  { "model": "mystcraft-sc:block/writingdesk/acacia/writingdesk_TL", "y": 270 },
+
+        "wood=acacia,istop=true,isfoot=true,facing=north": { "model": "mystcraft-sc:block/writingdesk/acacia/writingdesk_TR" },
+        "wood=acacia,istop=true,isfoot=true,facing=east":  { "model": "mystcraft-sc:block/writingdesk/acacia/writingdesk_TR", "y": 90 },
+        "wood=acacia,istop=true,isfoot=true,facing=south": { "model": "mystcraft-sc:block/writingdesk/acacia/writingdesk_TR", "y": 180 },
+        "wood=acacia,istop=true,isfoot=true,facing=west":  { "model": "mystcraft-sc:block/writingdesk/acacia/writingdesk_TR", "y": 270 },
+
+
+        "wood=bamboo,istop=false,isfoot=false,facing=north": { "model": "mystcraft-sc:block/writingdesk/bamboo/writingdesk_BL" },
+        "wood=bamboo,istop=false,isfoot=false,facing=east":  { "model": "mystcraft-sc:block/writingdesk/bamboo/writingdesk_BL", "y": 90 },
+        "wood=bamboo,istop=false,isfoot=false,facing=south": { "model": "mystcraft-sc:block/writingdesk/bamboo/writingdesk_BL", "y": 180 },
+        "wood=bamboo,istop=false,isfoot=false,facing=west":  { "model": "mystcraft-sc:block/writingdesk/bamboo/writingdesk_BL", "y": 270 },
+
+        "wood=bamboo,istop=false,isfoot=true,facing=north": { "model": "mystcraft-sc:block/writingdesk/bamboo/writingdesk_BR" },
+        "wood=bamboo,istop=false,isfoot=true,facing=east":  { "model": "mystcraft-sc:block/writingdesk/bamboo/writingdesk_BR", "y": 90 },
+        "wood=bamboo,istop=false,isfoot=true,facing=south": { "model": "mystcraft-sc:block/writingdesk/bamboo/writingdesk_BR", "y": 180 },
+        "wood=bamboo,istop=false,isfoot=true,facing=west":  { "model": "mystcraft-sc:block/writingdesk/bamboo/writingdesk_BR", "y": 270 },
+
+        "wood=bamboo,istop=true,isfoot=false,facing=north": { "model": "mystcraft-sc:block/writingdesk/bamboo/writingdesk_TL" },
+        "wood=bamboo,istop=true,isfoot=false,facing=east":  { "model": "mystcraft-sc:block/writingdesk/bamboo/writingdesk_TL", "y": 90 },
+        "wood=bamboo,istop=true,isfoot=false,facing=south": { "model": "mystcraft-sc:block/writingdesk/bamboo/writingdesk_TL", "y": 180 },
+        "wood=bamboo,istop=true,isfoot=false,facing=west":  { "model": "mystcraft-sc:block/writingdesk/bamboo/writingdesk_TL", "y": 270 },
+
+        "wood=bamboo,istop=true,isfoot=true,facing=north": { "model": "mystcraft-sc:block/writingdesk/bamboo/writingdesk_TR" },
+        "wood=bamboo,istop=true,isfoot=true,facing=east":  { "model": "mystcraft-sc:block/writingdesk/bamboo/writingdesk_TR", "y": 90 },
+        "wood=bamboo,istop=true,isfoot=true,facing=south": { "model": "mystcraft-sc:block/writingdesk/bamboo/writingdesk_TR", "y": 180 },
+        "wood=bamboo,istop=true,isfoot=true,facing=west":  { "model": "mystcraft-sc:block/writingdesk/bamboo/writingdesk_TR", "y": 270 },
+
+
+        "wood=birch,istop=false,isfoot=false,facing=north": { "model": "mystcraft-sc:block/writingdesk/birch/writingdesk_BL" },
+        "wood=birch,istop=false,isfoot=false,facing=east":  { "model": "mystcraft-sc:block/writingdesk/birch/writingdesk_BL", "y": 90 },
+        "wood=birch,istop=false,isfoot=false,facing=south": { "model": "mystcraft-sc:block/writingdesk/birch/writingdesk_BL", "y": 180 },
+        "wood=birch,istop=false,isfoot=false,facing=west":  { "model": "mystcraft-sc:block/writingdesk/birch/writingdesk_BL", "y": 270 },
+
+        "wood=birch,istop=false,isfoot=true,facing=north": { "model": "mystcraft-sc:block/writingdesk/birch/writingdesk_BR" },
+        "wood=birch,istop=false,isfoot=true,facing=east":  { "model": "mystcraft-sc:block/writingdesk/birch/writingdesk_BR", "y": 90 },
+        "wood=birch,istop=false,isfoot=true,facing=south": { "model": "mystcraft-sc:block/writingdesk/birch/writingdesk_BR", "y": 180 },
+        "wood=birch,istop=false,isfoot=true,facing=west":  { "model": "mystcraft-sc:block/writingdesk/birch/writingdesk_BR", "y": 270 },
+
+        "wood=birch,istop=true,isfoot=false,facing=north": { "model": "mystcraft-sc:block/writingdesk/birch/writingdesk_TL" },
+        "wood=birch,istop=true,isfoot=false,facing=east":  { "model": "mystcraft-sc:block/writingdesk/birch/writingdesk_TL", "y": 90 },
+        "wood=birch,istop=true,isfoot=false,facing=south": { "model": "mystcraft-sc:block/writingdesk/birch/writingdesk_TL", "y": 180 },
+        "wood=birch,istop=true,isfoot=false,facing=west":  { "model": "mystcraft-sc:block/writingdesk/birch/writingdesk_TL", "y": 270 },
+
+        "wood=birch,istop=true,isfoot=true,facing=north": { "model": "mystcraft-sc:block/writingdesk/birch/writingdesk_TR" },
+        "wood=birch,istop=true,isfoot=true,facing=east":  { "model": "mystcraft-sc:block/writingdesk/birch/writingdesk_TR", "y": 90 },
+        "wood=birch,istop=true,isfoot=true,facing=south": { "model": "mystcraft-sc:block/writingdesk/birch/writingdesk_TR", "y": 180 },
+        "wood=birch,istop=true,isfoot=true,facing=west":  { "model": "mystcraft-sc:block/writingdesk/birch/writingdesk_TR", "y": 270 },
+
+
+        "wood=cherry,istop=false,isfoot=false,facing=north": { "model": "mystcraft-sc:block/writingdesk/cherry/writingdesk_BL" },
+        "wood=cherry,istop=false,isfoot=false,facing=east":  { "model": "mystcraft-sc:block/writingdesk/cherry/writingdesk_BL", "y": 90 },
+        "wood=cherry,istop=false,isfoot=false,facing=south": { "model": "mystcraft-sc:block/writingdesk/cherry/writingdesk_BL", "y": 180 },
+        "wood=cherry,istop=false,isfoot=false,facing=west":  { "model": "mystcraft-sc:block/writingdesk/cherry/writingdesk_BL", "y": 270 },
+
+        "wood=cherry,istop=false,isfoot=true,facing=north": { "model": "mystcraft-sc:block/writingdesk/cherry/writingdesk_BR" },
+        "wood=cherry,istop=false,isfoot=true,facing=east":  { "model": "mystcraft-sc:block/writingdesk/cherry/writingdesk_BR", "y": 90 },
+        "wood=cherry,istop=false,isfoot=true,facing=south": { "model": "mystcraft-sc:block/writingdesk/cherry/writingdesk_BR", "y": 180 },
+        "wood=cherry,istop=false,isfoot=true,facing=west":  { "model": "mystcraft-sc:block/writingdesk/cherry/writingdesk_BR", "y": 270 },
+
+        "wood=cherry,istop=true,isfoot=false,facing=north": { "model": "mystcraft-sc:block/writingdesk/cherry/writingdesk_TL" },
+        "wood=cherry,istop=true,isfoot=false,facing=east":  { "model": "mystcraft-sc:block/writingdesk/cherry/writingdesk_TL", "y": 90 },
+        "wood=cherry,istop=true,isfoot=false,facing=south": { "model": "mystcraft-sc:block/writingdesk/cherry/writingdesk_TL", "y": 180 },
+        "wood=cherry,istop=true,isfoot=false,facing=west":  { "model": "mystcraft-sc:block/writingdesk/cherry/writingdesk_TL", "y": 270 },
+
+        "wood=cherry,istop=true,isfoot=true,facing=north": { "model": "mystcraft-sc:block/writingdesk/cherry/writingdesk_TR" },
+        "wood=cherry,istop=true,isfoot=true,facing=east":  { "model": "mystcraft-sc:block/writingdesk/cherry/writingdesk_TR", "y": 90 },
+        "wood=cherry,istop=true,isfoot=true,facing=south": { "model": "mystcraft-sc:block/writingdesk/cherry/writingdesk_TR", "y": 180 },
+        "wood=cherry,istop=true,isfoot=true,facing=west":  { "model": "mystcraft-sc:block/writingdesk/cherry/writingdesk_TR", "y": 270 },
+
+
+        "wood=crimson,istop=false,isfoot=false,facing=north": { "model": "mystcraft-sc:block/writingdesk/crimson/writingdesk_BL" },
+        "wood=crimson,istop=false,isfoot=false,facing=east":  { "model": "mystcraft-sc:block/writingdesk/crimson/writingdesk_BL", "y": 90 },
+        "wood=crimson,istop=false,isfoot=false,facing=south": { "model": "mystcraft-sc:block/writingdesk/crimson/writingdesk_BL", "y": 180 },
+        "wood=crimson,istop=false,isfoot=false,facing=west":  { "model": "mystcraft-sc:block/writingdesk/crimson/writingdesk_BL", "y": 270 },
+
+        "wood=crimson,istop=false,isfoot=true,facing=north": { "model": "mystcraft-sc:block/writingdesk/crimson/writingdesk_BR" },
+        "wood=crimson,istop=false,isfoot=true,facing=east":  { "model": "mystcraft-sc:block/writingdesk/crimson/writingdesk_BR", "y": 90 },
+        "wood=crimson,istop=false,isfoot=true,facing=south": { "model": "mystcraft-sc:block/writingdesk/crimson/writingdesk_BR", "y": 180 },
+        "wood=crimson,istop=false,isfoot=true,facing=west":  { "model": "mystcraft-sc:block/writingdesk/crimson/writingdesk_BR", "y": 270 },
+
+        "wood=crimson,istop=true,isfoot=false,facing=north": { "model": "mystcraft-sc:block/writingdesk/crimson/writingdesk_TL" },
+        "wood=crimson,istop=true,isfoot=false,facing=east":  { "model": "mystcraft-sc:block/writingdesk/crimson/writingdesk_TL", "y": 90 },
+        "wood=crimson,istop=true,isfoot=false,facing=south": { "model": "mystcraft-sc:block/writingdesk/crimson/writingdesk_TL", "y": 180 },
+        "wood=crimson,istop=true,isfoot=false,facing=west":  { "model": "mystcraft-sc:block/writingdesk/crimson/writingdesk_TL", "y": 270 },
+
+        "wood=crimson,istop=true,isfoot=true,facing=north": { "model": "mystcraft-sc:block/writingdesk/crimson/writingdesk_TR" },
+        "wood=crimson,istop=true,isfoot=true,facing=east":  { "model": "mystcraft-sc:block/writingdesk/crimson/writingdesk_TR", "y": 90 },
+        "wood=crimson,istop=true,isfoot=true,facing=south": { "model": "mystcraft-sc:block/writingdesk/crimson/writingdesk_TR", "y": 180 },
+        "wood=crimson,istop=true,isfoot=true,facing=west":  { "model": "mystcraft-sc:block/writingdesk/crimson/writingdesk_TR", "y": 270 },
+
+
+        "wood=dark_oak,istop=false,isfoot=false,facing=north": { "model": "mystcraft-sc:block/writingdesk/darkoak/writingdesk_BL" },
+        "wood=dark_oak,istop=false,isfoot=false,facing=east":  { "model": "mystcraft-sc:block/writingdesk/darkoak/writingdesk_BL", "y": 90 },
+        "wood=dark_oak,istop=false,isfoot=false,facing=south": { "model": "mystcraft-sc:block/writingdesk/darkoak/writingdesk_BL", "y": 180 },
+        "wood=dark_oak,istop=false,isfoot=false,facing=west":  { "model": "mystcraft-sc:block/writingdesk/darkoak/writingdesk_BL", "y": 270 },
+
+        "wood=dark_oak,istop=false,isfoot=true,facing=north": { "model": "mystcraft-sc:block/writingdesk/darkoak/writingdesk_BR" },
+        "wood=dark_oak,istop=false,isfoot=true,facing=east":  { "model": "mystcraft-sc:block/writingdesk/darkoak/writingdesk_BR", "y": 90 },
+        "wood=dark_oak,istop=false,isfoot=true,facing=south": { "model": "mystcraft-sc:block/writingdesk/darkoak/writingdesk_BR", "y": 180 },
+        "wood=dark_oak,istop=false,isfoot=true,facing=west":  { "model": "mystcraft-sc:block/writingdesk/darkoak/writingdesk_BR", "y": 270 },
+
+        "wood=dark_oak,istop=true,isfoot=false,facing=north": { "model": "mystcraft-sc:block/writingdesk/darkoak/writingdesk_TL" },
+        "wood=dark_oak,istop=true,isfoot=false,facing=east":  { "model": "mystcraft-sc:block/writingdesk/darkoak/writingdesk_TL", "y": 90 },
+        "wood=dark_oak,istop=true,isfoot=false,facing=south": { "model": "mystcraft-sc:block/writingdesk/darkoak/writingdesk_TL", "y": 180 },
+        "wood=dark_oak,istop=true,isfoot=false,facing=west":  { "model": "mystcraft-sc:block/writingdesk/darkoak/writingdesk_TL", "y": 270 },
+
+        "wood=dark_oak,istop=true,isfoot=true,facing=north": { "model": "mystcraft-sc:block/writingdesk/darkoak/writingdesk_TR" },
+        "wood=dark_oak,istop=true,isfoot=true,facing=east":  { "model": "mystcraft-sc:block/writingdesk/darkoak/writingdesk_TR", "y": 90 },
+        "wood=dark_oak,istop=true,isfoot=true,facing=south": { "model": "mystcraft-sc:block/writingdesk/darkoak/writingdesk_TR", "y": 180 },
+        "wood=dark_oak,istop=true,isfoot=true,facing=west":  { "model": "mystcraft-sc:block/writingdesk/darkoak/writingdesk_TR", "y": 270 },
+
+
+        "wood=jungle,istop=false,isfoot=false,facing=north": { "model": "mystcraft-sc:block/writingdesk/jungle/writingdesk_BL" },
+        "wood=jungle,istop=false,isfoot=false,facing=east":  { "model": "mystcraft-sc:block/writingdesk/jungle/writingdesk_BL", "y": 90 },
+        "wood=jungle,istop=false,isfoot=false,facing=south": { "model": "mystcraft-sc:block/writingdesk/jungle/writingdesk_BL", "y": 180 },
+        "wood=jungle,istop=false,isfoot=false,facing=west":  { "model": "mystcraft-sc:block/writingdesk/jungle/writingdesk_BL", "y": 270 },
+
+        "wood=jungle,istop=false,isfoot=true,facing=north": { "model": "mystcraft-sc:block/writingdesk/jungle/writingdesk_BR" },
+        "wood=jungle,istop=false,isfoot=true,facing=east":  { "model": "mystcraft-sc:block/writingdesk/jungle/writingdesk_BR", "y": 90 },
+        "wood=jungle,istop=false,isfoot=true,facing=south": { "model": "mystcraft-sc:block/writingdesk/jungle/writingdesk_BR", "y": 180 },
+        "wood=jungle,istop=false,isfoot=true,facing=west":  { "model": "mystcraft-sc:block/writingdesk/jungle/writingdesk_BR", "y": 270 },
+
+        "wood=jungle,istop=true,isfoot=false,facing=north": { "model": "mystcraft-sc:block/writingdesk/jungle/writingdesk_TL" },
+        "wood=jungle,istop=true,isfoot=false,facing=east":  { "model": "mystcraft-sc:block/writingdesk/jungle/writingdesk_TL", "y": 90 },
+        "wood=jungle,istop=true,isfoot=false,facing=south": { "model": "mystcraft-sc:block/writingdesk/jungle/writingdesk_TL", "y": 180 },
+        "wood=jungle,istop=true,isfoot=false,facing=west":  { "model": "mystcraft-sc:block/writingdesk/jungle/writingdesk_TL", "y": 270 },
+
+        "wood=jungle,istop=true,isfoot=true,facing=north": { "model": "mystcraft-sc:block/writingdesk/jungle/writingdesk_TR" },
+        "wood=jungle,istop=true,isfoot=true,facing=east":  { "model": "mystcraft-sc:block/writingdesk/jungle/writingdesk_TR", "y": 90 },
+        "wood=jungle,istop=true,isfoot=true,facing=south": { "model": "mystcraft-sc:block/writingdesk/jungle/writingdesk_TR", "y": 180 },
+        "wood=jungle,istop=true,isfoot=true,facing=west":  { "model": "mystcraft-sc:block/writingdesk/jungle/writingdesk_TR", "y": 270 },
+
+
+        "wood=mangrove,istop=false,isfoot=false,facing=north": { "model": "mystcraft-sc:block/writingdesk/mangrove/writingdesk_BL" },
+        "wood=mangrove,istop=false,isfoot=false,facing=east":  { "model": "mystcraft-sc:block/writingdesk/mangrove/writingdesk_BL", "y": 90 },
+        "wood=mangrove,istop=false,isfoot=false,facing=south": { "model": "mystcraft-sc:block/writingdesk/mangrove/writingdesk_BL", "y": 180 },
+        "wood=mangrove,istop=false,isfoot=false,facing=west":  { "model": "mystcraft-sc:block/writingdesk/mangrove/writingdesk_BL", "y": 270 },
+
+        "wood=mangrove,istop=false,isfoot=true,facing=north": { "model": "mystcraft-sc:block/writingdesk/mangrove/writingdesk_BR" },
+        "wood=mangrove,istop=false,isfoot=true,facing=east":  { "model": "mystcraft-sc:block/writingdesk/mangrove/writingdesk_BR", "y": 90 },
+        "wood=mangrove,istop=false,isfoot=true,facing=south": { "model": "mystcraft-sc:block/writingdesk/mangrove/writingdesk_BR", "y": 180 },
+        "wood=mangrove,istop=false,isfoot=true,facing=west":  { "model": "mystcraft-sc:block/writingdesk/mangrove/writingdesk_BR", "y": 270 },
+
+        "wood=mangrove,istop=true,isfoot=false,facing=north": { "model": "mystcraft-sc:block/writingdesk/mangrove/writingdesk_TL" },
+        "wood=mangrove,istop=true,isfoot=false,facing=east":  { "model": "mystcraft-sc:block/writingdesk/mangrove/writingdesk_TL", "y": 90 },
+        "wood=mangrove,istop=true,isfoot=false,facing=south": { "model": "mystcraft-sc:block/writingdesk/mangrove/writingdesk_TL", "y": 180 },
+        "wood=mangrove,istop=true,isfoot=false,facing=west":  { "model": "mystcraft-sc:block/writingdesk/mangrove/writingdesk_TL", "y": 270 },
+
+        "wood=mangrove,istop=true,isfoot=true,facing=north": { "model": "mystcraft-sc:block/writingdesk/mangrove/writingdesk_TR" },
+        "wood=mangrove,istop=true,isfoot=true,facing=east":  { "model": "mystcraft-sc:block/writingdesk/mangrove/writingdesk_TR", "y": 90 },
+        "wood=mangrove,istop=true,isfoot=true,facing=south": { "model": "mystcraft-sc:block/writingdesk/mangrove/writingdesk_TR", "y": 180 },
+        "wood=mangrove,istop=true,isfoot=true,facing=west":  { "model": "mystcraft-sc:block/writingdesk/mangrove/writingdesk_TR", "y": 270 },
+
+        
+        "wood=oak,istop=false,isfoot=false,facing=north": { "model": "mystcraft-sc:block/writingdesk/oak/writingdesk_BL" },
+        "wood=oak,istop=false,isfoot=false,facing=east":  { "model": "mystcraft-sc:block/writingdesk/oak/writingdesk_BL", "y": 90 },
+        "wood=oak,istop=false,isfoot=false,facing=south": { "model": "mystcraft-sc:block/writingdesk/oak/writingdesk_BL", "y": 180 },
+        "wood=oak,istop=false,isfoot=false,facing=west":  { "model": "mystcraft-sc:block/writingdesk/oak/writingdesk_BL", "y": 270 },
+
+        "wood=oak,istop=false,isfoot=true,facing=north": { "model": "mystcraft-sc:block/writingdesk/oak/writingdesk_BR" },
+        "wood=oak,istop=false,isfoot=true,facing=east":  { "model": "mystcraft-sc:block/writingdesk/oak/writingdesk_BR", "y": 90 },
+        "wood=oak,istop=false,isfoot=true,facing=south": { "model": "mystcraft-sc:block/writingdesk/oak/writingdesk_BR", "y": 180 },
+        "wood=oak,istop=false,isfoot=true,facing=west":  { "model": "mystcraft-sc:block/writingdesk/oak/writingdesk_BR", "y": 270 },
+
+        "wood=oak,istop=true,isfoot=false,facing=north": { "model": "mystcraft-sc:block/writingdesk/oak/writingdesk_TL" },
+        "wood=oak,istop=true,isfoot=false,facing=east":  { "model": "mystcraft-sc:block/writingdesk/oak/writingdesk_TL", "y": 90 },
+        "wood=oak,istop=true,isfoot=false,facing=south": { "model": "mystcraft-sc:block/writingdesk/oak/writingdesk_TL", "y": 180 },
+        "wood=oak,istop=true,isfoot=false,facing=west":  { "model": "mystcraft-sc:block/writingdesk/oak/writingdesk_TL", "y": 270 },
+
+        "wood=oak,istop=true,isfoot=true,facing=north": { "model": "mystcraft-sc:block/writingdesk/oak/writingdesk_TR" },
+        "wood=oak,istop=true,isfoot=true,facing=east":  { "model": "mystcraft-sc:block/writingdesk/oak/writingdesk_TR", "y": 90 },
+        "wood=oak,istop=true,isfoot=true,facing=south": { "model": "mystcraft-sc:block/writingdesk/oak/writingdesk_TR", "y": 180 },
+        "wood=oak,istop=true,isfoot=true,facing=west":  { "model": "mystcraft-sc:block/writingdesk/oak/writingdesk_TR", "y": 270 },
+
+
+        "wood=pale_oak,istop=false,isfoot=false,facing=north": { "model": "mystcraft-sc:block/writingdesk/paleoak/writingdesk_BL" },
+        "wood=pale_oak,istop=false,isfoot=false,facing=east":  { "model": "mystcraft-sc:block/writingdesk/paleoak/writingdesk_BL", "y": 90 },
+        "wood=pale_oak,istop=false,isfoot=false,facing=south": { "model": "mystcraft-sc:block/writingdesk/paleoak/writingdesk_BL", "y": 180 },
+        "wood=pale_oak,istop=false,isfoot=false,facing=west":  { "model": "mystcraft-sc:block/writingdesk/paleoak/writingdesk_BL", "y": 270 },
+
+        "wood=pale_oak,istop=false,isfoot=true,facing=north": { "model": "mystcraft-sc:block/writingdesk/paleoak/writingdesk_BR" },
+        "wood=pale_oak,istop=false,isfoot=true,facing=east":  { "model": "mystcraft-sc:block/writingdesk/paleoak/writingdesk_BR", "y": 90 },
+        "wood=pale_oak,istop=false,isfoot=true,facing=south": { "model": "mystcraft-sc:block/writingdesk/paleoak/writingdesk_BR", "y": 180 },
+        "wood=pale_oak,istop=false,isfoot=true,facing=west":  { "model": "mystcraft-sc:block/writingdesk/paleoak/writingdesk_BR", "y": 270 },
+
+        "wood=pale_oak,istop=true,isfoot=false,facing=north": { "model": "mystcraft-sc:block/writingdesk/paleoak/writingdesk_TL" },
+        "wood=pale_oak,istop=true,isfoot=false,facing=east":  { "model": "mystcraft-sc:block/writingdesk/paleoak/writingdesk_TL", "y": 90 },
+        "wood=pale_oak,istop=true,isfoot=false,facing=south": { "model": "mystcraft-sc:block/writingdesk/paleoak/writingdesk_TL", "y": 180 },
+        "wood=pale_oak,istop=true,isfoot=false,facing=west":  { "model": "mystcraft-sc:block/writingdesk/paleoak/writingdesk_TL", "y": 270 },
+
+        "wood=pale_oak,istop=true,isfoot=true,facing=north": { "model": "mystcraft-sc:block/writingdesk/paleoak/writingdesk_TR" },
+        "wood=pale_oak,istop=true,isfoot=true,facing=east":  { "model": "mystcraft-sc:block/writingdesk/paleoak/writingdesk_TR", "y": 90 },
+        "wood=pale_oak,istop=true,isfoot=true,facing=south": { "model": "mystcraft-sc:block/writingdesk/paleoak/writingdesk_TR", "y": 180 },
+        "wood=pale_oak,istop=true,isfoot=true,facing=west":  { "model": "mystcraft-sc:block/writingdesk/paleoak/writingdesk_TR", "y": 270 },
+
+
+        "wood=spruce,istop=false,isfoot=false,facing=north": { "model": "mystcraft-sc:block/writingdesk/spruce/writingdesk_BL" },
+        "wood=spruce,istop=false,isfoot=false,facing=east":  { "model": "mystcraft-sc:block/writingdesk/spruce/writingdesk_BL", "y": 90 },
+        "wood=spruce,istop=false,isfoot=false,facing=south": { "model": "mystcraft-sc:block/writingdesk/spruce/writingdesk_BL", "y": 180 },
+        "wood=spruce,istop=false,isfoot=false,facing=west":  { "model": "mystcraft-sc:block/writingdesk/spruce/writingdesk_BL", "y": 270 },
+
+        "wood=spruce,istop=false,isfoot=true,facing=north": { "model": "mystcraft-sc:block/writingdesk/spruce/writingdesk_BR" },
+        "wood=spruce,istop=false,isfoot=true,facing=east":  { "model": "mystcraft-sc:block/writingdesk/spruce/writingdesk_BR", "y": 90 },
+        "wood=spruce,istop=false,isfoot=true,facing=south": { "model": "mystcraft-sc:block/writingdesk/spruce/writingdesk_BR", "y": 180 },
+        "wood=spruce,istop=false,isfoot=true,facing=west":  { "model": "mystcraft-sc:block/writingdesk/spruce/writingdesk_BR", "y": 270 },
+
+        "wood=spruce,istop=true,isfoot=false,facing=north": { "model": "mystcraft-sc:block/writingdesk/spruce/writingdesk_TL" },
+        "wood=spruce,istop=true,isfoot=false,facing=east":  { "model": "mystcraft-sc:block/writingdesk/spruce/writingdesk_TL", "y": 90 },
+        "wood=spruce,istop=true,isfoot=false,facing=south": { "model": "mystcraft-sc:block/writingdesk/spruce/writingdesk_TL", "y": 180 },
+        "wood=spruce,istop=true,isfoot=false,facing=west":  { "model": "mystcraft-sc:block/writingdesk/spruce/writingdesk_TL", "y": 270 },
+
+        "wood=spruce,istop=true,isfoot=true,facing=north": { "model": "mystcraft-sc:block/writingdesk/spruce/writingdesk_TR" },
+        "wood=spruce,istop=true,isfoot=true,facing=east":  { "model": "mystcraft-sc:block/writingdesk/spruce/writingdesk_TR", "y": 90 },
+        "wood=spruce,istop=true,isfoot=true,facing=south": { "model": "mystcraft-sc:block/writingdesk/spruce/writingdesk_TR", "y": 180 },
+        "wood=spruce,istop=true,isfoot=true,facing=west":  { "model": "mystcraft-sc:block/writingdesk/spruce/writingdesk_TR", "y": 270 },
+
+
+        "wood=warped,istop=false,isfoot=false,facing=north": { "model": "mystcraft-sc:block/writingdesk/warped/writingdesk_BL" },
+        "wood=warped,istop=false,isfoot=false,facing=east":  { "model": "mystcraft-sc:block/writingdesk/warped/writingdesk_BL", "y": 90 },
+        "wood=warped,istop=false,isfoot=false,facing=south": { "model": "mystcraft-sc:block/writingdesk/warped/writingdesk_BL", "y": 180 },
+        "wood=warped,istop=false,isfoot=false,facing=west":  { "model": "mystcraft-sc:block/writingdesk/warped/writingdesk_BL", "y": 270 },
+
+        "wood=warped,istop=false,isfoot=true,facing=north": { "model": "mystcraft-sc:block/writingdesk/warped/writingdesk_BR" },
+        "wood=warped,istop=false,isfoot=true,facing=east":  { "model": "mystcraft-sc:block/writingdesk/warped/writingdesk_BR", "y": 90 },
+        "wood=warped,istop=false,isfoot=true,facing=south": { "model": "mystcraft-sc:block/writingdesk/warped/writingdesk_BR", "y": 180 },
+        "wood=warped,istop=false,isfoot=true,facing=west":  { "model": "mystcraft-sc:block/writingdesk/warped/writingdesk_BR", "y": 270 },
+
+        "wood=warped,istop=true,isfoot=false,facing=north": { "model": "mystcraft-sc:block/writingdesk/warped/writingdesk_TL" },
+        "wood=warped,istop=true,isfoot=false,facing=east":  { "model": "mystcraft-sc:block/writingdesk/warped/writingdesk_TL", "y": 90 },
+        "wood=warped,istop=true,isfoot=false,facing=south": { "model": "mystcraft-sc:block/writingdesk/warped/writingdesk_TL", "y": 180 },
+        "wood=warped,istop=true,isfoot=false,facing=west":  { "model": "mystcraft-sc:block/writingdesk/warped/writingdesk_TL", "y": 270 },
+
+        "wood=warped,istop=true,isfoot=true,facing=north": { "model": "mystcraft-sc:block/writingdesk/warped/writingdesk_TR" },
+        "wood=warped,istop=true,isfoot=true,facing=east":  { "model": "mystcraft-sc:block/writingdesk/warped/writingdesk_TR", "y": 90 },
+        "wood=warped,istop=true,isfoot=true,facing=south": { "model": "mystcraft-sc:block/writingdesk/warped/writingdesk_TR", "y": 180 },
+        "wood=warped,istop=true,isfoot=true,facing=west":  { "model": "mystcraft-sc:block/writingdesk/warped/writingdesk_TR", "y": 270 }
+    }
 }

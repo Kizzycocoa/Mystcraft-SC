@@ -9,10 +9,15 @@
   "key": {
     "f": "minecraft:feather",
     "v": "minecraft:glass_bottle",
-    "p": "#minecraft:planks"
+    "p": "minecraft:acacia_planks"
   },
   "result": {
     "id": "mystcraft-sc:writingdesk",
-    "count": 1
+    "count": 1,
+    "components": {
+      "minecraft:custom_data": {
+        "wood": "acacia"
+      }
+    }
   }
 }

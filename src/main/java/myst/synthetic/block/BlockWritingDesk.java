@@ -3,6 +3,7 @@ package myst.synthetic.block;
 import com.mojang.serialization.MapCodec;
 import myst.synthetic.MystcraftItems;
 import myst.synthetic.block.entity.BlockEntityDesk;
+import myst.synthetic.block.property.WoodType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionResult;
@@ -32,12 +33,16 @@ import java.util.Collections;
 import java.util.List;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import myst.synthetic.MystcraftBlocks;
 
 public class BlockWritingDesk extends BaseEntityBlock {
 
 	public static final MapCodec<BlockWritingDesk> CODEC = simpleCodec(BlockWritingDesk::new);
 
 	public static final EnumProperty<Direction> FACING = HorizontalDirectionalBlock.FACING;
+	public static final EnumProperty<WoodType> WOOD = EnumProperty.create("wood", WoodType.class);
 	public static final BooleanProperty IS_TOP = BooleanProperty.create("istop");
 	public static final BooleanProperty IS_FOOT = BooleanProperty.create("isfoot");
 
@@ -47,7 +52,8 @@ public class BlockWritingDesk extends BaseEntityBlock {
 		this.registerDefaultState(this.stateDefinition.any()
 				.setValue(FACING, Direction.NORTH)
 				.setValue(IS_TOP, false)
-				.setValue(IS_FOOT, false));
+				.setValue(IS_FOOT, false)
+        		.setValue(WOOD, WoodType.OAK));
 	}
 
 	@Override
@@ -57,7 +63,33 @@ public class BlockWritingDesk extends BaseEntityBlock {
 
 	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-		builder.add(FACING, IS_TOP, IS_FOOT);
+		builder.add(FACING, IS_TOP, IS_FOOT, WOOD);
+	}
+
+	private static WoodType getWoodTypeFromStack(ItemStack stack) {
+		var customData = stack.get(DataComponents.CUSTOM_DATA);
+		if (customData == null) {
+			return WoodType.OAK;
+		}
+
+		String name = customData.copyTag().getString("wood").orElse("oak");
+
+		for (WoodType type : WoodType.values()) {
+			if (type.getSerializedName().equals(name)) {
+				return type;
+			}
+		}
+
+		return WoodType.OAK;
+	}
+
+	@Override
+	public BlockState getStateForPlacement(BlockPlaceContext context) {
+		WoodType wood = getWoodTypeFromStack(context.getItemInHand());
+
+		return defaultBlockState()
+				.setValue(FACING, context.getHorizontalDirection())
+				.setValue(WOOD, wood);
 	}
 
 	@Override
@@ -193,6 +225,21 @@ public class BlockWritingDesk extends BaseEntityBlock {
 		return Collections.emptyList();
 	}
 
+	private static ItemStack createVariantStack(ItemStack stack, WoodType wood) {
+		var tag = new net.minecraft.nbt.CompoundTag();
+		tag.putString("wood", wood.getSerializedName());
+		stack.set(DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.of(tag));
+		return stack;
+	}
+
+	private static ItemStack createDeskDrop(WoodType wood) {
+		return createVariantStack(new ItemStack(MystcraftBlocks.WRITING_DESK_BLOCK), wood);
+	}
+
+	private static ItemStack createDeskTopDrop(WoodType wood) {
+		return createVariantStack(new ItemStack(MystcraftItems.WRITING_DESK_TOP), wood);
+	}
+
 	@Override
 	public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
 		if (!level.isClientSide()) {
@@ -233,7 +280,8 @@ public class BlockWritingDesk extends BaseEntityBlock {
 					}
 
 					if (!player.isCreative()) {
-						Block.popResource(level, pos, new ItemStack(MystcraftItems.WRITING_DESK_TOP));
+						WoodType topWood = state.getValue(WOOD);
+						Block.popResource(level, pos, createDeskTopDrop(topWood));
 					}
 				} else {
 					// Remove the bottom structure.
@@ -253,10 +301,12 @@ public class BlockWritingDesk extends BaseEntityBlock {
 					}
 
 					if (!player.isCreative()) {
-						Block.popResource(level, pos, new ItemStack(this.asItem()));
+						WoodType bottomWood = anchorState.getValue(WOOD);
+						Block.popResource(level, pos, createDeskDrop(bottomWood));
 
 						if (hasTop) {
-							Block.popResource(level, pos.above(), new ItemStack(MystcraftItems.WRITING_DESK_TOP));
+							WoodType topWood = topHeadState.getValue(WOOD);
+							Block.popResource(level, pos.above(), createDeskTopDrop(topWood));
 						}
 					}
 				}
@@ -268,9 +318,10 @@ public class BlockWritingDesk extends BaseEntityBlock {
 
 	@Override
 	protected ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state, boolean includeData) {
+		WoodType wood = state.getValue(WOOD);
 		return isTop(state)
-				? new ItemStack(MystcraftItems.WRITING_DESK_TOP)
-				: new ItemStack(this.asItem());
+				? createDeskTopDrop(wood)
+				: createDeskDrop(wood);
 	}
 	@Override
 	protected InteractionResult useItemOn(
@@ -310,10 +361,13 @@ public class BlockWritingDesk extends BaseEntityBlock {
 			return InteractionResult.FAIL;
 		}
 
+		WoodType topWood = getWoodTypeFromStack(stack);
+
 		BlockState topState = defaultBlockState()
 				.setValue(FACING, facing)
 				.setValue(IS_TOP, true)
-				.setValue(IS_FOOT, false);
+				.setValue(IS_FOOT, false)
+				.setValue(WOOD, topWood);
 
 		if (!level.isClientSide()) {
 			level.setBlock(topHead, topState, 3);
