@@ -3,8 +3,8 @@
 	"credit": "Made with Blockbench",
 	"texture_size": [256, 128],
 	"textures": {
-		"1": "mystcraft-sc:models/writingdesk/paleoakwritingdesk",
-		"particle": "mystcraft-sc:models/writingdesk/paleoakwritingdesk"
+		"1": "mystcraft-sc:block/writingdesk/paleoakwritingdesk",
+		"particle": "mystcraft-sc:block/writingdesk/paleoakwritingdesk"
 	},
 	"elements": [
 		{
