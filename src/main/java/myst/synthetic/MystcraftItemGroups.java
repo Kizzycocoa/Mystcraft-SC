@@ -19,20 +19,46 @@ import net.minecraft.world.item.component.CustomData;
 
 public class MystcraftItemGroups {
 
-    private static ItemStack createWoodVariant(ItemStack stack, WoodType wood) {
+    private static ItemStack createWoodVariant(ItemStack stack, WoodType wood, boolean top) {
+
         CompoundTag tag = new CompoundTag();
         tag.putString("wood", wood.getSerializedName());
+
         stack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
+
+        String modelPath = top
+                ? "writingdesk_top/" + getWoodModelKey(wood)
+                : "writingdesk/" + getWoodModelKey(wood);
+
+        stack.set(
+                DataComponents.ITEM_MODEL,
+                Identifier.fromNamespaceAndPath("mystcraft-sc", modelPath)
+        );
+
         return stack;
     }
 
-    private static ItemStack createDeskVariant(WoodType wood) {
-        return createWoodVariant(new ItemStack(MystcraftBlocks.WRITING_DESK_BLOCK), wood);
+    public static ItemStack createDeskVariant(WoodType wood) {
+        return createWoodVariant(
+                new ItemStack(MystcraftBlocks.WRITING_DESK_BLOCK),
+                wood,
+                false
+        );
     }
 
-    private static ItemStack createDeskTopVariant(WoodType wood) {
-        return createWoodVariant(new ItemStack(MystcraftItems.WRITING_DESK_TOP), wood);
+    public static ItemStack createDeskTopVariant(WoodType wood) {
+        return createWoodVariant(
+                new ItemStack(MystcraftItems.WRITING_DESK_TOP),
+                wood,
+                true
+        );
     }
+    private static String getWoodModelKey(WoodType wood) {
+        return switch (wood) {
+            default -> wood.getSerializedName();
+        };
+    }
+
     public static final CreativeModeTab MYSTCRAFT_COMMON = Registry.register(
             BuiltInRegistries.CREATIVE_MODE_TAB,
             Identifier.fromNamespaceAndPath("mystcraft-sc", "common"),
@@ -51,6 +77,7 @@ public class MystcraftItemGroups {
                         for (WoodType wood : WoodType.values()) {
                             output.accept(createDeskVariant(wood));
                         }
+
                         for (WoodType wood : WoodType.values()) {
                             output.accept(createDeskTopVariant(wood));
                         }

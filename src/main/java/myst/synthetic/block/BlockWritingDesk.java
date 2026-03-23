@@ -35,7 +35,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import myst.synthetic.MystcraftBlocks;
+import myst.synthetic.MystcraftItemGroups;
 
 public class BlockWritingDesk extends BaseEntityBlock {
 
@@ -233,11 +233,11 @@ public class BlockWritingDesk extends BaseEntityBlock {
 	}
 
 	private static ItemStack createDeskDrop(WoodType wood) {
-		return createVariantStack(new ItemStack(MystcraftBlocks.WRITING_DESK_BLOCK), wood);
+		return MystcraftItemGroups.createDeskVariant(wood);
 	}
 
 	private static ItemStack createDeskTopDrop(WoodType wood) {
-		return createVariantStack(new ItemStack(MystcraftItems.WRITING_DESK_TOP), wood);
+		return MystcraftItemGroups.createDeskTopVariant(wood);
 	}
 
 	@Override
@@ -317,11 +317,16 @@ public class BlockWritingDesk extends BaseEntityBlock {
 	}
 
 	@Override
-	protected ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state, boolean includeData) {
+	protected ItemStack getCloneItemStack(LevelReader level,
+										  BlockPos pos,
+										  BlockState state,
+										  boolean includeData) {
+
 		WoodType wood = state.getValue(WOOD);
+
 		return isTop(state)
-				? createDeskTopDrop(wood)
-				: createDeskDrop(wood);
+				? MystcraftItemGroups.createDeskTopVariant(wood)
+				: MystcraftItemGroups.createDeskVariant(wood);
 	}
 	@Override
 	protected InteractionResult useItemOn(
