@@ -57,8 +57,6 @@ public final class SlantBoardRenderPipelines {
 
     private static String getTextureKey(WoodType wood) {
         return switch (wood) {
-            case DARK_OAK -> "darkoak";
-            case PALE_OAK -> "paleoak";
             default -> wood.getSerializedName();
         };
     }
