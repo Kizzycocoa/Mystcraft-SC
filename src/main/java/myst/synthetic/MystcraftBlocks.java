@@ -92,7 +92,7 @@ public class MystcraftBlocks {
     public static final Block SLANT_BOARD_BLOCK = register(
             "slant_board",
             BlockSlantBoard::new,
-            BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS)
+            BlockBehaviour.Properties.ofFullCopy(Blocks.LECTERN)
                     .noOcclusion(),
             (block, properties) -> new BlockItem(block, properties)
     );
