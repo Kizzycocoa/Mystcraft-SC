@@ -44,12 +44,7 @@ public class SlantBoardBlockEntityRenderer
 
         state.facing = blockEntity.getBlockState().getValue(BlockSlantBoard.FACING);
         state.wood = blockEntity.getBlockState().getValue(BlockSlantBoard.WOOD);
-
-        if (blockEntity.getLevel() != null) {
-            state.packedLight = LevelRenderer.getLightColor(blockEntity.getLevel(), blockEntity.getBlockPos());
-        } else {
-            state.packedLight = 0;
-        }
+        state.packedLight = 0x00F000F0;
     }
 
     @Override
