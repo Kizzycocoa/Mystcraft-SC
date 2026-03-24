@@ -62,9 +62,7 @@ public class SlantBoardBlockEntityRenderer
         poseStack.pushPose();
 
         // OBJ is centered around 0, so shift it into block space.
-        poseStack.translate(0.5F, 0.0F, 0.5F);
         rotateFromFacing(poseStack, state.facing);
-        poseStack.translate(-0.5F, 0.0F, -0.5F);
 
         SlantBoardRenderPipelines.submit(queue, poseStack, state.wood, state.packedLight, MODEL);
 

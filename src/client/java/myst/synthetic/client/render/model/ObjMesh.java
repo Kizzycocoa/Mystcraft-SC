@@ -31,16 +31,20 @@ public final class ObjMesh {
     }
 
     public void emit(PoseStack.Pose pose, VertexConsumer consumer, int packedLight) {
-        for (Face face : faces) {
+        for (Face face : faces)
             for (FaceVertex fv : face.vertices()) {
                 float[] pos = positions.get(fv.vertexIndex());
+
+                float x = pos[0] / 16.0F;
+                float y = pos[1] / 16.0F;
+                float z = pos[2] / 16.0F;
                 float[] uv = uvs.get(fv.uvIndex());
                 float[] normal = normals.get(fv.normalIndex());
 
                 float u = uv[0];
                 float v = 1.0F - uv[1]; // OBJ v is upside-down for Minecraft sampling
 
-                consumer.addVertex(pose, pos[0], pos[1], pos[2])
+                consumer.addVertex(x, y, z)
                         .setColor(255, 255, 255, 255)
                         .setUv(u, v)
                         .setOverlay(0)
