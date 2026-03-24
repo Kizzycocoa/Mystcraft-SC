@@ -20,6 +20,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import org.jetbrains.annotations.Nullable;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class BlockSlantBoard extends BaseEntityBlock {
 
@@ -81,6 +84,23 @@ public class BlockSlantBoard extends BaseEntityBlock {
         }
 
         return WoodType.OAK;
+    }
+    private static final VoxelShape SHAPE =
+            Block.box(0.0, 0.0, 0.0, 16.0, 6.0, 16.0);
+    private static final VoxelShape OCCLUSION_SHAPE =
+            Block.box(0.0, 0.0, 0.0, 16.0, 0.1, 16.0);
+    @Override
+    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        return SHAPE;
+    }
+
+    public VoxelShape getOcclusionShape(BlockState state, BlockGetter level, BlockPos pos) {
+        return OCCLUSION_SHAPE;
+    }
+
+    @Override
+    protected boolean useShapeForLightOcclusion(BlockState state) {
+        return true;
     }
 
     public static ItemStack createVariantStack(ItemStack stack, WoodType wood) {
