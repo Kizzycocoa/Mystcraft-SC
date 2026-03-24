@@ -18,6 +18,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
+import myst.synthetic.block.BlockSlantBoard;
+import net.minecraft.world.level.block.Blocks;
 
 public class MystcraftBlocks {
 
@@ -86,6 +88,12 @@ public class MystcraftBlocks {
                     .sound(SoundType.WOOD)
                     .noOcclusion(),
             (block, properties) -> new ItemWritingDesk(block, properties.stacksTo(1))
+    );
+    public static final Block SLANT_BOARD_BLOCK = register(
+            "slant_board",
+            BlockSlantBoard::new,
+            BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS),
+            (block, properties) -> new BlockItem(block, properties)
     );
 
     public static void initialize() {

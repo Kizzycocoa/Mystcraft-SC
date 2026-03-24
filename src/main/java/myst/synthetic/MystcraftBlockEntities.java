@@ -2,6 +2,7 @@ package myst.synthetic;
 
 import myst.synthetic.block.entity.BlockEntityDesk;
 import myst.synthetic.block.entity.StarFissureBlockEntity;
+import myst.synthetic.block.entity.BlockEntitySlantBoard;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -20,6 +21,12 @@ public final class MystcraftBlockEntities {
             BuiltInRegistries.BLOCK_ENTITY_TYPE,
             Identifier.fromNamespaceAndPath("mystcraft-sc", "writingdesk"),
             FabricBlockEntityTypeBuilder.create(BlockEntityDesk::new, MystcraftBlocks.WRITING_DESK_BLOCK).build()
+    );
+
+    public static final BlockEntityType<BlockEntitySlantBoard> SLANT_BOARD = Registry.register(
+            BuiltInRegistries.BLOCK_ENTITY_TYPE,
+            Identifier.fromNamespaceAndPath("mystcraft-sc", "slant_board"),
+            FabricBlockEntityTypeBuilder.create(BlockEntitySlantBoard::new, MystcraftBlocks.SLANT_BOARD_BLOCK).build()
     );
 
     public static void initialize() {

@@ -82,6 +82,18 @@ public class MystcraftItemGroups {
                             output.accept(createDeskTopVariant(wood));
                         }
 
+                        for (WoodType wood : WoodType.values()) {
+
+                            ItemStack stack = new ItemStack(MystcraftBlocks.SLANT_BOARD_BLOCK);
+
+                            CompoundTag tag = new CompoundTag();
+                            tag.putString("wood", wood.getSerializedName());
+
+                            stack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
+
+                            output.accept(stack);
+                        }
+
                         output.accept(MystcraftBlocks.CRYSTAL);
                         for (DecayType type : DecayType.values()) {
 
