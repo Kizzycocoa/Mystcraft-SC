@@ -30,37 +30,23 @@ public final class ObjMesh {
         this.faces = faces;
     }
 
-    private void emitVertex(FaceVertex fv, PoseStack.Pose pose, VertexConsumer consumer, int packedLight) {
-        float[] pos = positions.get(fv.vertexIndex());
-        float[] uv = uvs.get(fv.uvIndex());
-        float[] normal = normals.get(fv.normalIndex());
-
-        float x = pos[0] / 16.0F;
-        float y = pos[1] / 16.0F;
-        float z = pos[2] / 16.0F;
-
-        float u = uv[0];
-        float v = 1.0F - uv[1];
-
-        consumer.addVertex(pose, x, y, z)
-                .setColor(255, 255, 255, 255)
-                .setUv(u, v)
-                .setOverlay(0)
-                .setLight(packedLight)
-                .setNormal(pose, normal[0], normal[1], normal[2]);
-    }
-
     public void emit(PoseStack.Pose pose, VertexConsumer consumer, int packedLight) {
         for (Face face : faces) {
-            FaceVertex[] fv = face.vertices();
+            for (FaceVertex fv : face.vertices()) {
+                float[] pos = positions.get(fv.vertexIndex());
+                float[] uv = uvs.get(fv.uvIndex());
+                float[] normal = normals.get(fv.normalIndex());
 
-            emitVertex(fv[0], pose, consumer, packedLight);
-            emitVertex(fv[1], pose, consumer, packedLight);
-            emitVertex(fv[2], pose, consumer, packedLight);
+                float u = uv[0];
+                float v = 1.0F - uv[1];
 
-            emitVertex(fv[0], pose, consumer, packedLight);
-            emitVertex(fv[2], pose, consumer, packedLight);
-            emitVertex(fv[3], pose, consumer, packedLight);
+                consumer.addVertex(pose, pos[0], pos[1], pos[2])
+                        .setColor(255, 255, 255, 255)
+                        .setUv(u, v)
+                        .setOverlay(0)
+                        .setLight(packedLight)
+                        .setNormal(pose, normal[0], normal[1], normal[2]);
+            }
         }
     }
 }
