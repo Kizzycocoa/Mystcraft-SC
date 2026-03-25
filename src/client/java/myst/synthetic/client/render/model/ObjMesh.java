@@ -56,7 +56,7 @@ public final class ObjMesh {
                         .setUv(u, v)
                         .setOverlay(0)
                         .setLight(packedLight)
-                        .setNormal(pose, normal[0], normal[1], normal[2]);
+                        .setNormal(pose, 0.0F, 1.0F, 0.0F);
             }
         }
     }
