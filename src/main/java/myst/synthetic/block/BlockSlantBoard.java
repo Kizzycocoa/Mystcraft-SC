@@ -85,23 +85,56 @@ public class BlockSlantBoard extends BaseEntityBlock {
 
         return WoodType.OAK;
     }
-    private static final VoxelShape SHAPE =
-            Block.box(0.0, 0.0, 0.0, 16.0, 6.0, 16.0);
-    private static final VoxelShape OCCLUSION_SHAPE =
-            Block.box(0.0, 0.0, 0.0, 16.0, 0.1, 16.0);
-    @Override
-    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        return SHAPE;
-    }
 
-    public VoxelShape getOcclusionShape(BlockState state, BlockGetter level, BlockPos pos) {
-        return OCCLUSION_SHAPE;
-    }
+    private static final VoxelShape OUTLINE_SHAPE =
+            Block.box(0.0, 0.0, 0.0, 16.0, 16.0, 16.0);
+
+    private static final VoxelShape VISUAL_SHAPE =
+            Block.box(0.0, 0.0, 0.0, 16.0, 4.0, 16.0);
 
     @Override
-    protected boolean useShapeForLightOcclusion(BlockState state) {
+    public VoxelShape getShape(
+            BlockState state,
+            BlockGetter level,
+            BlockPos pos,
+            CollisionContext context
+    ) {
+        return OUTLINE_SHAPE;
+    }
+
+    @Override
+    protected VoxelShape getVisualShape(
+            BlockState state,
+            BlockGetter level,
+            BlockPos pos,
+            CollisionContext context
+    ) {
+        return VISUAL_SHAPE;
+    }
+
+    @Override
+    protected boolean propagatesSkylightDown(
+            BlockState state
+    ) {
         return true;
     }
+
+    @Override
+    protected float getShadeBrightness(
+            BlockState state,
+            BlockGetter level,
+            BlockPos pos
+    ) {
+        return 1.0F;
+    }
+
+    @Override
+    protected int getLightBlock(
+            BlockState state
+    ) {
+        return 0;
+    }
+
 
     public static ItemStack createVariantStack(ItemStack stack, WoodType wood) {
         CompoundTag tag = new CompoundTag();
