@@ -79,13 +79,9 @@ public class SlantBoardBlockEntityRenderer
     }
 
     private static void rotateFromFacing(PoseStack poseStack, Direction facing) {
-
-        // Correct OBJ forward axis (OBJ faces south instead of north)
-        poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
-
         switch (facing) {
             case EAST -> poseStack.mulPose(Axis.YP.rotationDegrees(90.0F));
-            case SOUTH -> poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
+            case NORTH -> poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
             case WEST -> poseStack.mulPose(Axis.YP.rotationDegrees(270.0F));
         }
     }
