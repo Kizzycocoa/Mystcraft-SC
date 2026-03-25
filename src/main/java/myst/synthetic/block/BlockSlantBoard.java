@@ -86,11 +86,23 @@ public class BlockSlantBoard extends BaseEntityBlock {
         return WoodType.OAK;
     }
 
+    private static final VoxelShape OCCLUSION_SHAPE =
+            Block.box(0.0, 0.0, 0.0, 16.0, 1.0, 16.0);
+
     private static final VoxelShape OUTLINE_SHAPE =
             Block.box(0.0, 0.0, 0.0, 16.0, 16.0, 16.0);
 
     private static final VoxelShape VISUAL_SHAPE =
             Block.box(0.0, 0.0, 0.0, 16.0, 4.0, 16.0);
+
+    public VoxelShape getOcclusionShape(BlockState state, BlockGetter level, BlockPos pos) {
+        return OCCLUSION_SHAPE;
+    }
+
+    @Override
+    protected boolean useShapeForLightOcclusion(BlockState state) {
+        return true;
+    }
 
     @Override
     public VoxelShape getShape(
