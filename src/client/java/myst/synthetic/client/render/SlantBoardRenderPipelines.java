@@ -51,7 +51,7 @@ public final class SlantBoardRenderPipelines {
     private static Identifier getTexture(WoodType wood) {
         return Identifier.fromNamespaceAndPath(
                 "mystcraft-sc",
-                "textures/block/slantboard/" + getTextureKey(wood) + "_slantboard.png"
+                "textures/block/slantboard/" + getTextureKey(wood) + "_slantboard"
         );
     }
 
