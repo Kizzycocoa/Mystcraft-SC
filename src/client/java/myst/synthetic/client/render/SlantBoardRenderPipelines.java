@@ -42,7 +42,7 @@ public final class SlantBoardRenderPipelines {
 
         return RenderType.create(
                 name,
-                RenderSetup.builder(RenderPipelines.ENTITY_SMOOTH_CUTOUT)
+                RenderSetup.builder(RenderPipelines.ENTITY_SOLID)
                         .withTexture("Sampler0", getTexture(wood))
                         .createRenderSetup()
         );

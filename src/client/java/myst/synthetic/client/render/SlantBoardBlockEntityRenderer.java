@@ -61,10 +61,17 @@ public class SlantBoardBlockEntityRenderer
     ) {
         poseStack.pushPose();
 
-        // OBJ is centered around 0, so shift it into block space.
+        // Move render origin to the center of the block.
         poseStack.translate(0.5F, 0.0F, 0.5F);
+
+        // Rotate around the block center.
         rotateFromFacing(poseStack, state.facing);
-        poseStack.translate(-0.5F, 0.0F, -0.5F);
+
+        // Scale the raw OBJ up to a 1x1x7/16 block footprint.
+        poseStack.scale(1.1428572F, 1.4071103F, 1.0666667F);
+
+        // Re-center and floor-align the raw OBJ mesh in its own local space.
+        poseStack.translate(0.0F, -0.0063086664F, -0.03125F);
 
         SlantBoardRenderPipelines.submit(queue, poseStack, state.wood, state.packedLight, MODEL);
 
