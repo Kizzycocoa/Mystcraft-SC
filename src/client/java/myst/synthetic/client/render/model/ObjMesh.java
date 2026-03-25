@@ -2,6 +2,7 @@ package myst.synthetic.client.render.model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import java.util.function.ToIntFunction;
 
 import java.util.List;
 
@@ -30,8 +31,18 @@ public final class ObjMesh {
         this.faces = faces;
     }
 
-    public void emit(PoseStack.Pose pose, VertexConsumer consumer, int packedLight) {
+    public float[] getNormal(int index) {
+        return normals.get(index);
+    }
+
+    public void emit(
+            PoseStack.Pose pose,
+            VertexConsumer consumer,
+            ToIntFunction<Face> lightResolver
+    ) {
         for (Face face : faces) {
+            int packedLight = lightResolver.applyAsInt(face);
+
             for (FaceVertex fv : face.vertices()) {
                 float[] pos = positions.get(fv.vertexIndex());
                 float[] uv = uvs.get(fv.uvIndex());

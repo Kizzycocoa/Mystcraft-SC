@@ -23,13 +23,13 @@ public final class SlantBoardRenderPipelines {
             SubmitNodeCollector queue,
             PoseStack poseStack,
             WoodType wood,
-            int packedLight,
+            java.util.function.ToIntFunction<ObjMesh.Face> lightResolver,
             ObjMesh mesh
     ) {
         queue.submitCustomGeometry(
                 poseStack,
                 getRenderType(wood),
-                (pose, consumer) -> mesh.emit(pose, consumer, packedLight)
+                (pose, consumer) -> mesh.emit(pose, consumer, lightResolver)
         );
     }
 

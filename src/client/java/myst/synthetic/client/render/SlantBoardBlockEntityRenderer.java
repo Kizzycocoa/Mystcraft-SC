@@ -46,10 +46,73 @@ public class SlantBoardBlockEntityRenderer
         state.wood = blockEntity.getBlockState().getValue(BlockSlantBoard.WOOD);
 
         if (blockEntity.getLevel() != null) {
-            state.packedLight = LevelRenderer.getLightColor(blockEntity.getLevel(), blockEntity.getBlockPos());
+            var level = blockEntity.getLevel();
+            var pos = blockEntity.getBlockPos();
+
+            state.selfLight = LevelRenderer.getLightColor(level, pos);
+            state.northLight = LevelRenderer.getLightColor(level, pos.north());
+            state.southLight = LevelRenderer.getLightColor(level, pos.south());
+            state.eastLight = LevelRenderer.getLightColor(level, pos.east());
+            state.westLight = LevelRenderer.getLightColor(level, pos.west());
+            state.downLight = LevelRenderer.getLightColor(level, pos.below());
         } else {
-            state.packedLight = 0;
+            state.selfLight = 0;
+            state.northLight = 0;
+            state.southLight = 0;
+            state.eastLight = 0;
+            state.westLight = 0;
+            state.downLight = 0;
         }
+    }
+
+    private static float[] averageNormal(ObjMesh.Face face) {
+        float x = 0.0F;
+        float y = 0.0F;
+        float z = 0.0F;
+
+        for (ObjMesh.FaceVertex fv : face.vertices()) {
+            float[] n = MODEL.getNormal(fv.normalIndex());
+            x += n[0];
+            y += n[1];
+            z += n[2];
+        }
+
+        float length = (float)Math.sqrt(x * x + y * y + z * z);
+        if (length == 0.0F) {
+            return new float[] {0.0F, 1.0F, 0.0F};
+        }
+
+        return new float[] {x / length, y / length, z / length};
+    }
+
+    private static int resolveFaceLight(ObjMesh.Face face, SlantBoardRenderState state) {
+        float[] normal = averageNormal(face);
+
+        float nx = normal[0];
+        float ny = normal[1];
+        float nz = normal[2];
+
+        // Bottom-facing face
+        if (ny < -0.75F) {
+            return state.downLight;
+        }
+
+        // Side faces touching block boundaries
+        if (nz < -0.75F) {
+            return state.northLight;
+        }
+        if (nz > 0.75F) {
+            return state.southLight;
+        }
+        if (nx > 0.75F) {
+            return state.eastLight;
+        }
+        if (nx < -0.75F) {
+            return state.westLight;
+        }
+
+        // Everything else uses the block's own light
+        return state.selfLight;
     }
 
     @Override
@@ -73,7 +136,13 @@ public class SlantBoardBlockEntityRenderer
         // Re-center and floor-align the raw OBJ mesh in its own local space.
         poseStack.translate(0.0F, -0.0063086664F, -0.03125F);
 
-        SlantBoardRenderPipelines.submit(queue, poseStack, state.wood, state.packedLight, MODEL);
+        SlantBoardRenderPipelines.submit(
+                queue,
+                poseStack,
+                state.wood,
+                face -> resolveFaceLight(face, state),
+                MODEL
+        );
 
         poseStack.popPose();
     }
