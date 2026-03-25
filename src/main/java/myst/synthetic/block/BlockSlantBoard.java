@@ -88,6 +88,7 @@ public class BlockSlantBoard extends BaseEntityBlock {
 
     private static final VoxelShape SHAPE =
             Block.box(0.0, 0.0, 0.0, 16.0, 7.0, 16.0);
+
     private static final VoxelShape OCCLUSION_SHAPE =
             Block.box(0.0, 0.0, 0.0, 16.0, 1.0, 16.0);
     @Override
@@ -108,6 +109,16 @@ public class BlockSlantBoard extends BaseEntityBlock {
             CollisionContext context
     ) {
         return SHAPE;
+    }
+
+    @Override
+    protected VoxelShape getOcclusionShape(BlockState state) {
+        return OCCLUSION_SHAPE;
+    }
+
+    @Override
+    protected boolean useShapeForLightOcclusion(BlockState state) {
+        return true;
     }
     public VoxelShape getOcclusionShape(BlockState state, BlockGetter level, BlockPos pos) {
         return OCCLUSION_SHAPE;
