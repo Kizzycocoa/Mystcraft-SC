@@ -49,7 +49,7 @@ public final class ObjMesh {
                 float[] normal = normals.get(fv.normalIndex());
 
                 float u = uv[0];
-                float v = 1.0F - uv[1];
+                float v = uv[1];
 
                 consumer.addVertex(pose, pos[0], pos[1], pos[2])
                         .setColor(255, 255, 255, 255)
