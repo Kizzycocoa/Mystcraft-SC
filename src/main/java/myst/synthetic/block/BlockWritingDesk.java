@@ -144,17 +144,17 @@ public class BlockWritingDesk extends BaseEntityBlock {
 	}
 
 
-	private static final VoxelShape TOP_BACKBOARD_NORTH  = Block.box(9.0, 0.0, 0.0, 16.0, 16.0, 16.0);
-	private static final VoxelShape TOP_BACKBOARD_EAST = Block.box(0.0, 0.0, 9.0, 16.0, 16.0, 16.0);
-	private static final VoxelShape TOP_BACKBOARD_SOUTH  = Block.box(0.0, 0.0, 0.0, 7.0, 16.0, 16.0);
-	private static final VoxelShape TOP_BACKBOARD_WEST = Block.box(0.0, 0.0, 0.0, 16.0, 16.0, 7.0);
+	private static final VoxelShape TOP_BACKBOARD_NORTH  = Block.box(0.0, 0.0, 0.0, 7.0, 16.0, 16.0);
+	private static final VoxelShape TOP_BACKBOARD_EAST = Block.box(0.0, 0.0, 0.0, 16.0, 16.0, 7.0);
+	private static final VoxelShape TOP_BACKBOARD_SOUTH  = Block.box(9.0, 0.0, 0.0, 16.0, 16.0, 16.0);
+	private static final VoxelShape TOP_BACKBOARD_WEST = Block.box(0.0, 0.0, 9.0, 16.0, 16.0, 16.0);
 
 	private static VoxelShape getTopBackboardShape(Direction facing) {
 		return switch (facing) {
 			case NORTH -> TOP_BACKBOARD_NORTH;
+			case EAST -> TOP_BACKBOARD_EAST;
 			case SOUTH -> TOP_BACKBOARD_SOUTH;
 			case WEST -> TOP_BACKBOARD_WEST;
-			case EAST -> TOP_BACKBOARD_EAST;
 			default -> TOP_BACKBOARD_NORTH;
 		};
 	}
