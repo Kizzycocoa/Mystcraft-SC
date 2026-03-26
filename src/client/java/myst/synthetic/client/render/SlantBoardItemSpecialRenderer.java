@@ -38,29 +38,41 @@ public final class SlantBoardItemSpecialRenderer implements SpecialModelRenderer
 
         switch (itemDisplayContext) {
             case GUI -> {
-                poseStack.mulPose(Axis.XP.rotationDegrees(20.0F));
-                poseStack.mulPose(Axis.YP.rotationDegrees(-45.0F));
-                poseStack.scale(0.90F, 0.90F, 0.90F);
-                poseStack.translate(0.0F, 0.05F, 0.0F);
+                poseStack.translate(0.0F, 0.2F, 0.0F);
+                poseStack.mulPose(Axis.XP.rotationDegrees(30.0F));
+                poseStack.mulPose(Axis.YP.rotationDegrees(225.0F));
+                poseStack.scale(0.75F, 0.75F, 0.75F);
             }
             case GROUND -> {
-                poseStack.mulPose(Axis.YP.rotationDegrees(-45.0F));
-                poseStack.scale(0.70F, 0.70F, 0.70F);
-                poseStack.translate(0.0F, 0.02F, 0.0F);
+                poseStack.translate(0.25F, 0.0F, 0.25F);
+                poseStack.scale(0.5F, 0.5F, 0.5F);
             }
             case FIXED -> {
-                poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
-                poseStack.scale(0.85F, 0.85F, 0.85F);
+                poseStack.translate(0.4F, 0.35F, -0.32F);
+                poseStack.mulPose(Axis.XP.rotationDegrees(-90.0F));
+                poseStack.scale(0.8F, 0.8F, 0.8F);
             }
-            case FIRST_PERSON_LEFT_HAND, FIRST_PERSON_RIGHT_HAND -> {
-                poseStack.mulPose(Axis.XP.rotationDegrees(15.0F));
-                poseStack.mulPose(Axis.YP.rotationDegrees(-35.0F));
-                poseStack.scale(0.80F, 0.80F, 0.80F);
+            case THIRD_PERSON_RIGHT_HAND -> {
+                poseStack.translate(-0.21F, 0.3F, 0.16F);
+                poseStack.mulPose(Axis.XP.rotationDegrees(-100.0F));
+                poseStack.mulPose(Axis.ZP.rotationDegrees(180.0F));
+                poseStack.scale(0.45F, 0.45F, 0.45F);
             }
-            case THIRD_PERSON_LEFT_HAND, THIRD_PERSON_RIGHT_HAND -> {
-                poseStack.mulPose(Axis.XP.rotationDegrees(10.0F));
-                poseStack.mulPose(Axis.YP.rotationDegrees(-35.0F));
-                poseStack.scale(0.80F, 0.80F, 0.80F);
+            case THIRD_PERSON_LEFT_HAND -> {
+                poseStack.translate(0.21F, 0.3F, 0.16F);
+                poseStack.mulPose(Axis.XP.rotationDegrees(-100.0F));
+                poseStack.mulPose(Axis.ZP.rotationDegrees(-180.0F));
+                poseStack.scale(0.45F, 0.45F, 0.45F);
+            }
+            case FIRST_PERSON_RIGHT_HAND -> {
+                poseStack.translate(0.2F, 0.3F, 0.0F);
+                poseStack.mulPose(Axis.YP.rotationDegrees(45.0F));
+                poseStack.scale(0.5F, 0.5F, 0.5F);
+            }
+            case FIRST_PERSON_LEFT_HAND -> {
+                poseStack.translate(-0.2F, 0.3F, 0.0F);
+                poseStack.mulPose(Axis.YP.rotationDegrees(-45.0F));
+                poseStack.scale(0.5F, 0.5F, 0.5F);
             }
             default -> {
             }
@@ -70,11 +82,13 @@ public final class SlantBoardItemSpecialRenderer implements SpecialModelRenderer
         poseStack.scale(1.1428572F, 1.4071103F, 1.0666667F);
         poseStack.translate(0.0F, -0.0063086664F, -0.03125F);
 
+        int resolvedLight = itemDisplayContext == ItemDisplayContext.GUI ? 15728880 : light;
+
         SlantBoardRenderPipelines.submit(
                 submitNodeCollector,
                 poseStack,
                 WoodType.OAK,
-                face -> light,
+                face -> resolvedLight,
                 MODEL
         );
 
