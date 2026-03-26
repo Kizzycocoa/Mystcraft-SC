@@ -20,7 +20,41 @@ public final class SlantBoardRenderPipelines {
     private SlantBoardRenderPipelines() {
     }
 
-    public static void submit(
+    private static final Map<WoodType, RenderType> WORLD_RENDER_TYPES = new EnumMap<>(WoodType.class);
+    private static final Map<WoodType, RenderType> GUI_RENDER_TYPES = new EnumMap<>(WoodType.class);
+
+    private static RenderType getWorldRenderType(WoodType wood) {
+        return WORLD_RENDER_TYPES.computeIfAbsent(wood, SlantBoardRenderPipelines::createWorldRenderType);
+    }
+
+    private static RenderType getGuiRenderType(WoodType wood) {
+        return GUI_RENDER_TYPES.computeIfAbsent(wood, SlantBoardRenderPipelines::createGuiRenderType);
+    }
+
+    private static RenderType createWorldRenderType(WoodType wood) {
+        String name = "slant_board_world_" + wood.getSerializedName();
+
+        return RenderType.create(
+                name,
+                RenderSetup.builder(RenderPipelines.ENTITY_CUTOUT_NO_CULL)
+                        .withTexture("Sampler0", getTexture(wood))
+                        .useLightmap()
+                        .createRenderSetup()
+        );
+    }
+
+    private static RenderType createGuiRenderType(WoodType wood) {
+        String name = "slant_board_gui_" + wood.getSerializedName();
+
+        return RenderType.create(
+                name,
+                RenderSetup.builder(RenderPipelines.ENTITY_CUTOUT_NO_CULL)
+                        .withTexture("Sampler0", getTexture(wood))
+                        .createRenderSetup()
+        );
+    }
+
+    public static void submitWorld(
             SubmitNodeCollector queue,
             PoseStack poseStack,
             WoodType wood,
@@ -29,24 +63,22 @@ public final class SlantBoardRenderPipelines {
     ) {
         queue.submitCustomGeometry(
                 poseStack,
-                getRenderType(wood),
+                getWorldRenderType(wood),
                 (pose, consumer) -> mesh.emit(pose, consumer, lightResolver)
         );
     }
 
-    private static RenderType getRenderType(WoodType wood) {
-        return RENDER_TYPES.computeIfAbsent(wood, SlantBoardRenderPipelines::createRenderType);
-    }
-
-    private static RenderType createRenderType(WoodType wood) {
-        String name = "slant_board_" + wood.getSerializedName();
-
-        return RenderType.create(
-                name,
-                RenderSetup.builder(RenderPipelines.ENTITY_CUTOUT_NO_CULL)
-                        .withTexture("Sampler0", getTexture(wood))
-                        .useLightmap()
-                        .createRenderSetup()
+    public static void submitGui(
+            SubmitNodeCollector queue,
+            PoseStack poseStack,
+            WoodType wood,
+            ToIntFunction<ObjMesh.Face> lightResolver,
+            ObjMesh mesh
+    ) {
+        queue.submitCustomGeometry(
+                poseStack,
+                getGuiRenderType(wood),
+                (pose, consumer) -> mesh.emit(pose, consumer, lightResolver)
         );
     }
 

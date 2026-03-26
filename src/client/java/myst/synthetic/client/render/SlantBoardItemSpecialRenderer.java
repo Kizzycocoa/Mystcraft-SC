@@ -82,15 +82,23 @@ public final class SlantBoardItemSpecialRenderer implements SpecialModelRenderer
         poseStack.scale(1.1428572F, 1.4071103F, 1.0666667F);
         poseStack.translate(0.0F, -0.0063086664F, -0.03125F);
 
-        int resolvedLight = itemDisplayContext == ItemDisplayContext.GUI ? 15728880 : light;
-
-        SlantBoardRenderPipelines.submit(
-                submitNodeCollector,
-                poseStack,
-                WoodType.OAK,
-                face -> resolvedLight,
-                MODEL
-        );
+        if (itemDisplayContext == ItemDisplayContext.GUI) {
+            SlantBoardRenderPipelines.submitGui(
+                    submitNodeCollector,
+                    poseStack,
+                    WoodType.OAK,
+                    face -> 15728880,
+                    MODEL
+            );
+        } else {
+            SlantBoardRenderPipelines.submitWorld(
+                    submitNodeCollector,
+                    poseStack,
+                    WoodType.OAK,
+                    face -> light,
+                    MODEL
+            );
+        }
 
         poseStack.popPose();
     }

@@ -187,7 +187,7 @@ public class SlantBoardBlockEntityRenderer
         // Re-center and floor-align the raw OBJ mesh in its own local space.
         poseStack.translate(0.0F, -0.0063086664F, -0.03125F);
 
-        SlantBoardRenderPipelines.submit(
+        SlantBoardRenderPipelines.submitWorld(
                 queue,
                 poseStack,
                 state.wood,
