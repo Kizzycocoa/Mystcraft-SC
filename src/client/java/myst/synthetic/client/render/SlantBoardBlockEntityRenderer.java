@@ -65,39 +65,19 @@ public class SlantBoardBlockEntityRenderer
         }
     }
 
-    private static float[] averageNormal(ObjMesh.Face face) {
-        float x = 0.0F;
-        float y = 0.0F;
-        float z = 0.0F;
-
-        for (ObjMesh.FaceVertex fv : face.vertices()) {
-            float[] n = MODEL.getNormal(fv.normalIndex());
-            x += n[0];
-            y += n[1];
-            z += n[2];
-        }
-
-        float length = (float)Math.sqrt(x * x + y * y + z * z);
-        if (length == 0.0F) {
-            return new float[] {0.0F, 1.0F, 0.0F};
-        }
-
-        return new float[] {x / length, y / length, z / length};
-    }
-
     private static int resolveFaceLight(ObjMesh.Face face, SlantBoardRenderState state) {
-        float[] normal = averageNormal(face);
+        float[] normal = MODEL.getFaceNormal(face);
 
         float nx = normal[0];
         float ny = normal[1];
         float nz = normal[2];
 
-        // Bottom-facing face
+        // Bottom face uses the block below.
         if (ny < -0.75F) {
             return state.downLight;
         }
 
-        // Side faces touching block boundaries
+        // Block-boundary side faces use neighbouring side light.
         if (nz < -0.75F) {
             return state.northLight;
         }
@@ -111,7 +91,7 @@ public class SlantBoardBlockEntityRenderer
             return state.westLight;
         }
 
-        // Everything else uses the block's own light
+        // The sloped top face and any non-boundary faces use the block's own light.
         return state.selfLight;
     }
 
