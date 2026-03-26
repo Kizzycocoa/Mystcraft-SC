@@ -29,11 +29,19 @@ public final class ObjMeshLoader {
             List<float[]> normals = new ArrayList<>();
             List<ObjMesh.Face> faces = new ArrayList<>();
 
-            reader.lines().forEach(line -> {
+            String currentObjectName = "default";
+
+            String line;
+            while ((line = reader.readLine()) != null) {
                 line = line.trim();
 
                 if (line.isEmpty() || line.startsWith("#")) {
-                    return;
+                    continue;
+                }
+
+                if (line.startsWith("o ")) {
+                    currentObjectName = line.substring(2).trim();
+                    continue;
                 }
 
                 if (line.startsWith("v ")) {
@@ -43,7 +51,7 @@ public final class ObjMeshLoader {
                             Float.parseFloat(parts[2]),
                             Float.parseFloat(parts[3])
                     });
-                    return;
+                    continue;
                 }
 
                 if (line.startsWith("vt ")) {
@@ -52,7 +60,7 @@ public final class ObjMeshLoader {
                             Float.parseFloat(parts[1]),
                             Float.parseFloat(parts[2])
                     });
-                    return;
+                    continue;
                 }
 
                 if (line.startsWith("vn ")) {
@@ -62,7 +70,7 @@ public final class ObjMeshLoader {
                             Float.parseFloat(parts[2]),
                             Float.parseFloat(parts[3])
                     });
-                    return;
+                    continue;
                 }
 
                 if (line.startsWith("f ")) {
@@ -84,9 +92,9 @@ public final class ObjMeshLoader {
                         faceVertices[i - 1] = new ObjMesh.FaceVertex(vertexIndex, uvIndex, normalIndex);
                     }
 
-                    faces.add(new ObjMesh.Face(faceVertices));
+                    faces.add(new ObjMesh.Face(currentObjectName, faceVertices));
                 }
-            });
+            }
 
             return new ObjMesh(positions, uvs, normals, faces);
 

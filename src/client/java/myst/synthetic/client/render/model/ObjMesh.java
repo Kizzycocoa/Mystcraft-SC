@@ -12,7 +12,7 @@ public final class ObjMesh {
     public record FaceVertex(int vertexIndex, int uvIndex, int normalIndex) {
     }
 
-    public record Face(FaceVertex[] vertices) {
+    public record Face(String objectName, FaceVertex[] vertices) {
     }
 
     private final List<float[]> positions;

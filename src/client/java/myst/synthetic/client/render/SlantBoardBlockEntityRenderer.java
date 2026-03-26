@@ -86,60 +86,41 @@ public class SlantBoardBlockEntityRenderer
     }
 
     private static int resolveFaceLight(ObjMesh.Face face, SlantBoardRenderState state) {
-
         float[] normal = averageNormal(face);
 
         float nx = normal[0];
         float ny = normal[1];
         float nz = normal[2];
 
-        // Rotate the normal based on block facing
-        switch (state.facing) {
-            case NORTH -> {
-                // no change
+        // Special-case the brim:
+        // only the single face touching the block edge should use edge lighting.
+        // every other brim face should use the block's inner light.
+        if ("brim".equals(face.objectName())) {
+            if (nz < -0.75F) {
+                return state.northLight;
             }
 
-            case SOUTH -> {
-                nx = -nx;
-                nz = -nz;
-            }
-
-            case WEST -> {
-                float oldNx = nx;
-                nx = nz;
-                nz = -oldNx;
-            }
-
-            case EAST -> {
-                float oldNx = nx;
-                nx = -nz;
-                nz = oldNx;
-            }
+            return state.selfLight;
         }
 
-        // Bottom face
+        // Base behavior stays exactly as it already works.
         if (ny < -0.75F) {
             return state.downLight;
         }
 
-        // Side faces
         if (nz < -0.75F) {
             return state.northLight;
         }
-
         if (nz > 0.75F) {
             return state.southLight;
         }
-
         if (nx > 0.75F) {
             return state.eastLight;
         }
-
         if (nx < -0.75F) {
             return state.westLight;
         }
 
-        // Sloped face
         return state.selfLight;
     }
 
