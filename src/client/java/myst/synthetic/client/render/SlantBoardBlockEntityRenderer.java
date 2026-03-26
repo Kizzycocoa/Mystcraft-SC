@@ -85,31 +85,24 @@ public class SlantBoardBlockEntityRenderer
         return new float[] {x / length, y / length, z / length};
     }
 
-    private static int resolveFaceLight(ObjMesh.Face face, SlantBoardRenderState state) {
-        float[] normal = averageNormal(face);
-
+    private static float[] rotateNormal(float[] normal, Direction facing) {
         float nx = normal[0];
         float ny = normal[1];
         float nz = normal[2];
 
-
-        // Rotate the normal based on block facing
-        switch (state.facing) {
+        switch (facing) {
             case NORTH -> {
                 // no change
             }
-
             case SOUTH -> {
                 nx = -nx;
                 nz = -nz;
             }
-
             case WEST -> {
                 float oldNx = nx;
                 nx = nz;
                 nz = -oldNx;
             }
-
             case EAST -> {
                 float oldNx = nx;
                 nx = -nz;
@@ -117,18 +110,42 @@ public class SlantBoardBlockEntityRenderer
             }
         }
 
-        // Special-case the brim:
-        // only the single face touching the block edge should use edge lighting.
-        // every other brim face should use the block's inner light.
+        return new float[] { nx, ny, nz };
+    }
+
+    private static int resolveFaceLight(ObjMesh.Face face, SlantBoardRenderState state) {
+        float[] localNormal = averageNormal(face);
+        float[] worldNormal = rotateNormal(localNormal, state.facing);
+
+        float nx = worldNormal[0];
+        float ny = worldNormal[1];
+        float nz = worldNormal[2];
+
+        // Brim:
+        // only the single outer face should use neighbouring side light.
+        // all other brim faces use the block's inner/self light.
+        //
+        // In this OBJ, the brim's outer face is local +Z.
         if ("brim".equals(face.objectName())) {
-            if (nz < -0.75F) {
-                return state.northLight;
+            if (localNormal[2] > 0.75F) {
+                if (nz < -0.75F) {
+                    return state.northLight;
+                }
+                if (nz > 0.75F) {
+                    return state.southLight;
+                }
+                if (nx > 0.75F) {
+                    return state.eastLight;
+                }
+                if (nx < -0.75F) {
+                    return state.westLight;
+                }
             }
 
             return state.selfLight;
         }
 
-        // Base behavior stays exactly as it already works.
+        // Base behavior stays as before.
         if (ny < -0.75F) {
             return state.downLight;
         }
