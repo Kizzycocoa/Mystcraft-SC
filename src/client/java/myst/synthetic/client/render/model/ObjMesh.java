@@ -47,16 +47,14 @@ public final class ObjMesh {
             for (FaceVertex fv : face.vertices()) {
                 float[] pos = positions.get(fv.vertexIndex());
                 float[] uv = uvs.get(fv.uvIndex());
-
-                float u = uv[0];
-                float v = uv[1];
+                float[] normal = normals.get(fv.normalIndex());
 
                 consumer.addVertex(pose, pos[0], pos[1], pos[2])
                         .setColor(255, 255, 255, 255)
-                        .setUv(u, v)
+                        .setUv(uv[0], uv[1])
                         .setOverlay(OverlayTexture.NO_OVERLAY)
                         .setLight(packedLight)
-                        .setNormal(pose, 0.0F, 1.0F, 0.0F);
+                        .setNormal(pose, normal[0], normal[1], normal[2]);
             }
         }
     }
