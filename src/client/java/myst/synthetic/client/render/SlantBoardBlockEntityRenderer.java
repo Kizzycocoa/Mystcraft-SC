@@ -92,6 +92,31 @@ public class SlantBoardBlockEntityRenderer
         float ny = normal[1];
         float nz = normal[2];
 
+
+        // Rotate the normal based on block facing
+        switch (state.facing) {
+            case NORTH -> {
+                // no change
+            }
+
+            case SOUTH -> {
+                nx = -nx;
+                nz = -nz;
+            }
+
+            case WEST -> {
+                float oldNx = nx;
+                nx = nz;
+                nz = -oldNx;
+            }
+
+            case EAST -> {
+                float oldNx = nx;
+                nx = -nz;
+                nz = oldNx;
+            }
+        }
+
         // Special-case the brim:
         // only the single face touching the block edge should use edge lighting.
         // every other brim face should use the block's inner light.
