@@ -23,6 +23,11 @@ import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
+import net.minecraft.world.level.LevelReader;
+import java.util.Collections;
+import java.util.List;
+import net.minecraft.world.level.storage.loot.LootParams;
+import myst.synthetic.MystcraftItemGroups;
 
 public class BlockSlantBoard extends BaseEntityBlock {
 
@@ -127,5 +132,14 @@ public class BlockSlantBoard extends BaseEntityBlock {
         tag.putString("wood", wood.getSerializedName());
         stack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
         return stack;
+    }
+    @Override
+    protected List<ItemStack> getDrops(BlockState state, LootParams.Builder builder) {
+        return Collections.singletonList(MystcraftItemGroups.createSlantBoardVariant(state.getValue(WOOD)));
+    }
+
+    @Override
+    protected ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state, boolean includeData) {
+        return MystcraftItemGroups.createSlantBoardVariant(state.getValue(WOOD));
     }
 }

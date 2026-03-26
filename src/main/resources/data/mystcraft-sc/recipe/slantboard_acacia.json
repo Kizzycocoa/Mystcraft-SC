@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "p  ",
+    "pps",
+    "ppp"
+  ],
+  "key": {
+    "p": "minecraft:acacia_planks",
+    "s": "minecraft:stick"
+  },
+  "result": {
+    "id": "mystcraft-sc:slant_board",
+    "count": 2,
+    "components": {
+      "minecraft:custom_data": {
+        "wood": "acacia"
+      }
+    }
+  }
+}

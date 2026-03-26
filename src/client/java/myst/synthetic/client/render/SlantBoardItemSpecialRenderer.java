@@ -48,7 +48,7 @@ public final class SlantBoardItemSpecialRenderer implements SpecialModelRenderer
                 poseStack.scale(0.5F, 0.5F, 0.5F);
             }
             case FIXED -> {
-                poseStack.translate(0.0F, 0.5F, 0.1F);
+                poseStack.translate(0.0F, 0.5F, -0.1F);
                 poseStack.mulPose(Axis.XP.rotationDegrees(90.0F));
                 poseStack.scale(0.8F, 0.8F, 0.8F);
             }
@@ -66,12 +66,12 @@ public final class SlantBoardItemSpecialRenderer implements SpecialModelRenderer
             }
             case FIRST_PERSON_RIGHT_HAND -> {
                 poseStack.translate(0.2F, 0.3F, 0.5F);
-                poseStack.mulPose(Axis.YP.rotationDegrees(45.0F));
+                poseStack.mulPose(Axis.YP.rotationDegrees(-45.0F));
                 poseStack.scale(0.5F, 0.5F, 0.5F);
             }
             case FIRST_PERSON_LEFT_HAND -> {
                 poseStack.translate(-0.2F, 0.3F, 0.5F);
-                poseStack.mulPose(Axis.YP.rotationDegrees(-45.0F));
+                poseStack.mulPose(Axis.YP.rotationDegrees(45.0F));
                 poseStack.scale(0.5F, 0.5F, 0.5F);
             }
             default -> {

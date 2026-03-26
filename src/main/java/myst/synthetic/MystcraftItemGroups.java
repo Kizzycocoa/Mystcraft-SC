@@ -53,6 +53,15 @@ public class MystcraftItemGroups {
                 true
         );
     }
+    public static ItemStack createSlantBoardVariant(WoodType wood) {
+        ItemStack stack = new ItemStack(MystcraftBlocks.SLANT_BOARD_BLOCK);
+
+        CompoundTag tag = new CompoundTag();
+        tag.putString("wood", wood.getSerializedName());
+        stack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
+
+        return stack;
+    }
     private static String getWoodModelKey(WoodType wood) {
         return switch (wood) {
             default -> wood.getSerializedName();
