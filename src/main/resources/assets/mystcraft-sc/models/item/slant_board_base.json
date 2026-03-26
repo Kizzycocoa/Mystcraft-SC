@@ -1,7 +1,7 @@
 {
-    "parent": "minecraft:item/generated",
-    "gui_light": "front",
-    "textures": {
-        "layer0": "mystcraft-sc:item/slant_board_icon"
-    }
+  "parent": "minecraft:item/generated",
+  "gui_light": "front",
+  "textures": {
+    "layer0": "mystcraft-sc:block/slantboard/oak_slantboard"
+  }
 }
