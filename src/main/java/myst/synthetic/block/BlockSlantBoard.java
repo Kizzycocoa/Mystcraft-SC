@@ -23,6 +23,10 @@ import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
+import myst.synthetic.MystcraftBlockEntities;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 
 public class BlockSlantBoard extends BaseEntityBlock {
 
@@ -67,6 +71,20 @@ public class BlockSlantBoard extends BaseEntityBlock {
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new BlockEntitySlantBoard(pos, state);
+    }
+
+    @Nullable
+    @Override
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(
+            Level level,
+            BlockState state,
+            BlockEntityType<T> blockEntityType
+    ) {
+        return createTickerHelper(
+                blockEntityType,
+                MystcraftBlockEntities.SLANT_BOARD,
+                BlockEntitySlantBoard::tick
+        );
     }
 
     @Override
