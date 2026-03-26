@@ -11,6 +11,7 @@ import net.minecraft.resources.Identifier;
 
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.function.ToIntFunction;
 
 public final class SlantBoardRenderPipelines {
 
@@ -23,7 +24,7 @@ public final class SlantBoardRenderPipelines {
             SubmitNodeCollector queue,
             PoseStack poseStack,
             WoodType wood,
-            java.util.function.ToIntFunction<ObjMesh.Face> lightResolver,
+            ToIntFunction<ObjMesh.Face> lightResolver,
             ObjMesh mesh
     ) {
         queue.submitCustomGeometry(
@@ -52,13 +53,7 @@ public final class SlantBoardRenderPipelines {
     private static Identifier getTexture(WoodType wood) {
         return Identifier.fromNamespaceAndPath(
                 "mystcraft-sc",
-                "textures/block/slantboard/" + getTextureKey(wood) + "_slantboard.png"
+                "textures/block/slantboard/" + wood.getSerializedName() + "_slantboard.png"
         );
-    }
-
-    private static String getTextureKey(WoodType wood) {
-        return switch (wood) {
-            default -> wood.getSerializedName();
-        };
     }
 }
