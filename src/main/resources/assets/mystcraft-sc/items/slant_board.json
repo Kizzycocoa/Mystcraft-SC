@@ -1,6 +1,9 @@
 {
   "model": {
-    "type": "minecraft:model",
-    "model": "mystcraft-sc:block/blockmodel_nothing"
+    "type": "minecraft:special",
+    "base": "mystcraft-sc:item/slant_board_base",
+    "model": {
+      "type": "mystcraft-sc:slant_board"
+    }
   }
 }
