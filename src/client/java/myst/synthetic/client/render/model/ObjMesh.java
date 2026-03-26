@@ -3,6 +3,7 @@ package myst.synthetic.client.render.model;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import java.util.function.ToIntFunction;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 
 import java.util.List;
 
@@ -54,9 +55,9 @@ public final class ObjMesh {
                 consumer.addVertex(pose, pos[0], pos[1], pos[2])
                         .setColor(255, 255, 255, 255)
                         .setUv(u, v)
-                        .setOverlay(0)
+                        .setOverlay(OverlayTexture.NO_OVERLAY)
                         .setLight(packedLight)
-                        .setNormal(pose, 1.0F, 1.0F, 1.0F);
+                        .setNormal(pose, 0.0F, 0.0F, 0.0F);
             }
         }
     }
