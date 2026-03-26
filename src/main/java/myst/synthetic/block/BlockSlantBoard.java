@@ -10,6 +10,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
@@ -19,16 +20,21 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
-import org.jetbrains.annotations.Nullable;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.Nullable;
 
 public class BlockSlantBoard extends BaseEntityBlock {
 
     public static final MapCodec<BlockSlantBoard> CODEC = simpleCodec(BlockSlantBoard::new);
     public static final EnumProperty<Direction> FACING = HorizontalDirectionalBlock.FACING;
     public static final EnumProperty<WoodType> WOOD = EnumProperty.create("wood", WoodType.class);
+
+    private static final VoxelShape SHAPE =
+            Block.box(0.0, 0.0, 0.0, 16.0, 7.0, 16.0);
+
+    private static final VoxelShape OCCLUSION_SHAPE =
+            Block.box(0.0, 0.0, 0.0, 16.0, 1.0, 16.0);
 
     public BlockSlantBoard(BlockBehaviour.Properties properties) {
         super(properties);
@@ -68,29 +74,6 @@ public class BlockSlantBoard extends BaseEntityBlock {
         return RenderShape.INVISIBLE;
     }
 
-    private static WoodType getWoodType(ItemStack stack) {
-        var customData = stack.get(DataComponents.CUSTOM_DATA);
-
-        if (customData == null) {
-            return WoodType.OAK;
-        }
-
-        String name = customData.copyTag().getString("wood").orElse("oak");
-
-        for (WoodType type : WoodType.values()) {
-            if (type.getSerializedName().equals(name)) {
-                return type;
-            }
-        }
-
-        return WoodType.OAK;
-    }
-
-    private static final VoxelShape SHAPE =
-            Block.box(0.0, 0.0, 0.0, 16.0, 7.0, 16.0);
-
-    private static final VoxelShape OCCLUSION_SHAPE =
-            Block.box(0.0, 0.0, 0.0, 16.0, 1.0, 16.0);
     @Override
     public VoxelShape getShape(
             BlockState state,
@@ -120,10 +103,24 @@ public class BlockSlantBoard extends BaseEntityBlock {
     protected boolean useShapeForLightOcclusion(BlockState state) {
         return true;
     }
-    public VoxelShape getOcclusionShape(BlockState state, BlockGetter level, BlockPos pos) {
-        return OCCLUSION_SHAPE;
-    }
 
+    private static WoodType getWoodType(ItemStack stack) {
+        var customData = stack.get(DataComponents.CUSTOM_DATA);
+
+        if (customData == null) {
+            return WoodType.OAK;
+        }
+
+        String name = customData.copyTag().getString("wood").orElse("oak");
+
+        for (WoodType type : WoodType.values()) {
+            if (type.getSerializedName().equals(name)) {
+                return type;
+            }
+        }
+
+        return WoodType.OAK;
+    }
 
     public static ItemStack createVariantStack(ItemStack stack, WoodType wood) {
         CompoundTag tag = new CompoundTag();
