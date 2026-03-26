@@ -3,7 +3,7 @@
 	"package": "myst.synthetic.mixin.client",
 	"compatibilityLevel": "JAVA_21",
 	"client": [
-		"ExampleClientMixin"
+		"SpecialModelRenderersMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
