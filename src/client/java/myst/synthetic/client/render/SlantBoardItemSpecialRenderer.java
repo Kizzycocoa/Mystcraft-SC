@@ -40,37 +40,37 @@ public final class SlantBoardItemSpecialRenderer implements SpecialModelRenderer
             case GUI -> {
                 poseStack.translate(0.0F, 0.2F, 0.0F);
                 poseStack.mulPose(Axis.XP.rotationDegrees(30.0F));
-                poseStack.mulPose(Axis.YP.rotationDegrees(225.0F));
-                poseStack.scale(0.75F, 0.75F, 0.75F);
+                poseStack.mulPose(Axis.YP.rotationDegrees(135.0F));
+                poseStack.scale(0.7F, 0.7F, 0.7F);
             }
             case GROUND -> {
                 poseStack.translate(0.0F, 0.0F, 0.0F);
                 poseStack.scale(0.5F, 0.5F, 0.5F);
             }
             case FIXED -> {
-                poseStack.translate(0.0F, 0.0F, -0.0F);
-                poseStack.mulPose(Axis.XP.rotationDegrees(-90.0F));
+                poseStack.translate(0.0F, 0.5F, 0.0F);
+                poseStack.mulPose(Axis.XP.rotationDegrees(90.0F));
                 poseStack.scale(0.8F, 0.8F, 0.8F);
             }
             case THIRD_PERSON_RIGHT_HAND -> {
-                poseStack.translate(-0.21F, 0.0F, 0.16F);
+                poseStack.translate(-0.21F, 0.6F, 0.16F);
                 poseStack.mulPose(Axis.XP.rotationDegrees(-100.0F));
                 poseStack.mulPose(Axis.ZP.rotationDegrees(180.0F));
                 poseStack.scale(0.45F, 0.45F, 0.45F);
             }
             case THIRD_PERSON_LEFT_HAND -> {
-                poseStack.translate(0.21F, 0.0F, 0.16F);
+                poseStack.translate(0.21F, 0.6F, 0.16F);
                 poseStack.mulPose(Axis.XP.rotationDegrees(-100.0F));
                 poseStack.mulPose(Axis.ZP.rotationDegrees(-180.0F));
                 poseStack.scale(0.45F, 0.45F, 0.45F);
             }
             case FIRST_PERSON_RIGHT_HAND -> {
-                poseStack.translate(0.2F, 0.0F, 0.0F);
+                poseStack.translate(0.2F, -0.6F, 0.0F);
                 poseStack.mulPose(Axis.YP.rotationDegrees(45.0F));
                 poseStack.scale(0.5F, 0.5F, 0.5F);
             }
             case FIRST_PERSON_LEFT_HAND -> {
-                poseStack.translate(-0.2F, 0.0F, 0.0F);
+                poseStack.translate(-0.2F, -0.6F, 0.0F);
                 poseStack.mulPose(Axis.YP.rotationDegrees(-45.0F));
                 poseStack.scale(0.5F, 0.5F, 0.5F);
             }
