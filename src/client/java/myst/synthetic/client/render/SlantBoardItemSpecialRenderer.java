@@ -88,7 +88,7 @@ public final class SlantBoardItemSpecialRenderer implements SpecialModelRenderer
                 submitNodeCollector,
                 poseStack,
                 WoodType.OAK,
-                face -> 15728880,
+                face -> resolvedLight,
                 MODEL
         );
 
