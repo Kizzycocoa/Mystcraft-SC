@@ -127,7 +127,7 @@ public class SlantBoardBlockEntityRenderer
         //
         // In this OBJ, the brim's outer face is local +Z.
         if ("brim".equals(face.objectName())) {
-            if (localNormal[2] > 0.75F) {
+            if (localNormal[2] < -0.75F) {
                 if (nz < -0.75F) {
                     return state.northLight;
                 }
