@@ -21,6 +21,8 @@ import net.minecraft.world.level.material.MapColor;
 import myst.synthetic.block.BlockSlantBoard;
 import net.minecraft.world.level.block.Blocks;
 import myst.synthetic.item.ItemSlantBoard;
+import myst.synthetic.block.BlockBookstand;
+import myst.synthetic.item.ItemBookstand;
 
 public class MystcraftBlocks {
 
@@ -95,6 +97,17 @@ public class MystcraftBlocks {
             BlockSlantBoard::new,
             BlockBehaviour.Properties.ofFullCopy(Blocks.LECTERN),
             ItemSlantBoard::new
+    );
+
+    public static final Block BOOKSTAND_BLOCK = register(
+            "bookstand",
+            BlockBookstand::new,
+            BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.WOOD)
+                    .strength(2.0F)
+                    .sound(SoundType.WOOD)
+                    .noOcclusion(),
+            ItemBookstand::new
     );
 
     public static void initialize() {

@@ -1,0 +1,9 @@
+{
+    "multipart": [
+        {
+            "apply": {
+                "model": "mystcraft-sc:block/blockmodel_nothing"
+            }
+        }
+    ]
+}

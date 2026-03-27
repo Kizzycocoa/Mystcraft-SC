@@ -8,6 +8,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import myst.synthetic.block.entity.BlockEntityBookstand;
 
 public final class MystcraftBlockEntities {
 
@@ -27,6 +28,12 @@ public final class MystcraftBlockEntities {
             BuiltInRegistries.BLOCK_ENTITY_TYPE,
             Identifier.fromNamespaceAndPath("mystcraft-sc", "slant_board"),
             FabricBlockEntityTypeBuilder.create(BlockEntitySlantBoard::new, MystcraftBlocks.SLANT_BOARD_BLOCK).build()
+    );
+
+    public static final BlockEntityType<BlockEntityBookstand> BOOKSTAND = Registry.register(
+            BuiltInRegistries.BLOCK_ENTITY_TYPE,
+            Identifier.fromNamespaceAndPath("mystcraft-sc", "bookstand"),
+            FabricBlockEntityTypeBuilder.create(BlockEntityBookstand::new, MystcraftBlocks.BOOKSTAND_BLOCK).build()
     );
 
     public static void initialize() {

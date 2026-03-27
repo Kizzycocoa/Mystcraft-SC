@@ -10,8 +10,6 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import myst.synthetic.block.DecayType;
 import myst.synthetic.block.BlockDecay;
-import net.minecraft.world.level.block.state.BlockState;
-import myst.synthetic.block.BlockWritingDesk;
 import myst.synthetic.block.property.WoodType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
@@ -62,6 +60,18 @@ public class MystcraftItemGroups {
 
         return stack;
     }
+
+
+    public static ItemStack createBookstandVariant(WoodType wood) {
+        ItemStack stack = new ItemStack(MystcraftBlocks.BOOKSTAND_BLOCK);
+
+        CompoundTag tag = new CompoundTag();
+        tag.putString("wood", wood.getSerializedName());
+        stack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
+
+        return stack;
+    }
+
     private static String getWoodModelKey(WoodType wood) {
         return switch (wood) {
             default -> wood.getSerializedName();
@@ -92,15 +102,11 @@ public class MystcraftItemGroups {
                         }
 
                         for (WoodType wood : WoodType.values()) {
+                            output.accept(createSlantBoardVariant(wood));
+                        }
 
-                            ItemStack stack = new ItemStack(MystcraftBlocks.SLANT_BOARD_BLOCK);
-
-                            CompoundTag tag = new CompoundTag();
-                            tag.putString("wood", wood.getSerializedName());
-
-                            stack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
-
-                            output.accept(stack);
+                        for (WoodType wood : WoodType.values()) {
+                            output.accept(createBookstandVariant(wood));
                         }
 
                         output.accept(MystcraftBlocks.CRYSTAL);

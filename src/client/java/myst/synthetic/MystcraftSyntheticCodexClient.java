@@ -1,6 +1,7 @@
 package myst.synthetic;
 
 import myst.synthetic.client.gui.LinkBookScreen;
+import myst.synthetic.client.render.BookstandBlockEntityRenderer;
 import myst.synthetic.client.render.SlantBoardBlockEntityRenderer;
 import myst.synthetic.client.render.StarFissureBlockEntityRenderer;
 import net.fabricmc.api.ClientModInitializer;
@@ -13,6 +14,7 @@ public class MystcraftSyntheticCodexClient implements ClientModInitializer {
 	public void onInitializeClient() {
 		BlockEntityRenderers.register(MystcraftBlockEntities.STAR_FISSURE, StarFissureBlockEntityRenderer::new);
 		BlockEntityRenderers.register(MystcraftBlockEntities.SLANT_BOARD, SlantBoardBlockEntityRenderer::new);
+		BlockEntityRenderers.register(MystcraftBlockEntities.BOOKSTAND, BookstandBlockEntityRenderer::new);
 
 		LinkBookClientBridge.OPENER = stack -> Minecraft.getInstance().setScreen(new LinkBookScreen(stack));
 	}
