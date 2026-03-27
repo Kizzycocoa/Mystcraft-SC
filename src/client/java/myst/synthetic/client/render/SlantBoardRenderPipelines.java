@@ -10,6 +10,7 @@ import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.resources.Identifier;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.SimpleTexture;
+import net.minecraft.resources.Identifier;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -18,14 +19,15 @@ import java.util.function.ToIntFunction;
 public final class SlantBoardRenderPipelines {
 
     public static void warmUpTextures() {
-        Minecraft minecraft = Minecraft.getInstance();
-        if (minecraft == null) {
+        Minecraft mc = Minecraft.getInstance();
+
+        if (mc == null) {
             return;
         }
 
         for (WoodType wood : WoodType.values()) {
             Identifier id = getTexture(wood);
-            minecraft.getTextureManager().getTexture(id, SimpleTexture::new);
+            mc.getTextureManager().register(id, new SimpleTexture(id));
         }
     }
 
