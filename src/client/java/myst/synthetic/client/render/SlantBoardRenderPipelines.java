@@ -18,19 +18,6 @@ import java.util.function.ToIntFunction;
 
 public final class SlantBoardRenderPipelines {
 
-    public static void warmUpTextures() {
-        Minecraft mc = Minecraft.getInstance();
-
-        if (mc == null) {
-            return;
-        }
-
-        for (WoodType wood : WoodType.values()) {
-            Identifier id = getTexture(wood);
-            mc.getTextureManager().register(id, new SimpleTexture(id));
-        }
-    }
-
     private static final Map<WoodType, RenderType> RENDER_TYPES = new EnumMap<>(WoodType.class);
 
     private SlantBoardRenderPipelines() {

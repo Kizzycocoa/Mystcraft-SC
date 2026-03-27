@@ -16,10 +16,6 @@ public class MystcraftSyntheticCodexClient implements ClientModInitializer {
 		BlockEntityRenderers.register(MystcraftBlockEntities.STAR_FISSURE, StarFissureBlockEntityRenderer::new);
 		BlockEntityRenderers.register(MystcraftBlockEntities.SLANT_BOARD, SlantBoardBlockEntityRenderer::new);
 
-		ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
-			SlantBoardRenderPipelines.warmUpTextures();
-		});
-
 		LinkBookClientBridge.OPENER = stack -> Minecraft.getInstance().setScreen(new LinkBookScreen(stack));
 	}
 }
