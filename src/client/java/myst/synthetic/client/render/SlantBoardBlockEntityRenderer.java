@@ -56,12 +56,12 @@ public class SlantBoardBlockEntityRenderer
             state.westLight = LevelRenderer.getLightColor(level, pos.west());
             state.downLight = LevelRenderer.getLightColor(level, pos.below());
         } else {
-            state.selfLight = 0;
-            state.northLight = 0;
-            state.southLight = 0;
-            state.eastLight = 0;
-            state.westLight = 0;
-            state.downLight = 0;
+            state.selfLight = 15728880;
+            state.northLight = 15728880;
+            state.southLight = 15728880;
+            state.eastLight = 15728880;
+            state.westLight = 15728880;
+            state.downLight = 15728880;
         }
     }
 
