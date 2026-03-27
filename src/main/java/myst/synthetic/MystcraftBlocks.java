@@ -20,6 +20,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
 import myst.synthetic.block.BlockSlantBoard;
 import net.minecraft.world.level.block.Blocks;
+import myst.synthetic.item.ItemSlantBoard;
 
 public class MystcraftBlocks {
 
@@ -93,7 +94,7 @@ public class MystcraftBlocks {
             "slant_board",
             BlockSlantBoard::new,
             BlockBehaviour.Properties.ofFullCopy(Blocks.LECTERN),
-            (block, properties) -> new BlockItem(block, properties)
+            ItemSlantBoard::new
     );
 
     public static void initialize() {
