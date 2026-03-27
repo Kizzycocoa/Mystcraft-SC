@@ -64,6 +64,8 @@ public final class SlantBoardRenderPipelines {
             ToIntFunction<ObjMesh.Face> lightResolver,
             ObjMesh mesh
     ) {
+        Minecraft.getInstance().getTextureManager().getTexture(getTexture(wood));
+
         queue.submitCustomGeometry(
                 poseStack,
                 getWorldRenderType(wood),
@@ -78,6 +80,8 @@ public final class SlantBoardRenderPipelines {
             ToIntFunction<ObjMesh.Face> lightResolver,
             ObjMesh mesh
     ) {
+        Minecraft.getInstance().getTextureManager().getTexture(getTexture(wood));
+
         queue.submitCustomGeometry(
                 poseStack,
                 getGuiRenderType(wood),
