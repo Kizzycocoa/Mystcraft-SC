@@ -5,8 +5,8 @@
     " p "
   ],
   "key": {
-    "s": { "item": "minecraft:stick" },
-    "p": { "item": "minecraft:mangrove_planks" }
+    "s": "item": "minecraft:stick",
+    "p": { "item": "minecraft:mangrove_planks"
   },
   "result": {
     "id": "mystcraft-sc:bookstand",
