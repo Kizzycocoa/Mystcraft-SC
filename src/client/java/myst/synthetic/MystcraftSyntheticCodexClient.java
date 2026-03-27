@@ -6,8 +6,6 @@ import myst.synthetic.client.render.StarFissureBlockEntityRenderer;
 import net.fabricmc.api.ClientModInitializer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
-import myst.synthetic.client.render.SlantBoardRenderPipelines;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 
 public class MystcraftSyntheticCodexClient implements ClientModInitializer {
 

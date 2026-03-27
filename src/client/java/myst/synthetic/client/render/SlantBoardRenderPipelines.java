@@ -8,17 +8,12 @@ import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.rendertype.RenderSetup;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.resources.Identifier;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.SimpleTexture;
-import net.minecraft.resources.Identifier;
 
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.function.ToIntFunction;
 
 public final class SlantBoardRenderPipelines {
-
-    private static final Map<WoodType, RenderType> RENDER_TYPES = new EnumMap<>(WoodType.class);
 
     private SlantBoardRenderPipelines() {
     }
@@ -64,8 +59,6 @@ public final class SlantBoardRenderPipelines {
             ToIntFunction<ObjMesh.Face> lightResolver,
             ObjMesh mesh
     ) {
-        Minecraft.getInstance().getTextureManager().getTexture(getTexture(wood));
-
         queue.submitCustomGeometry(
                 poseStack,
                 getWorldRenderType(wood),
@@ -80,8 +73,6 @@ public final class SlantBoardRenderPipelines {
             ToIntFunction<ObjMesh.Face> lightResolver,
             ObjMesh mesh
     ) {
-        Minecraft.getInstance().getTextureManager().getTexture(getTexture(wood));
-
         queue.submitCustomGeometry(
                 poseStack,
                 getGuiRenderType(wood),

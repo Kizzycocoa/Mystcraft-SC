@@ -3,19 +3,21 @@ package myst.synthetic.client.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import java.util.function.Consumer;
+import myst.synthetic.block.property.WoodType;
 import myst.synthetic.client.render.model.ObjMesh;
 import myst.synthetic.client.render.model.ObjMeshLoader;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import myst.synthetic.block.property.WoodType;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
 import org.jspecify.annotations.Nullable;
 
-public final class SlantBoardItemSpecialRenderer implements SpecialModelRenderer<Void> {
+public final class SlantBoardItemSpecialRenderer implements SpecialModelRenderer<WoodType> {
 
     private static final ObjMesh MODEL = ObjMeshLoader.load(
             Identifier.fromNamespaceAndPath("mystcraft-sc", "models/block/slant_board.obj")
@@ -23,7 +25,7 @@ public final class SlantBoardItemSpecialRenderer implements SpecialModelRenderer
 
     @Override
     public void submit(
-            @Nullable Void object,
+            @Nullable WoodType wood,
             ItemDisplayContext itemDisplayContext,
             PoseStack poseStack,
             SubmitNodeCollector submitNodeCollector,
@@ -78,29 +80,48 @@ public final class SlantBoardItemSpecialRenderer implements SpecialModelRenderer
             }
         }
 
-        // Match the OBJ normalization already used for the placed renderer.
         poseStack.scale(1.1428572F, 1.4071103F, 1.0666667F);
         poseStack.translate(0.0F, -0.0063086664F, -0.03125F);
+
+        WoodType resolvedWood = wood != null ? wood : WoodType.OAK;
 
         if (itemDisplayContext == ItemDisplayContext.GUI) {
             SlantBoardRenderPipelines.submitGui(
                     submitNodeCollector,
                     poseStack,
-                    WoodType.OAK,
-                    face -> 15728880,
+                    resolvedWood,
+                    face -> LightTexture.FULL_BRIGHT,
                     MODEL
             );
         } else {
             SlantBoardRenderPipelines.submitWorld(
                     submitNodeCollector,
                     poseStack,
-                    WoodType.OAK,
-                    face -> 15728880,
+                    resolvedWood,
+                    face -> LightTexture.FULL_BRIGHT,
                     MODEL
             );
         }
 
         poseStack.popPose();
+    }
+
+    private static WoodType getWoodTypeFromStack(ItemStack stack) {
+        var customData = stack.get(DataComponents.CUSTOM_DATA);
+
+        if (customData == null) {
+            return WoodType.OAK;
+        }
+
+        String name = customData.copyTag().getString("wood").orElse("oak");
+
+        for (WoodType type : WoodType.values()) {
+            if (type.getSerializedName().equals(name)) {
+                return type;
+            }
+        }
+
+        return WoodType.OAK;
     }
 
     @Override
@@ -110,7 +131,7 @@ public final class SlantBoardItemSpecialRenderer implements SpecialModelRenderer
     }
 
     @Override
-    public @Nullable Void extractArgument(ItemStack itemStack) {
-        return null;
+    public @Nullable WoodType extractArgument(ItemStack itemStack) {
+        return getWoodTypeFromStack(itemStack);
     }
 }
