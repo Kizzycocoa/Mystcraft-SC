@@ -39,7 +39,7 @@ public final class SlantBoardRenderPipelines {
 
         return RenderType.create(
                 name,
-                RenderSetup.builder(RenderPipelines.ENTITY_CUTOUT_NO_CULL)
+                RenderSetup.builder(RenderPipelines.CUTOUT_BLOCK)
                         .withTexture("Sampler0", getTexture(wood))
                         .useLightmap()
                         .createRenderSetup()
@@ -51,7 +51,7 @@ public final class SlantBoardRenderPipelines {
 
         return RenderType.create(
                 name,
-                RenderSetup.builder(RenderPipelines.ENTITY_CUTOUT_NO_CULL)
+                RenderSetup.builder(RenderPipelines.CUTOUT_BLOCK)
                         .withTexture("Sampler0", getTexture(wood))
                         .createRenderSetup()
         );
