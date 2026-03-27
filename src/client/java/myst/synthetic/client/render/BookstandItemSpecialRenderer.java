@@ -92,7 +92,7 @@ public final class BookstandItemSpecialRenderer implements SpecialModelRenderer<
                     submitNodeCollector,
                     poseStack,
                     resolvedWood,
-                    face -> LightTexture.FULL_BRIGHT,
+                    face -> light,
                     MODEL
             );
         }

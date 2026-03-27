@@ -90,7 +90,7 @@ public class MystcraftBlocks {
                     .strength(2.5F)
                     .sound(SoundType.WOOD)
                     .noOcclusion(),
-            (block, properties) -> new ItemWritingDesk(block, properties.stacksTo(1))
+            (block, properties) -> new ItemWritingDesk(block, properties)
     );
     public static final Block SLANT_BOARD_BLOCK = register(
             "slant_board",

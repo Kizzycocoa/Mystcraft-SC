@@ -6,6 +6,7 @@ import myst.synthetic.block.BlockBookstand;
 import myst.synthetic.block.entity.BlockEntityBookstand;
 import myst.synthetic.client.render.model.ObjMesh;
 import myst.synthetic.client.render.model.ObjMeshLoader;
+import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -42,6 +43,12 @@ public class BookstandBlockEntityRenderer
 
         state.rotationIndex = blockEntity.getBlockState().getValue(BlockBookstand.ROTATION_INDEX);
         state.wood = blockEntity.getBlockState().getValue(BlockBookstand.WOOD);
+
+        if (blockEntity.getLevel() != null) {
+            state.packedLight = LevelRenderer.getLightColor(blockEntity.getLevel(), blockEntity.getBlockPos());
+        } else {
+            state.packedLight = 0;
+        }
     }
 
     @Override
@@ -54,13 +61,13 @@ public class BookstandBlockEntityRenderer
         poseStack.pushPose();
 
         poseStack.translate(0.5F, 0.0F, 0.5F);
-        poseStack.mulPose(Axis.YP.rotationDegrees(45.0F * state.rotationIndex));
+        poseStack.mulPose(Axis.YP.rotationDegrees(-45.0F * state.rotationIndex));
 
         BookstandRenderPipelines.submitWorld(
                 queue,
                 poseStack,
                 state.wood,
-                face -> 15728880,
+                face -> state.packedLight,
                 MODEL
         );
 
