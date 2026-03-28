@@ -21,6 +21,7 @@ public class MystcraftSyntheticCodex implements ModInitializer {
 		MystcraftNetworking.initialize();
 		MystcraftPoiTypes.initialize();
 		MystcraftVillagerProfessions.initialize();
+		MystcraftVillagerTrades.initialize();
 
 		LOGGER.info("Mystcraft config directory: {}", MystcraftConfig.getConfigDir());
 		LOGGER.info("Mystcraft: The Synthetic Codex initialized.");
