@@ -1,0 +1,32 @@
+{
+  "name": "minecraft:village/plains/houses",
+  "fallback": "minecraft:empty",
+  "elements": [
+    {
+      "weight": 6,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "mystcraft-sc:village/plains/houses/plains_atelier_1",
+        "processors": "minecraft:empty",
+        "projection": "rigid"
+      }
+    },
+    {
+      "weight": 6,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "mystcraft-sc:village/plains/houses/plains_atelier_2",
+        "processors": "minecraft:empty",
+        "projection": "rigid"
+      },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "mystcraft-sc:village/plains/houses/plains_legacy_atelier",
+        "processors": "minecraft:empty",
+        "projection": "rigid"
+      }
+    }
+  ]
+}

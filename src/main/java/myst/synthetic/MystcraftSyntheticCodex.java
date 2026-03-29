@@ -14,6 +14,7 @@ public class MystcraftSyntheticCodex implements ModInitializer {
 		MystcraftConfig.load();
 
 		MystcraftBlocks.initialize();
+		MystcraftEntities.initialize();
 		MystcraftBlockEntities.initialize();
 		MystcraftItems.initialize();
 		MystcraftItemGroups.initialize();
