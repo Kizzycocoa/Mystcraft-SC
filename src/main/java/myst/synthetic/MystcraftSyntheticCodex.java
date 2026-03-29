@@ -2,7 +2,9 @@ package myst.synthetic;
 
 import myst.synthetic.config.MystcraftConfig;
 import myst.synthetic.recipe.MystcraftRecipeSerializers;
+import myst.synthetic.world.VillagePoolAdder;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,6 +25,8 @@ public class MystcraftSyntheticCodex implements ModInitializer {
 		MystcraftPoiTypes.initialize();
 		MystcraftVillagerProfessions.initialize();
 		MystcraftVillagerTrades.initialize();
+
+		ServerLifecycleEvents.SERVER_STARTING.register(VillagePoolAdder::inject);
 
 		LOGGER.info("Mystcraft config directory: {}", MystcraftConfig.getConfigDir());
 		LOGGER.info("Mystcraft: The Synthetic Codex initialized.");
