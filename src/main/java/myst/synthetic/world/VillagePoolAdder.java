@@ -1,6 +1,7 @@
 package myst.synthetic.world;
 
 import com.mojang.datafixers.util.Pair;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import myst.synthetic.mixin.StructureTemplatePoolAccessor;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
@@ -10,6 +11,9 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.levelgen.structure.pools.SinglePoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public final class VillagePoolAdder {
 
@@ -60,10 +64,16 @@ public final class VillagePoolAdder {
 
         StructureTemplatePoolAccessor accessor = (StructureTemplatePoolAccessor) pool;
 
+        ObjectArrayList<StructurePoolElement> newTemplates =
+                new ObjectArrayList<>(accessor.mystcraft$getTemplates());
         for (int i = 0; i < weight; i++) {
-            accessor.mystcraft$getTemplates().add(element);
+            newTemplates.add(element);
         }
+        accessor.mystcraft$setTemplates(newTemplates);
 
-        accessor.mystcraft$getRawTemplates().add(Pair.of(element, weight));
+        List<Pair<StructurePoolElement, Integer>> newRawTemplates =
+                new ArrayList<>(accessor.mystcraft$getRawTemplates());
+        newRawTemplates.add(Pair.of(element, weight));
+        accessor.mystcraft$setRawTemplates(newRawTemplates);
     }
 }
