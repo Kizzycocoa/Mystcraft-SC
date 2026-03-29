@@ -24,9 +24,11 @@ import net.minecraft.world.level.block.entity.HopperBlockEntity;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
-// Let IntelliJ add the correct imports for these two in your environment if needed.
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 
 public class EntityLinkbook extends Mob {
 
@@ -45,6 +47,11 @@ public class EntityLinkbook extends Mob {
         this.xpReward = 0;
     }
 
+    public static AttributeSupplier.Builder createAttributes() {
+        return Mob.createMobAttributes()
+                .add(Attributes.MAX_HEALTH, 10.0D)
+                .add(Attributes.MOVEMENT_SPEED, 0.0D);
+    }
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);

@@ -8,6 +8,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
+import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 
 public final class MystcraftEntities {
 
@@ -30,5 +31,6 @@ public final class MystcraftEntities {
     }
 
     public static void initialize() {
+        FabricDefaultAttributeRegistry.register(LINKBOOK, EntityLinkbook.createAttributes());
     }
 }
