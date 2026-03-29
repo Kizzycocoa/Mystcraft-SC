@@ -6,7 +6,7 @@
       "weight": 6,
       "element": {
         "element_type": "minecraft:single_pool_element",
-        "location": "mystcraft-sc:village/taiga/houses/taiga_atelier_1",
+        "location": "minecraft:village/taiga/houses/taiga_atelier_1",
         "processors": "minecraft:empty",
         "projection": "rigid"
       }
@@ -15,7 +15,7 @@
       "weight": 6,
       "element": {
         "element_type": "minecraft:single_pool_element",
-        "location": "mystcraft-sc:village/taiga/houses/taiga_atelier_2",
+        "location": "minecraft:village/taiga/houses/taiga_atelier_2",
         "processors": "minecraft:empty",
         "projection": "rigid"
       }
