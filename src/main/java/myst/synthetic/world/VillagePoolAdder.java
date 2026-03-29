@@ -2,16 +2,14 @@ package myst.synthetic.world;
 
 import com.mojang.datafixers.util.Pair;
 import myst.synthetic.mixin.StructureTemplatePoolAccessor;
-import net.minecraft.core.Registry;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.levelgen.structure.pools.SinglePoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public final class VillagePoolAdder {
 
@@ -19,7 +17,8 @@ public final class VillagePoolAdder {
     }
 
     public static void inject(MinecraftServer server) {
-        var pools = server.registryAccess().lookupOrThrow(Registries.TEMPLATE_POOL);
+        HolderLookup.RegistryLookup<StructureTemplatePool> pools =
+                server.registryAccess().lookupOrThrow(Registries.TEMPLATE_POOL);
 
         addToPool(pools, "village/plains/houses", "mystcraft-sc:village/plains/houses/plains_atelier_1", 6);
         addToPool(pools, "village/plains/houses", "mystcraft-sc:village/plains/houses/plains_atelier_2", 6);
@@ -39,14 +38,14 @@ public final class VillagePoolAdder {
     }
 
     private static void addToPool(
-            net.minecraft.core.HolderLookup.RegistryLookup<StructureTemplatePool> pools,
+            HolderLookup.RegistryLookup<StructureTemplatePool> pools,
             String poolPath,
             String structureId,
             int weight
     ) {
-        var poolKey = net.minecraft.resources.ResourceKey.create(
-                net.minecraft.core.registries.Registries.TEMPLATE_POOL,
-                net.minecraft.resources.Identifier.fromNamespaceAndPath("minecraft", poolPath)
+        ResourceKey<StructureTemplatePool> poolKey = ResourceKey.create(
+                Registries.TEMPLATE_POOL,
+                Identifier.fromNamespaceAndPath("minecraft", poolPath)
         );
 
         var poolHolder = pools.get(poolKey).orElse(null);
@@ -65,8 +64,6 @@ public final class VillagePoolAdder {
             accessor.mystcraft$getTemplates().add(element);
         }
 
-        var rawTemplates = new java.util.ArrayList<>(accessor.mystcraft$getRawTemplates());
-        rawTemplates.add(Pair.of(element, weight));
-        accessor.mystcraft$setRawTemplates(rawTemplates);
+        accessor.mystcraft$getRawTemplates().add(Pair.of(element, weight));
     }
 }
