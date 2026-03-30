@@ -22,6 +22,7 @@ import myst.synthetic.page.emblem.ResolvedPageEmblem;
 import myst.synthetic.page.emblem.ResolvedPageWord;
 import myst.synthetic.page.symbol.PageSymbol;
 import myst.synthetic.page.symbol.PageSymbolRegistry;
+import myst.synthetic.page.emblem.ResolvedGlyphComponent;
 
 public record PageDataComponent(
         boolean linkPanel,
@@ -205,6 +206,13 @@ public record PageDataComponent(
                                         .withStyle(ChatFormatting.DARK_GRAY)
                         );
                     }
+
+                    var glyphs = PageEmblemResolver.resolveGlyphs(emblem);
+
+                    textConsumer.accept(
+                            Component.literal("Glyph components: " + glyphs.size())
+                                    .withStyle(ChatFormatting.DARK_GRAY)
+                    );
                 }
             }
 

@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import myst.synthetic.component.MystcraftDataComponents;
 import myst.synthetic.page.symbol.MystcraftPageSymbols;
 import myst.synthetic.page.word.MystcraftPageWords;
+import myst.synthetic.page.glyph.MystcraftGlyphComponents;
 
 public class MystcraftSyntheticCodex implements ModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger("mystcraft-sc");
@@ -19,6 +20,8 @@ public class MystcraftSyntheticCodex implements ModInitializer {
 		MystcraftConfig.load();
 
 		MystcraftDataComponents.initialize();
+
+		MystcraftGlyphComponents.initialize();
 		MystcraftPageWords.initialize();
 		MystcraftPageSymbols.initialize();
 

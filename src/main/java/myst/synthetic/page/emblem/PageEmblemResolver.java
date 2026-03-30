@@ -6,6 +6,8 @@ import myst.synthetic.page.word.PageWord;
 import myst.synthetic.page.word.PageWordRegistry;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
+import myst.synthetic.page.glyph.PageGlyphComponent;
+import myst.synthetic.page.glyph.PageGlyphComponentRegistry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,5 +43,28 @@ public final class PageEmblemResolver {
         }
 
         return resolve(symbol);
+    }
+    public static java.util.List<ResolvedGlyphComponent> resolveGlyphs(ResolvedPageEmblem emblem) {
+
+        java.util.List<ResolvedGlyphComponent> glyphs = new java.util.ArrayList<>();
+
+        for (ResolvedPageWord word : emblem.words()) {
+
+            for (Integer index : word.resolvedWord().componentIndices()) {
+
+                PageGlyphComponent component =
+                        PageGlyphComponentRegistry.get(index);
+
+                if (component != null) {
+
+                    glyphs.add(new ResolvedGlyphComponent(
+                            word.slot(),
+                            component
+                    ));
+                }
+            }
+        }
+
+        return glyphs;
     }
 }
