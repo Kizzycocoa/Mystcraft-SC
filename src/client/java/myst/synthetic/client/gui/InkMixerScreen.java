@@ -40,24 +40,7 @@ public class InkMixerScreen extends AbstractContainerScreen<InkMixerMenu> {
         int basinLeft = this.leftPos + BASIN_X;
         int basinTop = this.topPos + BASIN_Y;
 
-        if (this.menu.hasInk()) {
-            renderInkBasin(guiGraphics, basinLeft, basinTop);
-        }
-
-        // Basin mask/backing over the fluid, before the full GUI frame.
-        guiGraphics.blit(
-                RenderPipelines.GUI_TEXTURED,
-                TEXTURE,
-                basinLeft,
-                basinTop,
-                179,
-                16,
-                BASIN_W,
-                BASIN_H,
-                256,
-                256
-        );
-
+        // Draw the full GUI first.
         guiGraphics.blit(
                 RenderPipelines.GUI_TEXTURED,
                 TEXTURE,
@@ -70,6 +53,11 @@ public class InkMixerScreen extends AbstractContainerScreen<InkMixerMenu> {
                 256,
                 256
         );
+
+        // Then draw the liquid into the basin area.
+        if (this.menu.hasInk()) {
+            renderInkBasin(guiGraphics, basinLeft, basinTop);
+        }
     }
 
     private void renderInkBasin(GuiGraphics guiGraphics, int x, int y) {
