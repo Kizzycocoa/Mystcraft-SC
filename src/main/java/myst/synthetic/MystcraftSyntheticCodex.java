@@ -8,6 +8,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import myst.synthetic.component.MystcraftDataComponents;
+import myst.synthetic.page.symbol.MystcraftPageSymbols;
 
 public class MystcraftSyntheticCodex implements ModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger("mystcraft-sc");
@@ -28,6 +29,7 @@ public class MystcraftSyntheticCodex implements ModInitializer {
 		MystcraftVillagerProfessions.initialize();
 		MystcraftVillagerTrades.initialize();
 		MystcraftDataComponents.initialize();
+		MystcraftPageSymbols.initialize();
 
 
 		ServerLifecycleEvents.SERVER_STARTING.register(StructurePoolAdder::inject);

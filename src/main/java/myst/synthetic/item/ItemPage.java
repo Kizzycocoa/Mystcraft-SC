@@ -1,6 +1,8 @@
 package myst.synthetic.item;
 
 import myst.synthetic.page.Page;
+import myst.synthetic.page.symbol.PageSymbol;
+import myst.synthetic.page.symbol.PageSymbolRegistry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
@@ -18,9 +20,18 @@ public class ItemPage extends Item {
             return Component.translatable("item.mystcraft-sc.page.panel");
         }
 
-        Identifier symbol = Page.getSymbol(stack);
-        if (symbol != null) {
-            return Component.translatable("item.mystcraft-sc.page.symbol", symbol.toString());
+        Identifier symbolId = Page.getSymbol(stack);
+        if (symbolId != null) {
+            PageSymbol symbol = PageSymbolRegistry.get(symbolId);
+
+            if (symbol != null) {
+                return Component.translatable(
+                        "item.mystcraft-sc.page.symbol_named",
+                        Component.translatable(symbol.translationKey())
+                );
+            }
+
+            return Component.translatable("item.mystcraft-sc.page.symbol", symbolId.toString());
         }
 
         return Component.translatable("item.mystcraft-sc.page.blank");

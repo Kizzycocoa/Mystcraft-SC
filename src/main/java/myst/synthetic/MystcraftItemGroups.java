@@ -16,6 +16,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.component.CustomData;
 import myst.synthetic.api.hook.LinkPropertyAPI;
 import myst.synthetic.page.Page;
+import myst.synthetic.page.symbol.MystcraftPageSymbols;
 
 import java.util.List;
 
@@ -149,9 +150,13 @@ public class MystcraftItemGroups {
                                 LinkPropertyAPI.FLAG_NATURAL,
                                 LinkPropertyAPI.PROP_SOUND
                         )));
-                        output.accept(Page.createSymbolPage(
-                                Identifier.fromNamespaceAndPath("mystcraft-sc", "debug/test_symbol")
-                        ));
+                        output.accept(Page.createSymbolPage(MystcraftPageSymbols.DEBUG_TEST_SYMBOL.id()));
+                        output.accept(Page.createSymbolPage(MystcraftPageSymbols.SUNS_NORMAL.id()));
+                        output.accept(Page.createSymbolPage(MystcraftPageSymbols.STARS_NORMAL.id()));
+                        output.accept(Page.createSymbolPage(MystcraftPageSymbols.WEATHER_CLEAR.id()));
+                        output.accept(Page.createSymbolPage(MystcraftPageSymbols.WEATHER_RAIN.id()));
+                        output.accept(Page.createSymbolPage(MystcraftPageSymbols.VILLAGES.id()));
+                        output.accept(Page.createSymbolPage(MystcraftPageSymbols.DENSE_ORES.id()));
                     })
                     .build()
     );
