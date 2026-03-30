@@ -1,258 +1,104 @@
 package myst.synthetic.page;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.jetbrains.annotations.Nullable;
-
 import myst.synthetic.MystcraftItems;
-import net.minecraft.core.component.DataComponents;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.StringTag;
+import myst.synthetic.component.MystcraftDataComponents;
+import myst.synthetic.component.PageDataComponent;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.component.CustomData;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 public final class Page {
-
-    public static final String TAG_SYMBOL = "symbol";
-    public static final String TAG_LINK_PANEL = "linkpanel";
-    public static final String TAG_PROPERTIES = "properties";
-    public static final String TAG_QUALITY = "Quality";
 
     private Page() {
     }
 
-    private static CompoundTag getDataCopy(ItemStack stack) {
-        CustomData data = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY);
-        return data.copyTag();
+    public static PageDataComponent getPageData(ItemStack stack) {
+        return stack.getOrDefault(MystcraftDataComponents.PAGE_DATA, PageDataComponent.EMPTY);
     }
 
-    private static void updateData(ItemStack stack, java.util.function.Consumer<CompoundTag> editor) {
-        CustomData.update(DataComponents.CUSTOM_DATA, stack, editor);
+    public static void setPageData(ItemStack stack, PageDataComponent data) {
+        stack.set(MystcraftDataComponents.PAGE_DATA, data == null ? PageDataComponent.EMPTY : data);
     }
 
     public static boolean isBlank(ItemStack page) {
-        return !isLinkPanel(page) && getSymbol(page) == null;
+        return getPageData(page).isBlank();
     }
 
     public static boolean isSymbolPage(ItemStack page) {
-        return getSymbol(page) != null;
+        return getPageData(page).isSymbolPage();
     }
 
     public static boolean isLinkPanel(ItemStack page) {
-        return getDataCopy(page).contains(TAG_LINK_PANEL);
+        return getPageData(page).isLinkPanel();
     }
 
     public static void clearPageData(ItemStack page) {
-        updateData(page, tag -> {
-            tag.remove(TAG_SYMBOL);
-            tag.remove(TAG_LINK_PANEL);
-            tag.remove(TAG_QUALITY);
-        });
+        setPageData(page, PageDataComponent.EMPTY);
     }
 
     public static void makeLinkPanel(ItemStack page) {
-        updateData(page, tag -> {
-            tag.remove(TAG_SYMBOL);
-
-            if (!tag.contains(TAG_LINK_PANEL)) {
-                tag.put(TAG_LINK_PANEL, new CompoundTag());
-            }
-        });
+        PageDataComponent data = getPageData(page);
+        setPageData(page, new PageDataComponent(null, data.linkProperties(), data.quality()));
     }
 
     public static void clearLinkPanel(ItemStack page) {
-        updateData(page, tag -> tag.remove(TAG_LINK_PANEL));
+        PageDataComponent data = getPageData(page);
+        setPageData(page, data.clearLinkProperties());
     }
 
     public static void addLinkProperty(ItemStack page, String property) {
-        if (property == null || property.isBlank()) {
-            return;
-        }
-
-        updateData(page, tag -> {
-            tag.remove(TAG_SYMBOL);
-
-            CompoundTag linkPanel = tag.contains(TAG_LINK_PANEL)
-                    ? tag.getCompoundOrEmpty(TAG_LINK_PANEL)
-                    : new CompoundTag();
-
-            ListTag properties = linkPanel.contains(TAG_PROPERTIES)
-                    ? linkPanel.getListOrEmpty(TAG_PROPERTIES)
-                    : new ListTag();
-
-            boolean alreadyPresent = false;
-            for (int i = 0; i < properties.size(); i++) {
-                String existing = properties.getString(i).orElse("");
-                if (property.equals(existing)) {
-                    alreadyPresent = true;
-                    break;
-                }
-            }
-
-            if (!alreadyPresent) {
-                properties.add(StringTag.valueOf(property));
-            }
-
-            linkPanel.put(TAG_PROPERTIES, properties);
-            tag.put(TAG_LINK_PANEL, linkPanel);
-        });
+        setPageData(page, getPageData(page).addLinkProperty(property));
     }
 
     public static void setLinkProperties(ItemStack page, Collection<String> properties) {
-        updateData(page, tag -> {
-            tag.remove(TAG_SYMBOL);
-
-            CompoundTag linkPanel = new CompoundTag();
-            ListTag propertyList = new ListTag();
-
-            Set<String> unique = new LinkedHashSet<>();
-            for (String property : properties) {
-                if (property != null && !property.isBlank()) {
-                    unique.add(property);
-                }
-            }
-
-            for (String property : unique) {
-                propertyList.add(StringTag.valueOf(property));
-            }
-
-            linkPanel.put(TAG_PROPERTIES, propertyList);
-            tag.put(TAG_LINK_PANEL, linkPanel);
-        });
+        setPageData(page, getPageData(page).withLinkProperties(List.copyOf(properties)));
     }
 
     public static boolean hasLinkProperty(ItemStack page, String property) {
-        if (property == null || property.isBlank()) {
-            return false;
-        }
-
-        for (String existing : getLinkProperties(page)) {
-            if (property.equals(existing)) {
-                return true;
-            }
-        }
-
-        return false;
+        return getLinkProperties(page).contains(property);
     }
 
     public static List<String> getLinkProperties(ItemStack page) {
-        CompoundTag tag = getDataCopy(page);
-        if (!tag.contains(TAG_LINK_PANEL)) {
-            return List.of();
-        }
-
-        CompoundTag linkPanel = tag.getCompoundOrEmpty(TAG_LINK_PANEL);
-        if (!linkPanel.contains(TAG_PROPERTIES)) {
-            return List.of();
-        }
-
-        ListTag list = linkPanel.getListOrEmpty(TAG_PROPERTIES);
-        List<String> out = new ArrayList<>(list.size());
-        for (int i = 0; i < list.size(); i++) {
-            list.getString(i).ifPresent(value -> {
-                if (!value.isBlank()) {
-                    out.add(value);
-                }
-            });
-        }
-        return List.copyOf(out);
+        return getPageData(page).linkProperties();
     }
 
     public static void setSymbol(ItemStack page, @Nullable Identifier symbol) {
-        updateData(page, tag -> {
-            tag.remove(TAG_LINK_PANEL);
-
-            if (symbol == null) {
-                tag.remove(TAG_SYMBOL);
-            } else {
-                tag.putString(TAG_SYMBOL, symbol.toString());
-            }
-        });
+        setPageData(page, getPageData(page).withSymbol(symbol));
     }
 
     @Nullable
     public static Identifier getSymbol(ItemStack page) {
-        CompoundTag tag = getDataCopy(page);
-        if (!tag.contains(TAG_SYMBOL)) {
-            return null;
-        }
-
-        String symbol = tag.getString(TAG_SYMBOL).orElse("");
-        if (symbol.isBlank()) {
-            return null;
-        }
-
-        return Identifier.tryParse(symbol);
+        return getPageData(page).getSymbolIdentifier();
     }
 
     public static void clearSymbol(ItemStack page) {
-        updateData(page, tag -> tag.remove(TAG_SYMBOL));
+        setPageData(page, getPageData(page).withoutSymbol());
     }
 
     public static void setQuality(ItemStack page, String trait, int quality) {
-        if (trait == null || trait.isBlank()) {
-            return;
-        }
-
-        updateData(page, tag -> {
-            CompoundTag qualityTag = tag.contains(TAG_QUALITY)
-                    ? tag.getCompoundOrEmpty(TAG_QUALITY)
-                    : new CompoundTag();
-
-            qualityTag.putInt(trait, quality);
-            tag.put(TAG_QUALITY, qualityTag);
-        });
+        setPageData(page, getPageData(page).withQuality(trait, quality));
     }
 
     @Nullable
     public static Integer getQuality(ItemStack page, String trait) {
-        if (trait == null || trait.isBlank()) {
-            return null;
-        }
-
-        CompoundTag tag = getDataCopy(page);
-        if (!tag.contains(TAG_QUALITY)) {
-            return null;
-        }
-
-        CompoundTag qualityTag = tag.getCompoundOrEmpty(TAG_QUALITY);
-        return qualityTag.contains(trait) ? qualityTag.getInt(trait).orElse(0) : null;
+        return getPageData(page).getQuality(trait);
     }
 
     public static Map<String, Integer> getQualityMap(ItemStack page) {
-        CompoundTag tag = getDataCopy(page);
-        if (!tag.contains(TAG_QUALITY)) {
-            return Map.of();
-        }
-
-        CompoundTag qualityTag = tag.getCompoundOrEmpty(TAG_QUALITY);
-        java.util.LinkedHashMap<String, Integer> map = new java.util.LinkedHashMap<>();
-
-        for (String key : qualityTag.keySet()) {
-            map.put(key, qualityTag.getInt(key).orElse(0));
-        }
-
-        return Map.copyOf(map);
+        return getPageData(page).quality();
     }
 
     public static int getTotalQuality(ItemStack page) {
-        int sum = 0;
-        for (int value : getQualityMap(page).values()) {
-            sum += value;
-        }
-        return sum;
+        return getPageData(page).getTotalQuality();
     }
 
     public static ItemStack createPage() {
         ItemStack page = new ItemStack(MystcraftItems.PAGE);
-        CustomData.set(DataComponents.CUSTOM_DATA, page, new CompoundTag());
+        setPageData(page, PageDataComponent.EMPTY);
         return page;
     }
 
@@ -263,13 +109,13 @@ public final class Page {
     }
 
     public static ItemStack createLinkPage(String property) {
-        ItemStack page = createLinkPage();
+        ItemStack page = createPage();
         addLinkProperty(page, property);
         return page;
     }
 
     public static ItemStack createLinkPage(Collection<String> properties) {
-        ItemStack page = createLinkPage();
+        ItemStack page = createPage();
         setLinkProperties(page, properties);
         return page;
     }

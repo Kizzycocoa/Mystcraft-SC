@@ -13,11 +13,16 @@ import net.minecraft.client.renderer.entity.EntityRenderers;
 import myst.synthetic.client.render.LinkbookEntityRenderer;
 import net.fabricmc.fabric.api.client.rendering.v1.BlockRenderLayerMap;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
+import myst.synthetic.component.MystcraftDataComponents;
+import net.fabricmc.fabric.api.item.v1.ComponentTooltipAppenderRegistry;
+import net.minecraft.core.component.DataComponents;
 
 public class MystcraftSyntheticCodexClient implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
+		ComponentTooltipAppenderRegistry.addAfter(DataComponents.DAMAGE, MystcraftDataComponents.PAGE_DATA);
+
 		BlockEntityRenderers.register(MystcraftBlockEntities.STAR_FISSURE, StarFissureBlockEntityRenderer::new);
 		BlockEntityRenderers.register(MystcraftBlockEntities.SLANT_BOARD, SlantBoardBlockEntityRenderer::new);
 		BlockEntityRenderers.register(MystcraftBlockEntities.BOOKSTAND, BookstandBlockEntityRenderer::new);
