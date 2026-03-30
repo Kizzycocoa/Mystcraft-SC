@@ -28,6 +28,8 @@ import java.util.Collections;
 import java.util.List;
 import net.minecraft.world.level.storage.loot.LootParams;
 import myst.synthetic.MystcraftItemGroups;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.Mirror;
 
 public class BlockSlantBoard extends BaseEntityBlock {
 
@@ -47,6 +49,16 @@ public class BlockSlantBoard extends BaseEntityBlock {
         this.registerDefaultState(this.stateDefinition.any()
                 .setValue(FACING, Direction.NORTH)
                 .setValue(WOOD, WoodType.OAK));
+    }
+
+    @Override
+    public BlockState rotate(BlockState state, Rotation rotation) {
+        return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
+    }
+
+    @Override
+    public BlockState mirror(BlockState state, Mirror mirror) {
+        return state.rotate(mirror.getRotation(state.getValue(FACING)));
     }
 
     @Override

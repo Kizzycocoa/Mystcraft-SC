@@ -36,6 +36,8 @@ import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import myst.synthetic.MystcraftItemGroups;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.Mirror;
 
 public class BlockWritingDesk extends BaseEntityBlock {
 
@@ -54,6 +56,16 @@ public class BlockWritingDesk extends BaseEntityBlock {
 				.setValue(IS_TOP, false)
 				.setValue(IS_FOOT, false)
         		.setValue(WOOD, WoodType.OAK));
+	}
+
+	@Override
+	public BlockState rotate(BlockState state, Rotation rotation) {
+		return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
+	}
+
+	@Override
+	public BlockState mirror(BlockState state, Mirror mirror) {
+		return state.rotate(mirror.getRotation(state.getValue(FACING)));
 	}
 
 	@Override

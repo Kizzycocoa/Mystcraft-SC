@@ -27,6 +27,8 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.nbt.CompoundTag;
 import org.jetbrains.annotations.Nullable;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.Mirror;
 
 import java.util.Collections;
 import java.util.List;
@@ -48,6 +50,16 @@ public class BlockBookstand extends BaseEntityBlock {
         this.registerDefaultState(this.stateDefinition.any()
                 .setValue(ROTATION_INDEX, 0)
                 .setValue(WOOD, WoodType.OAK));
+    }
+
+    @Override
+    public BlockState rotate(BlockState state, Rotation rotation) {
+        return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
+    }
+
+    @Override
+    public BlockState mirror(BlockState state, Mirror mirror) {
+        return state.rotate(mirror.getRotation(state.getValue(FACING)));
     }
 
     @Override

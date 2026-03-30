@@ -8,5 +8,6 @@ Stage 5 (COMPLETE) - sort out custom villager
 Stage 6 (IN PROGRESS) - sort out custom villages
 	6.1 (COMPLETE) - Build 2x custom buildings for each biome
 	6.2 (COMPLETE) - sort them into custom NBT structures
-	6.2 (IN PROGRESS) - Add them to the houses villager pool
+	6.3 (COMPLETE) - Add them to the houses villager pool
+	6.4 (IN PROGRESS) - Fix block rotations
 Stage 7 - sort out all blocks visually with proper collision
