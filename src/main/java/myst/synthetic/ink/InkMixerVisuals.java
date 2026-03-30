@@ -53,9 +53,9 @@ public final class InkMixerVisuals {
         };
     }
 
-    public static int getOverlayAlpha(Map<String, Float> probabilities) {
+    public static float getMixStrength(Map<String, Float> probabilities) {
         if (probabilities.isEmpty()) {
-            return 0;
+            return 0.0F;
         }
 
         float totalWeight = 0.0F;
@@ -63,12 +63,12 @@ public final class InkMixerVisuals {
             totalWeight += Math.max(0.0F, value);
         }
 
-        float clamped = Math.min(totalWeight, 1.0F);
-        return clamp255(Math.round(70.0F + (clamped * 110.0F)));
+        return Math.min(totalWeight, 1.0F);
     }
 
-    public static int packArgb(int alpha, int rgb) {
-        return (clamp255(alpha) << 24) | (rgb & 0xFFFFFF);
+    public static int getOverlayAlpha(Map<String, Float> probabilities) {
+        float strength = getMixStrength(probabilities);
+        return clamp255(Math.round(strength * 120.0F));
     }
 
     private static int clamp255(int value) {

@@ -4,26 +4,35 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
-/**
- * Central helper for Ink Mixer ingredient -> link property mixing.
- *
- * This is intentionally small and easy to expand.
- * Legacy Mystcraft had a much larger item effect map; this modern port starts
- * with a clean helper so you can add more ingredients later without bloating
- * the block entity.
- */
 public final class InkMixerEffects {
+
+    public enum ConsumeAction {
+        ADD_EFFECTS,
+        RESET_TO_PLAIN_INK,
+        NONE
+    }
 
     private InkMixerEffects() {
     }
 
-    /**
-     * Returns the property weights contributed by a consumed ingredient.
-     *
-     * Keys are link-property ids.
-     * Values are probabilities in the 0.0 - 1.0 range.
-     */
+    public static ConsumeAction getConsumeAction(ItemStack stack) {
+        if (stack.isEmpty()) {
+            return ConsumeAction.NONE;
+        }
+
+        if (stack.is(Items.INK_SAC)) {
+            return ConsumeAction.RESET_TO_PLAIN_INK;
+        }
+
+        if (!getItemEffects(stack).isEmpty()) {
+            return ConsumeAction.ADD_EFFECTS;
+        }
+
+        return ConsumeAction.NONE;
+    }
+
     public static Map<String, Float> getItemEffects(ItemStack stack) {
         Map<String, Float> result = new HashMap<>();
 
@@ -31,68 +40,42 @@ public final class InkMixerEffects {
             return result;
         }
 
-        /*
-         * Legacy-style ingredient mappings
-         *
-         * Values represent probability weights (0.0 – 1.0)
-         */
-
-        // Mushroom Stew → Disarm (5%)
-        if (stack.is(net.minecraft.world.item.Items.MUSHROOM_STEW)) {
+        if (stack.is(Items.MUSHROOM_STEW)) {
             result.put("mystcraft-sc:link_disarm", 0.05F);
         }
 
-        // Bottle o' Enchanting → Intra Linking (15%)
-        if (stack.is(net.minecraft.world.item.Items.EXPERIENCE_BOTTLE)) {
+        if (stack.is(Items.EXPERIENCE_BOTTLE)) {
             result.put("mystcraft-sc:link_intra", 0.15F);
         }
 
-        // Ender Pearl → Intra Linking (15%) + Disarm (15%)
-        if (stack.is(net.minecraft.world.item.Items.ENDER_PEARL)) {
+        if (stack.is(Items.ENDER_PEARL)) {
             result.put("mystcraft-sc:link_intra", 0.15F);
             result.put("mystcraft-sc:link_disarm", 0.15F);
         }
 
-        // Feather → Maintain Momentum (15%)
-        if (stack.is(net.minecraft.world.item.Items.FEATHER)) {
+        if (stack.is(Items.FEATHER)) {
             result.put("mystcraft-sc:link_momentum", 0.15F);
         }
 
-        // Gunpowder → Disarm (20%)
-        if (stack.is(net.minecraft.world.item.Items.GUNPOWDER)) {
+        if (stack.is(Items.GUNPOWDER)) {
             result.put("mystcraft-sc:link_disarm", 0.20F);
         }
 
-        // Clay Ball → Generate Platform (25%)
-        if (stack.is(net.minecraft.world.item.Items.CLAY_BALL)) {
+        if (stack.is(Items.CLAY_BALL)) {
             result.put("mystcraft-sc:link_platform", 0.25F);
         }
 
-        // Fire Charge → Disarm (25%)
-        if (stack.is(net.minecraft.world.item.Items.FIRE_CHARGE)) {
+        if (stack.is(Items.FIRE_CHARGE)) {
             result.put("mystcraft-sc:link_disarm", 0.25F);
         }
 
         return result;
     }
 
-    /**
-     * Whether the given property is currently allowed in the mixer.
-     *
-     * This mirrors the legacy "is property allowed" gate.
-     * For now this is permissive; later you can forbid unfinished properties here.
-     */
     public static boolean isPropertyAllowed(String propertyId) {
         return propertyId != null && !propertyId.isBlank();
     }
 
-    /**
-     * Legacy-style probability blending:
-     *
-     * 1) Sum all valid incoming probabilities
-     * 2) Scale existing probabilities by (1 - totalIncoming)
-     * 3) Add incoming probabilities on top
-     */
     public static void blendInto(Map<String, Float> existing, Map<String, Float> incoming) {
         if (incoming.isEmpty()) {
             return;
@@ -131,7 +114,7 @@ public final class InkMixerEffects {
     }
 
     public static boolean canConsumeIngredient(ItemStack stack) {
-        return !getItemEffects(stack).isEmpty();
+        return getConsumeAction(stack) != ConsumeAction.NONE;
     }
 
     private static float clamp(float value) {

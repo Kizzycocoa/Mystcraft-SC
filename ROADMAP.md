@@ -12,7 +12,7 @@ Stage 5 (COMPLETE) - sort out custom villager
 
 Stage 6 (COMPLETE) - sort out custom villages
 
-Stage 7 (IN PROGRESS) - Add container slots to blocks:
+Stage 7 (COMPLETE) - Add container slots to blocks:
 
 	7.1 - Slant Board
 
@@ -22,7 +22,7 @@ Stage 7 (IN PROGRESS) - Add container slots to blocks:
 
 		7.3.1 - Adding a headboard doubles the desk's storage
 
-	7.4 (IN PROGRESS) - Ink Mixer
+	7.4 (COMPLETE) - Ink Mixer
 
 	7.5 - Book Binder
 

@@ -40,6 +40,11 @@ public class InkMixerScreen extends AbstractContainerScreen<InkMixerMenu> {
         int basinLeft = this.leftPos + BASIN_X;
         int basinTop = this.topPos + BASIN_Y;
 
+        if (this.menu.hasInk()) {
+            renderInkBasin(guiGraphics, basinLeft, basinTop);
+        }
+
+        // Basin mask/backing over the fluid, before the full GUI frame.
         guiGraphics.blit(
                 RenderPipelines.GUI_TEXTURED,
                 TEXTURE,
@@ -52,10 +57,6 @@ public class InkMixerScreen extends AbstractContainerScreen<InkMixerMenu> {
                 256,
                 256
         );
-
-        if (this.menu.hasInk()) {
-            renderInkBasin(guiGraphics, basinLeft, basinTop);
-        }
 
         guiGraphics.blit(
                 RenderPipelines.GUI_TEXTURED,
@@ -77,13 +78,13 @@ public class InkMixerScreen extends AbstractContainerScreen<InkMixerMenu> {
 
         renderFluidTexture(guiGraphics, x, y, BASIN_W, BASIN_H);
 
-        // Darken the fluid into black ink while still preserving the texture highlights.
-        guiGraphics.fill(x, y, x + BASIN_W, y + BASIN_H, 0xB0000000);
+        // Darken into black ink, but keep the underlying animated texture visible.
         guiGraphics.fill(x, y, x + BASIN_W, y + BASIN_H, 0x70000000);
+        guiGraphics.fill(x, y, x + BASIN_W, y + BASIN_H, 0x45000000);
 
         if (overlayAlpha > 0) {
-            int topColor = (Math.max(40, overlayAlpha / 2) << 24) | brighten(mixedRgb, 0.10F);
-            int bottomColor = (Math.min(255, overlayAlpha + 70) << 24) | darken(mixedRgb, 0.08F);
+            int topColor = (Math.max(18, overlayAlpha / 3) << 24) | brighten(mixedRgb, 0.06F);
+            int bottomColor = (Math.min(180, overlayAlpha + 40) << 24) | darken(mixedRgb, 0.05F);
 
             guiGraphics.fillGradient(
                     x,
@@ -94,9 +95,11 @@ public class InkMixerScreen extends AbstractContainerScreen<InkMixerMenu> {
                     bottomColor
             );
 
+            int eyeAlpha = Math.max(10, (overlayAlpha * 3) / 4);
             DniColorRenderer.render(
                     guiGraphics,
                     mixedRgb,
+                    eyeAlpha,
                     x + (BASIN_W / 2) + 1,
                     y + (BASIN_H / 2) + 1,
                     20
@@ -105,20 +108,27 @@ public class InkMixerScreen extends AbstractContainerScreen<InkMixerMenu> {
     }
 
     private void renderFluidTexture(GuiGraphics guiGraphics, int x, int y, int width, int height) {
+        int frame = (int)((System.currentTimeMillis() / 120L) % 32L);
+        int v = frame * 16;
+
         for (int drawX = 0; drawX < width; drawX += 16) {
-            int w = Math.min(16, width - drawX);
-            guiGraphics.blit(
-                    RenderPipelines.GUI_TEXTURED,
-                    FLUID_TEXTURE,
-                    x + drawX,
-                    y,
-                    0,
-                    0,
-                    w,
-                    height,
-                    16,
-                    64
-            );
+            for (int drawY = 0; drawY < height; drawY += 16) {
+                int w = Math.min(16, width - drawX);
+                int h = Math.min(16, height - drawY);
+
+                guiGraphics.blit(
+                        RenderPipelines.GUI_TEXTURED,
+                        FLUID_TEXTURE,
+                        x + drawX,
+                        y + drawY,
+                        0,
+                        v,
+                        w,
+                        h,
+                        16,
+                        512
+                );
+            }
         }
     }
 

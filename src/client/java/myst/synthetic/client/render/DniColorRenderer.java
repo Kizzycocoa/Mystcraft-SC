@@ -7,7 +7,11 @@ public final class DniColorRenderer {
     private DniColorRenderer() {
     }
 
-    public static void render(GuiGraphics guiGraphics, int rgb, int centerX, int centerY, int radius) {
+    public static void render(GuiGraphics guiGraphics, int rgb, int alpha, int centerX, int centerY, int radius) {
+        if (alpha <= 0) {
+            return;
+        }
+
         float[] hsb = rgbToHsb(rgb);
         int hueDegrees = (int)(hsb[0] * 360.0F);
 
@@ -68,7 +72,7 @@ public final class DniColorRenderer {
 
         eyelidRadius *= 4.0D / 3.0D;
 
-        int lineColor = 0xFF000000 | (rgb & 0xFFFFFF);
+        int lineColor = ((clamp255(alpha)) << 24) | (rgb & 0xFFFFFF);
         int thickness = 2;
         int max = 20;
 
@@ -241,6 +245,10 @@ public final class DniColorRenderer {
         float brightness = max;
 
         return new float[] { hue, saturation, brightness };
+    }
+
+    private static int clamp255(int value) {
+        return Math.max(0, Math.min(255, value));
     }
 
     private record Point(double x, double y) {

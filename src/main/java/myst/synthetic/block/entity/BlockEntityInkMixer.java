@@ -32,6 +32,7 @@ import java.util.List;
 import myst.synthetic.ink.InkMixerVisuals;
 
 import myst.synthetic.ink.InkMixerEffects;
+import myst.synthetic.ink.InkMixerEffects.ConsumeAction;
 
 public class BlockEntityInkMixer extends BlockEntity implements Container, MenuProvider {
 
@@ -110,6 +111,17 @@ public class BlockEntityInkMixer extends BlockEntity implements Container, MenuP
 	public boolean consumeIngredient(ItemStack stack, int amount) {
 		if (!this.hasInk || stack.isEmpty() || amount <= 0) {
 			return false;
+		}
+
+		ConsumeAction action = InkMixerEffects.getConsumeAction(stack);
+		if (action == ConsumeAction.NONE) {
+			return false;
+		}
+
+		if (action == ConsumeAction.RESET_TO_PLAIN_INK) {
+			this.inkProbabilities.clear();
+			this.setChangedAndSync();
+			return true;
 		}
 
 		ItemStack single = stack.copyWithCount(1);
