@@ -53,16 +53,6 @@ public class BlockBookstand extends BaseEntityBlock {
     }
 
     @Override
-    public BlockState rotate(BlockState state, Rotation rotation) {
-        return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
-    }
-
-    @Override
-    public BlockState mirror(BlockState state, Mirror mirror) {
-        return state.rotate(mirror.getRotation(state.getValue(FACING)));
-    }
-
-    @Override
     protected MapCodec<? extends BaseEntityBlock> codec() {
         return CODEC;
     }
@@ -82,6 +72,36 @@ public class BlockBookstand extends BaseEntityBlock {
                 .setValue(WOOD, getWoodType(context.getItemInHand()));
     }
 
+    @Override
+    public BlockState rotate(BlockState state, Rotation rotation) {
+        int rot = state.getValue(ROTATION_INDEX);
+
+        rot = switch (rotation) {
+            case NONE -> rot;
+            case CLOCKWISE_90 -> (rot + 2) & 7;
+            case CLOCKWISE_180 -> (rot + 4) & 7;
+            case COUNTERCLOCKWISE_90 -> (rot + 6) & 7;
+        };
+
+        return state.setValue(ROTATION_INDEX, rot);
+    }
+
+    @Override
+    public BlockState mirror(BlockState state, Mirror mirror) {
+        int rot = state.getValue(ROTATION_INDEX);
+
+        rot = switch (mirror) {
+            case NONE -> rot;
+
+            // Mirrors east <-> west
+            case LEFT_RIGHT -> (8 - rot) & 7;
+
+            // Mirrors north <-> south
+            case FRONT_BACK -> (4 - rot) & 7;
+        };
+
+        return state.setValue(ROTATION_INDEX, rot);
+    }
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
