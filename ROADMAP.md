@@ -12,25 +12,25 @@ Stage 5 (COMPLETE) - sort out custom villager
 
 Stage 6 (COMPLETE) - sort out custom villages
 
-Stage 7 (IN PROGRESS)- sort out all blocks visually with proper collision
+Stage 7 (IN PROGRESS) - Add container slots to blocks:
 
-Stage 8 - Add container slots to all blocks.
+	7.1 - Slant Board
 
-	8.1 - Slant Board
+	7.2 - Lectern
 
-	8.2 - Lectern
+	7.3 - Writing Desk
 
-	8.3 - Writing Desk
+		7.3.1 - Adding a headboard doubles the desk's storage
 
-		8.3.1 - Adding a headboard doubles the desk's storage
+	7.4 (IN PROGRESS) - Ink Mixer
 
-	8.4 - Ink Mixer
+	7.5 - Book Binder
 
-	8.5 - Book Binder
+	7.6 - Link Modifier
 
-	8.6 - Link Modifier
+	7.7 - Book Recepticle
 
-	8.7 - Book Recepticle
+Stage 8 - sort out all blocks visually with proper collision
 
 Stage 9 - Get Portals working
 

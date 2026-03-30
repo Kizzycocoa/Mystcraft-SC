@@ -27,6 +27,11 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+
+import myst.synthetic.ink.InkMixerEffects;
 
 public class BlockEntityInkMixer extends BlockEntity implements Container, MenuProvider {
 
@@ -85,6 +90,49 @@ public class BlockEntityInkMixer extends BlockEntity implements Container, MenuP
 
 	public int getStoredPropertyCount() {
 		return this.inkProbabilities.size();
+	}
+
+	public List<Map.Entry<String, Float>> getSortedProperties() {
+		List<Map.Entry<String, Float>> entries = new ArrayList<>(this.inkProbabilities.entrySet());
+		entries.sort(Map.Entry.<String, Float>comparingByValue(Comparator.reverseOrder()));
+		return entries;
+	}
+
+	public boolean canConsumeIngredient(ItemStack stack) {
+		return this.hasInk && InkMixerEffects.canConsumeIngredient(stack);
+	}
+
+	public boolean consumeIngredient(ItemStack stack, int amount) {
+		if (!this.hasInk || stack.isEmpty() || amount <= 0) {
+			return false;
+		}
+
+		ItemStack single = stack.copyWithCount(1);
+		Map<String, Float> effects = InkMixerEffects.getItemEffects(single);
+		if (effects.isEmpty()) {
+			return false;
+		}
+
+		for (int i = 0; i < amount; i++) {
+			InkMixerEffects.blendInto(this.inkProbabilities, effects);
+		}
+
+		this.setChangedAndSync();
+		return true;
+	}
+
+	public int getBasinDisplayColor() {
+		if (!this.hasInk) {
+			return 0x00000000;
+		}
+
+		if (this.inkProbabilities.isEmpty()) {
+			return 0xFF101018;
+		}
+
+		// Placeholder tinting until you add true per-property colour logic.
+		// Keeps the basin visually distinct once mixed.
+		return 0xFF181830;
 	}
 
 	public boolean canCraftPreview() {
@@ -192,6 +240,10 @@ public class BlockEntityInkMixer extends BlockEntity implements Container, MenuP
 			BlockState state = this.getBlockState();
 			this.level.sendBlockUpdated(this.worldPosition, state, state, 3);
 		}
+	}
+
+	public long getNextSeed() {
+		return this.nextSeed;
 	}
 
 	@Override

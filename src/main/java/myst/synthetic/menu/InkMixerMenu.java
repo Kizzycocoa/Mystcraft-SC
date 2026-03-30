@@ -14,6 +14,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.Nullable;
+import net.minecraft.world.item.ItemStack;
 
 public class InkMixerMenu extends AbstractContainerMenu {
 
@@ -87,6 +88,33 @@ public class InkMixerMenu extends AbstractContainerMenu {
 
     public int getStoredPropertyCount() {
         return this.data.get(DATA_PROPERTY_COUNT);
+    }
+
+    public boolean consumeHeldIngredient(Player player, boolean wholeStack) {
+        if (this.inkMixerBlockEntity == null) {
+            return false;
+        }
+
+        ItemStack carried = this.getCarried();
+        if (carried.isEmpty()) {
+            return false;
+        }
+
+        if (!this.inkMixerBlockEntity.canConsumeIngredient(carried)) {
+            return false;
+        }
+
+        int amount = wholeStack ? carried.getCount() : 1;
+        if (!this.inkMixerBlockEntity.consumeIngredient(carried, amount)) {
+            return false;
+        }
+
+        carried.shrink(amount);
+        this.setCarried(carried.isEmpty() ? ItemStack.EMPTY : carried);
+
+        this.updateResultSlot();
+        this.broadcastChanges();
+        return true;
     }
 
     private void updateResultSlot() {

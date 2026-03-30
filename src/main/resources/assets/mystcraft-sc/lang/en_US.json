@@ -30,6 +30,7 @@
     "container.mystcraft-sc.ink_mixer": "Ink Mixer",
     "screen.mystcraft-sc.ink_mixer.basin_full": "Ink Basin: Full",
     "screen.mystcraft-sc.ink_mixer.basin_empty": "Ink Basin: Empty",
+    "screen.mystcraft-sc.ink_mixer.basin_tooltip": "Click with an ingredient to mix it into the ink",
 
     "entity.mystcraft-sc.book": "Book",
     "entity.mystcraft-sc.block": "Falling Block",
