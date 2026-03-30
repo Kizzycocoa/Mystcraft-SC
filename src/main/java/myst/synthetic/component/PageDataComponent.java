@@ -206,13 +206,6 @@ public record PageDataComponent(
                                         .withStyle(ChatFormatting.DARK_GRAY)
                         );
                     }
-
-                    var glyphs = PageEmblemResolver.resolveGlyphs(emblem);
-
-                    textConsumer.accept(
-                            Component.literal("Glyph components: " + glyphs.size())
-                                    .withStyle(ChatFormatting.DARK_GRAY)
-                    );
                 }
             }
 

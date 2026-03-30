@@ -16,6 +16,7 @@ import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import myst.synthetic.component.MystcraftDataComponents;
 import net.fabricmc.fabric.api.item.v1.ComponentTooltipAppenderRegistry;
 import net.minecraft.core.component.DataComponents;
+import myst.synthetic.client.page.PagePreviewExporter;
 
 public class MystcraftSyntheticCodexClient implements ClientModInitializer {
 
@@ -37,5 +38,6 @@ public class MystcraftSyntheticCodexClient implements ClientModInitializer {
 		MenuScreens.register(MystcraftMenus.INK_MIXER, InkMixerScreen::new);
 
 		LinkBookClientBridge.OPENER = stack -> Minecraft.getInstance().setScreen(new LinkBookScreen(stack));
+		PagePreviewExporter.exportAllOnce();
 	}
 }

@@ -1,13 +1,13 @@
 package myst.synthetic.page.emblem;
 
+import myst.synthetic.page.glyph.PageGlyphComponent;
+import myst.synthetic.page.glyph.PageGlyphComponentRegistry;
 import myst.synthetic.page.symbol.PageSymbol;
 import myst.synthetic.page.symbol.PageSymbolRegistry;
 import myst.synthetic.page.word.PageWord;
 import myst.synthetic.page.word.PageWordRegistry;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
-import myst.synthetic.page.glyph.PageGlyphComponent;
-import myst.synthetic.page.glyph.PageGlyphComponentRegistry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,22 +44,22 @@ public final class PageEmblemResolver {
 
         return resolve(symbol);
     }
-    public static java.util.List<ResolvedGlyphComponent> resolveGlyphs(ResolvedPageEmblem emblem) {
 
-        java.util.List<ResolvedGlyphComponent> glyphs = new java.util.ArrayList<>();
+    public static List<ResolvedGlyphComponent> resolveGlyphs(ResolvedPageEmblem emblem) {
+        List<ResolvedGlyphComponent> glyphs = new ArrayList<>();
 
         for (ResolvedPageWord word : emblem.words()) {
+            List<Integer> indices = word.resolvedWord().componentIndices();
 
-            for (Integer index : word.resolvedWord().componentIndices()) {
-
-                PageGlyphComponent component =
-                        PageGlyphComponentRegistry.get(index);
+            for (int i = 0; i < indices.size(); i++) {
+                Integer index = indices.get(i);
+                PageGlyphComponent component = PageGlyphComponentRegistry.get(index);
 
                 if (component != null) {
-
                     glyphs.add(new ResolvedGlyphComponent(
                             word.slot(),
-                            component
+                            component,
+                            i
                     ));
                 }
             }

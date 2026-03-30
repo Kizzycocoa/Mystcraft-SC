@@ -4,6 +4,7 @@ import myst.synthetic.page.glyph.PageGlyphComponent;
 
 public record ResolvedGlyphComponent(
         PageGlyphSlot slot,
-        PageGlyphComponent component
+        PageGlyphComponent component,
+        int componentOrder
 ) {
 }
