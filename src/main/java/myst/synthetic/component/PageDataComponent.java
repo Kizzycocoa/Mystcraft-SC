@@ -9,6 +9,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipProvider;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -18,43 +19,52 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 public record PageDataComponent(
-        String symbolId,
+        boolean linkPanel,
+        @Nullable String symbolId,
         List<String> linkProperties,
         Map<String, Integer> quality
 ) implements TooltipProvider {
 
-    public static final PageDataComponent EMPTY = new PageDataComponent(null, List.of(), Map.of());
+    public static final PageDataComponent EMPTY = new PageDataComponent(false, null, List.of(), Map.of());
 
     public static final Codec<PageDataComponent> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            Codec.BOOL.optionalFieldOf("link_panel", false).forGetter(PageDataComponent::linkPanel),
             Codec.STRING.optionalFieldOf("symbol", "").forGetter(component ->
                     component.symbolId() == null ? "" : component.symbolId()
             ),
             Codec.STRING.listOf().optionalFieldOf("link_properties", List.of()).forGetter(PageDataComponent::linkProperties),
             Codec.unboundedMap(Codec.STRING, Codec.INT).optionalFieldOf("quality", Map.of()).forGetter(PageDataComponent::quality)
-    ).apply(instance, (symbolId, linkProperties, quality) -> {
+    ).apply(instance, (linkPanel, symbolId, linkProperties, quality) -> {
         String normalizedSymbol = (symbolId == null || symbolId.isBlank()) ? null : symbolId;
-
         List<String> cleanedProperties = sanitizeProperties(linkProperties);
         Map<String, Integer> cleanedQuality = sanitizeQuality(quality);
 
-        if (!cleanedProperties.isEmpty()) {
-            normalizedSymbol = null;
+        if (normalizedSymbol != null) {
+            return new PageDataComponent(false, normalizedSymbol, List.of(), cleanedQuality);
         }
 
-        return new PageDataComponent(normalizedSymbol, cleanedProperties, cleanedQuality);
+        boolean isLinkPanel = linkPanel || !cleanedProperties.isEmpty();
+        return new PageDataComponent(isLinkPanel, null, cleanedProperties, cleanedQuality);
     }));
 
     public PageDataComponent {
         linkProperties = sanitizeProperties(linkProperties);
         quality = sanitizeQuality(quality);
 
-        if (!linkProperties.isEmpty()) {
+        if (symbolId != null && symbolId.isBlank()) {
             symbolId = null;
+        }
+
+        if (symbolId != null) {
+            linkPanel = false;
+            linkProperties = List.of();
+        } else if (!linkProperties.isEmpty()) {
+            linkPanel = true;
         }
     }
 
     public boolean isBlank() {
-        return !isLinkPanel() && !isSymbolPage();
+        return !linkPanel && symbolId == null;
     }
 
     public boolean isSymbolPage() {
@@ -62,9 +72,10 @@ public record PageDataComponent(
     }
 
     public boolean isLinkPanel() {
-        return !linkProperties.isEmpty();
+        return linkPanel;
     }
 
+    @Nullable
     public Identifier getSymbolIdentifier() {
         if (!isSymbolPage()) {
             return null;
@@ -73,29 +84,33 @@ public record PageDataComponent(
         return Identifier.tryParse(symbolId);
     }
 
-    public PageDataComponent withSymbol(Identifier symbol) {
+    public PageDataComponent withSymbol(@Nullable Identifier symbol) {
         if (symbol == null) {
-            return new PageDataComponent(null, this.linkProperties, this.quality);
+            return new PageDataComponent(this.linkPanel, null, this.linkProperties, this.quality);
         }
 
-        return new PageDataComponent(symbol.toString(), List.of(), this.quality);
+        return new PageDataComponent(false, symbol.toString(), List.of(), this.quality);
     }
 
     public PageDataComponent withoutSymbol() {
-        return new PageDataComponent(null, this.linkProperties, this.quality);
+        return new PageDataComponent(this.linkPanel, null, this.linkProperties, this.quality);
     }
 
     public PageDataComponent asLinkPanel() {
-        return new PageDataComponent(null, this.linkProperties, this.quality);
+        return new PageDataComponent(true, null, this.linkProperties, this.quality);
+    }
+
+    public PageDataComponent clearLinkPanel() {
+        return new PageDataComponent(false, this.symbolId, List.of(), this.quality);
     }
 
     public PageDataComponent withLinkProperties(List<String> properties) {
-        return new PageDataComponent(null, properties, this.quality);
+        return new PageDataComponent(true, null, properties, this.quality);
     }
 
     public PageDataComponent addLinkProperty(String property) {
         if (property == null || property.isBlank()) {
-            return this;
+            return this.asLinkPanel();
         }
 
         List<String> newProperties = new ArrayList<>(this.linkProperties);
@@ -103,11 +118,11 @@ public record PageDataComponent(
             newProperties.add(property);
         }
 
-        return new PageDataComponent(null, newProperties, this.quality);
+        return new PageDataComponent(true, null, newProperties, this.quality);
     }
 
     public PageDataComponent clearLinkProperties() {
-        return new PageDataComponent(this.symbolId, List.of(), this.quality);
+        return new PageDataComponent(this.linkPanel, this.symbolId, List.of(), this.quality);
     }
 
     public PageDataComponent withQuality(String trait, int value) {
@@ -117,9 +132,10 @@ public record PageDataComponent(
 
         LinkedHashMap<String, Integer> map = new LinkedHashMap<>(this.quality);
         map.put(trait, value);
-        return new PageDataComponent(this.symbolId, this.linkProperties, map);
+        return new PageDataComponent(this.linkPanel, this.symbolId, this.linkProperties, map);
     }
 
+    @Nullable
     public Integer getQuality(String trait) {
         if (trait == null || trait.isBlank()) {
             return null;
@@ -146,14 +162,19 @@ public record PageDataComponent(
             textConsumer.accept(Component.translatable("tooltip.mystcraft-sc.page.kind.link_panel")
                     .withStyle(ChatFormatting.GRAY));
 
-            textConsumer.accept(Component.translatable(
-                    "tooltip.mystcraft-sc.page.link_properties.count",
-                    this.linkProperties.size()
-            ).withStyle(ChatFormatting.GRAY));
-
-            for (String property : this.linkProperties) {
-                textConsumer.accept(Component.literal(" - " + property)
+            if (this.linkProperties.isEmpty()) {
+                textConsumer.accept(Component.translatable("tooltip.mystcraft-sc.page.link_properties.none")
                         .withStyle(ChatFormatting.DARK_GRAY));
+            } else {
+                textConsumer.accept(Component.translatable(
+                        "tooltip.mystcraft-sc.page.link_properties.count",
+                        this.linkProperties.size()
+                ).withStyle(ChatFormatting.GRAY));
+
+                for (String property : this.linkProperties) {
+                    textConsumer.accept(Component.literal(" - " + property)
+                            .withStyle(ChatFormatting.DARK_GRAY));
+                }
             }
         } else if (isSymbolPage()) {
             textConsumer.accept(Component.translatable("tooltip.mystcraft-sc.page.kind.symbol")

@@ -41,13 +41,11 @@ public final class Page {
     }
 
     public static void makeLinkPanel(ItemStack page) {
-        PageDataComponent data = getPageData(page);
-        setPageData(page, new PageDataComponent(null, data.linkProperties(), data.quality()));
+        setPageData(page, getPageData(page).asLinkPanel());
     }
 
     public static void clearLinkPanel(ItemStack page) {
-        PageDataComponent data = getPageData(page);
-        setPageData(page, data.clearLinkProperties());
+        setPageData(page, getPageData(page).clearLinkPanel());
     }
 
     public static void addLinkProperty(ItemStack page, String property) {

@@ -8,7 +8,7 @@
   ],
   "key": {
     "i": {
-      "tag": "minecraft:iron_ingots"
+      "item": "minecraft:iron_ingot"
     },
     "p": {
       "tag": "minecraft:planks"

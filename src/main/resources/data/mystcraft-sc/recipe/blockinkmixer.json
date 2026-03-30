@@ -7,8 +7,12 @@
     "psp"
   ],
   "key": {
-    "s": "minecraft:stone",
-    "v": "minecraft:glass_bottle",
+    "s": {
+      "item": "minecraft:stone"
+    },
+    "v": {
+      "item": "minecraft:glass_bottle"
+    },
     "p": {
       "tag": "minecraft:planks"
     }
