@@ -2,7 +2,6 @@ package myst.synthetic.client.gui;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTextTooltip;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
@@ -14,6 +13,7 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.client.input.MouseButtonEvent;
 
@@ -36,12 +36,14 @@ public class InkMixerScreen extends AbstractContainerScreen<InkMixerMenu> {
 
     @Override
     protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
-        // Basin backing first
+        int basinLeft = this.leftPos + BASIN_X;
+        int basinTop = this.topPos + BASIN_Y;
+
         guiGraphics.blit(
                 RenderPipelines.GUI_TEXTURED,
                 TEXTURE,
-                this.leftPos + BASIN_X,
-                this.topPos + BASIN_Y,
+                basinLeft,
+                basinTop,
                 179,
                 16,
                 BASIN_W,
@@ -50,19 +52,10 @@ public class InkMixerScreen extends AbstractContainerScreen<InkMixerMenu> {
                 256
         );
 
-        // Ink / mixed fill second
         if (this.menu.hasInk()) {
-            int fillColor = this.menu.getStoredPropertyCount() > 0 ? 0xFF181830 : 0xFF101018;
-            guiGraphics.fill(
-                    this.leftPos + BASIN_X,
-                    this.topPos + BASIN_Y,
-                    this.leftPos + BASIN_X + BASIN_W,
-                    this.topPos + BASIN_Y + BASIN_H,
-                    fillColor
-            );
+            renderInkBasin(guiGraphics, basinLeft, basinTop);
         }
 
-        // Full GUI frame last
         guiGraphics.blit(
                 RenderPipelines.GUI_TEXTURED,
                 TEXTURE,
@@ -75,6 +68,52 @@ public class InkMixerScreen extends AbstractContainerScreen<InkMixerMenu> {
                 256,
                 256
         );
+    }
+
+    private void renderInkBasin(GuiGraphics guiGraphics, int x, int y) {
+        int mixedRgb = this.menu.getMixedColorRgb();
+        int overlayAlpha = this.menu.getMixedOverlayAlpha();
+
+        // Black ink base
+        guiGraphics.fill(x, y, x + BASIN_W, y + BASIN_H, 0xFF050608);
+
+        // Slight softer inner black
+        guiGraphics.fill(x + 3, y + 3, x + BASIN_W - 3, y + BASIN_H - 3, 0xCC0C0D12);
+
+        if (overlayAlpha > 0) {
+            int mainOverlay = ((overlayAlpha) << 24) | mixedRgb;
+            int softOverlay = ((Math.max(28, overlayAlpha - 55)) << 24) | brighten(mixedRgb, 0.18F);
+            int deepOverlay = ((Math.max(20, overlayAlpha - 80)) << 24) | darken(mixedRgb, 0.22F);
+
+            // Full basin tint
+            guiGraphics.fill(x + 1, y + 1, x + BASIN_W - 1, y + BASIN_H - 1, mainOverlay);
+
+            // Inner coloured body
+            guiGraphics.fill(x + 6, y + 5, x + BASIN_W - 6, y + BASIN_H - 6, softOverlay);
+
+            // Deeper centre band
+            guiGraphics.fill(x + 10, y + 10, x + BASIN_W - 10, y + BASIN_H - 10, deepOverlay);
+
+            // Animated central glow pulse
+            float pulse = 0.5F + 0.5F * Mth.sin((System.currentTimeMillis() % 100000L) / 190.0F);
+            int glowAlpha = Math.min(255, Math.max(26, (int)(overlayAlpha * (0.35F + pulse * 0.25F))));
+            int glowColor = (glowAlpha << 24) | brighten(mixedRgb, 0.40F);
+
+            int glowInsetX = 20;
+            int glowInsetY = 18;
+            guiGraphics.fill(
+                    x + glowInsetX,
+                    y + glowInsetY,
+                    x + BASIN_W - glowInsetX,
+                    y + BASIN_H - glowInsetY,
+                    glowColor
+            );
+
+            // Thin highlight stripe
+            int highlightAlpha = Math.max(18, overlayAlpha / 3);
+            int highlightColor = (highlightAlpha << 24) | brighten(mixedRgb, 0.55F);
+            guiGraphics.fill(x + 8, y + 8, x + BASIN_W - 8, y + 12, highlightColor);
+        }
     }
 
     @Override
@@ -99,9 +138,9 @@ public class InkMixerScreen extends AbstractContainerScreen<InkMixerMenu> {
             int buttonId = -1;
 
             if (event.button() == 0) {
-                buttonId = 1; // mix whole stack
+                buttonId = 1;
             } else if (event.button() == 1) {
-                buttonId = 0; // mix one item
+                buttonId = 0;
             }
 
             if (buttonId >= 0 && this.minecraft != null && this.minecraft.gameMode != null) {
@@ -151,5 +190,33 @@ public class InkMixerScreen extends AbstractContainerScreen<InkMixerMenu> {
                 && mouseX < this.leftPos + BASIN_X + BASIN_W
                 && mouseY >= this.topPos + BASIN_Y
                 && mouseY < this.topPos + BASIN_Y + BASIN_H;
+    }
+
+    private static int brighten(int rgb, float amount) {
+        int r = (rgb >> 16) & 0xFF;
+        int g = (rgb >> 8) & 0xFF;
+        int b = rgb & 0xFF;
+
+        r = clamp255((int)(r + ((255 - r) * amount)));
+        g = clamp255((int)(g + ((255 - g) * amount)));
+        b = clamp255((int)(b + ((255 - b) * amount)));
+
+        return (r << 16) | (g << 8) | b;
+    }
+
+    private static int darken(int rgb, float amount) {
+        int r = (rgb >> 16) & 0xFF;
+        int g = (rgb >> 8) & 0xFF;
+        int b = rgb & 0xFF;
+
+        r = clamp255((int)(r * (1.0F - amount)));
+        g = clamp255((int)(g * (1.0F - amount)));
+        b = clamp255((int)(b * (1.0F - amount)));
+
+        return (r << 16) | (g << 8) | b;
+    }
+
+    private static int clamp255(int value) {
+        return Math.max(0, Math.min(255, value));
     }
 }

@@ -10,7 +10,6 @@ import myst.synthetic.menu.InkMixerMenu;
 import myst.synthetic.page.Page;
 import myst.synthetic.ink.InkMixerInkSource;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -30,6 +29,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import myst.synthetic.ink.InkMixerVisuals;
 
 import myst.synthetic.ink.InkMixerEffects;
 
@@ -48,9 +48,14 @@ public class BlockEntityInkMixer extends BlockEntity implements Container, MenuP
 	private final ContainerData dataAccess = new ContainerData() {
 		@Override
 		public int get(int index) {
+			int mixedColor = getBasinMixedColor();
 			return switch (index) {
 				case 0 -> hasInk ? 1 : 0;
 				case 1 -> inkProbabilities.size();
+				case 2 -> (mixedColor >> 16) & 0xFF;
+				case 3 -> (mixedColor >> 8) & 0xFF;
+				case 4 -> mixedColor & 0xFF;
+				case 5 -> getBasinOverlayAlpha();
 				default -> 0;
 			};
 		}
@@ -64,7 +69,7 @@ public class BlockEntityInkMixer extends BlockEntity implements Container, MenuP
 
 		@Override
 		public int getCount() {
-			return 2;
+			return 6;
 		}
 	};
 
@@ -121,18 +126,24 @@ public class BlockEntityInkMixer extends BlockEntity implements Container, MenuP
 		return true;
 	}
 
-	public int getBasinDisplayColor() {
+	public int getBasinMixedColor() {
 		if (!this.hasInk) {
-			return 0x00000000;
+			return 0x000000;
 		}
 
 		if (this.inkProbabilities.isEmpty()) {
-			return 0xFF101018;
+			return 0x101018;
 		}
 
-		// Placeholder tinting until you add true per-property colour logic.
-		// Keeps the basin visually distinct once mixed.
-		return 0xFF181830;
+		return InkMixerVisuals.getMixedColor(this.inkProbabilities);
+	}
+
+	public int getBasinOverlayAlpha() {
+		if (!this.hasInk || this.inkProbabilities.isEmpty()) {
+			return 0;
+		}
+
+		return InkMixerVisuals.getOverlayAlpha(this.inkProbabilities);
 	}
 
 	public boolean canCraftPreview() {

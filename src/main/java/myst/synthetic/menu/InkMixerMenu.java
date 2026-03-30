@@ -14,12 +14,15 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.Nullable;
-import net.minecraft.world.item.ItemStack;
 
 public class InkMixerMenu extends AbstractContainerMenu {
 
     public static final int DATA_HAS_INK = 0;
     public static final int DATA_PROPERTY_COUNT = 1;
+    public static final int DATA_MIX_R = 2;
+    public static final int DATA_MIX_G = 3;
+    public static final int DATA_MIX_B = 4;
+    public static final int DATA_MIX_ALPHA = 5;
 
     private static final int SLOT_INK_INPUT = 0;
     private static final int SLOT_PAPER = 1;
@@ -40,7 +43,7 @@ public class InkMixerMenu extends AbstractContainerMenu {
     private static final int BUTTON_MIX_STACK = 1;
 
     public InkMixerMenu(int containerId, Inventory playerInventory) {
-        this(containerId, playerInventory, new SimpleContainer(3), null, new SimpleContainerData(2));
+        this(containerId, playerInventory, new SimpleContainer(3), null, new SimpleContainerData(6));
     }
 
     public InkMixerMenu(int containerId, Inventory playerInventory, BlockEntityInkMixer blockEntity, ContainerData data) {
@@ -57,7 +60,7 @@ public class InkMixerMenu extends AbstractContainerMenu {
         super(MystcraftMenus.INK_MIXER, containerId);
 
         checkContainerSize(inventory, 3);
-        checkContainerDataCount(data, 2);
+        checkContainerDataCount(data, 6);
 
         this.inkMixerInventory = inventory;
         this.inkMixerBlockEntity = blockEntity;
@@ -90,6 +93,17 @@ public class InkMixerMenu extends AbstractContainerMenu {
 
     public int getStoredPropertyCount() {
         return this.data.get(DATA_PROPERTY_COUNT);
+    }
+
+    public int getMixedColorRgb() {
+        int r = this.data.get(DATA_MIX_R) & 0xFF;
+        int g = this.data.get(DATA_MIX_G) & 0xFF;
+        int b = this.data.get(DATA_MIX_B) & 0xFF;
+        return (r << 16) | (g << 8) | b;
+    }
+
+    public int getMixedOverlayAlpha() {
+        return this.data.get(DATA_MIX_ALPHA) & 0xFF;
     }
 
     private boolean consumeHeldIngredient(Player player, boolean wholeStack) {
