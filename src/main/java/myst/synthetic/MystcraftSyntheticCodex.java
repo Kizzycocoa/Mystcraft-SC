@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import myst.synthetic.component.MystcraftDataComponents;
 import myst.synthetic.page.symbol.MystcraftPageSymbols;
+import myst.synthetic.page.word.MystcraftPageWords;
 
 public class MystcraftSyntheticCodex implements ModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger("mystcraft-sc");
@@ -16,6 +17,10 @@ public class MystcraftSyntheticCodex implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		MystcraftConfig.load();
+
+		MystcraftDataComponents.initialize();
+		MystcraftPageWords.initialize();
+		MystcraftPageSymbols.initialize();
 
 		MystcraftBlocks.initialize();
 		MystcraftEntities.initialize();
@@ -28,13 +33,7 @@ public class MystcraftSyntheticCodex implements ModInitializer {
 		MystcraftPoiTypes.initialize();
 		MystcraftVillagerProfessions.initialize();
 		MystcraftVillagerTrades.initialize();
-		MystcraftDataComponents.initialize();
-		MystcraftPageSymbols.initialize();
-
 
 		ServerLifecycleEvents.SERVER_STARTING.register(StructurePoolAdder::inject);
-
-		LOGGER.info("Mystcraft config directory: {}", MystcraftConfig.getConfigDir());
-		LOGGER.info("Mystcraft: The Synthetic Codex initialized.");
 	}
 }

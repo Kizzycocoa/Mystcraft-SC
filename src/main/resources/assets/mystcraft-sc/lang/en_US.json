@@ -76,6 +76,18 @@
     "tooltip.mystcraft-sc.page.link_properties.none": "No link properties",
     "tooltip.mystcraft-sc.page.link_properties.count": "Link Properties: %s",
     "tooltip.mystcraft-sc.page.quality_total": "Total Quality: %s",
+    "item.mystcraft-sc.page.symbol_named": "%s Page",
+
+    "symbol.mystcraft-sc.debug.test_symbol": "Test Symbol",
+    "symbol.mystcraft-sc.celestial.suns_normal": "Normal Sun",
+    "symbol.mystcraft-sc.celestial.stars_normal": "Normal Stars",
+    "symbol.mystcraft-sc.weather.clear": "Clear Skies",
+    "symbol.mystcraft-sc.weather.rain": "Rain",
+    "symbol.mystcraft-sc.structure.villages": "Villages",
+    "symbol.mystcraft-sc.terrain.dense_ores": "Dense Ores",
+
+    "tooltip.mystcraft-sc.page.symbol_name": "Symbol: %s",
+    "tooltip.mystcraft-sc.page.poem_words": "Poem Words",
 
     "item.mystcraft-sc.bookstand": "Bookstand",
     "item.mystcraft-sc.bookstand.oak": "Oak Bookstand",

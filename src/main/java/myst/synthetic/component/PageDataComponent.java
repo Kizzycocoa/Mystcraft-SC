@@ -17,6 +17,11 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+import myst.synthetic.page.emblem.PageEmblemResolver;
+import myst.synthetic.page.emblem.ResolvedPageEmblem;
+import myst.synthetic.page.emblem.ResolvedPageWord;
+import myst.synthetic.page.symbol.PageSymbol;
+import myst.synthetic.page.symbol.PageSymbolRegistry;
 
 public record PageDataComponent(
         boolean linkPanel,
@@ -179,6 +184,30 @@ public record PageDataComponent(
         } else if (isSymbolPage()) {
             textConsumer.accept(Component.translatable("tooltip.mystcraft-sc.page.kind.symbol")
                     .withStyle(ChatFormatting.GRAY));
+
+            Identifier symbolIdentifier = getSymbolIdentifier();
+            PageSymbol symbol = symbolIdentifier == null ? null : PageSymbolRegistry.get(symbolIdentifier);
+
+            if (symbol != null) {
+                textConsumer.accept(Component.translatable(
+                        "tooltip.mystcraft-sc.page.symbol_name",
+                        Component.translatable(symbol.translationKey())
+                ).withStyle(ChatFormatting.GRAY));
+
+                ResolvedPageEmblem emblem = PageEmblemResolver.resolve(symbol);
+                if (!emblem.isEmpty()) {
+                    textConsumer.accept(Component.translatable("tooltip.mystcraft-sc.page.poem_words")
+                            .withStyle(ChatFormatting.GRAY));
+
+                    for (ResolvedPageWord word : emblem.words()) {
+                        textConsumer.accept(
+                                Component.literal(" - " + word.rawWord())
+                                        .withStyle(ChatFormatting.DARK_GRAY)
+                        );
+                    }
+                }
+            }
+
             textConsumer.accept(Component.translatable("tooltip.mystcraft-sc.page.symbol_id", this.symbolId)
                     .withStyle(ChatFormatting.DARK_GRAY));
         } else {
