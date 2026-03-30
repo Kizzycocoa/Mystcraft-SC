@@ -96,13 +96,17 @@ public class InkMixerScreen extends AbstractContainerScreen<InkMixerMenu> {
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
         if (this.isMouseOverBasin(event.x(), event.y())) {
-            boolean wholeStack = event.button() == 0;
-            boolean single = event.button() == 1;
+            int buttonId = -1;
 
-            if (wholeStack || single) {
-                if (this.menu.consumeHeldIngredient(this.minecraft.player, wholeStack)) {
-                    return true;
-                }
+            if (event.button() == 0) {
+                buttonId = 1; // mix whole stack
+            } else if (event.button() == 1) {
+                buttonId = 0; // mix one item
+            }
+
+            if (buttonId >= 0 && this.minecraft != null && this.minecraft.gameMode != null) {
+                this.minecraft.gameMode.handleInventoryButtonClick(this.menu.containerId, buttonId);
+                return true;
             }
         }
 

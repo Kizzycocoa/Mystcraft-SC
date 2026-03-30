@@ -36,6 +36,8 @@ public class InkMixerMenu extends AbstractContainerMenu {
     private final BlockEntityInkMixer inkMixerBlockEntity;
     private final ContainerData data;
     private final SimpleContainer resultContainer = new SimpleContainer(1);
+    private static final int BUTTON_MIX_ONE = 0;
+    private static final int BUTTON_MIX_STACK = 1;
 
     public InkMixerMenu(int containerId, Inventory playerInventory) {
         this(containerId, playerInventory, new SimpleContainer(3), null, new SimpleContainerData(2));
@@ -90,7 +92,7 @@ public class InkMixerMenu extends AbstractContainerMenu {
         return this.data.get(DATA_PROPERTY_COUNT);
     }
 
-    public boolean consumeHeldIngredient(Player player, boolean wholeStack) {
+    private boolean consumeHeldIngredient(Player player, boolean wholeStack) {
         if (this.inkMixerBlockEntity == null) {
             return false;
         }
@@ -115,6 +117,15 @@ public class InkMixerMenu extends AbstractContainerMenu {
         this.updateResultSlot();
         this.broadcastChanges();
         return true;
+    }
+
+    @Override
+    public boolean clickMenuButton(Player player, int id) {
+        return switch (id) {
+            case BUTTON_MIX_ONE -> this.consumeHeldIngredient(player, false);
+            case BUTTON_MIX_STACK -> this.consumeHeldIngredient(player, true);
+            default -> false;
+        };
     }
 
     private void updateResultSlot() {
