@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "iii",
+    "ppp",
+    "p p"
+  ],
+  "key": {
+    "i": {
+      "tag": "minecraft:iron_ingots"
+    },
+    "p": {
+      "tag": "minecraft:planks"
+    }
+  },
+  "result": {
+    "id": "mystcraft-sc:blockbookbinder",
+    "count": 1
+  }
+}

@@ -1,9 +1,9 @@
 {
     "parent": "block/block",
     "textures": {
-        "particle": "mystcraft:entity/bookbinder/bookbinder",
-        "0": "mystcraft:entity/bookbinder/bookbinder",
-        "1": "mystcraft:entity/bookbinder/press_part"
+        "particle": "mystcraft-sc:entity/bookbinder/bookbinder",
+        "0": "mystcraft-sc:entity/bookbinder/bookbinder",
+        "1": "mystcraft-sc:entity/bookbinder/press_part"
     },
     "elements": [
         {

@@ -1,11 +1,8 @@
 {
-    "multipart": [
-        {
-            "apply": [
-                {
-                    "model": "mystcraft:inkwell_model"
-                }
-            ]
-        }
-    ]
+    "variants": {
+        "facing=north": { "model": "mystcraft-sc:block/inkwell_model", "y": 0 },
+        "facing=east":  { "model": "mystcraft-sc:block/inkwell_model", "y": 90 },
+        "facing=south": { "model": "mystcraft-sc:block/inkwell_model", "y": 180 },
+        "facing=west":  { "model": "mystcraft-sc:block/inkwell_model", "y": 270 }
+    }
 }

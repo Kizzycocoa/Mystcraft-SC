@@ -2,27 +2,31 @@ package myst.synthetic;
 
 import java.util.function.Function;
 
+import myst.synthetic.block.BlockBookBinder;
+import myst.synthetic.block.BlockBookReceptacle;
+import myst.synthetic.block.BlockBookstand;
 import myst.synthetic.block.BlockDecay;
+import myst.synthetic.block.BlockInkMixer;
+import myst.synthetic.block.BlockLinkModifier;
+import myst.synthetic.block.BlockSlantBoard;
 import myst.synthetic.block.BlockStarFissure;
 import myst.synthetic.block.BlockWritingDesk;
 import myst.synthetic.item.DecayBlockItem;
+import myst.synthetic.item.ItemBookstand;
+import myst.synthetic.item.ItemSlantBoard;
 import myst.synthetic.item.ItemWritingDesk;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
-import myst.synthetic.block.BlockSlantBoard;
-import net.minecraft.world.level.block.Blocks;
-import myst.synthetic.item.ItemSlantBoard;
-import myst.synthetic.block.BlockBookstand;
-import myst.synthetic.item.ItemBookstand;
 
 public class MystcraftBlocks {
 
@@ -61,7 +65,10 @@ public class MystcraftBlocks {
     public static final Block CRYSTAL = register(
             "crystal",
             Block::new,
-            BlockBehaviour.Properties.of().mapColor(MapColor.ICE).strength(1.0F)
+            BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.ICE)
+                    .strength(1.0F)
+                    .sound(SoundType.GLASS)
     );
 
     public static final Block BLOCKDECAY = register(
@@ -92,6 +99,7 @@ public class MystcraftBlocks {
                     .noOcclusion(),
             (block, properties) -> new ItemWritingDesk(block, properties)
     );
+
     public static final Block SLANT_BOARD_BLOCK = register(
             "slant_board",
             BlockSlantBoard::new,
@@ -108,6 +116,46 @@ public class MystcraftBlocks {
                     .sound(SoundType.WOOD)
                     .noOcclusion(),
             ItemBookstand::new
+    );
+
+    public static final Block INK_MIXER_BLOCK = register(
+            "blockinkmixer",
+            BlockInkMixer::new,
+            BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.WOOD)
+                    .strength(2.0F)
+                    .sound(SoundType.WOOD)
+                    .noOcclusion()
+    );
+
+    public static final Block LINK_MODIFIER_BLOCK = register(
+            "blocklinkmodifier",
+            BlockLinkModifier::new,
+            BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.METAL)
+                    .strength(2.0F)
+                    .sound(SoundType.METAL)
+                    .noOcclusion()
+    );
+
+    public static final Block BOOK_BINDER_BLOCK = register(
+            "blockbookbinder",
+            BlockBookBinder::new,
+            BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.WOOD)
+                    .strength(2.0F)
+                    .sound(SoundType.WOOD)
+                    .noOcclusion()
+    );
+
+    public static final Block BOOK_RECEPTACLE_BLOCK = register(
+            "blockbookreceptacle",
+            BlockBookReceptacle::new,
+            BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.ICE)
+                    .strength(1.0F)
+                    .sound(SoundType.GLASS)
+                    .noOcclusion()
     );
 
     public static void initialize() {

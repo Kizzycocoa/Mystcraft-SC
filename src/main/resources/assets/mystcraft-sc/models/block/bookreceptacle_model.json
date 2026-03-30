@@ -1,9 +1,9 @@
 {
     "parent": "block/block",
     "textures": {
-        "particle": "mystcraft:block/crystal",
-        "0": "mystcraft:block/crystal",
-        "1": "mystcraft:block/book_receptacle"
+        "particle": "mystcraft-sc:block/crystal",
+        "0": "mystcraft-sc:block/crystal",
+        "1": "mystcraft-sc:block/book_receptacle"
     },
     "elements": [
         {

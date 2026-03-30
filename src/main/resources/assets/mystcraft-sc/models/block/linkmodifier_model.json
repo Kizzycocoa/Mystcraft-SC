@@ -1,9 +1,9 @@
 {
     "parent": "block/block",
     "textures": {
-        "particle": "mystcraft:entity/linkmodifier/linkmodifier_base",
-        "0": "mystcraft:entity/linkmodifier/linkmodifier_base",
-        "1": "mystcraft:entity/linkmodifier/linkmodifier_details"
+        "particle": "mystcraft-sc:entity/linkmodifier/linkmodifier_base",
+        "0": "mystcraft-sc:entity/linkmodifier/linkmodifier_base",
+        "1": "mystcraft-sc:entity/linkmodifier/linkmodifier_details"
     },
     "elements": [
         {

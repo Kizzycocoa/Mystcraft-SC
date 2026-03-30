@@ -15,9 +15,9 @@ import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class VillagePoolAdder {
+public final class StructurePoolAdder {
 
-    private VillagePoolAdder() {
+    private StructurePoolAdder() {
     }
 
     public static void inject(MinecraftServer server) {
@@ -39,6 +39,8 @@ public final class VillagePoolAdder {
 
         addToPool(pools, "village/taiga/houses", "mystcraft-sc:village/taiga/houses/taiga_atelier_1", 6);
         addToPool(pools, "village/taiga/houses", "mystcraft-sc:village/taiga/houses/taiga_atelier_2", 6);
+
+        addToPool(pools, "trial_chambers/hallway", "mystcraft-sc:trial_chambers/hallway/mystcraft_book", 1);
     }
 
     private static void addToPool(

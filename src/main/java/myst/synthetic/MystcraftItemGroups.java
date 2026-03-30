@@ -108,7 +108,10 @@ public class MystcraftItemGroups {
                         for (WoodType wood : WoodType.values()) {
                             output.accept(createBookstandVariant(wood));
                         }
-
+                        output.accept(MystcraftBlocks.INK_MIXER_BLOCK);
+                        output.accept(MystcraftBlocks.LINK_MODIFIER_BLOCK);
+                        output.accept(MystcraftBlocks.BOOK_BINDER_BLOCK);
+                        output.accept(MystcraftBlocks.BOOK_RECEPTACLE_BLOCK);
                         output.accept(MystcraftBlocks.CRYSTAL);
                         for (DecayType type : DecayType.values()) {
 

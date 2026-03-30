@@ -31,7 +31,7 @@
     "entity.mystcraft-sc.block": "Falling Block",
     "entity.mystcraft-sc.meteor": "Meteor",
 
-    "block.mystcraft-sc.receptacle": "Book Receptacle",
+    "block.mystcraft-sc.blockbookreceptacle": "Book Receptacle",
     "block.mystcraft-sc.blockdecay": "Decay Effect",
     "block.mystcraft-sc.blockdecay.blue": "Blue Decay",
     "block.mystcraft-sc.blockdecay.red": "Red Decay",
@@ -41,9 +41,9 @@
     "block.mystcraft-sc.blockdecay.white": "White Decay",
     "block.mystcraft-sc.blockdecay.black": "Black Decay",
     "block.mystcraft-sc.crystal": "Crystal",
-    "block.mystcraft-sc.linkmodifier": "Link Modifier",
-    "block.mystcraft-sc.bookbinder": "Book Binder",
-    "block.mystcraft-sc.inkmixer": "Ink Mixer",
+    "block.mystcraft-sc.blockinkmixer": "Ink Mixer",
+    "block.mystcraft-sc.blocklinkmodifier": "Link Modifier",
+    "block.mystcraft-sc.blockbookbinder": "Book Binder",
     "block.mystcraft-sc.linkportal": "Link Portal",
     "block.mystcraft-sc.blockstarfissure": "Star Fissure",
 
