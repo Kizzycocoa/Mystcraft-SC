@@ -3,24 +3,25 @@ package myst.synthetic.client.gui;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.client.gui.screens.inventory.tooltip.ClientTextTooltip;
-import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
-import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
-
+import myst.synthetic.client.render.DniColorRenderer;
 import myst.synthetic.menu.InkMixerMenu;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTextTooltip;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.client.input.MouseButtonEvent;
 
 public class InkMixerScreen extends AbstractContainerScreen<InkMixerMenu> {
 
     private static final Identifier TEXTURE =
             Identifier.fromNamespaceAndPath("mystcraft-sc", "textures/gui/inkmixer.png");
+    private static final Identifier FLUID_TEXTURE =
+            Identifier.fromNamespaceAndPath("mystcraft-sc", "textures/block/fluid.png");
 
     private static final int BASIN_X = 54;
     private static final int BASIN_Y = 16;
@@ -74,45 +75,50 @@ public class InkMixerScreen extends AbstractContainerScreen<InkMixerMenu> {
         int mixedRgb = this.menu.getMixedColorRgb();
         int overlayAlpha = this.menu.getMixedOverlayAlpha();
 
-        // Black ink base
-        guiGraphics.fill(x, y, x + BASIN_W, y + BASIN_H, 0xFF050608);
+        renderFluidTexture(guiGraphics, x, y, BASIN_W, BASIN_H);
 
-        // Slight softer inner black
-        guiGraphics.fill(x + 3, y + 3, x + BASIN_W - 3, y + BASIN_H - 3, 0xCC0C0D12);
+        // Darken the fluid into black ink while still preserving the texture highlights.
+        guiGraphics.fill(x, y, x + BASIN_W, y + BASIN_H, 0xB0000000);
+        guiGraphics.fill(x, y, x + BASIN_W, y + BASIN_H, 0x70000000);
 
         if (overlayAlpha > 0) {
-            int mainOverlay = ((overlayAlpha) << 24) | mixedRgb;
-            int softOverlay = ((Math.max(28, overlayAlpha - 55)) << 24) | brighten(mixedRgb, 0.18F);
-            int deepOverlay = ((Math.max(20, overlayAlpha - 80)) << 24) | darken(mixedRgb, 0.22F);
+            int topColor = (Math.max(40, overlayAlpha / 2) << 24) | brighten(mixedRgb, 0.10F);
+            int bottomColor = (Math.min(255, overlayAlpha + 70) << 24) | darken(mixedRgb, 0.08F);
 
-            // Full basin tint
-            guiGraphics.fill(x + 1, y + 1, x + BASIN_W - 1, y + BASIN_H - 1, mainOverlay);
-
-            // Inner coloured body
-            guiGraphics.fill(x + 6, y + 5, x + BASIN_W - 6, y + BASIN_H - 6, softOverlay);
-
-            // Deeper centre band
-            guiGraphics.fill(x + 10, y + 10, x + BASIN_W - 10, y + BASIN_H - 10, deepOverlay);
-
-            // Animated central glow pulse
-            float pulse = 0.5F + 0.5F * Mth.sin((System.currentTimeMillis() % 100000L) / 190.0F);
-            int glowAlpha = Math.min(255, Math.max(26, (int)(overlayAlpha * (0.35F + pulse * 0.25F))));
-            int glowColor = (glowAlpha << 24) | brighten(mixedRgb, 0.40F);
-
-            int glowInsetX = 20;
-            int glowInsetY = 18;
-            guiGraphics.fill(
-                    x + glowInsetX,
-                    y + glowInsetY,
-                    x + BASIN_W - glowInsetX,
-                    y + BASIN_H - glowInsetY,
-                    glowColor
+            guiGraphics.fillGradient(
+                    x,
+                    y,
+                    x + BASIN_W,
+                    y + BASIN_H,
+                    topColor,
+                    bottomColor
             );
 
-            // Thin highlight stripe
-            int highlightAlpha = Math.max(18, overlayAlpha / 3);
-            int highlightColor = (highlightAlpha << 24) | brighten(mixedRgb, 0.55F);
-            guiGraphics.fill(x + 8, y + 8, x + BASIN_W - 8, y + 12, highlightColor);
+            DniColorRenderer.render(
+                    guiGraphics,
+                    mixedRgb,
+                    x + (BASIN_W / 2) + 1,
+                    y + (BASIN_H / 2) + 1,
+                    20
+            );
+        }
+    }
+
+    private void renderFluidTexture(GuiGraphics guiGraphics, int x, int y, int width, int height) {
+        for (int drawX = 0; drawX < width; drawX += 16) {
+            int w = Math.min(16, width - drawX);
+            guiGraphics.blit(
+                    RenderPipelines.GUI_TEXTURED,
+                    FLUID_TEXTURE,
+                    x + drawX,
+                    y,
+                    0,
+                    0,
+                    w,
+                    height,
+                    16,
+                    64
+            );
         }
     }
 
@@ -160,15 +166,13 @@ public class InkMixerScreen extends AbstractContainerScreen<InkMixerMenu> {
             List<ClientTooltipComponent> tooltip = new ArrayList<>();
 
             tooltip.add(new ClientTextTooltip(
-                    Component.translatable("screen.mystcraft-sc.ink_mixer.basin_tooltip")
-                            .getVisualOrderText()
+                    Component.translatable("screen.mystcraft-sc.ink_mixer.basin_tooltip").getVisualOrderText()
             ));
 
             int propertyCount = this.menu.getStoredPropertyCount();
             if (propertyCount > 0) {
                 tooltip.add(new ClientTextTooltip(
-                        Component.literal("Stored properties: " + propertyCount)
-                                .getVisualOrderText()
+                        Component.literal("Stored properties: " + propertyCount).getVisualOrderText()
                 ));
             }
 
