@@ -1,11 +1,11 @@
 {
     "parent": "block/block",
     "textures": {
-        "particle": "mystcraft-sc:entity/inkwell/inkwell_base",
-        "0": "mystcraft-sc:entity/inkwell/inkwell_base",
-        "1": "mystcraft-sc:entity/inkwell/inkwell_cup",
-        "2": "mystcraft-sc:entity/inkwell/ink",
-        "3": "mystcraft-sc:entity/inkwell/ink_glass"
+        "particle": "mystcraft-sc:block/inkwell/inkwell_base",
+        "0": "mystcraft-sc:block/inkwell/inkwell_base",
+        "1": "mystcraft-sc:block/inkwell/inkwell_cup",
+        "2": "mystcraft-sc:block/inkwell/ink",
+        "3": "mystcraft-sc:block/inkwell/ink_glass"
     },
     "elements": [
         {
