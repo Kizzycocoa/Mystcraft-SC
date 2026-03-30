@@ -14,6 +14,10 @@ import myst.synthetic.block.property.WoodType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.component.CustomData;
+import myst.synthetic.api.hook.LinkPropertyAPI;
+import myst.synthetic.page.Page;
+
+import java.util.List;
 
 public class MystcraftItemGroups {
 
@@ -138,7 +142,16 @@ public class MystcraftItemGroups {
                     .title(Component.translatable("itemGroup.mystcraft-sc.pages"))
                     .icon(() -> new ItemStack(MystcraftItems.AGEBOOK)) // swap to AGEBOOK later if desired
                     .displayItems((parameters, output) -> {
-                        output.accept(MystcraftItems.PAGE);
+                        output.accept(Page.createPage());
+                        output.accept(Page.createLinkPage());
+                        output.accept(Page.createLinkPage(LinkPropertyAPI.FLAG_INTRA_LINKING));
+                        output.accept(Page.createLinkPage(List.of(
+                                LinkPropertyAPI.FLAG_NATURAL,
+                                LinkPropertyAPI.PROP_SOUND
+                        )));
+                        output.accept(Page.createSymbolPage(
+                                Identifier.fromNamespaceAndPath("mystcraft-sc", "debug/test_symbol")
+                        ));
                     })
                     .build()
     );
