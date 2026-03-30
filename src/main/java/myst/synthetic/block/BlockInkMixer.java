@@ -122,6 +122,13 @@ public class BlockInkMixer extends BaseEntityBlock {
             InteractionHand hand,
             BlockHitResult hit
     ) {
-        return InteractionResult.PASS;
+        if (!level.isClientSide()) {
+            BlockEntity blockEntity = level.getBlockEntity(pos);
+            if (blockEntity instanceof MenuProvider menuProvider) {
+                player.openMenu(menuProvider);
+            }
+        }
+
+        return InteractionResult.SUCCESS;
     }
 }
