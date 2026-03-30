@@ -18,6 +18,7 @@ public class MystcraftSyntheticCodex implements ModInitializer {
 		MystcraftBlocks.initialize();
 		MystcraftEntities.initialize();
 		MystcraftBlockEntities.initialize();
+		MystcraftMenus.initialize();
 		MystcraftItems.initialize();
 		MystcraftItemGroups.initialize();
 		MystcraftRecipeSerializers.initialize();
@@ -25,6 +26,7 @@ public class MystcraftSyntheticCodex implements ModInitializer {
 		MystcraftPoiTypes.initialize();
 		MystcraftVillagerProfessions.initialize();
 		MystcraftVillagerTrades.initialize();
+
 
 		ServerLifecycleEvents.SERVER_STARTING.register(StructurePoolAdder::inject);
 

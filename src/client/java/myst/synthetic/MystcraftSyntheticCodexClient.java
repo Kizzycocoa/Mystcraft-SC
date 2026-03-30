@@ -1,11 +1,13 @@
 package myst.synthetic;
 
+import myst.synthetic.client.gui.InkMixerScreen;
 import myst.synthetic.client.gui.LinkBookScreen;
 import myst.synthetic.client.render.BookstandBlockEntityRenderer;
 import myst.synthetic.client.render.SlantBoardBlockEntityRenderer;
 import myst.synthetic.client.render.StarFissureBlockEntityRenderer;
 import net.fabricmc.api.ClientModInitializer;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import myst.synthetic.client.render.LinkbookEntityRenderer;
@@ -26,6 +28,8 @@ public class MystcraftSyntheticCodexClient implements ClientModInitializer {
 		BlockRenderLayerMap.putBlock(MystcraftBlocks.LINK_MODIFIER_BLOCK, ChunkSectionLayer.CUTOUT);
 		BlockRenderLayerMap.putBlock(MystcraftBlocks.BOOK_BINDER_BLOCK, ChunkSectionLayer.CUTOUT);
 		BlockRenderLayerMap.putBlock(MystcraftBlocks.BOOK_RECEPTACLE_BLOCK, ChunkSectionLayer.CUTOUT);
+
+		MenuScreens.register(MystcraftMenus.INK_MIXER, InkMixerScreen::new);
 
 		LinkBookClientBridge.OPENER = stack -> Minecraft.getInstance().setScreen(new LinkBookScreen(stack));
 	}

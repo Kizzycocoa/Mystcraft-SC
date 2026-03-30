@@ -27,6 +27,10 @@
     "commands.mystcraft-sc.permissions.usage": "/myst-permissions <player> <restrict|permit> <entry|depart> <all|dimid>",
     "commands.mystcraft-sc.chunkregen.usage": "/myst-regenchunk [range] [dimId] [chunkX] [chunkZ]",
 
+    "container.mystcraft-sc.ink_mixer": "Ink Mixer",
+    "screen.mystcraft-sc.ink_mixer.basin_full": "Ink Basin: Full",
+    "screen.mystcraft-sc.ink_mixer.basin_empty": "Ink Basin: Empty",
+
     "entity.mystcraft-sc.book": "Book",
     "entity.mystcraft-sc.block": "Falling Block",
     "entity.mystcraft-sc.meteor": "Meteor",
