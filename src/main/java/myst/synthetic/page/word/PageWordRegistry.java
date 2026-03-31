@@ -34,7 +34,13 @@ public final class PageWordRegistry {
 
     public static PageWord resolve(String key) {
         PageWord word = get(key);
-        return word != null ? word : PageWord.fallback(key);
+        if (word != null) {
+            return word;
+        }
+
+        PageWord fallback = PageWord.fallback(key);
+        WORDS.putIfAbsent(fallback.key(), fallback);
+        return fallback;
     }
 
     public static boolean contains(String key) {

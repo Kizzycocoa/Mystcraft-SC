@@ -52,10 +52,7 @@ public final class PagePreviewExporter {
 
             for (PageSymbol symbol : PageSymbolRegistry.values()) {
                 ResolvedPageEmblem emblem = PageEmblemResolver.resolve(symbol);
-                BufferedImage image = PageTextureCompositor.composeSymbolPage(
-                        emblem,
-                        PageEmblemResolver.resolveGlyphs(emblem)
-                );
+                BufferedImage image = PageTextureCompositor.composeSymbolPage(emblem);
 
                 String filename = symbol.id().getPath().replace('/', '_') + ".png";
                 writeImage(outputDir.resolve(filename), image);
