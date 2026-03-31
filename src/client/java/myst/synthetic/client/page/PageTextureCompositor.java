@@ -22,7 +22,7 @@ public final class PageTextureCompositor {
 
     private static final int COMPONENT_SIZE = 64;
     private static final int COMPONENTS_PER_ROW = 8;
-    private static final float POEM_SCALE = 0.95F;
+    private static final float POEM_SCALE = 0.85F;
 
     private PageTextureCompositor() {
     }
