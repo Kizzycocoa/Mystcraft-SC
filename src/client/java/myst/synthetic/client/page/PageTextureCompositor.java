@@ -103,19 +103,19 @@ public final class PageTextureCompositor {
             }
 
             int component = components.get(i);
-            int iconX = (component % COMPONENTS_PER_ROW);
-            int iconY = (component / COMPONENTS_PER_ROW);
+            int iconX = (component % COMPONENTS_PER_ROW) * COMPONENT_SIZE;
+            int iconY = (component / COMPONENTS_PER_ROW) * COMPONENT_SIZE;
 
             for (int x = 0; x < scaledSize; x++) {
                 int srcX = (x * COMPONENT_SIZE) / scaledSize;
-                int tx = targetRect.x + inset + x;
+                int tx = targetRect.x - inset + x;
                 if (tx < 0 || tx >= targetImage.getWidth()) {
                     continue;
                 }
 
                 for (int y = 0; y < scaledSize; y++) {
                     int srcY = (y * COMPONENT_SIZE) / scaledSize;
-                    int ty = targetRect.y + inset + y;
+                    int ty = targetRect.y - inset + y;
                     if (ty < 0 || ty >= targetImage.getHeight()) {
                         continue;
                     }
