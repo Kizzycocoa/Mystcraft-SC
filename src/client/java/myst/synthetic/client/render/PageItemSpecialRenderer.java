@@ -29,17 +29,15 @@ public final class PageItemSpecialRenderer implements SpecialModelRenderer<PageR
             int seed
     ) {
         PageRenderKey resolvedKey = key != null ? key : new PageRenderKey(PageRenderKey.Kind.BLANK, null);
-        Identifier texture = PageRenderCache.getTexture(resolvedKey);
+        var asset = PageRenderCache.getAsset(resolvedKey);
 
         poseStack.pushPose();
 
-        // Centre the page quad in normal item-local space.
         poseStack.translate(0.5F, 0.5F, 0.5F);
 
         switch (itemDisplayContext) {
             case GUI -> {
-                // Fill the slot properly.
-                poseStack.scale(1.00F, 1.00F, 1.00F);
+                poseStack.scale(1.0F, 1.0F, 1.0F);
             }
             case GROUND -> {
                 poseStack.scale(0.70F, 0.70F, 0.70F);
@@ -73,7 +71,7 @@ public final class PageItemSpecialRenderer implements SpecialModelRenderer<PageR
             PageRenderPipelines.submitGui(
                     submitNodeCollector,
                     poseStack,
-                    texture,
+                    asset,
                     LightTexture.FULL_BRIGHT,
                     overlay
             );
@@ -81,7 +79,7 @@ public final class PageItemSpecialRenderer implements SpecialModelRenderer<PageR
             PageRenderPipelines.submitWorld(
                     submitNodeCollector,
                     poseStack,
-                    texture,
+                    asset,
                     light,
                     overlay
             );

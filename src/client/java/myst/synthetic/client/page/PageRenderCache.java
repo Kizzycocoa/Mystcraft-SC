@@ -18,20 +18,24 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public final class PageRenderCache {
 
-    private static final Map<PageRenderKey, Identifier> TEXTURE_IDS = new ConcurrentHashMap<>();
+    private static final Map<PageRenderKey, PageRenderAsset> ASSETS = new ConcurrentHashMap<>();
 
     private PageRenderCache() {
     }
 
+    public static PageRenderAsset getAsset(PageRenderKey key) {
+        return ASSETS.computeIfAbsent(key, PageRenderCache::createAsset);
+    }
+
     public static Identifier getTexture(PageRenderKey key) {
-        return TEXTURE_IDS.computeIfAbsent(key, PageRenderCache::createTexture);
+        return getAsset(key).textureId();
     }
 
     public static void clear() {
-        TEXTURE_IDS.clear();
+        ASSETS.clear();
     }
 
-    private static Identifier createTexture(PageRenderKey key) {
+    private static PageRenderAsset createAsset(PageRenderKey key) {
         BufferedImage image = switch (key.kind()) {
             case BLANK -> PageTextureCompositor.composeBlankPage();
             case LINK_PANEL -> PageTextureCompositor.composeLinkPanelPage();
@@ -46,10 +50,13 @@ public final class PageRenderCache {
                 "dynamic/page/" + key.cacheKey()
         );
 
-        DynamicTexture dynamicTexture = new DynamicTexture(() -> "mystcraft_page_" + key.cacheKey(), toNativeImage(image));
-        Minecraft.getInstance().getTextureManager().register(textureId, dynamicTexture);
+        DynamicTexture dynamicTexture = new DynamicTexture(
+                () -> "mystcraft_page_" + key.cacheKey(),
+                toNativeImage(image)
+        );
 
-        return textureId;
+        Minecraft.getInstance().getTextureManager().register(textureId, dynamicTexture);
+        return new PageRenderAsset(textureId, image);
     }
 
     private static NativeImage toNativeImage(BufferedImage image) {
