@@ -22,6 +22,7 @@ public final class PageTextureCompositor {
 
     private static final int COMPONENT_SIZE = 64;
     private static final int COMPONENTS_PER_ROW = 8;
+    private static final float POEM_SCALE = 0.95F;
 
     private PageTextureCompositor() {
     }
@@ -88,13 +89,16 @@ public final class PageTextureCompositor {
             colors = List.of(0x000000);
         }
 
+        int scaledSize = Math.max(1, Math.round(COMPONENT_SIZE * POEM_SCALE));
+        int inset = (COMPONENT_SIZE - scaledSize) / 2;
+
         for (int i = 0; i < components.size(); i++) {
             int color = 0x000000;
             if (colors != null && !colors.isEmpty()) {
                 if (i < colors.size()) {
                     color = colors.get(i);
                 } else {
-                    color = colors.getFirst();
+                    color = colors.get(0);
                 }
             }
 
@@ -102,19 +106,21 @@ public final class PageTextureCompositor {
             int iconX = (component % COMPONENTS_PER_ROW) * COMPONENT_SIZE;
             int iconY = (component / COMPONENTS_PER_ROW) * COMPONENT_SIZE;
 
-            for (int x = 0; x < COMPONENT_SIZE; x++) {
-                int tx = targetRect.x + x;
+            for (int x = 0; x < scaledSize; x++) {
+                int srcX = (x * COMPONENT_SIZE) / scaledSize;
+                int tx = targetRect.x + inset + x;
                 if (tx < 0 || tx >= targetImage.getWidth()) {
                     continue;
                 }
 
-                for (int y = 0; y < COMPONENT_SIZE; y++) {
-                    int ty = targetRect.y + y;
+                for (int y = 0; y < scaledSize; y++) {
+                    int srcY = (y * COMPONENT_SIZE) / scaledSize;
+                    int ty = targetRect.y + inset + y;
                     if (ty < 0 || ty >= targetImage.getHeight()) {
                         continue;
                     }
 
-                    int argb = source.getRGB(iconX + x, iconY + y);
+                    int argb = source.getRGB(iconX + srcX, iconY + srcY);
                     int alpha = (argb >>> 24) & 0xFF;
                     if (alpha == 0) {
                         continue;
