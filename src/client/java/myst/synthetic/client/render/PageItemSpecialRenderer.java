@@ -34,7 +34,7 @@ public final class PageItemSpecialRenderer implements SpecialModelRenderer<PageR
         poseStack.pushPose();
 
         // Centre the page quad in normal item-local space.
-        poseStack.translate(0.5F, 0.5F, 0.0F);
+        poseStack.translate(0.5F, 0.5F, 0.5F);
 
         switch (itemDisplayContext) {
             case GUI -> {
