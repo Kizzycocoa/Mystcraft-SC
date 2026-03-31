@@ -150,13 +150,41 @@ public class MystcraftItemGroups {
                                 LinkPropertyAPI.FLAG_NATURAL,
                                 LinkPropertyAPI.PROP_SOUND
                         )));
-                        output.accept(Page.createSymbolPage(MystcraftPageSymbols.DEBUG_TEST_SYMBOL.id()));
-                        output.accept(Page.createSymbolPage(MystcraftPageSymbols.SUNS_NORMAL.id()));
+
+                        output.accept(Page.createSymbolPage(MystcraftPageSymbols.SUN_NORMAL.id()));
+                        output.accept(Page.createSymbolPage(MystcraftPageSymbols.SUN_DARK.id()));
+                        output.accept(Page.createSymbolPage(MystcraftPageSymbols.MOON_NORMAL.id()));
                         output.accept(Page.createSymbolPage(MystcraftPageSymbols.STARS_NORMAL.id()));
-                        output.accept(Page.createSymbolPage(MystcraftPageSymbols.WEATHER_CLEAR.id()));
+                        output.accept(Page.createSymbolPage(MystcraftPageSymbols.STARS_TWINKLE.id()));
+
+                        output.accept(Page.createSymbolPage(MystcraftPageSymbols.WEATHER_NORM.id()));
                         output.accept(Page.createSymbolPage(MystcraftPageSymbols.WEATHER_RAIN.id()));
+                        output.accept(Page.createSymbolPage(MystcraftPageSymbols.WEATHER_STORM.id()));
+                        output.accept(Page.createSymbolPage(MystcraftPageSymbols.WEATHER_SNOW.id()));
+
+                        output.accept(Page.createSymbolPage(MystcraftPageSymbols.TERRAIN_NORMAL.id()));
+                        output.accept(Page.createSymbolPage(MystcraftPageSymbols.TERRAIN_FLAT.id()));
+                        output.accept(Page.createSymbolPage(MystcraftPageSymbols.TERRAIN_AMPLIFIED.id()));
+                        output.accept(Page.createSymbolPage(MystcraftPageSymbols.TERRAIN_VOID.id()));
+
+                        output.accept(Page.createSymbolPage(MystcraftPageSymbols.CAVES.id()));
+                        output.accept(Page.createSymbolPage(MystcraftPageSymbols.RAVINES.id()));
+                        output.accept(Page.createSymbolPage(MystcraftPageSymbols.FLOAT_ISLANDS.id()));
+                        output.accept(Page.createSymbolPage(MystcraftPageSymbols.SKYLANDS.id()));
+
                         output.accept(Page.createSymbolPage(MystcraftPageSymbols.VILLAGES.id()));
+                        output.accept(Page.createSymbolPage(MystcraftPageSymbols.STRONGHOLDS.id()));
+                        output.accept(Page.createSymbolPage(MystcraftPageSymbols.MINESHAFTS.id()));
+                        output.accept(Page.createSymbolPage(MystcraftPageSymbols.DUNGEONS.id()));
+
+                        output.accept(Page.createSymbolPage(MystcraftPageSymbols.HUGE_TREES.id()));
                         output.accept(Page.createSymbolPage(MystcraftPageSymbols.DENSE_ORES.id()));
+                        output.accept(Page.createSymbolPage(MystcraftPageSymbols.STAR_FISSURE.id()));
+
+                        output.accept(Page.createSymbolPage(MystcraftPageSymbols.COLOR_SKY.id()));
+                        output.accept(Page.createSymbolPage(MystcraftPageSymbols.COLOR_WATER.id()));
+                        output.accept(Page.createSymbolPage(MystcraftPageSymbols.COLOR_GRASS.id()));
+                        output.accept(Page.createSymbolPage(MystcraftPageSymbols.RAINBOW.id()));
                     })
                     .build()
     );
