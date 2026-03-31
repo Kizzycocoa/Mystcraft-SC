@@ -98,7 +98,7 @@ public final class PageRenderPipelines {
             int light,
             int overlay
     ) {
-        float z = HALF_THICKNESS + FRONT_FACE_OFFSET;
+        float z = -HALF_THICKNESS;
 
         emitQuad(
                 pose, consumer, light, overlay,
@@ -120,12 +120,15 @@ public final class PageRenderPipelines {
             int light,
             int overlay
     ) {
+
+        float z = -HALF_THICKNESS + FRONT_FACE_OFFSET;
+
         emitQuad(
                 pose, consumer, light, overlay,
-                -HALF_WIDTH, -HALF_HEIGHT, -HALF_THICKNESS,
-                HALF_WIDTH, -HALF_HEIGHT, -HALF_THICKNESS,
-                HALF_WIDTH,  HALF_HEIGHT, -HALF_THICKNESS,
-                -HALF_WIDTH,  HALF_HEIGHT, -HALF_THICKNESS,
+                -HALF_WIDTH, -HALF_HEIGHT, z,
+                HALF_WIDTH, -HALF_HEIGHT, z,
+                HALF_WIDTH,  HALF_HEIGHT, z,
+                -HALF_WIDTH,  HALF_HEIGHT, z,
                 0.0F, 0.0F, -1.0F,
                 0.0F, 1.0F,
                 1.0F, 1.0F,
