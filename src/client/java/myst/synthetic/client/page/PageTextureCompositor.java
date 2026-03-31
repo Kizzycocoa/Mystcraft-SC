@@ -22,7 +22,7 @@ public final class PageTextureCompositor {
 
     private static final int COMPONENT_SIZE = 64;
     private static final int COMPONENTS_PER_ROW = 8;
-    private static final float POEM_SCALE = 0.85F;
+    private static final float POEM_SCALE = 0.9F;
 
     private PageTextureCompositor() {
     }
@@ -90,7 +90,7 @@ public final class PageTextureCompositor {
         }
 
         int scaledSize = Math.max(1, Math.round(COMPONENT_SIZE * POEM_SCALE));
-        int inset = (COMPONENT_SIZE - scaledSize) / 2;
+        int inset = (COMPONENT_SIZE/ 2) - scaledSize;
 
         for (int i = 0; i < components.size(); i++) {
             int color = 0x000000;
