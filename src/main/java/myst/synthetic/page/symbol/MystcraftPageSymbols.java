@@ -7,6 +7,8 @@ import java.util.List;
 
 public final class MystcraftPageSymbols {
 
+    public static final PageSymbol DEBUG_FULL = register("debug/full_symbol", "symbol.mystcraft-sc.debug.full_symbol", 0, "DEBUG", "DEBUG", "DEBUG", "DEBUG");
+
     public static final PageSymbol COLOR_CLOUD = register("legacy/color_cloud", "symbol.mystcraft-sc.legacy.color_cloud", 1, "Image", "Entropy", "Believe", "Weave");
     public static final PageSymbol COLOR_CLOUD_NAT = register("legacy/color_cloud_nat", "symbol.mystcraft-sc.legacy.color_cloud_nat", 1, "Image", "Entropy", "Believe", "Nature");
     public static final PageSymbol COLOR_FOG = register("legacy/color_fog", "symbol.mystcraft-sc.legacy.color_fog", 1, "Image", "Entropy", "Explore", "Weave");

@@ -85,6 +85,8 @@
     "symbol.mystcraft-sc.weather.rain": "Rain",
     "symbol.mystcraft-sc.structure.villages": "Villages",
     "symbol.mystcraft-sc.terrain.dense_ores": "Dense Ores",
+    "symbol.mystcraft-sc.debug.full_symbol": "Debug Full Symbol",
+    "word.mystcraft-sc.debug": "DEBUG",
 
     "tooltip.mystcraft-sc.page.symbol_name": "Symbol: %s",
     "tooltip.mystcraft-sc.page.poem_words": "Poem Words",

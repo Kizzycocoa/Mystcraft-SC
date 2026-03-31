@@ -330,6 +330,8 @@ public final class MystcraftConfig {
         putBoolean(defaults, CATEGORY_RENDER, "renderlabels", false);
         putBoolean(defaults, CATEGORY_RENDER, "fast_rainbows", true);
 
+        putBoolean(defaults, CATEGORY_DEBUG, "pages.export_previews", false);
+
         return defaults;
     }
 
