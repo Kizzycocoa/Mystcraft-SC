@@ -92,7 +92,7 @@ public final class PageRenderPipelines {
         emitExtrudedEdges(pose, consumer, light, overlay, image);
     }
 
-    private static void emitFront(
+    private static void emitBack(
             PoseStack.Pose pose,
             VertexConsumer consumer,
             int light,
@@ -114,7 +114,7 @@ public final class PageRenderPipelines {
         );
     }
 
-    private static void emitBack(
+    private static void emitFront(
             PoseStack.Pose pose,
             VertexConsumer consumer,
             int light,
@@ -166,10 +166,10 @@ public final class PageRenderPipelines {
                 if (!isOpaque(image, x, y - 1)) {
                     emitQuad(
                             pose, consumer, light, overlay,
-                            x0, y0, -HALF_THICKNESS,
-                            x1, y0, -HALF_THICKNESS,
-                            x1, y0,  HALF_THICKNESS,
                             x0, y0,  HALF_THICKNESS,
+                            x1, y0,  HALF_THICKNESS,
+                            x1, y0, -HALF_THICKNESS,
+                            x0, y0, -HALF_THICKNESS,
                             0.0F, 1.0F, 0.0F,
                             u0, v0,
                             u1, v0,
@@ -181,10 +181,10 @@ public final class PageRenderPipelines {
                 if (!isOpaque(image, x, y + 1)) {
                     emitQuad(
                             pose, consumer, light, overlay,
-                            x0, y1,  HALF_THICKNESS,
-                            x1, y1,  HALF_THICKNESS,
-                            x1, y1, -HALF_THICKNESS,
                             x0, y1, -HALF_THICKNESS,
+                            x1, y1, -HALF_THICKNESS,
+                            x1, y1,  HALF_THICKNESS,
+                            x0, y1,  HALF_THICKNESS,
                             0.0F, -1.0F, 0.0F,
                             u0, v0,
                             u1, v0,
@@ -196,10 +196,10 @@ public final class PageRenderPipelines {
                 if (!isOpaque(image, x - 1, y)) {
                     emitQuad(
                             pose, consumer, light, overlay,
-                            x0, y1, -HALF_THICKNESS,
-                            x0, y0, -HALF_THICKNESS,
-                            x0, y0,  HALF_THICKNESS,
                             x0, y1,  HALF_THICKNESS,
+                            x0, y0,  HALF_THICKNESS,
+                            x0, y0, -HALF_THICKNESS,
+                            x0, y1, -HALF_THICKNESS,
                             -1.0F, 0.0F, 0.0F,
                             u0, v1,
                             u0, v0,
@@ -211,10 +211,10 @@ public final class PageRenderPipelines {
                 if (!isOpaque(image, x + 1, y)) {
                     emitQuad(
                             pose, consumer, light, overlay,
-                            x1, y1,  HALF_THICKNESS,
-                            x1, y0,  HALF_THICKNESS,
-                            x1, y0, -HALF_THICKNESS,
                             x1, y1, -HALF_THICKNESS,
+                            x1, y0, -HALF_THICKNESS,
+                            x1, y0,  HALF_THICKNESS,
+                            x1, y1,  HALF_THICKNESS,
                             1.0F, 0.0F, 0.0F,
                             u0, v1,
                             u0, v0,
