@@ -90,7 +90,7 @@ public final class PageTextureCompositor {
         }
 
         int scaledSize = Math.max(1, Math.round(COMPONENT_SIZE * POEM_SCALE));
-        int inset = (COMPONENT_SIZE/ 2) - scaledSize;
+        int inset = (COMPONENT_SIZE - scaledSize) / 2;
 
         for (int i = 0; i < components.size(); i++) {
             int color = 0x000000;
@@ -103,8 +103,8 @@ public final class PageTextureCompositor {
             }
 
             int component = components.get(i);
-            int iconX = (component % COMPONENTS_PER_ROW) * COMPONENT_SIZE;
-            int iconY = (component / COMPONENTS_PER_ROW) * COMPONENT_SIZE;
+            int iconX = (component % COMPONENTS_PER_ROW);
+            int iconY = (component / COMPONENTS_PER_ROW);
 
             for (int x = 0; x < scaledSize; x++) {
                 int srcX = (x * COMPONENT_SIZE) / scaledSize;
