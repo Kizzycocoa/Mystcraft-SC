@@ -152,10 +152,10 @@ public final class PageTextureCompositor {
 
     private static Rectangle getPageTarget(int index) {
         return switch (index) {
-            case 3 -> new Rectangle(0, 48, 64, 64);
-            case 2 -> new Rectangle(48, 96, 64, 64);
-            case 1 -> new Rectangle(96, 48, 64, 64);
-            case 0 -> new Rectangle(48, 0, 64, 64);
+            case 3 -> new Rectangle(4, 48, 64, 64);
+            case 2 -> new Rectangle(48, 92, 64, 64);
+            case 1 -> new Rectangle(92, 48, 64, 64);
+            case 0 -> new Rectangle(48, 4, 64, 64);
             default -> new Rectangle(48, 48, 64, 64);
         };
     }

@@ -35,39 +35,33 @@ public final class PageItemSpecialRenderer implements SpecialModelRenderer<PageR
 
         switch (itemDisplayContext) {
             case GUI -> {
-                poseStack.translate(-0.5F, -0.5F, 0.0F);
+                poseStack.scale(0.90F, 0.90F, 0.90F);
             }
             case GROUND -> {
-                poseStack.translate(-0.25F, -0.25F, 0.0F);
-                poseStack.scale(0.5F, 0.5F, 0.5F);
+                poseStack.scale(0.55F, 0.55F, 0.55F);
             }
             case FIXED -> {
-                poseStack.translate(-0.5F, -0.5F, 0.0F);
-                poseStack.scale(0.9F, 0.9F, 0.9F);
+                poseStack.scale(0.90F, 0.90F, 0.90F);
             }
             case THIRD_PERSON_RIGHT_HAND -> {
-                poseStack.translate(-0.5F, -0.35F, 0.02F);
                 poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
                 poseStack.mulPose(Axis.ZP.rotationDegrees(180.0F));
-                poseStack.scale(0.75F, 0.75F, 0.75F);
+                poseStack.scale(0.78F, 0.78F, 0.78F);
             }
             case THIRD_PERSON_LEFT_HAND -> {
-                poseStack.translate(-0.5F, -0.35F, 0.02F);
                 poseStack.mulPose(Axis.ZP.rotationDegrees(180.0F));
-                poseStack.scale(0.75F, 0.75F, 0.75F);
+                poseStack.scale(0.78F, 0.78F, 0.78F);
             }
             case FIRST_PERSON_RIGHT_HAND -> {
-                poseStack.translate(-0.25F, -0.35F, 0.15F);
                 poseStack.mulPose(Axis.YP.rotationDegrees(-35.0F));
-                poseStack.scale(0.85F, 0.85F, 0.85F);
+                poseStack.scale(0.88F, 0.88F, 0.88F);
             }
             case FIRST_PERSON_LEFT_HAND -> {
-                poseStack.translate(-0.75F, -0.35F, 0.15F);
                 poseStack.mulPose(Axis.YP.rotationDegrees(35.0F));
-                poseStack.scale(0.85F, 0.85F, 0.85F);
+                poseStack.scale(0.88F, 0.88F, 0.88F);
             }
             default -> {
-                poseStack.translate(-0.5F, -0.5F, 0.0F);
+                poseStack.scale(0.90F, 0.90F, 0.90F);
             }
         }
 
@@ -94,8 +88,8 @@ public final class PageItemSpecialRenderer implements SpecialModelRenderer<PageR
 
     @Override
     public void getExtents(Consumer<Vector3fc> consumer) {
-        consumer.accept(new Vector3f(0.0F, 0.0F, -0.01F));
-        consumer.accept(new Vector3f(1.0F, 1.0F, 0.01F));
+        consumer.accept(new Vector3f(-0.5F, -0.5F, -0.01F));
+        consumer.accept(new Vector3f(0.5F, 0.5F, 0.01F));
     }
 
     @Override

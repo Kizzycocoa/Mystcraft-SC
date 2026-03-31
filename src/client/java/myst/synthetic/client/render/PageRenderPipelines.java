@@ -91,28 +91,28 @@ public final class PageRenderPipelines {
             int light,
             int overlay
     ) {
-        consumer.addVertex(pose, 0.0F, 1.0F, 0.0F)
+        consumer.addVertex(pose, -0.5F, 0.5F, 0.0F)
                 .setColor(255, 255, 255, 255)
                 .setUv(0.0F, 0.0F)
                 .setOverlay(overlay)
                 .setLight(light)
                 .setNormal(pose, 0.0F, 0.0F, 1.0F);
 
-        consumer.addVertex(pose, 1.0F, 1.0F, 0.0F)
+        consumer.addVertex(pose, 0.5F, 0.5F, 0.0F)
                 .setColor(255, 255, 255, 255)
                 .setUv(1.0F, 0.0F)
                 .setOverlay(overlay)
                 .setLight(light)
                 .setNormal(pose, 0.0F, 0.0F, 1.0F);
 
-        consumer.addVertex(pose, 1.0F, 0.0F, 0.0F)
+        consumer.addVertex(pose, 0.5F, -0.5F, 0.0F)
                 .setColor(255, 255, 255, 255)
                 .setUv(1.0F, 1.0F)
                 .setOverlay(overlay)
                 .setLight(light)
                 .setNormal(pose, 0.0F, 0.0F, 1.0F);
 
-        consumer.addVertex(pose, 0.0F, 0.0F, 0.0F)
+        consumer.addVertex(pose, -0.5F, -0.5F, 0.0F)
                 .setColor(255, 255, 255, 255)
                 .setUv(0.0F, 1.0F)
                 .setOverlay(overlay)
@@ -128,28 +128,28 @@ public final class PageRenderPipelines {
     ) {
         float z = -0.001F;
 
-        consumer.addVertex(pose, 0.0F, 0.0F, z)
+        consumer.addVertex(pose, -0.5F, -0.5F, z)
                 .setColor(255, 255, 255, 255)
                 .setUv(0.0F, 1.0F)
                 .setOverlay(overlay)
                 .setLight(light)
                 .setNormal(pose, 0.0F, 0.0F, -1.0F);
 
-        consumer.addVertex(pose, 1.0F, 0.0F, z)
+        consumer.addVertex(pose, 0.5F, -0.5F, z)
                 .setColor(255, 255, 255, 255)
                 .setUv(1.0F, 1.0F)
                 .setOverlay(overlay)
                 .setLight(light)
                 .setNormal(pose, 0.0F, 0.0F, -1.0F);
 
-        consumer.addVertex(pose, 1.0F, 1.0F, z)
+        consumer.addVertex(pose, 0.5F, 0.5F, z)
                 .setColor(255, 255, 255, 255)
                 .setUv(1.0F, 0.0F)
                 .setOverlay(overlay)
                 .setLight(light)
                 .setNormal(pose, 0.0F, 0.0F, -1.0F);
 
-        consumer.addVertex(pose, 0.0F, 1.0F, z)
+        consumer.addVertex(pose, -0.5F, 0.5F, z)
                 .setColor(255, 255, 255, 255)
                 .setUv(0.0F, 0.0F)
                 .setOverlay(overlay)
