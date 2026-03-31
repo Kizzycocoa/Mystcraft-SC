@@ -39,7 +39,7 @@ public final class PageItemSpecialRenderer implements SpecialModelRenderer<PageR
         switch (itemDisplayContext) {
             case GUI -> {
                 // Fill the slot properly.
-                poseStack.scale(1.12F, 1.12F, 1.12F);
+                poseStack.scale(1.00F, 1.00F, 1.00F);
             }
             case GROUND -> {
                 poseStack.scale(0.70F, 0.70F, 0.70F);
