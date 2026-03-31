@@ -38,6 +38,5 @@ public class MystcraftSyntheticCodexClient implements ClientModInitializer {
 		MenuScreens.register(MystcraftMenus.INK_MIXER, InkMixerScreen::new);
 
 		LinkBookClientBridge.OPENER = stack -> Minecraft.getInstance().setScreen(new LinkBookScreen(stack));
-		PagePreviewExporter.exportAllOnce();
 	}
 }

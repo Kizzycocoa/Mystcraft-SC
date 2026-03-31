@@ -1,6 +1,7 @@
 package myst.synthetic.mixin.client;
 
 import myst.synthetic.client.render.BookstandItemSpecialRendererUnbaked;
+import myst.synthetic.client.render.PageItemSpecialRendererUnbaked;
 import myst.synthetic.client.render.SlantBoardItemSpecialRendererUnbaked;
 import net.minecraft.client.renderer.special.SpecialModelRenderers;
 import net.minecraft.resources.Identifier;
@@ -22,6 +23,11 @@ public abstract class SpecialModelRenderersMixin {
 		SpecialModelRenderers.ID_MAPPER.put(
 				Identifier.fromNamespaceAndPath("mystcraft-sc", "bookstand"),
 				BookstandItemSpecialRendererUnbaked.MAP_CODEC
+		);
+
+		SpecialModelRenderers.ID_MAPPER.put(
+				Identifier.fromNamespaceAndPath("mystcraft-sc", "page"),
+				PageItemSpecialRendererUnbaked.MAP_CODEC
 		);
 	}
 }
