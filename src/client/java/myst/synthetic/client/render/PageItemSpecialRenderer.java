@@ -1,3 +1,4 @@
+
 package myst.synthetic.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -32,6 +33,11 @@ public final class PageItemSpecialRenderer implements SpecialModelRenderer<PageR
         Identifier texture = PageRenderCache.getTexture(resolvedKey);
 
         poseStack.pushPose();
+
+        // Establish the page in item-local space first.
+        // The quad itself is centred around the origin (-0.5 .. 0.5),
+        // so we move that origin into normal item model space here.
+        poseStack.translate(0.5F, 0.5F, 0.0F);
 
         switch (itemDisplayContext) {
             case GUI -> {
@@ -88,8 +94,9 @@ public final class PageItemSpecialRenderer implements SpecialModelRenderer<PageR
 
     @Override
     public void getExtents(Consumer<Vector3fc> consumer) {
-        consumer.accept(new Vector3f(-0.5F, -0.5F, -0.01F));
-        consumer.accept(new Vector3f(0.5F, 0.5F, 0.01F));
+        // Extents should match the item-local space after centering.
+        consumer.accept(new Vector3f(0.0F, 0.0F, -0.01F));
+        consumer.accept(new Vector3f(1.0F, 1.0F, 0.01F));
     }
 
     @Override
