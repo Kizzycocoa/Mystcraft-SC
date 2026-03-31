@@ -20,61 +20,61 @@ public final class MystcraftPageSymbols {
     public static final PageSymbol SUNS_NORMAL = register(
             "celestial/suns_normal",
             "symbol.mystcraft-sc.celestial.suns_normal",
-            0,
+            2,
             "Celestial",
-            "Light",
-            "Day",
-            "Balance"
+            "Image",
+            "Stimulate",
+            "Energy"
     );
 
     public static final PageSymbol STARS_NORMAL = register(
             "celestial/stars_normal",
             "symbol.mystcraft-sc.celestial.stars_normal",
-            0,
+            1,
             "Celestial",
-            "Night",
-            "Pattern",
-            "Balance"
+            "Harmony",
+            "Ethereal",
+            "Order"
     );
 
     public static final PageSymbol WEATHER_CLEAR = register(
             "weather/clear",
             "symbol.mystcraft-sc.weather.clear",
             0,
-            "Sky",
-            "Light",
-            "Calm",
-            "Balance"
+            "Contradict",
+            "Transform",
+            "Change",
+            "Void"
     );
 
     public static final PageSymbol WEATHER_RAIN = register(
             "weather/rain",
             "symbol.mystcraft-sc.weather.rain",
-            1,
-            "Sky",
-            "Water",
-            "Motion",
-            "Sound"
+            3,
+            "Sustain",
+            "Static",
+            "Rebirth",
+            "Growth"
     );
 
     public static final PageSymbol VILLAGES = register(
             "structure/villages",
             "symbol.mystcraft-sc.structure.villages",
-            1,
-            "Structure",
-            "Life",
-            "Order",
-            "Settlement"
+            3,
+            "Civilization",
+            "Society",
+            "Harmony",
+            "Nurture"
     );
 
     public static final PageSymbol DENSE_ORES = register(
             "terrain/dense_ores",
             "symbol.mystcraft-sc.terrain.dense_ores",
-            2,
-            "Earth",
-            "Depth",
-            "Wealth",
-            "Growth"
+            5,
+            "Survival",
+            "Stimulate",
+            "Machine",
+            "Chaos"
     );
 
     private MystcraftPageSymbols() {

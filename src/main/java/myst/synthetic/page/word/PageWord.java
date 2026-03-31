@@ -3,7 +3,6 @@ package myst.synthetic.page.word;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 
@@ -16,8 +15,8 @@ public record PageWord(
 
     public PageWord {
         key = normalizeKey(key);
-        componentIndices = sanitizeComponentIndices(componentIndices);
-        colors = sanitizeColors(colors);
+        componentIndices = copyComponentIndices(componentIndices);
+        colors = copyColors(colors);
     }
 
     public boolean isFallback() {
@@ -61,7 +60,7 @@ public record PageWord(
         if (index < colors.size()) {
             return colors.get(index);
         }
-        return colors.getFirst();
+        return colors.get(0);
     }
 
     private static String normalizeKey(String key) {
@@ -72,33 +71,33 @@ public record PageWord(
         return key.trim().toLowerCase(Locale.ROOT);
     }
 
-    private static List<Integer> sanitizeComponentIndices(List<Integer> componentIndices) {
+    private static List<Integer> copyComponentIndices(List<Integer> componentIndices) {
         if (componentIndices == null || componentIndices.isEmpty()) {
             return List.of();
         }
 
-        LinkedHashSet<Integer> cleaned = new LinkedHashSet<>();
+        List<Integer> copied = new ArrayList<>();
         for (Integer value : componentIndices) {
             if (value != null && value >= 0) {
-                cleaned.add(value);
+                copied.add(value);
             }
         }
 
-        return List.copyOf(cleaned);
+        return List.copyOf(copied);
     }
 
-    private static List<Integer> sanitizeColors(List<Integer> colors) {
+    private static List<Integer> copyColors(List<Integer> colors) {
         if (colors == null || colors.isEmpty()) {
             return List.of();
         }
 
-        List<Integer> cleaned = new ArrayList<>();
+        List<Integer> copied = new ArrayList<>();
         for (Integer color : colors) {
             if (color != null) {
-                cleaned.add(color);
+                copied.add(color);
             }
         }
 
-        return List.copyOf(cleaned);
+        return List.copyOf(copied);
     }
 }
