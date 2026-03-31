@@ -20,7 +20,7 @@ public final class PageRenderPipelines {
     private static final float HALF_WIDTH = 0.5F;
     private static final float HALF_HEIGHT = 0.5F;
     private static final float HALF_THICKNESS = 0.015F;
-    private static final float FRONT_FACE_OFFSET = 0.0625F;
+    private static final float FRONT_FACE_OFFSET = 0.03125F;
 
     private PageRenderPipelines() {
     }
