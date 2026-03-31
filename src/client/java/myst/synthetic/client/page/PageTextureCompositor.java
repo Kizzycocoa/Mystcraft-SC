@@ -108,14 +108,14 @@ public final class PageTextureCompositor {
 
             for (int x = 0; x < scaledSize; x++) {
                 int srcX = (x * COMPONENT_SIZE) / scaledSize;
-                int tx = targetRect.x - inset + x;
+                int tx = targetRect.x + inset + x;
                 if (tx < 0 || tx >= targetImage.getWidth()) {
                     continue;
                 }
 
                 for (int y = 0; y < scaledSize; y++) {
                     int srcY = (y * COMPONENT_SIZE) / scaledSize;
-                    int ty = targetRect.y - inset + y;
+                    int ty = targetRect.y + inset + y;
                     if (ty < 0 || ty >= targetImage.getHeight()) {
                         continue;
                     }
@@ -158,10 +158,10 @@ public final class PageTextureCompositor {
 
     private static Rectangle getPageTarget(int index) {
         return switch (index) {
-            case 3 -> new Rectangle(4, 48, 64, 64);
-            case 2 -> new Rectangle(48, 92, 64, 64);
-            case 1 -> new Rectangle(92, 48, 64, 64);
-            case 0 -> new Rectangle(48, 4, 64, 64);
+            case 3 -> new Rectangle(8, 48, 64, 64);
+            case 2 -> new Rectangle(48, 88, 64, 64);
+            case 1 -> new Rectangle(88, 48, 64, 64);
+            case 0 -> new Rectangle(48, 8, 64, 64);
             default -> new Rectangle(48, 48, 64, 64);
         };
     }
