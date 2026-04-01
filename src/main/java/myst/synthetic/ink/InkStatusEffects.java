@@ -7,8 +7,13 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.phys.Vec3;
 
 public final class InkStatusEffects {
+
+    private static final double HORIZONTAL_DRAG = 0.85D;
+    private static final double VERTICAL_DRAG = 0.65D;
+    private static final double MAX_UPWARD_SPEED = 0.06D;
 
     private InkStatusEffects() {
     }
@@ -22,6 +27,7 @@ public final class InkStatusEffects {
 
                 if (InkExposure.isSubmergedInInk(player)) {
                     applyInkSlowness(player);
+                    applyInkMovementDrag(player);
                 }
             }
         });
@@ -71,5 +77,32 @@ public final class InkStatusEffects {
                 true,
                 true
         ));
+    }
+
+    private static void applyInkMovementDrag(ServerPlayer player) {
+        if (player.isSpectator()) {
+            return;
+        }
+
+        if (player.getAbilities().flying) {
+            return;
+        }
+
+        if (!InkExposure.isBodyInInk(player)) {
+            return;
+        }
+
+        Vec3 movement = player.getDeltaMovement();
+
+        double x = movement.x * HORIZONTAL_DRAG;
+        double z = movement.z * HORIZONTAL_DRAG;
+        double y = movement.y * VERTICAL_DRAG;
+
+        if (y > MAX_UPWARD_SPEED) {
+            y = MAX_UPWARD_SPEED;
+        }
+
+        player.setDeltaMovement(x, y, z);
+        player.hurtMarked = true;
     }
 }
