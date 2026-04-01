@@ -14,7 +14,7 @@ public final class InkScreenOverlay {
             Identifier.fromNamespaceAndPath("mystcraft-sc", "ink_overlay");
 
     private static final Identifier FLUID_TEXTURE =
-            Identifier.fromNamespaceAndPath("mystcraft-sc", "textures/block/ink_still.png");
+            Identifier.fromNamespaceAndPath("mystcraft-sc", "textures/block/fluid.png");
 
     private InkScreenOverlay() {
     }
