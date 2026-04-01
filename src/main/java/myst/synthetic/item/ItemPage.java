@@ -27,7 +27,7 @@ public class ItemPage extends Item {
             if (symbol != null) {
                 return Component.translatable(
                         "item.mystcraft-sc.page.symbol_named",
-                        Component.translatable(symbol.translationKey())
+                        symbol.displayName()
                 );
             }
 

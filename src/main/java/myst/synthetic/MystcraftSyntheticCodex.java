@@ -13,6 +13,7 @@ import myst.synthetic.page.word.MystcraftPageWords;
 import myst.synthetic.page.glyph.MystcraftGlyphComponents;
 import myst.synthetic.ink.InkFluidInteractions;
 import myst.synthetic.ink.InkStatusEffects;
+import myst.synthetic.page.symbol.source.MystcraftGeneratedPageSymbols;
 
 public class MystcraftSyntheticCodex implements ModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger("mystcraft-sc");
@@ -42,6 +43,11 @@ public class MystcraftSyntheticCodex implements ModInitializer {
 		InkFluidInteractions.initialize();
 		InkStatusEffects.initialize();
 
-		ServerLifecycleEvents.SERVER_STARTING.register(StructurePoolAdder::inject);
+		MystcraftGeneratedPageSymbols.initializeStatic();
+
+		ServerLifecycleEvents.SERVER_STARTING.register(server -> {
+			MystcraftGeneratedPageSymbols.initializeBiomes(server.registryAccess());
+			StructurePoolAdder.inject(server);
+		});
 	}
 }

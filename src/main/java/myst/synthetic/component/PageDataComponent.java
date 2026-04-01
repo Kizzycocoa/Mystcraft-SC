@@ -192,7 +192,7 @@ public record PageDataComponent(
             if (symbol != null) {
                 textConsumer.accept(Component.translatable(
                         "tooltip.mystcraft-sc.page.symbol_name",
-                        Component.translatable(symbol.translationKey())
+                        symbol.displayName()
                 ).withStyle(ChatFormatting.GRAY));
 
                 ResolvedPageEmblem emblem = PageEmblemResolver.resolve(symbol);

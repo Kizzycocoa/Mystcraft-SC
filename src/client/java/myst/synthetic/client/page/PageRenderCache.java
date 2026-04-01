@@ -69,7 +69,8 @@ public final class PageRenderCache {
 
         return nativeImage;
     }
-    
+
+
     public static void prewarmAll() {
         if (prewarmed) {
             return;
