@@ -40,7 +40,10 @@ public class InkMixerScreen extends AbstractContainerScreen<InkMixerMenu> {
         int basinLeft = this.leftPos + BASIN_X;
         int basinTop = this.topPos + BASIN_Y;
 
-        // Draw the basin contents first.
+        // Draw the legacy basin background first.
+        renderBasinBase(guiGraphics, basinLeft, basinTop);
+
+        // Then draw any ink contents inside it.
         if (this.menu.hasInk()) {
             renderInkBasin(guiGraphics, basinLeft, basinTop);
         }
@@ -55,6 +58,21 @@ public class InkMixerScreen extends AbstractContainerScreen<InkMixerMenu> {
                 0,
                 this.imageWidth,
                 this.imageHeight,
+                256,
+                256
+        );
+    }
+
+    private void renderBasinBase(GuiGraphics guiGraphics, int x, int y) {
+        guiGraphics.blit(
+                RenderPipelines.GUI_TEXTURED,
+                TEXTURE,
+                x,
+                y,
+                179,
+                16,
+                BASIN_W,
+                BASIN_H,
                 256,
                 256
         );
