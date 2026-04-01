@@ -21,7 +21,7 @@ public final class InkScreenOverlay {
 
     public static void initialize() {
         HudElementRegistry.attachElementBefore(
-                VanillaHudElements.CHAT,
+                VanillaHudElements.HOTBAR,
                 ID,
                 (guiGraphics, deltaTracker) -> {
                     Minecraft minecraft = Minecraft.getInstance();
@@ -47,25 +47,21 @@ public final class InkScreenOverlay {
         int frame = (int) ((System.currentTimeMillis() / 120L) % 32L);
         int v = frame * 16;
 
-        for (int x = 0; x < screenWidth; x += 16) {
-            for (int y = 0; y < screenHeight; y += 16) {
-                int w = Math.min(16, screenWidth - x);
-                int h = Math.min(16, screenHeight - y);
-
-                guiGraphics.blit(
-                        RenderPipelines.GUI_TEXTURED,
-                        FLUID_TEXTURE,
-                        x,
-                        y,
-                        0,
-                        v,
-                        w,
-                        h,
-                        16,
-                        512
-                );
-            }
-        }
+        // Stretch one animated frame across the whole screen, do not tile it.
+        guiGraphics.blit(
+                RenderPipelines.GUI_TEXTURED,
+                FLUID_TEXTURE,
+                0,
+                0,
+                0,
+                v,
+                screenWidth,
+                screenHeight,
+                16,
+                16,
+                16,
+                512
+        );
 
         guiGraphics.fill(0, 0, screenWidth, screenHeight, 0xCC191919);
         guiGraphics.fill(0, 0, screenWidth, screenHeight, 0x66191919);
