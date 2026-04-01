@@ -63,19 +63,13 @@ public final class PageRenderCache {
         for (int y = 0; y < image.getHeight(); y++) {
             for (int x = 0; x < image.getWidth(); x++) {
                 int argb = image.getRGB(x, y);
-
-                int a = (argb >>> 24) & 0xFF;
-                int r = (argb >>> 16) & 0xFF;
-                int g = (argb >>> 8) & 0xFF;
-                int b = argb & 0xFF;
-
-                int abgr = (a << 24) | (b << 16) | (g << 8) | r;
-                nativeImage.setPixel(x, y, abgr);
+                nativeImage.setPixel(x, y, argb);
             }
         }
 
         return nativeImage;
     }
+    
     public static void prewarmAll() {
         if (prewarmed) {
             return;
