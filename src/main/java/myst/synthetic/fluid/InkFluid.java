@@ -9,9 +9,13 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.LiquidBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.material.FlowingFluid;
@@ -42,6 +46,16 @@ public abstract class InkFluid extends FlowingFluid {
 
     @Override
     protected void beforeDestroyingBlock(LevelAccessor level, BlockPos pos, BlockState state) {
+        if (!(level instanceof Level realLevel)) {
+            return;
+        }
+
+        BlockEntity blockEntity = null;
+        if (state.hasBlockEntity()) {
+            blockEntity = realLevel.getBlockEntity(pos);
+        }
+
+        Block.dropResources(state, realLevel, pos, blockEntity);
     }
 
     @Override
