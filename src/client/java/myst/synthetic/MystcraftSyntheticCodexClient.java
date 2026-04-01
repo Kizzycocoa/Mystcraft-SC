@@ -23,6 +23,7 @@ import net.fabricmc.fabric.api.client.render.fluid.v1.SimpleFluidRenderHandler;
 import net.minecraft.resources.Identifier;
 import myst.synthetic.client.render.InkScreenOverlay;
 import myst.synthetic.client.page.PageRenderCache;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 
 public class MystcraftSyntheticCodexClient implements ClientModInitializer {
 
@@ -60,7 +61,23 @@ public class MystcraftSyntheticCodexClient implements ClientModInitializer {
 		MenuScreens.register(MystcraftMenus.INK_MIXER, InkMixerScreen::new);
 		InkScreenOverlay.initialize();
 
-		PageRenderCache.prewarmAll();
+		ClientTickEvents.END_CLIENT_TICK.register(new ClientTickEvents.EndTick() {
+			private boolean done = false;
+
+			@Override
+			public void onEndTick(net.minecraft.client.Minecraft client) {
+				if (done) {
+					return;
+				}
+
+				if (client.level == null && client.screen == null) {
+					return;
+				}
+
+				PageRenderCache.prewarmAll();
+				done = true;
+			}
+		});
 
 		if (MystcraftConfig.getBoolean(MystcraftConfig.CATEGORY_DEBUG, "pages.export_previews", false)) {
 			PagePreviewExporter.exportAllOnce();

@@ -14,6 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public final class PageRenderCache {
 
+    private static boolean prewarmed = false;
     private static final Map<PageRenderKey, PageRenderAsset> ASSETS = new ConcurrentHashMap<>();
 
     private PageRenderCache() {
@@ -29,6 +30,7 @@ public final class PageRenderCache {
 
     public static void clear() {
         ASSETS.clear();
+        prewarmed = false;
     }
 
     private static PageRenderAsset createAsset(PageRenderKey key) {
@@ -75,6 +77,11 @@ public final class PageRenderCache {
         return nativeImage;
     }
     public static void prewarmAll() {
+        if (prewarmed) {
+            return;
+        }
+        prewarmed = true;
+
         getAsset(new myst.synthetic.client.render.PageRenderKey(
                 myst.synthetic.client.render.PageRenderKey.Kind.BLANK,
                 null
