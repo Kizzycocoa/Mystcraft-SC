@@ -18,11 +18,11 @@ import net.fabricmc.fabric.api.item.v1.ComponentTooltipAppenderRegistry;
 import net.minecraft.core.component.DataComponents;
 import myst.synthetic.client.page.PagePreviewExporter;
 import myst.synthetic.config.MystcraftConfig;
-import myst.synthetic.MystcraftFluids;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.fabricmc.fabric.api.client.render.fluid.v1.SimpleFluidRenderHandler;
 import net.minecraft.resources.Identifier;
 import myst.synthetic.client.render.InkScreenOverlay;
+import myst.synthetic.client.page.PageRenderCache;
 
 public class MystcraftSyntheticCodexClient implements ClientModInitializer {
 
@@ -59,6 +59,8 @@ public class MystcraftSyntheticCodexClient implements ClientModInitializer {
 
 		MenuScreens.register(MystcraftMenus.INK_MIXER, InkMixerScreen::new);
 		InkScreenOverlay.initialize();
+
+		PageRenderCache.prewarmAll();
 
 		if (MystcraftConfig.getBoolean(MystcraftConfig.CATEGORY_DEBUG, "pages.export_previews", false)) {
 			PagePreviewExporter.exportAllOnce();

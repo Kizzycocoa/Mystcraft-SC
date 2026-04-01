@@ -8,11 +8,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.resources.Identifier;
 
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -60,22 +56,40 @@ public final class PageRenderCache {
     }
 
     private static NativeImage toNativeImage(BufferedImage image) {
-        try {
-            ByteArrayOutputStream output = new ByteArrayOutputStream();
-            ImageIO.write(image, "PNG", output);
-            output.flush();
+        NativeImage nativeImage = new NativeImage(image.getWidth(), image.getHeight(), true);
 
-            byte[] bytes = output.toByteArray();
-            output.close();
+        for (int y = 0; y < image.getHeight(); y++) {
+            for (int x = 0; x < image.getWidth(); x++) {
+                int argb = image.getRGB(x, y);
 
-            NativeImage nativeImage = NativeImage.read(new ByteArrayInputStream(bytes));
-            if (nativeImage == null) {
-                throw new IllegalStateException("Failed to convert BufferedImage to NativeImage");
+                int a = (argb >>> 24) & 0xFF;
+                int r = (argb >>> 16) & 0xFF;
+                int g = (argb >>> 8) & 0xFF;
+                int b = argb & 0xFF;
+
+                int abgr = (a << 24) | (b << 16) | (g << 8) | r;
+                nativeImage.setPixel(x, y, abgr);
             }
+        }
 
-            return nativeImage;
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to create NativeImage for page render", e);
+        return nativeImage;
+    }
+    public static void prewarmAll() {
+        getAsset(new myst.synthetic.client.render.PageRenderKey(
+                myst.synthetic.client.render.PageRenderKey.Kind.BLANK,
+                null
+        ));
+
+        getAsset(new myst.synthetic.client.render.PageRenderKey(
+                myst.synthetic.client.render.PageRenderKey.Kind.LINK_PANEL,
+                null
+        ));
+
+        for (myst.synthetic.page.symbol.PageSymbol symbol : myst.synthetic.page.symbol.PageSymbolRegistry.values()) {
+            getAsset(new myst.synthetic.client.render.PageRenderKey(
+                    myst.synthetic.client.render.PageRenderKey.Kind.SYMBOL,
+                    symbol.id()
+            ));
         }
     }
 }
