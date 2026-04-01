@@ -18,6 +18,10 @@ import net.fabricmc.fabric.api.item.v1.ComponentTooltipAppenderRegistry;
 import net.minecraft.core.component.DataComponents;
 import myst.synthetic.client.page.PagePreviewExporter;
 import myst.synthetic.config.MystcraftConfig;
+import myst.synthetic.MystcraftFluids;
+import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
+import net.fabricmc.fabric.api.client.render.fluid.v1.SimpleFluidRenderHandler;
+import net.minecraft.resources.Identifier;
 
 public class MystcraftSyntheticCodexClient implements ClientModInitializer {
 
@@ -35,6 +39,22 @@ public class MystcraftSyntheticCodexClient implements ClientModInitializer {
 		BlockRenderLayerMap.putBlock(MystcraftBlocks.LINK_MODIFIER_BLOCK, ChunkSectionLayer.CUTOUT);
 		BlockRenderLayerMap.putBlock(MystcraftBlocks.BOOK_BINDER_BLOCK, ChunkSectionLayer.CUTOUT);
 		BlockRenderLayerMap.putBlock(MystcraftBlocks.BOOK_RECEPTACLE_BLOCK, ChunkSectionLayer.CUTOUT);
+
+		FluidRenderHandlerRegistry.INSTANCE.register(
+				MystcraftFluids.BLACK_INK,
+				MystcraftFluids.FLOWING_BLACK_INK,
+				new SimpleFluidRenderHandler(
+						Identifier.fromNamespaceAndPath("mystcraft-sc", "block/fluid"),
+						Identifier.fromNamespaceAndPath("mystcraft-sc", "block/fluid_flow"),
+						0xFF191919
+				)
+		);
+
+		BlockRenderLayerMap.putFluids(
+				ChunkSectionLayer.TRANSLUCENT,
+				MystcraftFluids.BLACK_INK,
+				MystcraftFluids.FLOWING_BLACK_INK
+		);
 
 		MenuScreens.register(MystcraftMenus.INK_MIXER, InkMixerScreen::new);
 

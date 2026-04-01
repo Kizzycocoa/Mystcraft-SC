@@ -93,6 +93,7 @@ public class MystcraftItemGroups {
                     .icon(() -> new ItemStack(MystcraftItems.AGEBOOK))
                     .displayItems((parameters, output) -> {
                         output.accept(MystcraftItems.VIAL);
+                        output.accept(MystcraftFluids.BLACK_INK_BUCKET);
                         output.accept(MystcraftItems.AGEBOOK);
                         output.accept(MystcraftItems.LINKBOOK);
                         output.accept(MystcraftItems.UNLINKEDBOOK);

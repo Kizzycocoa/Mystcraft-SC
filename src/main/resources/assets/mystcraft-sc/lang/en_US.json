@@ -52,8 +52,9 @@
     "block.mystcraft-sc.linkportal": "Link Portal",
     "block.mystcraft-sc.blockstarfissure": "Star Fissure",
 
-    "block.mystcraft-sc.ink.black": "Black Ink",
-    "fluid.mystcraft-sc.ink.black": "Black Ink",
+    "item.mystcraft-sc.ink_bucket": "Ink Bucket",
+    "block.mystcraft-sc.black_ink_block": "Black Ink",
+    "fluid.mystcraft-sc.black_ink": "Black Ink",
 
     "entity.mystcraft-sc.villager.archivist": "Archivist",
 

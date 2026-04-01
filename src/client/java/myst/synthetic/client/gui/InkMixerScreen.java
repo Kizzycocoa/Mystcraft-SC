@@ -67,8 +67,8 @@ public class InkMixerScreen extends AbstractContainerScreen<InkMixerMenu> {
         renderFluidTexture(guiGraphics, x, y, BASIN_W, BASIN_H);
 
         // Darken into black ink, but keep the underlying animated texture visible.
-        guiGraphics.fill(x, y, x + BASIN_W, y + BASIN_H, 0x70000000);
-        guiGraphics.fill(x, y, x + BASIN_W, y + BASIN_H, 0x45000000);
+        guiGraphics.fill(x, y, x + BASIN_W, y + BASIN_H, 0x80191919);
+        guiGraphics.fill(x, y, x + BASIN_W, y + BASIN_H, 0x50191919);
 
         if (overlayAlpha > 0) {
             int topColor = (Math.max(18, overlayAlpha / 3) << 24) | brighten(mixedRgb, 0.06F);
