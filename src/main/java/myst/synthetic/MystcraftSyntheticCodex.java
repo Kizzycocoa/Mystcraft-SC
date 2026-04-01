@@ -12,6 +12,7 @@ import myst.synthetic.page.symbol.MystcraftPageSymbols;
 import myst.synthetic.page.word.MystcraftPageWords;
 import myst.synthetic.page.glyph.MystcraftGlyphComponents;
 import myst.synthetic.ink.InkFluidInteractions;
+import myst.synthetic.ink.InkStatusEffects;
 
 public class MystcraftSyntheticCodex implements ModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger("mystcraft-sc");
@@ -39,6 +40,7 @@ public class MystcraftSyntheticCodex implements ModInitializer {
 		MystcraftVillagerTrades.initialize();
 		MystcraftFluids.initialize();
 		InkFluidInteractions.initialize();
+		InkStatusEffects.initialize();
 
 		ServerLifecycleEvents.SERVER_STARTING.register(StructurePoolAdder::inject);
 	}

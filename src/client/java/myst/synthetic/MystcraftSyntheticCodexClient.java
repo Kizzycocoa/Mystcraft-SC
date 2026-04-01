@@ -22,6 +22,7 @@ import myst.synthetic.MystcraftFluids;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.fabricmc.fabric.api.client.render.fluid.v1.SimpleFluidRenderHandler;
 import net.minecraft.resources.Identifier;
+import myst.synthetic.client.render.InkScreenOverlay;
 
 public class MystcraftSyntheticCodexClient implements ClientModInitializer {
 
@@ -57,6 +58,7 @@ public class MystcraftSyntheticCodexClient implements ClientModInitializer {
 		);
 
 		MenuScreens.register(MystcraftMenus.INK_MIXER, InkMixerScreen::new);
+		InkScreenOverlay.initialize();
 
 		if (MystcraftConfig.getBoolean(MystcraftConfig.CATEGORY_DEBUG, "pages.export_previews", false)) {
 			PagePreviewExporter.exportAllOnce();
