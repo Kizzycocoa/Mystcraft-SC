@@ -1,19 +1,27 @@
 package myst.synthetic.block;
 
 import com.mojang.serialization.MapCodec;
-import myst.synthetic.MystcraftBlockEntities;
 import myst.synthetic.MystcraftItemGroups;
 import myst.synthetic.block.entity.BlockEntityBookstand;
+import myst.synthetic.block.entity.BlockEntityDisplayContainer;
 import myst.synthetic.block.property.WoodType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
@@ -21,19 +29,16 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraft.world.item.component.CustomData;
-import net.minecraft.nbt.CompoundTag;
 import org.jetbrains.annotations.Nullable;
-import net.minecraft.world.level.block.Rotation;
-import net.minecraft.world.level.block.Mirror;
 
 import java.util.Collections;
 import java.util.List;
 
-public class BlockBookstand extends BaseEntityBlock {
+public class BlockBookstand extends BlockDisplayContainer {
 
     public static final MapCodec<BlockBookstand> CODEC = simpleCodec(BlockBookstand::new);
 
@@ -92,20 +97,31 @@ public class BlockBookstand extends BaseEntityBlock {
 
         rot = switch (mirror) {
             case NONE -> rot;
-
-            // Mirrors east <-> west
             case LEFT_RIGHT -> (8 - rot) & 7;
-
-            // Mirrors north <-> south
             case FRONT_BACK -> (4 - rot) & 7;
         };
 
         return state.setValue(ROTATION_INDEX, rot);
     }
+
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new BlockEntityBookstand(pos, state);
+    }
+
+    @Override
+    protected InteractionResult openDisplayUi(
+            BlockState state,
+            Level level,
+            BlockPos pos,
+            Player player,
+            InteractionHand hand,
+            BlockHitResult hit,
+            BlockEntityDisplayContainer blockEntity
+    ) {
+        // GUI routing comes in the next pass.
+        return InteractionResult.SUCCESS;
     }
 
     @Override

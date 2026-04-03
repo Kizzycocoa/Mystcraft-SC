@@ -20,7 +20,7 @@ import org.jspecify.annotations.Nullable;
 public final class PageItemSpecialRenderer implements SpecialModelRenderer<PageRenderKey> {
 
     private static final int NORMAL_TINT = 0xFFFFFFFF;
-    private static final int UNTESTED_TINT = 0xFF6FA8FF;
+    private static final int UNTESTED_TINT = 0xFFB9D5FF;
 
     @Override
     public void submit(
