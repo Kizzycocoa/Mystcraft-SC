@@ -154,7 +154,7 @@ public class MystcraftItemGroups {
                         output.accept(Page.createLinkPage(LinkPropertyAPI.FLAG_INTRA_LINKING_ONLY));
                         output.accept(Page.createLinkPage(LinkPropertyAPI.FLAG_MAINTAIN_MOMENTUM));
 
-                        for (PageSymbol symbol : PageSymbolRegistry.values()) {-+
+                        for (PageSymbol symbol : PageSymbolRegistry.values()) {
                             output.accept(Page.createSymbolPage(symbol.id()));
                         }
                     })
