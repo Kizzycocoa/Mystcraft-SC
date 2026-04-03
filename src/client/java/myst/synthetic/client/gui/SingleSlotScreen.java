@@ -4,14 +4,19 @@ import myst.synthetic.MystcraftItems;
 import myst.synthetic.menu.DisplayContainerMenu;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.gui.screens.inventory.BookEditScreen;
+import net.minecraft.client.gui.screens.inventory.BookViewScreen;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.item.component.WritableBookContent;
+import net.minecraft.world.item.component.WrittenBookContent;
 
 public class SingleSlotScreen extends AbstractContainerScreen<DisplayContainerMenu> {
 
@@ -32,11 +37,7 @@ public class SingleSlotScreen extends AbstractContainerScreen<DisplayContainerMe
     private static final int PANEL_W = 132;
     private static final int PANEL_H = 83;
 
-    private static final int SINGLE_SLOT_X = 80;
-    private static final int SINGLE_SLOT_Y = 35;
-
-    private static final int BOOK_SLOT_X = 41;
-    private static final int BOOK_SLOT_Y = 21;
+    private boolean handingOffToVanillaBookScreen = false;
 
     public SingleSlotScreen(DisplayContainerMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
@@ -56,6 +57,44 @@ public class SingleSlotScreen extends AbstractContainerScreen<DisplayContainerMe
     public void containerTick() {
         super.containerTick();
         updateLayout();
+
+        if (!this.handingOffToVanillaBookScreen) {
+            tryOpenVanillaBookScreen();
+        }
+    }
+
+    private void tryOpenVanillaBookScreen() {
+        if (this.minecraft == null || this.minecraft.player == null) {
+            return;
+        }
+
+        ItemStack stack = this.menu.getDisplayStack().copy();
+        if (stack.isEmpty()) {
+            return;
+        }
+
+        if (this.menu.isWrittenBookMode()) {
+            WrittenBookContent content = stack.get(DataComponents.WRITTEN_BOOK_CONTENT);
+            if (content == null) {
+                return;
+            }
+
+            this.handingOffToVanillaBookScreen = true;
+            this.minecraft.player.closeContainer();
+            this.minecraft.setScreen(new BookViewScreen(BookViewScreen.BookAccess.fromItem(stack)));
+            return;
+        }
+
+        if (this.menu.isWritableBookMode()) {
+            WritableBookContent content = stack.get(DataComponents.WRITABLE_BOOK_CONTENT);
+            if (content == null) {
+                return;
+            }
+
+            this.handingOffToVanillaBookScreen = true;
+            this.minecraft.player.closeContainer();
+            this.minecraft.setScreen(new BookEditScreen(this.minecraft.player, stack, InteractionHand.MAIN_HAND, content));
+        }
     }
 
     private void updateLayout() {
@@ -187,9 +226,6 @@ public class SingleSlotScreen extends AbstractContainerScreen<DisplayContainerMe
 
     @Override
     protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        if (!isLinkBookMode()) {
-            // Leave standard labels hidden for now.
-        }
     }
 
     @Override

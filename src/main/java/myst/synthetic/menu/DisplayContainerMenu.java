@@ -11,6 +11,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 public class DisplayContainerMenu extends AbstractContainerMenu {
 
@@ -69,6 +70,14 @@ public class DisplayContainerMenu extends AbstractContainerMenu {
         return stack.is(MystcraftItems.LINKBOOK) || stack.is(MystcraftItems.AGEBOOK);
     }
 
+    public boolean isWritableBookMode() {
+        return this.getDisplayStack().is(Items.WRITABLE_BOOK);
+    }
+
+    public boolean isWrittenBookMode() {
+        return this.getDisplayStack().is(Items.WRITTEN_BOOK);
+    }
+
     @Override
     public boolean stillValid(Player player) {
         if (this.container instanceof BlockEntityDisplayContainer displayContainer) {
@@ -117,6 +126,17 @@ public class DisplayContainerMenu extends AbstractContainerMenu {
 
     @Override
     public void removed(Player player) {
+        if (!player.level().isClientSide()) {
+            ItemStack carried = this.getCarried();
+            if (!carried.isEmpty()) {
+                this.setCarried(ItemStack.EMPTY);
+
+                if (!player.addItem(carried)) {
+                    player.drop(carried, false);
+                }
+            }
+        }
+
         super.removed(player);
         this.container.stopOpen(player);
     }
