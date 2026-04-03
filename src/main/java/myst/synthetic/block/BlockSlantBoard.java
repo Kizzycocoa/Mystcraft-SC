@@ -94,7 +94,6 @@ public class BlockSlantBoard extends BlockDisplayContainer {
     }
 
     @Override
-    @Override
     protected InteractionResult openDisplayUi(
             BlockState state,
             Level level,
