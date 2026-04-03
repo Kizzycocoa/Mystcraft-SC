@@ -10,7 +10,8 @@ public record PageSymbol(
         Identifier id,
         @Nullable String translationKey,
         int cardRank,
-        List<String> poemWords
+        List<String> poemWords,
+        int tested
 ) {
 
     public PageSymbol {
@@ -19,6 +20,10 @@ public record PageSymbol(
 
     public boolean hasPoem() {
         return poemWords.size() == 4;
+    }
+
+    public boolean isUntested() {
+        return tested == 0;
     }
 
     public Component displayName() {

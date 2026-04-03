@@ -5,6 +5,8 @@ import com.mojang.math.Axis;
 import java.util.function.Consumer;
 import myst.synthetic.client.page.PageRenderCache;
 import myst.synthetic.page.Page;
+import myst.synthetic.page.symbol.PageSymbol;
+import myst.synthetic.page.symbol.PageSymbolRegistry;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
@@ -16,6 +18,9 @@ import org.joml.Vector3fc;
 import org.jspecify.annotations.Nullable;
 
 public final class PageItemSpecialRenderer implements SpecialModelRenderer<PageRenderKey> {
+
+    private static final int NORMAL_TINT = 0xFFFFFFFF;
+    private static final int UNTESTED_TINT = 0xFF6FA8FF;
 
     @Override
     public void submit(
@@ -30,6 +35,7 @@ public final class PageItemSpecialRenderer implements SpecialModelRenderer<PageR
     ) {
         PageRenderKey resolvedKey = key != null ? key : new PageRenderKey(PageRenderKey.Kind.BLANK, null);
         var asset = PageRenderCache.getAsset(resolvedKey);
+        int tint = getTint(resolvedKey);
 
         poseStack.pushPose();
 
@@ -73,7 +79,8 @@ public final class PageItemSpecialRenderer implements SpecialModelRenderer<PageR
                     poseStack,
                     asset,
                     LightTexture.FULL_BRIGHT,
-                    overlay
+                    overlay,
+                    tint
             );
         } else {
             PageRenderPipelines.submitWorld(
@@ -81,11 +88,25 @@ public final class PageItemSpecialRenderer implements SpecialModelRenderer<PageR
                     poseStack,
                     asset,
                     light,
-                    overlay
+                    overlay,
+                    tint
             );
         }
 
         poseStack.popPose();
+    }
+
+    private static int getTint(PageRenderKey key) {
+        if (key.kind() != PageRenderKey.Kind.SYMBOL || key.symbolId() == null) {
+            return NORMAL_TINT;
+        }
+
+        PageSymbol symbol = PageSymbolRegistry.get(key.symbolId());
+        if (symbol != null && symbol.isUntested()) {
+            return UNTESTED_TINT;
+        }
+
+        return NORMAL_TINT;
     }
 
     @Override

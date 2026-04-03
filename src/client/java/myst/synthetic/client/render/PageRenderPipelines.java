@@ -56,12 +56,13 @@ public final class PageRenderPipelines {
             PoseStack poseStack,
             PageRenderAsset asset,
             int light,
-            int overlay
+            int overlay,
+            int tintArgb
     ) {
         queue.submitCustomGeometry(
                 poseStack,
                 getWorldRenderType(asset.textureId()),
-                (pose, consumer) -> emitPageGeometry(pose, consumer, light, overlay, asset.image())
+                (pose, consumer) -> emitPageGeometry(pose, consumer, light, overlay, asset.image(), tintArgb)
         );
     }
 
@@ -70,12 +71,13 @@ public final class PageRenderPipelines {
             PoseStack poseStack,
             PageRenderAsset asset,
             int light,
-            int overlay
+            int overlay,
+            int tintArgb
     ) {
         queue.submitCustomGeometry(
                 poseStack,
                 getGuiRenderType(asset.textureId()),
-                (pose, consumer) -> emitPageGeometry(pose, consumer, light, overlay, asset.image())
+                (pose, consumer) -> emitPageGeometry(pose, consumer, light, overlay, asset.image(), tintArgb)
         );
     }
 
@@ -84,23 +86,25 @@ public final class PageRenderPipelines {
             VertexConsumer consumer,
             int light,
             int overlay,
-            BufferedImage image
+            BufferedImage image,
+            int tintArgb
     ) {
-        emitFront(pose, consumer, light, overlay);
-        emitBack(pose, consumer, light, overlay);
-        emitExtrudedEdges(pose, consumer, light, overlay, image);
+        emitFront(pose, consumer, light, overlay, tintArgb);
+        emitBack(pose, consumer, light, overlay, tintArgb);
+        emitExtrudedEdges(pose, consumer, light, overlay, image, tintArgb);
     }
 
     private static void emitBack(
             PoseStack.Pose pose,
             VertexConsumer consumer,
             int light,
-            int overlay
+            int overlay,
+            int tintArgb
     ) {
         float z = -HALF_THICKNESS;
 
         emitQuad(
-                pose, consumer, light, overlay,
+                pose, consumer, light, overlay, tintArgb,
                 -HALF_WIDTH,  HALF_HEIGHT,  z,
                 HALF_WIDTH,  HALF_HEIGHT,  z,
                 HALF_WIDTH, -HALF_HEIGHT,  z,
@@ -117,13 +121,13 @@ public final class PageRenderPipelines {
             PoseStack.Pose pose,
             VertexConsumer consumer,
             int light,
-            int overlay
+            int overlay,
+            int tintArgb
     ) {
-
         float z = HALF_THICKNESS;
 
         emitQuad(
-                pose, consumer, light, overlay,
+                pose, consumer, light, overlay, tintArgb,
                 -HALF_WIDTH, -HALF_HEIGHT, z,
                 HALF_WIDTH, -HALF_HEIGHT, z,
                 HALF_WIDTH,  HALF_HEIGHT, z,
@@ -141,7 +145,8 @@ public final class PageRenderPipelines {
             VertexConsumer consumer,
             int light,
             int overlay,
-            BufferedImage image
+            BufferedImage image,
+            int tintArgb
     ) {
         int width = image.getWidth();
         int height = image.getHeight();
@@ -164,7 +169,7 @@ public final class PageRenderPipelines {
 
                 if (!isOpaque(image, x, y - 1)) {
                     emitQuad(
-                            pose, consumer, light, overlay,
+                            pose, consumer, light, overlay, tintArgb,
                             x0, y0,  HALF_THICKNESS,
                             x1, y0,  HALF_THICKNESS,
                             x1, y0, -HALF_THICKNESS,
@@ -179,7 +184,7 @@ public final class PageRenderPipelines {
 
                 if (!isOpaque(image, x, y + 1)) {
                     emitQuad(
-                            pose, consumer, light, overlay,
+                            pose, consumer, light, overlay, tintArgb,
                             x0, y1, -HALF_THICKNESS,
                             x1, y1, -HALF_THICKNESS,
                             x1, y1,  HALF_THICKNESS,
@@ -194,7 +199,7 @@ public final class PageRenderPipelines {
 
                 if (!isOpaque(image, x - 1, y)) {
                     emitQuad(
-                            pose, consumer, light, overlay,
+                            pose, consumer, light, overlay, tintArgb,
                             x0, y1,  HALF_THICKNESS,
                             x0, y0,  HALF_THICKNESS,
                             x0, y0, -HALF_THICKNESS,
@@ -209,7 +214,7 @@ public final class PageRenderPipelines {
 
                 if (!isOpaque(image, x + 1, y)) {
                     emitQuad(
-                            pose, consumer, light, overlay,
+                            pose, consumer, light, overlay, tintArgb,
                             x1, y1, -HALF_THICKNESS,
                             x1, y0, -HALF_THICKNESS,
                             x1, y0,  HALF_THICKNESS,
@@ -248,6 +253,7 @@ public final class PageRenderPipelines {
             VertexConsumer consumer,
             int light,
             int overlay,
+            int tintArgb,
             float x0, float y0, float z0,
             float x1, float y1, float z1,
             float x2, float y2, float z2,
@@ -258,29 +264,34 @@ public final class PageRenderPipelines {
             float u2, float v2,
             float u3, float v3
     ) {
+        int a = (tintArgb >>> 24) & 0xFF;
+        int r = (tintArgb >>> 16) & 0xFF;
+        int g = (tintArgb >>> 8) & 0xFF;
+        int b = tintArgb & 0xFF;
+
         consumer.addVertex(pose, x0, y0, z0)
-                .setColor(255, 255, 255, 255)
+                .setColor(r, g, b, a)
                 .setUv(u0, v0)
                 .setOverlay(overlay)
                 .setLight(light)
                 .setNormal(pose, nx, ny, nz);
 
         consumer.addVertex(pose, x1, y1, z1)
-                .setColor(255, 255, 255, 255)
+                .setColor(r, g, b, a)
                 .setUv(u1, v1)
                 .setOverlay(overlay)
                 .setLight(light)
                 .setNormal(pose, nx, ny, nz);
 
         consumer.addVertex(pose, x2, y2, z2)
-                .setColor(255, 255, 255, 255)
+                .setColor(r, g, b, a)
                 .setUv(u2, v2)
                 .setOverlay(overlay)
                 .setLight(light)
                 .setNormal(pose, nx, ny, nz);
 
         consumer.addVertex(pose, x3, y3, z3)
-                .setColor(255, 255, 255, 255)
+                .setColor(r, g, b, a)
                 .setUv(u3, v3)
                 .setOverlay(overlay)
                 .setLight(light)
