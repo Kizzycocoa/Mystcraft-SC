@@ -118,14 +118,14 @@ public class MystcraftSyntheticCodexClient implements ClientModInitializer {
 				case WRITTEN_BOOK -> {
 					WrittenBookContent content = stack.get(DataComponents.WRITTEN_BOOK_CONTENT);
 					if (content == null) {
-						minecraft.setScreen(new SingleSlotScreen(stack, type));
+						minecraft.setScreen(new SingleSlotScreen(stack, type, blockPos));
 						return;
 					}
 
 					minecraft.setScreen(new BookViewScreen(BookViewScreen.BookAccess.fromItem(stack)));
 				}
 
-				case EMPTY, PAPER, PAGE, MAP -> minecraft.setScreen(new SingleSlotScreen(stack, type));
+				case EMPTY, PAPER, PAGE, MAP -> minecraft.setScreen(new SingleSlotScreen(stack, type, blockPos));
 			}
 		};
 	}

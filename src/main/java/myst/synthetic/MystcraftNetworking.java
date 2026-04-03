@@ -1,17 +1,19 @@
 package myst.synthetic;
 
+import myst.synthetic.block.entity.BlockEntityDisplayContainer;
+import myst.synthetic.linking.LinkController;
+import myst.synthetic.linking.LinkOptions;
+import myst.synthetic.network.DisplayContainerExtractPayload;
+import myst.synthetic.network.DisplayContainerInsertPayload;
 import myst.synthetic.network.LinkBookUsePayload;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
-import myst.synthetic.linking.LinkController;
-import myst.synthetic.linking.LinkOptions;
-import myst.synthetic.block.entity.BlockEntityDisplayContainer;
-import myst.synthetic.network.DisplayContainerExtractPayload;
 
 public final class MystcraftNetworking {
 
@@ -21,6 +23,7 @@ public final class MystcraftNetworking {
     public static void initialize() {
         PayloadTypeRegistry.playC2S().register(LinkBookUsePayload.ID, LinkBookUsePayload.CODEC);
         PayloadTypeRegistry.playC2S().register(DisplayContainerExtractPayload.ID, DisplayContainerExtractPayload.CODEC);
+        PayloadTypeRegistry.playC2S().register(DisplayContainerInsertPayload.ID, DisplayContainerInsertPayload.CODEC);
 
         ServerPlayNetworking.registerGlobalReceiver(LinkBookUsePayload.ID, (payload, context) -> {
             var player = context.player();
@@ -82,6 +85,58 @@ public final class MystcraftNetworking {
                 } else if (!player.addItem(removed)) {
                     player.drop(removed, false);
                 }
+
+                player.inventoryMenu.broadcastChanges();
+            });
+        });
+
+        ServerPlayNetworking.registerGlobalReceiver(DisplayContainerInsertPayload.ID, (payload, context) -> {
+            var player = context.player();
+
+            context.server().execute(() -> {
+                if (!(player.level().getBlockEntity(payload.pos()) instanceof BlockEntityDisplayContainer blockEntity)) {
+                    return;
+                }
+
+                if (!player.blockPosition().closerThan(payload.pos(), 8.0D)) {
+                    return;
+                }
+
+                int slot = payload.playerSlot();
+                if (slot < 0 || slot >= Inventory.getSelectionSize() + 27) {
+                    return;
+                }
+
+                Inventory inventory = player.getInventory();
+                ItemStack clicked = inventory.getItem(slot);
+
+                if (clicked.isEmpty()) {
+                    return;
+                }
+
+                if (!blockEntity.canAcceptDisplayItem(clicked)) {
+                    return;
+                }
+
+                ItemStack previous = ItemStack.EMPTY;
+                if (blockEntity.hasStoredItem()) {
+                    previous = blockEntity.takeStoredItem();
+                }
+
+                blockEntity.setStoredItem(clicked.copyWithCount(1));
+
+                if (!player.getAbilities().instabuild) {
+                    clicked.shrink(1);
+                    inventory.setItem(slot, clicked);
+                }
+
+                if (!previous.isEmpty()) {
+                    if (!player.addItem(previous)) {
+                        player.drop(previous, false);
+                    }
+                }
+
+                player.inventoryMenu.broadcastChanges();
             });
         });
     }

@@ -16,6 +16,13 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
 import org.jetbrains.annotations.Nullable;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTextTooltip;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
+import net.minecraft.world.item.TooltipFlag;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class LinkBookScreen extends Screen {
 
@@ -64,16 +71,48 @@ public class LinkBookScreen extends Screen {
         return false;
     }
 
+    private void renderItemTooltip(GuiGraphics guiGraphics, ItemStack stack, int mouseX, int mouseY) {
+        Minecraft minecraft = Minecraft.getInstance();
+        if (minecraft.player == null || stack.isEmpty()) {
+            return;
+        }
+
+        List<ClientTooltipComponent> tooltip = new ArrayList<>();
+
+        for (var line : stack.getTooltipLines(
+                net.minecraft.world.item.Item.TooltipContext.EMPTY,
+                minecraft.player,
+                TooltipFlag.Default.NORMAL
+        )) {
+            tooltip.add(new ClientTextTooltip(line.getVisualOrderText()));
+        }
+
+        guiGraphics.renderTooltip(
+                this.font,
+                tooltip,
+                mouseX,
+                mouseY,
+                DefaultTooltipPositioner.INSTANCE,
+                null
+        );
+    }
+
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         drawBook(guiGraphics);
         drawBookText(guiGraphics);
 
+        boolean hoveringContainer = false;
+
         if (this.containerPos != null) {
-            drawContainerSlot(guiGraphics);
+            hoveringContainer = drawContainerSlot(guiGraphics, mouseX, mouseY);
         }
 
         super.render(guiGraphics, mouseX, mouseY, partialTick);
+
+        if (hoveringContainer && !this.bookStack.isEmpty()) {
+            renderItemTooltip(guiGraphics, this.bookStack, mouseX, mouseY);
+        }
     }
 
     private void drawRegion(
@@ -159,7 +198,7 @@ public class LinkBookScreen extends Screen {
         }
     }
 
-    private void drawContainerSlot(GuiGraphics guiGraphics) {
+    private boolean drawContainerSlot(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         int slotLeft = this.leftPos + CONTAINER_SLOT_X;
         int slotTop = this.topPos + CONTAINER_SLOT_Y;
 
@@ -170,6 +209,14 @@ public class LinkBookScreen extends Screen {
             guiGraphics.renderItem(this.bookStack, slotLeft, slotTop);
             guiGraphics.renderItemDecorations(this.font, this.bookStack, slotLeft, slotTop);
         }
+
+        boolean hovering = mouseX >= slotLeft && mouseX < slotLeft + 16 && mouseY >= slotTop && mouseY < slotTop + 16;
+
+        if (hovering) {
+            guiGraphics.fill(slotLeft, slotTop, slotLeft + 16, slotTop + 16, 0x80FFFFFF);
+        }
+
+        return hovering;
     }
 
     @Override
