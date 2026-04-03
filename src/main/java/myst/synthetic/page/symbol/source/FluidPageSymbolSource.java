@@ -32,7 +32,8 @@ public final class FluidPageSymbolSource implements PageSymbolSource {
                     ),
                     null,
                     1,
-                    GeneratedPageSymbolUtil.fluidWords(fluidId)
+                    GeneratedPageSymbolUtil.fluidWords(fluidId),
+                    0
             ));
         }
     }
