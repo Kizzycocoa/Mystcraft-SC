@@ -9,6 +9,9 @@ public interface LinkPropertyAPI {
     String FLAG_INTRA_LINKING_ONLY = "Intra Linking Only";
     String FLAG_NATURAL = "Natural";
     String FLAG_EXTERNAL = "External";
+    String FLAG_DISARM = "Disarm";
+    String FLAG_MAINTAIN_MOMENTUM = "Maintain Momentum";
+    String FLAG_GENERATE_PLATFORM = "Generate Platform";
     String FLAG_TPCOMMAND = "Op-TP";
 
     String PROP_SOUND = "Sound";

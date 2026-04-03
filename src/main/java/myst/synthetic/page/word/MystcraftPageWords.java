@@ -69,9 +69,9 @@ public final class MystcraftPageWords {
         register("Discover", 4, 5, 8, 10, 12, 13, 14, 16, 22);
         register("Explore", 6, 8, 12, 13, 20, 21, 23);
 
-        //register("Chain", 4, 5, 6, 7, 24, 25, 27, 33, 34, 35, 40, 41, 42, 43);
+        register("Chain", 4, 5, 6, 7, 24, 25, 27, 33, 34, 35, 40, 41, 42, 43);
         register("Image", 7, 8, 9, 10, 11, 19, 21, 23);
-        register("Celestial", 4, 6, 8, 9, 10, 14, 18, 20, 21, 22, 23);
+        register("Celestial", 6, 8, 9, 10, 14, 18, 20, 21, 22, 23, 24);
         register("Terrain", 6, 10, 12, 13, 16, 19, 24, 25, 27);
         register("Order", 11, 14, 15, 17, 20, 21);
 

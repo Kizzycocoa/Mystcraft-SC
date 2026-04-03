@@ -148,13 +148,13 @@ public class MystcraftItemGroups {
                     .displayItems((parameters, output) -> {
                         output.accept(Page.createPage());
                         output.accept(Page.createLinkPage());
+                        output.accept(Page.createLinkPage(LinkPropertyAPI.FLAG_DISARM));
+                        output.accept(Page.createLinkPage(LinkPropertyAPI.FLAG_GENERATE_PLATFORM));
                         output.accept(Page.createLinkPage(LinkPropertyAPI.FLAG_INTRA_LINKING));
-                        output.accept(Page.createLinkPage(List.of(
-                                LinkPropertyAPI.FLAG_NATURAL,
-                                LinkPropertyAPI.PROP_SOUND
-                        )));
+                        output.accept(Page.createLinkPage(LinkPropertyAPI.FLAG_INTRA_LINKING_ONLY));
+                        output.accept(Page.createLinkPage(LinkPropertyAPI.FLAG_MAINTAIN_MOMENTUM));
 
-                        for (PageSymbol symbol : PageSymbolRegistry.values()) {
+                        for (PageSymbol symbol : PageSymbolRegistry.values()) {-+
                             output.accept(Page.createSymbolPage(symbol.id()));
                         }
                     })
