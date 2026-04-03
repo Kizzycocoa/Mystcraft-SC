@@ -23,7 +23,8 @@ public final class BiomePageSymbolSource {
                     ),
                     null,
                     1,
-                    GeneratedPageSymbolUtil.biomeWords(biomeId)
+                    GeneratedPageSymbolUtil.biomeWords(biomeId),
+                    0
             ));
         }
     }
