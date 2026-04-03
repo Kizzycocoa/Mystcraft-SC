@@ -24,17 +24,7 @@ import net.minecraft.resources.Identifier;
 import myst.synthetic.client.render.InkScreenOverlay;
 import myst.synthetic.client.page.PageRenderCache;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import myst.synthetic.DisplayContainerClientBridge;
-import myst.synthetic.block.entity.DisplayContentType;
 import myst.synthetic.client.gui.SingleSlotScreen;
-import net.minecraft.client.gui.screens.inventory.BookEditScreen;
-import net.minecraft.client.gui.screens.inventory.BookViewScreen;
-import net.minecraft.core.component.DataComponents;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.component.WritableBookContent;
-import net.minecraft.world.item.component.WrittenBookContent;
-import net.minecraft.core.BlockPos;
 
 public class MystcraftSyntheticCodexClient implements ClientModInitializer {
 
@@ -70,6 +60,7 @@ public class MystcraftSyntheticCodexClient implements ClientModInitializer {
 		);
 
 		MenuScreens.register(MystcraftMenus.INK_MIXER, InkMixerScreen::new);
+		MenuScreens.register(MystcraftMenus.DISPLAY_CONTAINER, SingleSlotScreen::new);
 		InkScreenOverlay.initialize();
 
 		ClientTickEvents.END_CLIENT_TICK.register(new ClientTickEvents.EndTick() {
@@ -95,38 +86,5 @@ public class MystcraftSyntheticCodexClient implements ClientModInitializer {
 		}
 
 		LinkBookClientBridge.OPENER = stack -> Minecraft.getInstance().setScreen(new LinkBookScreen(stack));
-		DisplayContainerClientBridge.OPENER = (stack, type, blockPos) -> {
-			Minecraft minecraft = Minecraft.getInstance();
-
-			switch (type) {
-				case LINKING_BOOK, DESCRIPTIVE_BOOK -> minecraft.setScreen(new LinkBookScreen(stack, blockPos));
-
-				case WRITABLE_BOOK -> {
-					if (minecraft.player == null) {
-						return;
-					}
-
-					WritableBookContent content = stack.get(DataComponents.WRITABLE_BOOK_CONTENT);
-					if (content == null) {
-						minecraft.setScreen(new SingleSlotScreen(stack, type));
-						return;
-					}
-
-					minecraft.setScreen(new BookEditScreen(minecraft.player, stack.copy(), InteractionHand.MAIN_HAND, content));
-				}
-
-				case WRITTEN_BOOK -> {
-					WrittenBookContent content = stack.get(DataComponents.WRITTEN_BOOK_CONTENT);
-					if (content == null) {
-						minecraft.setScreen(new SingleSlotScreen(stack, type, blockPos));
-						return;
-					}
-
-					minecraft.setScreen(new BookViewScreen(BookViewScreen.BookAccess.fromItem(stack)));
-				}
-
-				case EMPTY, PAPER, PAGE, MAP -> minecraft.setScreen(new SingleSlotScreen(stack, type, blockPos));
-			}
-		};
 	}
 }

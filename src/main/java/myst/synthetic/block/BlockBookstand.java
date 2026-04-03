@@ -120,8 +120,8 @@ public class BlockBookstand extends BlockDisplayContainer {
             BlockHitResult hit,
             BlockEntityDisplayContainer blockEntity
     ) {
-        if (level.isClientSide()) {
-            return openClientDisplayScreen(blockEntity);
+        if (!level.isClientSide()) {
+            player.openMenu(blockEntity);
         }
 
         return InteractionResult.SUCCESS;

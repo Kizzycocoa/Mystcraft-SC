@@ -1,7 +1,6 @@
 package myst.synthetic.block;
 
 import com.mojang.serialization.MapCodec;
-import myst.synthetic.DisplayContainerClientBridge;
 import myst.synthetic.block.entity.BlockEntityDisplayContainer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
@@ -127,14 +126,5 @@ public abstract class BlockDisplayContainer extends BaseEntityBlock {
 		}
 
 		return super.playerWillDestroy(level, pos, state, player);
-	}
-
-	protected InteractionResult openClientDisplayScreen(BlockEntityDisplayContainer blockEntity) {
-		DisplayContainerClientBridge.open(
-				blockEntity.getStoredItem().copy(),
-				blockEntity.getContentType(),
-				blockEntity.getBlockPos()
-		);
-		return InteractionResult.SUCCESS;
 	}
 }

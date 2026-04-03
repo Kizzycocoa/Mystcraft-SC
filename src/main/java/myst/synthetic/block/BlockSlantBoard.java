@@ -94,6 +94,7 @@ public class BlockSlantBoard extends BlockDisplayContainer {
     }
 
     @Override
+    @Override
     protected InteractionResult openDisplayUi(
             BlockState state,
             Level level,
@@ -103,8 +104,8 @@ public class BlockSlantBoard extends BlockDisplayContainer {
             BlockHitResult hit,
             BlockEntityDisplayContainer blockEntity
     ) {
-        if (level.isClientSide()) {
-            return openClientDisplayScreen(blockEntity);
+        if (!level.isClientSide()) {
+            player.openMenu(blockEntity);
         }
 
         return InteractionResult.SUCCESS;

@@ -232,7 +232,7 @@ public class LinkBookScreen extends Screen {
 
             if (mouseX >= slotLeft && mouseX <= slotRight && mouseY >= slotTop && mouseY <= slotBottom) {
                 ClientPlayNetworking.send(new DisplayContainerExtractPayload(this.containerPos));
-                Minecraft.getInstance().setScreen(new SingleSlotScreen(ItemStack.EMPTY, myst.synthetic.block.entity.DisplayContentType.EMPTY));
+                this.onClose();
                 return true;
             }
         }

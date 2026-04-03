@@ -17,8 +17,12 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import myst.synthetic.menu.DisplayContainerMenu;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 
-public abstract class BlockEntityDisplayContainer extends BlockEntity implements Container {
+public abstract class BlockEntityDisplayContainer extends BlockEntity implements Container, net.minecraft.world.MenuProvider {
 
 	private NonNullList<ItemStack> items = NonNullList.withSize(1, ItemStack.EMPTY);
 
@@ -99,6 +103,16 @@ public abstract class BlockEntityDisplayContainer extends BlockEntity implements
 	@Override
 	public net.minecraft.nbt.CompoundTag getUpdateTag(HolderLookup.Provider registries) {
 		return this.saveWithoutMetadata(registries);
+	}
+
+	@Override
+	public Component getDisplayName() {
+		return Component.empty();
+	}
+
+	@Override
+	public AbstractContainerMenu createMenu(int containerId, Inventory playerInventory, Player player) {
+		return new DisplayContainerMenu(containerId, playerInventory, this, this.getBlockPos());
 	}
 
 	@Override
