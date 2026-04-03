@@ -130,7 +130,11 @@ public abstract class BlockDisplayContainer extends BaseEntityBlock {
 	}
 
 	protected InteractionResult openClientDisplayScreen(BlockEntityDisplayContainer blockEntity) {
-		DisplayContainerClientBridge.open(blockEntity.getStoredItem().copy(), blockEntity.getContentType());
+		DisplayContainerClientBridge.open(
+				blockEntity.getStoredItem().copy(),
+				blockEntity.getContentType(),
+				blockEntity.getBlockPos()
+		);
 		return InteractionResult.SUCCESS;
 	}
 }

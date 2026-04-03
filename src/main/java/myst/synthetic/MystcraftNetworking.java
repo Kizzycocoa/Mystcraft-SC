@@ -10,6 +10,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
 import myst.synthetic.linking.LinkController;
 import myst.synthetic.linking.LinkOptions;
+import myst.synthetic.block.entity.BlockEntityDisplayContainer;
+import myst.synthetic.network.DisplayContainerExtractPayload;
 
 public final class MystcraftNetworking {
 
@@ -18,6 +20,7 @@ public final class MystcraftNetworking {
 
     public static void initialize() {
         PayloadTypeRegistry.playC2S().register(LinkBookUsePayload.ID, LinkBookUsePayload.CODEC);
+        PayloadTypeRegistry.playC2S().register(DisplayContainerExtractPayload.ID, DisplayContainerExtractPayload.CODEC);
 
         ServerPlayNetworking.registerGlobalReceiver(LinkBookUsePayload.ID, (payload, context) -> {
             var player = context.player();
@@ -45,12 +48,40 @@ public final class MystcraftNetworking {
 
                 String currentDimension = extractDimensionId(player.level().dimension().toString());
 
-                // Only link if the target dimension is different from the current one.
                 if (currentDimension.equals(targetDimension)) {
                     return;
                 }
 
                 LinkController.travelEntity(player.level(), player, info);
+            });
+        });
+
+        ServerPlayNetworking.registerGlobalReceiver(DisplayContainerExtractPayload.ID, (payload, context) -> {
+            var player = context.player();
+
+            context.server().execute(() -> {
+                if (!(player.level().getBlockEntity(payload.pos()) instanceof BlockEntityDisplayContainer blockEntity)) {
+                    return;
+                }
+
+                if (!player.blockPosition().closerThan(payload.pos(), 8.0D)) {
+                    return;
+                }
+
+                if (!blockEntity.hasStoredItem()) {
+                    return;
+                }
+
+                ItemStack removed = blockEntity.takeStoredItem();
+                if (removed.isEmpty()) {
+                    return;
+                }
+
+                if (player.getMainHandItem().isEmpty()) {
+                    player.setItemInHand(InteractionHand.MAIN_HAND, removed);
+                } else if (!player.addItem(removed)) {
+                    player.drop(removed, false);
+                }
             });
         });
     }

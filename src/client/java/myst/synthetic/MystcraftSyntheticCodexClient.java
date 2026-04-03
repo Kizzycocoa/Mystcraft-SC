@@ -34,6 +34,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.WritableBookContent;
 import net.minecraft.world.item.component.WrittenBookContent;
+import net.minecraft.core.BlockPos;
 
 public class MystcraftSyntheticCodexClient implements ClientModInitializer {
 
@@ -94,11 +95,11 @@ public class MystcraftSyntheticCodexClient implements ClientModInitializer {
 		}
 
 		LinkBookClientBridge.OPENER = stack -> Minecraft.getInstance().setScreen(new LinkBookScreen(stack));
-		DisplayContainerClientBridge.OPENER = (stack, type) -> {
+		DisplayContainerClientBridge.OPENER = (stack, type, blockPos) -> {
 			Minecraft minecraft = Minecraft.getInstance();
 
 			switch (type) {
-				case LINKING_BOOK, DESCRIPTIVE_BOOK -> minecraft.setScreen(new LinkBookScreen(stack));
+				case LINKING_BOOK, DESCRIPTIVE_BOOK -> minecraft.setScreen(new LinkBookScreen(stack, blockPos));
 
 				case WRITABLE_BOOK -> {
 					if (minecraft.player == null) {

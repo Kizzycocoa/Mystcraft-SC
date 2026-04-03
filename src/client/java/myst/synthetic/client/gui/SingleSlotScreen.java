@@ -1,6 +1,5 @@
 package myst.synthetic.client.gui;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import myst.synthetic.block.entity.DisplayContentType;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
@@ -39,8 +38,6 @@ public class SingleSlotScreen extends Screen {
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        this.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
-
         guiGraphics.blit(
                 RenderPipelines.GUI_TEXTURED,
                 TEXTURE,
