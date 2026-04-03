@@ -1,6 +1,7 @@
 package myst.synthetic.block;
 
 import com.mojang.serialization.MapCodec;
+import myst.synthetic.DisplayContainerClientBridge;
 import myst.synthetic.block.entity.BlockEntityDisplayContainer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
@@ -40,6 +41,25 @@ public abstract class BlockDisplayContainer extends BaseEntityBlock {
 		return null;
 	}
 
+	private boolean tryExtractStoredItem(Level level, BlockPos pos, Player player, BlockEntityDisplayContainer blockEntity) {
+		if (level.isClientSide()) {
+			return true;
+		}
+
+		ItemStack removed = blockEntity.takeStoredItem();
+		if (removed.isEmpty()) {
+			return false;
+		}
+
+		if (player.getMainHandItem().isEmpty()) {
+			player.setItemInHand(InteractionHand.MAIN_HAND, removed);
+		} else if (!player.addItem(removed)) {
+			Block.popResource(level, pos, removed);
+		}
+
+		return true;
+	}
+
 	@Override
 	protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
 		BlockEntityDisplayContainer blockEntity = getDisplayBlockEntity(level, pos);
@@ -47,18 +67,10 @@ public abstract class BlockDisplayContainer extends BaseEntityBlock {
 			return InteractionResult.PASS;
 		}
 
-		if (!level.isClientSide() && player.isShiftKeyDown() && blockEntity.hasStoredItem()) {
-			ItemStack removed = blockEntity.takeStoredItem();
-
-			if (!removed.isEmpty()) {
-				if (player.getMainHandItem().isEmpty()) {
-					player.setItemInHand(InteractionHand.MAIN_HAND, removed);
-				} else if (!player.addItem(removed)) {
-					popResource(level, pos, removed);
-				}
+		if (player.isShiftKeyDown() && blockEntity.hasStoredItem()) {
+			if (tryExtractStoredItem(level, pos, player, blockEntity)) {
+				return InteractionResult.SUCCESS;
 			}
-
-			return InteractionResult.SUCCESS;
 		}
 
 		return openDisplayUi(state, level, pos, player, InteractionHand.MAIN_HAND, hit, blockEntity);
@@ -77,6 +89,12 @@ public abstract class BlockDisplayContainer extends BaseEntityBlock {
 		BlockEntityDisplayContainer blockEntity = getDisplayBlockEntity(level, pos);
 		if (blockEntity == null) {
 			return InteractionResult.PASS;
+		}
+
+		if (player.isShiftKeyDown() && blockEntity.hasStoredItem()) {
+			if (tryExtractStoredItem(level, pos, player, blockEntity)) {
+				return InteractionResult.SUCCESS;
+			}
 		}
 
 		if (blockEntity.isEmpty() && blockEntity.canAcceptDisplayItem(stack)) {
@@ -109,5 +127,10 @@ public abstract class BlockDisplayContainer extends BaseEntityBlock {
 		}
 
 		return super.playerWillDestroy(level, pos, state, player);
+	}
+
+	protected InteractionResult openClientDisplayScreen(BlockEntityDisplayContainer blockEntity) {
+		DisplayContainerClientBridge.open(blockEntity.getStoredItem().copy(), blockEntity.getContentType());
+		return InteractionResult.SUCCESS;
 	}
 }

@@ -103,7 +103,10 @@ public class BlockSlantBoard extends BlockDisplayContainer {
             BlockHitResult hit,
             BlockEntityDisplayContainer blockEntity
     ) {
-        // GUI routing comes in the next pass.
+        if (level.isClientSide()) {
+            return openClientDisplayScreen(blockEntity);
+        }
+
         return InteractionResult.SUCCESS;
     }
 
