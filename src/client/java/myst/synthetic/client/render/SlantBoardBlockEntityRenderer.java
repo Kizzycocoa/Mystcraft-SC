@@ -213,7 +213,7 @@ public class SlantBoardBlockEntityRenderer
 
             // Found empirically to match the board angle.
             poseStack.translate(0.0F, 0.50F, 0.0F);
-            poseStack.mulPose(Axis.ZP.rotationDegrees(-109.06F));
+            poseStack.mulPose(Axis.XP.rotationDegrees(-109.06F));
 
             if (DisplayItemRenderHelper.isBookLike(state.contentType)) {
                 poseStack.scale(0.8F, 0.8F, 0.8F);
@@ -226,7 +226,7 @@ public class SlantBoardBlockEntityRenderer
                 );
             } else {
                 poseStack.translate(0.0F, 0.20F, 0.0F);
-                poseStack.mulPose(Axis.XP.rotationDegrees(90.0F));
+                poseStack.mulPose(Axis.ZP.rotationDegrees(180.0F));
                 poseStack.mulPose(Axis.YP.rotationDegrees(90.0F));
 
                 // These values lift the flat item out of the board after the board-pitch rotation.
