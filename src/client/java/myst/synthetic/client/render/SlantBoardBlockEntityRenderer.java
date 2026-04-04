@@ -215,7 +215,7 @@ public class SlantBoardBlockEntityRenderer
             // translate(0, 0.255F, 0)
             // rotate(110F, Z)
             poseStack.translate(0.0F, 0.255F, 0.0F);
-            poseStack.mulPose(Axis.XP.rotationDegrees(-110.0F));
+            poseStack.mulPose(Axis.XP.rotationDegrees(-110.56F));
 
             if (DisplayItemRenderHelper.isBookLike(state.contentType)) {
                 // Legacy linking/descriptive books on the lectern:
