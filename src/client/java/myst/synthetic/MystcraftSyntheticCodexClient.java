@@ -10,7 +10,6 @@ import myst.synthetic.client.render.InkScreenOverlay;
 import myst.synthetic.client.render.LinkbookEntityRenderer;
 import myst.synthetic.client.render.SlantBoardBlockEntityRenderer;
 import myst.synthetic.client.render.StarFissureBlockEntityRenderer;
-import myst.synthetic.client.screen.DisplayLecternScreen;
 import myst.synthetic.component.MystcraftDataComponents;
 import myst.synthetic.config.MystcraftConfig;
 import net.fabricmc.api.ClientModInitializer;
@@ -61,13 +60,7 @@ public class MystcraftSyntheticCodexClient implements ClientModInitializer {
 		);
 
 		MenuScreens.register(MystcraftMenus.INK_MIXER, InkMixerScreen::new);
-		MenuScreens.register(MystcraftMenus.DISPLAY_CONTAINER, (menu, inventory, title) -> {
-			if (menu.isLecternBookMode()) {
-				return new DisplayLecternScreen(menu, inventory, title);
-			}
-
-			return new SingleSlotScreen(menu, inventory, title);
-		});
+		MenuScreens.register(MystcraftMenus.DISPLAY_CONTAINER, SingleSlotScreen::new);
 
 		InkScreenOverlay.initialize();
 
