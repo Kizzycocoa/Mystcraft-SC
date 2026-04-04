@@ -207,6 +207,10 @@ public class DisplayContainerMenu extends AbstractContainerMenu {
                     player.drop(removed, false);
                 }
 
+                player.getInventory().setChanged();
+                player.inventoryMenu.broadcastChanges();
+                this.broadcastChanges();
+
                 return true;
             }
 
