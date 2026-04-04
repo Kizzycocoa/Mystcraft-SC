@@ -229,7 +229,7 @@ public class SlantBoardBlockEntityRenderer
                 // translate(0, 0.25F, 0)
                 poseStack.translate(0.0F, 0.2F, 0.0F);
                 //poseStack.mulPose(Axis.ZP.rotationDegrees(180.0F));
-                //poseStack.mulPose(Axis.YP.rotationDegrees(90.0F));
+                poseStack.mulPose(Axis.YP.rotationDegrees(90.0F));
                 poseStack.translate(0.0F, 0.25F, 0.0F);
 
                 // Small tuning so the modern fixed item render sits better on the board.
