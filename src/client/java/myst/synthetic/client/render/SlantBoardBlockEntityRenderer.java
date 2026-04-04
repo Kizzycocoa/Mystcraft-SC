@@ -255,9 +255,10 @@ public class SlantBoardBlockEntityRenderer
 
     private static void rotateFromFacing(PoseStack poseStack, Direction facing) {
         switch (facing) {
-            case EAST -> poseStack.mulPose(Axis.YP.rotationDegrees(270.0F));
-            case SOUTH -> poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
-            case WEST -> poseStack.mulPose(Axis.YP.rotationDegrees(90.0F));
+            case NORTH -> poseStack.mulPose(Axis.YP.rotationDegrees(90.0F));
+            case EAST -> poseStack.mulPose(Axis.YP.rotationDegrees(0.0F));
+            case SOUTH -> poseStack.mulPose(Axis.YP.rotationDegrees(270.0F));
+            case WEST -> poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
         }
     }
 }
