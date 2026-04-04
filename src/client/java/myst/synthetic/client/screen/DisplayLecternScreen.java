@@ -80,7 +80,10 @@ public class DisplayLecternScreen extends BookViewScreen implements MenuAccess<D
         );
 
         this.addRenderableWidget(
-                Button.builder(TAKE_BOOK_LABEL, button -> this.sendButtonClick(DisplayContainerMenu.BUTTON_TAKE_BOOK))
+                Button.builder(TAKE_BOOK_LABEL, button -> {
+                            this.sendButtonClick(DisplayContainerMenu.BUTTON_TAKE_BOOK);
+                            this.onClose();
+                        })
                         .pos(center + 2, y)
                         .width(98)
                         .build()

@@ -143,22 +143,17 @@ public class DisplayContainerMenu extends AbstractContainerMenu {
         return 1;
     }
 
-    private void setCurrentPageInternal(int page) {
-        this.data.set(DATA_CURRENT_PAGE, page);
-    }
-
     private void clampCurrentPage() {
         int maxPage = this.getPageCount() - 1;
         int clamped = Math.max(0, Math.min(this.getCurrentPage(), maxPage));
-        this.setCurrentPageInternal(clamped);
+        this.data.set(DATA_CURRENT_PAGE, clamped);
     }
 
     @Override
     public boolean clickMenuButton(Player player, int id) {
         if (id >= BUTTON_PAGE_JUMP_RANGE_START) {
             int page = id - BUTTON_PAGE_JUMP_RANGE_START;
-            this.setCurrentPageInternal(page);
-            this.broadcastChanges();
+            this.setData(DATA_CURRENT_PAGE, page);
             return true;
         }
 
@@ -169,12 +164,7 @@ public class DisplayContainerMenu extends AbstractContainerMenu {
                 }
 
                 int current = this.getCurrentPage();
-                if (current <= 0) {
-                    return false;
-                }
-
-                this.setCurrentPageInternal(current - 1);
-                this.broadcastChanges();
+                this.setData(DATA_CURRENT_PAGE, current - 1);
                 return true;
             }
 
@@ -184,14 +174,7 @@ public class DisplayContainerMenu extends AbstractContainerMenu {
                 }
 
                 int current = this.getCurrentPage();
-                int maxPage = this.getPageCount() - 1;
-
-                if (current >= maxPage) {
-                    return false;
-                }
-
-                this.setCurrentPageInternal(current + 1);
-                this.broadcastChanges();
+                this.setData(DATA_CURRENT_PAGE, current + 1);
                 return true;
             }
 
@@ -218,13 +201,12 @@ public class DisplayContainerMenu extends AbstractContainerMenu {
                     return false;
                 }
 
-                this.setCurrentPageInternal(0);
+                this.setData(DATA_CURRENT_PAGE, 0);
 
                 if (!player.getInventory().add(removed)) {
                     player.drop(removed, false);
                 }
 
-                this.broadcastChanges();
                 return true;
             }
 
@@ -232,6 +214,13 @@ public class DisplayContainerMenu extends AbstractContainerMenu {
                 return false;
             }
         }
+    }
+
+    @Override
+    public void setData(int id, int value) {
+        super.setData(id, value);
+        this.clampCurrentPage();
+        this.broadcastChanges();
     }
 
     @Override
@@ -280,7 +269,7 @@ public class DisplayContainerMenu extends AbstractContainerMenu {
             ItemStack single = stack.copyWithCount(1);
             activeDisplaySlot.set(single);
             stack.shrink(1);
-            this.setCurrentPageInternal(0);
+            this.setData(DATA_CURRENT_PAGE, 0);
         }
 
         if (stack.isEmpty()) {
