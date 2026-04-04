@@ -229,7 +229,7 @@ public class SlantBoardBlockEntityRenderer
                 // translate(0, 0.25F, 0)
                 poseStack.translate(0.0F, 0.2F, 0.0F);
                 poseStack.mulPose(Axis.XP.rotationDegrees(180.0F));
-                poseStack.mulPose(Axis.YP.rotationDegrees(90.0F));
+                poseStack.mulPose(Axis.YP.rotationDegrees(0.0F));
                 poseStack.translate(0.0F, 0.25F, 0.0F);
 
                 // Small tuning so the modern fixed item render sits better on the board.
@@ -255,10 +255,9 @@ public class SlantBoardBlockEntityRenderer
 
     private static void rotateFromFacing(PoseStack poseStack, Direction facing) {
         switch (facing) {
-            case NORTH -> poseStack.mulPose(Axis.YP.rotationDegrees(90.0F));
-            case EAST -> poseStack.mulPose(Axis.YP.rotationDegrees(0.0F));
-            case SOUTH -> poseStack.mulPose(Axis.YP.rotationDegrees(270.0F));
-            case WEST -> poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
+            case EAST -> poseStack.mulPose(Axis.YP.rotationDegrees(270.0F));
+            case SOUTH -> poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
+            case WEST -> poseStack.mulPose(Axis.YP.rotationDegrees(90.0F));
         }
     }
 }
