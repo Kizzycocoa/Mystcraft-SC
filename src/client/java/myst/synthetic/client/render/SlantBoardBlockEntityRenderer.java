@@ -226,8 +226,8 @@ public class SlantBoardBlockEntityRenderer
                 );
             } else {
                 poseStack.translate(0.0F, 0.20F, 0.0F);
-                poseStack.mulPose(Axis.ZP.rotationDegrees(90.0F));
-                poseStack.mulPose(Axis.YP.rotationDegrees(90.0F));
+                poseStack.mulPose(Axis.ZP.rotationDegrees(180.0F));
+                poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
 
                 // These values lift the flat item out of the board after the board-pitch rotation.
                 poseStack.translate(0.0F, 0.32F, 0.01F);
