@@ -20,9 +20,10 @@ import net.minecraft.world.item.component.WrittenBookContent;
 
 public class DisplayContainerMenu extends AbstractContainerMenu {
 
-    public static final int BUTTON_TAKE_BOOK = 0;
     public static final int BUTTON_PREV_PAGE = 1;
     public static final int BUTTON_NEXT_PAGE = 2;
+    public static final int BUTTON_TAKE_BOOK = 3;
+    public static final int BUTTON_PAGE_JUMP_RANGE_START = 100;
 
     private static final int DATA_CURRENT_PAGE = 0;
     private static final int DATA_COUNT = 1;
@@ -46,10 +47,7 @@ public class DisplayContainerMenu extends AbstractContainerMenu {
 
         container.startOpen(playerInventory.player);
 
-        // Normal single-slot display
         this.addSlot(new ConditionalDisplaySlot(container, 0, 80, 35, DisplaySlotMode.SINGLE));
-
-        // Linking/descriptive-book display
         this.addSlot(new ConditionalDisplaySlot(container, 0, 41, 21, DisplaySlotMode.LINKBOOK));
 
         for (int row = 0; row < 3; row++) {
@@ -88,6 +86,10 @@ public class DisplayContainerMenu extends AbstractContainerMenu {
         return this.container.getItem(0);
     }
 
+    public ItemStack getBook() {
+        return this.container.getItem(0);
+    }
+
     public boolean isLinkBookMode() {
         ItemStack stack = this.getDisplayStack();
         return stack.is(MystcraftItems.LINKBOOK) || stack.is(MystcraftItems.AGEBOOK);
@@ -103,6 +105,10 @@ public class DisplayContainerMenu extends AbstractContainerMenu {
 
     public boolean isLecternBookMode() {
         return this.isWritableBookMode() || this.isWrittenBookMode();
+    }
+
+    public int getPage() {
+        return this.data.get(DATA_CURRENT_PAGE);
     }
 
     public int getCurrentPage() {
@@ -149,40 +155,14 @@ public class DisplayContainerMenu extends AbstractContainerMenu {
 
     @Override
     public boolean clickMenuButton(Player player, int id) {
+        if (id >= BUTTON_PAGE_JUMP_RANGE_START) {
+            int page = id - BUTTON_PAGE_JUMP_RANGE_START;
+            this.setCurrentPageInternal(page);
+            this.broadcastChanges();
+            return true;
+        }
+
         switch (id) {
-            case BUTTON_TAKE_BOOK -> {
-                ItemStack carried = this.getCarried();
-                if (!carried.isEmpty()) {
-                    this.setCarried(ItemStack.EMPTY);
-
-                    if (!player.addItem(carried)) {
-                        player.drop(carried, false);
-                    }
-                }
-
-                ItemStack removed;
-
-                if (this.container instanceof BlockEntityDisplayContainer displayContainer) {
-                    removed = displayContainer.takeStoredItem();
-                } else {
-                    removed = this.container.removeItemNoUpdate(0);
-                    this.container.setChanged();
-                }
-
-                if (removed.isEmpty()) {
-                    return false;
-                }
-
-                this.setCurrentPageInternal(0);
-
-                if (!player.addItem(removed)) {
-                    player.drop(removed, false);
-                }
-
-                this.broadcastChanges();
-                return true;
-            }
-
             case BUTTON_PREV_PAGE -> {
                 if (!this.isLecternBookMode()) {
                     return false;
@@ -211,6 +191,39 @@ public class DisplayContainerMenu extends AbstractContainerMenu {
                 }
 
                 this.setCurrentPageInternal(current + 1);
+                this.broadcastChanges();
+                return true;
+            }
+
+            case BUTTON_TAKE_BOOK -> {
+                ItemStack carried = this.getCarried();
+                if (!carried.isEmpty()) {
+                    this.setCarried(ItemStack.EMPTY);
+
+                    if (!player.addItem(carried)) {
+                        player.drop(carried, false);
+                    }
+                }
+
+                ItemStack removed;
+
+                if (this.container instanceof BlockEntityDisplayContainer displayContainer) {
+                    removed = displayContainer.takeStoredItem();
+                } else {
+                    removed = this.container.removeItemNoUpdate(0);
+                    this.container.setChanged();
+                }
+
+                if (removed.isEmpty()) {
+                    return false;
+                }
+
+                this.setCurrentPageInternal(0);
+
+                if (!player.getInventory().add(removed)) {
+                    player.drop(removed, false);
+                }
+
                 this.broadcastChanges();
                 return true;
             }

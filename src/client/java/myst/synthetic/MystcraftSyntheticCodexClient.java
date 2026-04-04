@@ -2,29 +2,30 @@ package myst.synthetic;
 
 import myst.synthetic.client.gui.InkMixerScreen;
 import myst.synthetic.client.gui.LinkBookScreen;
+import myst.synthetic.client.gui.SingleSlotScreen;
+import myst.synthetic.client.page.PagePreviewExporter;
+import myst.synthetic.client.page.PageRenderCache;
 import myst.synthetic.client.render.BookstandBlockEntityRenderer;
+import myst.synthetic.client.render.InkScreenOverlay;
+import myst.synthetic.client.render.LinkbookEntityRenderer;
 import myst.synthetic.client.render.SlantBoardBlockEntityRenderer;
 import myst.synthetic.client.render.StarFissureBlockEntityRenderer;
+import myst.synthetic.client.screen.DisplayLecternScreen;
+import myst.synthetic.component.MystcraftDataComponents;
+import myst.synthetic.config.MystcraftConfig;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
+import net.fabricmc.fabric.api.client.render.fluid.v1.SimpleFluidRenderHandler;
+import net.fabricmc.fabric.api.client.rendering.v1.BlockRenderLayerMap;
+import net.fabricmc.fabric.api.item.v1.ComponentTooltipAppenderRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
-import net.minecraft.client.renderer.entity.EntityRenderers;
-import myst.synthetic.client.render.LinkbookEntityRenderer;
-import net.fabricmc.fabric.api.client.rendering.v1.BlockRenderLayerMap;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
-import myst.synthetic.component.MystcraftDataComponents;
-import net.fabricmc.fabric.api.item.v1.ComponentTooltipAppenderRegistry;
+import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.core.component.DataComponents;
-import myst.synthetic.client.page.PagePreviewExporter;
-import myst.synthetic.config.MystcraftConfig;
-import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
-import net.fabricmc.fabric.api.client.render.fluid.v1.SimpleFluidRenderHandler;
 import net.minecraft.resources.Identifier;
-import myst.synthetic.client.render.InkScreenOverlay;
-import myst.synthetic.client.page.PageRenderCache;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import myst.synthetic.client.gui.SingleSlotScreen;
 
 public class MystcraftSyntheticCodexClient implements ClientModInitializer {
 
@@ -60,14 +61,21 @@ public class MystcraftSyntheticCodexClient implements ClientModInitializer {
 		);
 
 		MenuScreens.register(MystcraftMenus.INK_MIXER, InkMixerScreen::new);
-		MenuScreens.register(MystcraftMenus.DISPLAY_CONTAINER, SingleSlotScreen::new);
+		MenuScreens.register(MystcraftMenus.DISPLAY_CONTAINER, (menu, inventory, title) -> {
+			if (menu.isLecternBookMode()) {
+				return new DisplayLecternScreen(menu, inventory, title);
+			}
+
+			return new SingleSlotScreen(menu, inventory, title);
+		});
+
 		InkScreenOverlay.initialize();
 
 		ClientTickEvents.END_CLIENT_TICK.register(new ClientTickEvents.EndTick() {
 			private boolean done = false;
 
 			@Override
-			public void onEndTick(net.minecraft.client.Minecraft client) {
+			public void onEndTick(Minecraft client) {
 				if (done) {
 					return;
 				}
