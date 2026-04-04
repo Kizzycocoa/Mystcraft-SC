@@ -11,8 +11,10 @@ import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
@@ -23,7 +25,10 @@ public class BookstandBlockEntityRenderer
             Identifier.fromNamespaceAndPath("mystcraft-sc", "models/block/bookstand.obj")
     );
 
+    private final ItemModelResolver itemModelResolver;
+
     public BookstandBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
+        this.itemModelResolver = context.itemModelResolver();
     }
 
     @Override
@@ -43,11 +48,24 @@ public class BookstandBlockEntityRenderer
 
         state.rotationIndex = blockEntity.getBlockState().getValue(BlockBookstand.ROTATION_INDEX);
         state.wood = blockEntity.getBlockState().getValue(BlockBookstand.WOOD);
+        state.contentType = blockEntity.getContentType();
+
+        ItemStack stored = blockEntity.getStoredItem();
+        state.displayedStack = stored.copy();
+        state.hasDisplayItem = !stored.isEmpty();
 
         if (blockEntity.getLevel() != null) {
             state.packedLight = LevelRenderer.getLightColor(blockEntity.getLevel(), blockEntity.getBlockPos());
+
+            DisplayItemRenderHelper.prepareTopItem(
+                    this.itemModelResolver,
+                    state.displayedItem,
+                    stored,
+                    blockEntity.getLevel()
+            );
         } else {
             state.packedLight = 0;
+            state.displayedItem.clear();
         }
     }
 
@@ -70,6 +88,32 @@ public class BookstandBlockEntityRenderer
                 face -> state.packedLight,
                 MODEL
         );
+
+        if (state.hasDisplayItem) {
+            poseStack.pushPose();
+
+            // Legacy bookstand put the displayed book slightly above the top plate,
+            // rotated to sit across it. This keeps the same broad placement.
+            poseStack.translate(0.0F, 0.74F, 0.0F);
+
+            if (DisplayItemRenderHelper.isBookLike(state.contentType)) {
+                poseStack.mulPose(Axis.YP.rotationDegrees(90.0F));
+                poseStack.mulPose(Axis.ZP.rotationDegrees(120.0F));
+                poseStack.scale(0.8F, 0.8F, 0.8F);
+            } else {
+                poseStack.mulPose(Axis.XP.rotationDegrees(90.0F));
+                poseStack.scale(0.5F, 0.5F, 0.5F);
+            }
+
+            DisplayItemRenderHelper.submitPreparedItem(
+                    state.displayedItem,
+                    poseStack,
+                    queue,
+                    state.packedLight
+            );
+
+            poseStack.popPose();
+        }
 
         poseStack.popPose();
     }

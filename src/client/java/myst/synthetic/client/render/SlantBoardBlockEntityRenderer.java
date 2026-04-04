@@ -11,9 +11,11 @@ import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
@@ -24,7 +26,10 @@ public class SlantBoardBlockEntityRenderer
             Identifier.fromNamespaceAndPath("mystcraft-sc", "models/block/slant_board.obj")
     );
 
+    private final ItemModelResolver itemModelResolver;
+
     public SlantBoardBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
+        this.itemModelResolver = context.itemModelResolver();
     }
 
     @Override
@@ -44,6 +49,11 @@ public class SlantBoardBlockEntityRenderer
 
         state.facing = blockEntity.getBlockState().getValue(BlockSlantBoard.FACING);
         state.wood = blockEntity.getBlockState().getValue(BlockSlantBoard.WOOD);
+        state.contentType = blockEntity.getContentType();
+
+        ItemStack stored = blockEntity.getStoredItem();
+        state.displayedStack = stored.copy();
+        state.hasDisplayItem = !stored.isEmpty();
 
         if (blockEntity.getLevel() != null) {
             var level = blockEntity.getLevel();
@@ -55,6 +65,13 @@ public class SlantBoardBlockEntityRenderer
             state.eastLight = LevelRenderer.getLightColor(level, pos.east());
             state.westLight = LevelRenderer.getLightColor(level, pos.west());
             state.downLight = LevelRenderer.getLightColor(level, pos.below());
+
+            DisplayItemRenderHelper.prepareTopItem(
+                    this.itemModelResolver,
+                    state.displayedItem,
+                    stored,
+                    level
+            );
         } else {
             state.selfLight = 0;
             state.northLight = 0;
@@ -62,6 +79,7 @@ public class SlantBoardBlockEntityRenderer
             state.eastLight = 0;
             state.westLight = 0;
             state.downLight = 0;
+            state.displayedItem.clear();
         }
     }
 
@@ -92,7 +110,6 @@ public class SlantBoardBlockEntityRenderer
 
         switch (facing) {
             case NORTH -> {
-                // no change
             }
             case SOUTH -> {
                 nx = -nx;
@@ -121,11 +138,6 @@ public class SlantBoardBlockEntityRenderer
         float ny = worldNormal[1];
         float nz = worldNormal[2];
 
-        // Brim:
-        // only the single outer face should use neighbouring side light.
-        // all other brim faces use the block's inner/self light.
-        //
-        // In this OBJ, the brim's outer face is local +Z.
         if ("brim".equals(face.objectName())) {
             if (localNormal[2] < -0.75F) {
                 if (nz < -0.75F) {
@@ -145,7 +157,6 @@ public class SlantBoardBlockEntityRenderer
             return state.selfLight;
         }
 
-        // Base behavior stays as before.
         if (ny < -0.75F) {
             return state.downLight;
         }
@@ -175,16 +186,11 @@ public class SlantBoardBlockEntityRenderer
     ) {
         poseStack.pushPose();
 
-        // Move render origin to the center of the block.
         poseStack.translate(0.5F, 0.0F, 0.5F);
-
-        // Rotate around the block center.
         rotateFromFacing(poseStack, state.facing);
 
-        // Scale the raw OBJ up to a 1x1x7/16 block footprint.
+        poseStack.pushPose();
         poseStack.scale(1.1428572F, 1.4071103F, 1.0666667F);
-
-        // Re-center and floor-align the raw OBJ mesh in its own local space.
         poseStack.translate(0.0F, -0.0063086664F, -0.03125F);
 
         SlantBoardRenderPipelines.submitWorld(
@@ -194,6 +200,35 @@ public class SlantBoardBlockEntityRenderer
                 face -> resolveFaceLight(face, state),
                 MODEL
         );
+
+        poseStack.popPose();
+
+        if (state.hasDisplayItem) {
+            poseStack.pushPose();
+
+            // Broadly follows the legacy lectern placement:
+            // item sits above the slanted board and is pitched onto the surface.
+            poseStack.translate(0.0F, 0.46F, 0.03F);
+            poseStack.mulPose(Axis.ZP.rotationDegrees(110.0F));
+
+            if (DisplayItemRenderHelper.isBookLike(state.contentType)) {
+                poseStack.scale(0.8F, 0.8F, 0.8F);
+            } else {
+                poseStack.translate(0.0F, 0.20F, 0.0F);
+                poseStack.mulPose(Axis.XP.rotationDegrees(180.0F));
+                poseStack.mulPose(Axis.YP.rotationDegrees(90.0F));
+                poseStack.scale(0.75F, 0.75F, 0.75F);
+            }
+
+            DisplayItemRenderHelper.submitPreparedItem(
+                    state.displayedItem,
+                    poseStack,
+                    queue,
+                    state.selfLight
+            );
+
+            poseStack.popPose();
+        }
 
         poseStack.popPose();
     }
