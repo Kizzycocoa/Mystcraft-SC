@@ -18,7 +18,9 @@ public class SlantBoardRenderState extends BlockEntityRenderState {
     public int downLight = 0;
 
     public final ItemStackRenderState displayedItem = new ItemStackRenderState();
+
     public ItemStack displayedStack = ItemStack.EMPTY;
     public DisplayContentType contentType = DisplayContentType.EMPTY;
+
     public boolean hasDisplayItem = false;
 }

@@ -21,7 +21,6 @@ public final class DisplayItemRenderHelper {
             return ItemStack.EMPTY;
         }
 
-        // Paper should visually become an empty Mystcraft page on the stand/board.
         if (type == DisplayContentType.PAPER) {
             return new ItemStack(MystcraftItems.PAGE);
         }
