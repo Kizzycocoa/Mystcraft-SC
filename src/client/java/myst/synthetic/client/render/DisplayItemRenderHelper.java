@@ -1,6 +1,7 @@
 package myst.synthetic.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import myst.synthetic.MystcraftItems;
 import myst.synthetic.block.entity.DisplayContentType;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.item.ItemModelResolver;
@@ -13,6 +14,19 @@ import net.minecraft.world.level.Level;
 public final class DisplayItemRenderHelper {
 
     private DisplayItemRenderHelper() {
+    }
+
+    public static ItemStack canonicalizeForDisplay(ItemStack stack, DisplayContentType type) {
+        if (stack.isEmpty()) {
+            return ItemStack.EMPTY;
+        }
+
+        // Paper should visually become an empty Mystcraft page on the stand/board.
+        if (type == DisplayContentType.PAPER) {
+            return new ItemStack(MystcraftItems.PAGE);
+        }
+
+        return stack.copyWithCount(1);
     }
 
     public static void prepareTopItem(
@@ -63,7 +77,7 @@ public final class DisplayItemRenderHelper {
                 || type == DisplayContentType.DESCRIPTIVE_BOOK;
     }
 
-    public static boolean isFlatPageLike(DisplayContentType type) {
+    public static boolean isFlatItem(DisplayContentType type) {
         return type == DisplayContentType.PAGE
                 || type == DisplayContentType.PAPER
                 || type == DisplayContentType.MAP;

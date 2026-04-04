@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import myst.synthetic.block.BlockSlantBoard;
 import myst.synthetic.block.entity.BlockEntitySlantBoard;
+import myst.synthetic.block.entity.DisplayContentType;
 import myst.synthetic.client.render.model.ObjMesh;
 import myst.synthetic.client.render.model.ObjMeshLoader;
 import net.minecraft.client.renderer.LevelRenderer;
@@ -51,8 +52,12 @@ public class SlantBoardBlockEntityRenderer
         state.wood = blockEntity.getBlockState().getValue(BlockSlantBoard.WOOD);
         state.contentType = blockEntity.getContentType();
 
-        ItemStack stored = blockEntity.getStoredItem();
-        state.displayedStack = stored.copy();
+        ItemStack stored = DisplayItemRenderHelper.canonicalizeForDisplay(
+                blockEntity.getStoredItem(),
+                state.contentType
+        );
+
+        state.displayedStack = stored;
         state.hasDisplayItem = !stored.isEmpty();
 
         if (blockEntity.getLevel() != null) {
@@ -206,18 +211,33 @@ public class SlantBoardBlockEntityRenderer
         if (state.hasDisplayItem) {
             poseStack.pushPose();
 
-            // Broadly follows the legacy lectern placement:
-            // item sits above the slanted board and is pitched onto the surface.
-            poseStack.translate(0.0F, 0.46F, 0.03F);
+            // Legacy lectern placement:
+            // translate(0, 0.255F, 0)
+            // rotate(110F, Z)
+            poseStack.translate(0.0F, 0.255F, 0.0F);
             poseStack.mulPose(Axis.ZP.rotationDegrees(110.0F));
 
             if (DisplayItemRenderHelper.isBookLike(state.contentType)) {
+                // Legacy linking/descriptive books on the lectern:
+                // scale(0.8F)
                 poseStack.scale(0.8F, 0.8F, 0.8F);
             } else {
-                poseStack.translate(0.0F, 0.20F, 0.0F);
+                // Legacy flat-item path:
+                // translate(0, 0.2F, 0)
+                // rotate(180F, X)
+                // rotate(90F, Y)
+                // translate(0, 0.25F, 0)
+                poseStack.translate(0.0F, 0.2F, 0.0F);
                 poseStack.mulPose(Axis.XP.rotationDegrees(180.0F));
                 poseStack.mulPose(Axis.YP.rotationDegrees(90.0F));
-                poseStack.scale(0.75F, 0.75F, 0.75F);
+                poseStack.translate(0.0F, 0.25F, 0.0F);
+
+                // Small tuning so the modern fixed item render sits better on the board.
+                if (state.contentType == DisplayContentType.MAP) {
+                    poseStack.scale(0.95F, 0.95F, 0.95F);
+                } else {
+                    poseStack.scale(0.85F, 0.85F, 0.85F);
+                }
             }
 
             DisplayItemRenderHelper.submitPreparedItem(

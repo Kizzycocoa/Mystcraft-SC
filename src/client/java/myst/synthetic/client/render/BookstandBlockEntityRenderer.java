@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import myst.synthetic.block.BlockBookstand;
 import myst.synthetic.block.entity.BlockEntityBookstand;
+import myst.synthetic.block.entity.DisplayContentType;
 import myst.synthetic.client.render.model.ObjMesh;
 import myst.synthetic.client.render.model.ObjMeshLoader;
 import net.minecraft.client.renderer.LevelRenderer;
@@ -50,8 +51,12 @@ public class BookstandBlockEntityRenderer
         state.wood = blockEntity.getBlockState().getValue(BlockBookstand.WOOD);
         state.contentType = blockEntity.getContentType();
 
-        ItemStack stored = blockEntity.getStoredItem();
-        state.displayedStack = stored.copy();
+        ItemStack stored = DisplayItemRenderHelper.canonicalizeForDisplay(
+                blockEntity.getStoredItem(),
+                state.contentType
+        );
+
+        state.displayedStack = stored;
         state.hasDisplayItem = !stored.isEmpty();
 
         if (blockEntity.getLevel() != null) {
@@ -89,21 +94,21 @@ public class BookstandBlockEntityRenderer
                 MODEL
         );
 
-        if (state.hasDisplayItem) {
+        if (state.hasDisplayItem && DisplayItemRenderHelper.isBookLike(state.contentType)) {
             poseStack.pushPose();
 
-            // Legacy bookstand put the displayed book slightly above the top plate,
-            // rotated to sit across it. This keeps the same broad placement.
-            poseStack.translate(0.0F, 0.74F, 0.0F);
-
-            if (DisplayItemRenderHelper.isBookLike(state.contentType)) {
-                poseStack.mulPose(Axis.YP.rotationDegrees(90.0F));
-                poseStack.mulPose(Axis.ZP.rotationDegrees(120.0F));
-                poseStack.scale(0.8F, 0.8F, 0.8F);
-            } else {
-                poseStack.mulPose(Axis.XP.rotationDegrees(90.0F));
-                poseStack.scale(0.5F, 0.5F, 0.5F);
-            }
+            // Legacy bookstand:
+            // translate(x, y + 0.55F, z)
+            // rotate(90 + 45 * rotationIndex, Y)
+            // rotate(120F, Z)
+            // scale(0.8)
+            //
+            // We already rotated the stand by -45 * rotindex above, so here we only
+            // need the placed-book pitch/roll.
+            poseStack.translate(0.0F, 0.55F, 0.0F);
+            poseStack.mulPose(Axis.YP.rotationDegrees(-90.0F));
+            poseStack.mulPose(Axis.ZP.rotationDegrees(120.0F));
+            poseStack.scale(0.8F, 0.8F, 0.8F);
 
             DisplayItemRenderHelper.submitPreparedItem(
                     state.displayedItem,
