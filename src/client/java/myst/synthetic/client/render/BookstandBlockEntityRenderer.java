@@ -113,7 +113,7 @@ public class BookstandBlockEntityRenderer
              * This should be close immediately, and any tiny tweak can be done here
              * without touching the slant-board code.
              */
-            poseStack.translate(0.0F, 0.62F, 0.045F);
+            poseStack.translate(0.0F, 0.65F, 0.045F);
             poseStack.mulPose(Axis.YP.rotationDegrees(-90.0F));
             poseStack.mulPose(Axis.ZP.rotationDegrees(120.0F));
             poseStack.scale(0.8F, 0.8F, 0.8F);
