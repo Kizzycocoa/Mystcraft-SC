@@ -251,7 +251,7 @@ public class SlantBoardBlockEntityRenderer
                 poseStack.mulPose(Axis.ZP.rotationDegrees(180.0F));
 
                 // Small nudge so it sits on the board rather than clipping into the slot.
-                poseStack.translate(0.0F, 0.16F, -0.32F);
+                poseStack.translate(0.3F, 0.16F, -0.02F);
 
                 poseStack.scale(0.8F, 0.8F, 0.8F);
 
@@ -283,6 +283,7 @@ public class SlantBoardBlockEntityRenderer
                     poseStack.pushPose();
 
                     // DO NOT CHANGE: your solved map overlay depth/size values.
+                    poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
                     poseStack.translate(0.0F, 0.0F, -0.0055F);
                     poseStack.scale(1.0F / 128.0F, 1.0F / 128.0F, 1.0F);
                     poseStack.scale(0.8125F, 0.8125F, 1.0F);
