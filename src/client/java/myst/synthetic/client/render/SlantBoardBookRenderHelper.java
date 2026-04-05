@@ -20,10 +20,13 @@ public final class SlantBoardBookRenderHelper {
             Identifier.withDefaultNamespace("textures/entity/enchanting_table_book.png");
 
     /**
-     * Legacy RenderLectern used a fixed open-book render amount around 1.22F.
+     * Legacy RenderLectern used:
+     * book.render(null, 0, 0, 0, 1.22F, 0, 0.0625F)
+     *
+     * So only the "open" amount should be non-zero.
      */
     private static final BookModel.State SLANT_BOOK_STATE =
-            new BookModel.State(1.22F, 0.0F, 1.0F, 0.0F);
+            new BookModel.State(1.22F, 0.0F, 0.0F, 0.0F);
 
     private final BookModel bookModel;
 
