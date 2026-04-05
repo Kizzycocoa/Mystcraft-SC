@@ -19,8 +19,8 @@ import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.item.MapItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.MapItem;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
@@ -33,10 +33,12 @@ public class SlantBoardBlockEntityRenderer
 
     private final ItemModelResolver itemModelResolver;
     private final MapRenderer mapRenderer;
+    private final SlantBoardBookRenderHelper bookRenderHelper;
 
     public SlantBoardBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
         this.itemModelResolver = context.itemModelResolver();
         this.mapRenderer = Minecraft.getInstance().getMapRenderer();
+        this.bookRenderHelper = new SlantBoardBookRenderHelper();
     }
 
     @Override
@@ -88,15 +90,20 @@ public class SlantBoardBlockEntityRenderer
                 }
             }
 
-            // Always prepare the normal item state too, because maps will use PAGE as their backing.
-            DisplayItemRenderHelper.prepareTopItem(
-                    this.itemModelResolver,
-                    state.displayedItem,
-                    state.contentType == DisplayContentType.MAP
-                            ? DisplayItemRenderHelper.pageBackingStack()
-                            : stored,
-                    level
-            );
+            // Maps still need the PAGE backing prepared as a normal item render.
+            // Books do not use item rendering any more.
+            if (!DisplayItemRenderHelper.isBookLike(state.contentType)) {
+                DisplayItemRenderHelper.prepareTopItem(
+                        this.itemModelResolver,
+                        state.displayedItem,
+                        state.contentType == DisplayContentType.MAP
+                                ? DisplayItemRenderHelper.pageBackingStack()
+                                : stored,
+                        level
+                );
+            } else {
+                state.displayedItem.clear();
+            }
         } else {
             state.selfLight = 0;
             state.northLight = 0;
@@ -232,29 +239,31 @@ public class SlantBoardBlockEntityRenderer
         if (state.hasDisplayItem) {
             poseStack.pushPose();
 
-            // DO NOT CHANGE: these are the solved placement values.
+            // DO NOT CHANGE: solved placement values.
             poseStack.translate(0.0F, 0.50F, 0.0F);
             poseStack.mulPose(Axis.XP.rotationDegrees(-109.06F));
+            poseStack.mulPose(Axis.ZP.rotationDegrees(180.0F));
 
             if (DisplayItemRenderHelper.isBookLike(state.contentType)) {
+                // DO NOT CHANGE: keep the board placement, only swap the render path.
                 poseStack.scale(0.8F, 0.8F, 0.8F);
 
-                DisplayItemRenderHelper.submitPreparedItem(
-                        state.displayedItem,
+                this.bookRenderHelper.submitBook(
+                        state.contentType,
+                        state.displayedStack,
                         poseStack,
                         queue,
                         state.selfLight
                 );
             } else {
                 poseStack.translate(0.0F, 0.20F, 0.0F);
-                poseStack.mulPose(Axis.ZP.rotationDegrees(180.0F));
                 poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
 
-                // DO NOT CHANGE: these are the solved placement values.
+                // DO NOT CHANGE: solved placement values.
                 poseStack.translate(0.0F, 0.10F, 0.21F);
                 poseStack.scale(0.85F, 0.85F, 0.85F);
 
-                // First draw the page backing.
+                // Backing/page/item
                 DisplayItemRenderHelper.submitPreparedItem(
                         state.displayedItem,
                         poseStack,
@@ -262,11 +271,11 @@ public class SlantBoardBlockEntityRenderer
                         state.selfLight
                 );
 
-                // Then overlay the actual map contents slightly above it.
+                // Map overlay
                 if (state.hasRenderedMap) {
                     poseStack.pushPose();
 
-                    poseStack.mulPose(Axis.ZP.rotationDegrees(180.0F));
+                    // DO NOT CHANGE: your solved map overlay depth/size values.
                     poseStack.translate(0.0F, 0.0F, -0.0055F);
                     poseStack.scale(1.0F / 128.0F, 1.0F / 128.0F, 1.0F);
                     poseStack.scale(0.8125F, 0.8125F, 1.0F);
