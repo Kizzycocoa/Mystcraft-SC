@@ -7,7 +7,9 @@ import myst.synthetic.block.entity.BlockEntitySlantBoard;
 import myst.synthetic.block.entity.DisplayContentType;
 import myst.synthetic.client.render.model.ObjMesh;
 import myst.synthetic.client.render.model.ObjMeshLoader;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.client.renderer.MapRenderer;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -15,7 +17,9 @@ import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.MapItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
@@ -28,9 +32,11 @@ public class SlantBoardBlockEntityRenderer
     );
 
     private final ItemModelResolver itemModelResolver;
+    private final MapRenderer mapRenderer;
 
     public SlantBoardBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
         this.itemModelResolver = context.itemModelResolver();
+        this.mapRenderer = Minecraft.getInstance().getMapRenderer();
     }
 
     @Override
@@ -59,6 +65,7 @@ public class SlantBoardBlockEntityRenderer
 
         state.displayedStack = stored;
         state.hasDisplayItem = !stored.isEmpty();
+        state.hasRenderedMap = false;
 
         if (blockEntity.getLevel() != null) {
             var level = blockEntity.getLevel();
@@ -71,10 +78,23 @@ public class SlantBoardBlockEntityRenderer
             state.westLight = LevelRenderer.getLightColor(level, pos.west());
             state.downLight = LevelRenderer.getLightColor(level, pos.below());
 
+            if (state.contentType == DisplayContentType.MAP) {
+                var mapId = stored.get(DataComponents.MAP_ID);
+                var mapData = MapItem.getSavedData(stored, level);
+
+                if (mapId != null && mapData != null) {
+                    this.mapRenderer.extractRenderState(mapId, mapData, state.displayedMap);
+                    state.hasRenderedMap = true;
+                }
+            }
+
+            // Always prepare the normal item state too, because maps will use PAGE as their backing.
             DisplayItemRenderHelper.prepareTopItem(
                     this.itemModelResolver,
                     state.displayedItem,
-                    stored,
+                    state.contentType == DisplayContentType.MAP
+                            ? DisplayItemRenderHelper.pageBackingStack()
+                            : stored,
                     level
             );
         } else {
@@ -85,6 +105,7 @@ public class SlantBoardBlockEntityRenderer
             state.westLight = 0;
             state.downLight = 0;
             state.displayedItem.clear();
+            state.hasRenderedMap = false;
         }
     }
 
@@ -211,7 +232,7 @@ public class SlantBoardBlockEntityRenderer
         if (state.hasDisplayItem) {
             poseStack.pushPose();
 
-            // Found empirically to match the board angle.
+            // DO NOT CHANGE: these are the solved placement values.
             poseStack.translate(0.0F, 0.50F, 0.0F);
             poseStack.mulPose(Axis.XP.rotationDegrees(-109.06F));
 
@@ -229,16 +250,36 @@ public class SlantBoardBlockEntityRenderer
                 poseStack.mulPose(Axis.ZP.rotationDegrees(180.0F));
                 poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
 
-                // These values lift the flat item out of the board after the board-pitch rotation.
-                poseStack.translate(0.0F, 0.10F, 0.20f);
+                // DO NOT CHANGE: these are the solved placement values.
+                poseStack.translate(0.0F, 0.10F, 0.21F);
                 poseStack.scale(0.85F, 0.85F, 0.85F);
 
+                // First draw the page backing.
                 DisplayItemRenderHelper.submitPreparedItem(
                         state.displayedItem,
                         poseStack,
                         queue,
                         state.selfLight
                 );
+
+                // Then overlay the actual map contents slightly above it.
+                if (state.hasRenderedMap) {
+                    poseStack.pushPose();
+
+                    poseStack.translate(0.0F, 0.0F, 0.001F);
+                    poseStack.scale(1.0F / 128.0F, 1.0F / 128.0F, 1.0F);
+                    poseStack.translate(-64.0F, -64.0F, 0.0F);
+
+                    this.mapRenderer.render(
+                            state.displayedMap,
+                            poseStack,
+                            queue,
+                            true,
+                            state.selfLight
+                    );
+
+                    poseStack.popPose();
+                }
             }
 
             poseStack.popPose();

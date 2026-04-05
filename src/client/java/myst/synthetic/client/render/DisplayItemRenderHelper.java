@@ -28,6 +28,10 @@ public final class DisplayItemRenderHelper {
         return stack.copyWithCount(1);
     }
 
+    public static ItemStack pageBackingStack() {
+        return new ItemStack(MystcraftItems.PAGE);
+    }
+
     public static void prepareTopItem(
             ItemModelResolver itemModelResolver,
             ItemStackRenderState renderState,

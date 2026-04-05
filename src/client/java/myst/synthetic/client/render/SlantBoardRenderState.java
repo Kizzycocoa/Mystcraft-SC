@@ -4,6 +4,7 @@ import myst.synthetic.block.entity.DisplayContentType;
 import myst.synthetic.block.property.WoodType;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.client.renderer.state.MapRenderState;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 
@@ -18,9 +19,11 @@ public class SlantBoardRenderState extends BlockEntityRenderState {
     public int downLight = 0;
 
     public final ItemStackRenderState displayedItem = new ItemStackRenderState();
+    public final MapRenderState displayedMap = new MapRenderState();
 
     public ItemStack displayedStack = ItemStack.EMPTY;
     public DisplayContentType contentType = DisplayContentType.EMPTY;
 
     public boolean hasDisplayItem = false;
+    public boolean hasRenderedMap = false;
 }
