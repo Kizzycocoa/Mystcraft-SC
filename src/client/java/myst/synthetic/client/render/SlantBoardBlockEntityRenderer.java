@@ -251,7 +251,7 @@ public class SlantBoardBlockEntityRenderer
                 poseStack.mulPose(Axis.ZP.rotationDegrees(180.0F));
 
                 // Small nudge so it sits on the board rather than clipping into the slot.
-                poseStack.translate(-0.3F, 0.16F, -0.02F);
+                poseStack.translate(-0.3F, 0.16F, -0.06F);
 
                 poseStack.scale(0.8F, 0.8F, 0.8F);
 
