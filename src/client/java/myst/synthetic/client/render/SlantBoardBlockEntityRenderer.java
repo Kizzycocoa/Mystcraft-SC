@@ -247,7 +247,7 @@ public class SlantBoardBlockEntityRenderer
             if (DisplayItemRenderHelper.isBookLike(state.contentType)) {
                 // Keep the solved board placement.
                 // Then rotate the book out of the "inserted key" orientation and onto the board.
-                poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
+                poseStack.mulPose(Axis.YP.rotationDegrees(90.0F));
                 poseStack.mulPose(Axis.ZP.rotationDegrees(180.0F));
 
                 // Small nudge so it sits on the board rather than clipping into the slot.
