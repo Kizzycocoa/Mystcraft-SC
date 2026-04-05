@@ -1,12 +1,13 @@
 package myst.synthetic;
 
+import myst.synthetic.menu.DisplayContainerMenu;
+import myst.synthetic.menu.FolderMenu;
 import myst.synthetic.menu.InkMixerMenu;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.MenuType;
-import myst.synthetic.menu.DisplayContainerMenu;
 
 public final class MystcraftMenus {
 
@@ -20,6 +21,12 @@ public final class MystcraftMenus {
             BuiltInRegistries.MENU,
             Identifier.fromNamespaceAndPath("mystcraft-sc", "ink_mixer"),
             new MenuType<>(InkMixerMenu::new, FeatureFlags.DEFAULT_FLAGS)
+    );
+
+    public static final MenuType<FolderMenu> FOLDER = Registry.register(
+            BuiltInRegistries.MENU,
+            Identifier.fromNamespaceAndPath("mystcraft-sc", "folder"),
+            new MenuType<>(FolderMenu::new, FeatureFlags.DEFAULT_FLAGS)
     );
 
     private MystcraftMenus() {

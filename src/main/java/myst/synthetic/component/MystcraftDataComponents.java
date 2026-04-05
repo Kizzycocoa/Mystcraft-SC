@@ -16,6 +16,14 @@ public final class MystcraftDataComponents {
                     .build()
     );
 
+    public static final DataComponentType<FolderDataComponent> FOLDER_DATA = Registry.register(
+            BuiltInRegistries.DATA_COMPONENT_TYPE,
+            Identifier.fromNamespaceAndPath("mystcraft-sc", "folder_data"),
+            DataComponentType.<FolderDataComponent>builder()
+                    .persistent(FolderDataComponent.CODEC)
+                    .build()
+    );
+
     private MystcraftDataComponents() {
     }
 

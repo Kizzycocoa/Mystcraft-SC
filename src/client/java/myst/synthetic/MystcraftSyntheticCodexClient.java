@@ -1,5 +1,6 @@
 package myst.synthetic;
 
+import myst.synthetic.client.gui.FolderScreen;
 import myst.synthetic.client.gui.InkMixerScreen;
 import myst.synthetic.client.gui.LinkBookScreen;
 import myst.synthetic.client.gui.SingleSlotScreen;
@@ -31,6 +32,7 @@ public class MystcraftSyntheticCodexClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		ComponentTooltipAppenderRegistry.addAfter(DataComponents.DAMAGE, MystcraftDataComponents.PAGE_DATA);
+		ComponentTooltipAppenderRegistry.addAfter(DataComponents.CUSTOM_NAME, MystcraftDataComponents.FOLDER_DATA);
 
 		BlockEntityRenderers.register(MystcraftBlockEntities.STAR_FISSURE, StarFissureBlockEntityRenderer::new);
 		BlockEntityRenderers.register(MystcraftBlockEntities.SLANT_BOARD, SlantBoardBlockEntityRenderer::new);
@@ -61,6 +63,7 @@ public class MystcraftSyntheticCodexClient implements ClientModInitializer {
 
 		MenuScreens.register(MystcraftMenus.INK_MIXER, InkMixerScreen::new);
 		MenuScreens.register(MystcraftMenus.DISPLAY_CONTAINER, SingleSlotScreen::new);
+		MenuScreens.register(MystcraftMenus.FOLDER, FolderScreen::new);
 
 		InkScreenOverlay.initialize();
 
