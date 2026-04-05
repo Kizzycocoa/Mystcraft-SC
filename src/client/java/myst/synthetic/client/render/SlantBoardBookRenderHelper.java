@@ -26,7 +26,7 @@ public final class SlantBoardBookRenderHelper {
      * So only the "open" amount should be non-zero.
      */
     private static final BookModel.State SLANT_BOOK_STATE =
-            new BookModel.State(1.22F, 0.0F, 0.0F, 0.0F);
+            new BookModel.State(0.0F, 0.0F, 0.0F, 1.22F);
 
     private final BookModel bookModel;
 
