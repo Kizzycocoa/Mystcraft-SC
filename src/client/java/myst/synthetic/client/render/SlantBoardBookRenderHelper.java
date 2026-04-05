@@ -20,8 +20,7 @@ public final class SlantBoardBookRenderHelper {
             Identifier.withDefaultNamespace("textures/entity/enchanting_table_book.png");
 
     /**
-     * Legacy RenderLectern used a fixed open-book render amount of about 1.22F.
-     * In this BookModel API, the equivalent is the State record.
+     * Legacy RenderLectern used a fixed open-book render amount around 1.22F.
      */
     private static final BookModel.State SLANT_BOOK_STATE =
             new BookModel.State(1.22F, 0.0F, 1.0F, 0.0F);
@@ -41,6 +40,8 @@ public final class SlantBoardBookRenderHelper {
     ) {
         Identifier texture = textureFor(type, stack);
 
+        PoseStack frozenPoseStack = copyTopPose(poseStack);
+
         queue.submitCustomGeometry(
                 poseStack,
                 this.bookModel.renderType(texture),
@@ -48,7 +49,7 @@ public final class SlantBoardBookRenderHelper {
                     this.bookModel.root().resetPose();
                     this.bookModel.setupAnim(SLANT_BOOK_STATE);
                     this.bookModel.renderToBuffer(
-                            poseStack,
+                            frozenPoseStack,
                             consumer,
                             packedLight,
                             OverlayTexture.NO_OVERLAY,
@@ -56,6 +57,13 @@ public final class SlantBoardBookRenderHelper {
                     );
                 }
         );
+    }
+
+    private static PoseStack copyTopPose(PoseStack source) {
+        PoseStack copy = new PoseStack();
+        copy.last().pose().set(source.last().pose());
+        copy.last().normal().set(source.last().normal());
+        return copy;
     }
 
     private static Identifier textureFor(DisplayContentType type, ItemStack stack) {
