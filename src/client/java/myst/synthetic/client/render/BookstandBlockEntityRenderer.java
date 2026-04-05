@@ -4,7 +4,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import myst.synthetic.block.BlockBookstand;
 import myst.synthetic.block.entity.BlockEntityBookstand;
-import myst.synthetic.block.entity.DisplayContentType;
 import myst.synthetic.client.render.model.ObjMesh;
 import myst.synthetic.client.render.model.ObjMeshLoader;
 import net.minecraft.client.renderer.LevelRenderer;
@@ -27,9 +26,11 @@ public class BookstandBlockEntityRenderer
     );
 
     private final ItemModelResolver itemModelResolver;
+    private final BookstandBookRenderHelper bookRenderHelper;
 
     public BookstandBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
         this.itemModelResolver = context.itemModelResolver();
+        this.bookRenderHelper = new BookstandBookRenderHelper();
     }
 
     @Override
@@ -62,6 +63,7 @@ public class BookstandBlockEntityRenderer
         if (blockEntity.getLevel() != null) {
             state.packedLight = LevelRenderer.getLightColor(blockEntity.getLevel(), blockEntity.getBlockPos());
 
+            // Keep this for completeness, but book-like items won't use the item path now.
             DisplayItemRenderHelper.prepareTopItem(
                     this.itemModelResolver,
                     state.displayedItem,
@@ -97,21 +99,28 @@ public class BookstandBlockEntityRenderer
         if (state.hasDisplayItem && DisplayItemRenderHelper.isBookLike(state.contentType)) {
             poseStack.pushPose();
 
-            // Legacy bookstand:
-            // translate(x, y + 0.55F, z)
-            // rotate(90 + 45 * rotationIndex, Y)
-            // rotate(120F, Z)
-            // scale(0.8)
-            //
-            // We already rotated the stand by -45 * rotindex above, so here we only
-            // need the placed-book pitch/roll.
+            /*
+             * Legacy RenderBookstand:
+             * translate(0, 0.55F, 0)
+             * rotate(90 + 45 * rotationIndex, Y)
+             * rotate(120F, Z)
+             * scale(0.8F)
+             *
+             * We already applied the stand rotation above:
+             *   -45 * rotationIndex
+             *
+             * So this local book transform only needs the fixed book orientation.
+             * This should be close immediately, and any tiny tweak can be done here
+             * without touching the slant-board code.
+             */
             poseStack.translate(0.0F, 0.55F, 0.0F);
             poseStack.mulPose(Axis.YP.rotationDegrees(-90.0F));
             poseStack.mulPose(Axis.ZP.rotationDegrees(120.0F));
             poseStack.scale(0.8F, 0.8F, 0.8F);
 
-            DisplayItemRenderHelper.submitPreparedItem(
-                    state.displayedItem,
+            this.bookRenderHelper.submitBook(
+                    state.contentType,
+                    state.displayedStack,
                     poseStack,
                     queue,
                     state.packedLight
