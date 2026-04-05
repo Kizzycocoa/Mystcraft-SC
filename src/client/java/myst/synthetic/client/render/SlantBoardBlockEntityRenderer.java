@@ -266,6 +266,7 @@ public class SlantBoardBlockEntityRenderer
                 if (state.hasRenderedMap) {
                     poseStack.pushPose();
 
+                    poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
                     poseStack.translate(0.0F, 0.0F, -0.0055F);
                     poseStack.scale(1.0F / 128.0F, 1.0F / 128.0F, 1.0F);
                     poseStack.scale(0.8125F, 0.8125F, 1.0F);
