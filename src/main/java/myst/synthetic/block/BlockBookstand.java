@@ -10,18 +10,18 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.Rotation;
-import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
@@ -45,10 +45,12 @@ public class BlockBookstand extends BlockDisplayContainer {
     public static final IntegerProperty ROTATION_INDEX = IntegerProperty.create("rotindex", 0, 7);
     public static final EnumProperty<WoodType> WOOD = EnumProperty.create("wood", WoodType.class);
 
-    private static final VoxelShape BASE = Block.box(5.6, 0.0, 5.6, 10.4, 3.2, 10.4);
-    private static final VoxelShape POST = Block.box(7.2, 1.6, 7.2, 8.8, 8.0, 8.8);
-    private static final VoxelShape TOP  = Block.box(2.4, 6.4, 2.4, 13.6, 11.2, 13.6);
-    private static final VoxelShape SHAPE = Shapes.or(BASE, POST, TOP);
+    // Legacy getBoundingBox:
+    // new AxisAlignedBB(0.125, 0, 0.125, 0.875, 0.75, 0.875)
+    private static final VoxelShape OUTLINE_SHAPE = Block.box(2.0, 0.0, 2.0, 14.0, 12.0, 14.0);
+
+    // Legacy effectively had no meaningful physical collision for movement.
+    private static final VoxelShape COLLISION_SHAPE = Shapes.empty();
 
     public BlockBookstand(BlockBehaviour.Properties properties) {
         super(properties);
@@ -134,12 +136,12 @@ public class BlockBookstand extends BlockDisplayContainer {
 
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        return SHAPE;
+        return OUTLINE_SHAPE;
     }
 
     @Override
     public VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        return SHAPE;
+        return COLLISION_SHAPE;
     }
 
     @Override

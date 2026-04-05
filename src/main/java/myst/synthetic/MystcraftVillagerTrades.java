@@ -124,16 +124,15 @@ public final class MystcraftVillagerTrades {
 
     private static void registerLevel5() {
         TradeOfferHelper.registerVillagerOffers(MystcraftVillagerProfessions.ARCHIVIST_KEY, 5, factories -> {
-            /*
-             * IN TIME:
-             * 1 Bahro Leather
-             * costs 40 emeralds
-             * 2 trade stock
-             * 10 villager experience
-             * 0.05 price multiplier
-             *
-             * factories.add(itemsForEmeralds(MystcraftItems.BAHRO_LEATHER, 1, 40, 2, 10, PRICE_MULTIPLIER));
-             */
+
+            factories.add(itemsForEmeralds(
+                    MystcraftItems.BAHRO_LEATHER,
+                    1,
+                    45,
+                    2,
+                    10,
+                    PRICE_MULTIPLIER
+            ));
 
             factories.add(itemsForEmeralds(
                     MystcraftItems.BOOSTER,
