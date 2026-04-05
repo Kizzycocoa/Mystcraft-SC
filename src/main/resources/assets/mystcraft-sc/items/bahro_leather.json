@@ -1,6 +1,6 @@
 {
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "mystcraft-sc:item/bahro_leather"
+  "model": {
+    "type": "minecraft:model",
+    "model": "mystcraft-sc:item/bahro_leather"
   }
 }
