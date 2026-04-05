@@ -5,6 +5,7 @@ import myst.synthetic.client.screen.DisplayLecternScreen;
 import myst.synthetic.menu.DisplayContainerMenu;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
@@ -83,6 +84,14 @@ public class SingleSlotScreen extends AbstractContainerScreen<DisplayContainerMe
     private boolean isLinkBookMode() {
         ItemStack stack = this.menu.getDisplayStack();
         return stack.is(MystcraftItems.LINKBOOK) || stack.is(MystcraftItems.AGEBOOK);
+    }
+
+    private boolean isMouseOverLinkPanel(double mouseX, double mouseY) {
+        return isLinkBookMode()
+                && mouseX >= this.leftPos + LINK_PANEL_X
+                && mouseX < this.leftPos + LINK_PANEL_X + LINK_PANEL_W
+                && mouseY >= this.topPos + LINK_PANEL_Y
+                && mouseY < this.topPos + LINK_PANEL_Y + LINK_PANEL_H;
     }
 
     @Override
@@ -194,6 +203,21 @@ public class SingleSlotScreen extends AbstractContainerScreen<DisplayContainerMe
         ItemStack stack = this.menu.getDisplayStack();
         CustomData customData = stack.get(DataComponents.CUSTOM_DATA);
         return customData != null ? customData.copyTag() : null;
+    }
+
+    @Override
+    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+        if (this.minecraft != null && this.minecraft.gameMode != null) {
+            if (isMouseOverLinkPanel(event.x(), event.y())) {
+                this.minecraft.gameMode.handleInventoryButtonClick(
+                        this.menu.containerId,
+                        DisplayContainerMenu.BUTTON_USE_LINKBOOK
+                );
+                return true;
+            }
+        }
+
+        return super.mouseClicked(event, doubleClick);
     }
 
     @Override

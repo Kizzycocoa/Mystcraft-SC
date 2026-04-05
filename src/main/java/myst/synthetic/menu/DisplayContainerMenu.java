@@ -3,8 +3,11 @@ package myst.synthetic.menu;
 import myst.synthetic.MystcraftItems;
 import myst.synthetic.MystcraftMenus;
 import myst.synthetic.block.entity.BlockEntityDisplayContainer;
+import myst.synthetic.linking.LinkController;
+import myst.synthetic.linking.LinkOptions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -15,6 +18,7 @@ import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.component.WritableBookContent;
 import net.minecraft.world.item.component.WrittenBookContent;
 
@@ -23,6 +27,7 @@ public class DisplayContainerMenu extends AbstractContainerMenu {
     public static final int BUTTON_PREV_PAGE = 1;
     public static final int BUTTON_NEXT_PAGE = 2;
     public static final int BUTTON_TAKE_BOOK = 3;
+    public static final int BUTTON_USE_LINKBOOK = 4;
     public static final int BUTTON_PAGE_JUMP_RANGE_START = 100;
 
     private static final int DATA_CURRENT_PAGE = 0;
@@ -214,6 +219,47 @@ public class DisplayContainerMenu extends AbstractContainerMenu {
                 return true;
             }
 
+            case BUTTON_USE_LINKBOOK -> {
+                if (!this.isLinkBookMode()) {
+                    return false;
+                }
+
+                ItemStack stack = this.getDisplayStack();
+                if (!stack.is(MystcraftItems.LINKBOOK) && !stack.is(MystcraftItems.AGEBOOK)) {
+                    return false;
+                }
+
+                CustomData customData = stack.get(DataComponents.CUSTOM_DATA);
+                if (customData == null) {
+                    return false;
+                }
+
+                CompoundTag tag = customData.copyTag();
+                LinkOptions info = new LinkOptions(tag);
+
+                String targetDimension = info.getDimensionUID();
+                if (targetDimension == null || targetDimension.isBlank()) {
+                    return false;
+                }
+
+                String currentDimension = extractDimensionId(player.level().dimension().toString());
+                if (currentDimension.equals(targetDimension)) {
+                    return false;
+                }
+
+                ItemStack carried = this.getCarried();
+                if (!carried.isEmpty()) {
+                    this.setCarried(ItemStack.EMPTY);
+
+                    if (!player.addItem(carried)) {
+                        player.drop(carried, false);
+                    }
+                }
+
+                LinkController.travelEntity(player.level(), player, info);
+                return true;
+            }
+
             default -> {
                 return false;
             }
@@ -301,6 +347,17 @@ public class DisplayContainerMenu extends AbstractContainerMenu {
 
         super.removed(player);
         this.container.stopOpen(player);
+    }
+
+    private static String extractDimensionId(String raw) {
+        int slash = raw.lastIndexOf('/');
+        int end = raw.lastIndexOf(']');
+
+        if (slash >= 0 && end > slash) {
+            return raw.substring(slash + 1, end).trim();
+        }
+
+        return raw;
     }
 
     private enum DisplaySlotMode {
