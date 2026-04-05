@@ -39,8 +39,7 @@ public class MystcraftItems {
     public static final Item FOLDER = register("folder", Item::new, new Item.Properties().stacksTo(32));
     public static final Item PORTFOLIO = register("portfolio", Item::new, new Item.Properties().stacksTo(1));
     public static final Item VIAL = register("vial", ItemInkVial::new, new Item.Properties().stacksTo(16));
-    public static final Item BAHRO_LEATHER = register("bahro_leather", new Item(new Item.Properties())
-    );
+    public static final Item BAHRO_LEATHER = register("bahro_leather", Item::new, new Item.Properties());
     
     public static final Item GLASSES = register(
             "glasses",

@@ -100,6 +100,7 @@ public class MystcraftItemGroups {
                         output.accept(MystcraftItems.BOOSTER);
                         output.accept(MystcraftItems.FOLDER);
                         output.accept(MystcraftItems.PORTFOLIO);
+                        output.accept(MystcraftItems.BAHRO_LEATHER);
                         output.accept(MystcraftItems.GLASSES);
                         for (WoodType wood : WoodType.values()) {
                             output.accept(createDeskVariant(wood));
