@@ -10,6 +10,7 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
@@ -88,8 +89,17 @@ public class FolderMenu extends AbstractContainerMenu {
             return false;
         }
 
-        ItemStack host = this.getHostStack();
-        return host.is(MystcraftItems.FOLDER);
+        return this.getHostStack().is(MystcraftItems.FOLDER);
+    }
+
+    @Override
+    public void clicked(int slotId, int button, ClickType clickType, Player player) {
+        if (this.isBlockedClick(slotId, button, clickType)) {
+            return;
+        }
+
+        super.clicked(slotId, button, clickType, player);
+        this.saveBackToHost();
     }
 
     @Override
@@ -134,14 +144,28 @@ public class FolderMenu extends AbstractContainerMenu {
             return ItemStack.EMPTY;
         }
 
+        this.saveBackToHost();
         slot.onTake(player, stack);
         return original;
     }
 
     @Override
     public void removed(Player player) {
+        ItemFolder.syncFolderStackState(this.getHostStack());
         this.saveBackToHost();
         super.removed(player);
+    }
+
+    public int getStoredCount() {
+        int count = 0;
+
+        for (int i = 0; i < FOLDER_SLOT_COUNT; i++) {
+            if (!this.folderInventory.getItem(i).isEmpty()) {
+                count++;
+            }
+        }
+
+        return count;
     }
 
     private ItemStack getHostStack() {
@@ -160,6 +184,24 @@ public class FolderMenu extends AbstractContainerMenu {
         }
 
         ItemFolder.saveInventory(host, slots);
+        ItemFolder.syncFolderStackState(host);
+    }
+
+    private boolean isBlockedClick(int slotId, int button, ClickType clickType) {
+        if (clickType == ClickType.SWAP && button == this.hostSlot) {
+            return true;
+        }
+
+        if (slotId < 0 || slotId >= this.slots.size()) {
+            return false;
+        }
+
+        Slot slot = this.slots.get(slotId);
+        if (slot.container != this.playerInventory) {
+            return false;
+        }
+
+        return slot.getContainerSlot() == this.hostSlot;
     }
 
     private static final class FolderSlot extends Slot {

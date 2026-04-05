@@ -41,7 +41,9 @@ public class MystcraftItems {
     public static final Item FOLDER = register(
             "folder",
             ItemFolder::new,
-            new Item.Properties().component(MystcraftDataComponents.FOLDER_DATA, myst.synthetic.component.FolderDataComponent.EMPTY)
+            new Item.Properties()
+                    .stacksTo(32)
+                    .component(MystcraftDataComponents.FOLDER_DATA, myst.synthetic.component.FolderDataComponent.EMPTY)
     );
 
     public static final Item PORTFOLIO = register("portfolio", Item::new, new Item.Properties().stacksTo(1));

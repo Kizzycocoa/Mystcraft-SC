@@ -17,6 +17,7 @@ public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
         super(menu, playerInventory, title);
         this.imageWidth = 176;
         this.imageHeight = 166;
+        this.inventoryLabelX = 8;
         this.inventoryLabelY = 72;
         this.titleLabelX = 8;
         this.titleLabelY = 6;
@@ -37,30 +38,31 @@ public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
                 256
         );
 
-        drawSlotFrames(guiGraphics);
+        this.drawSlotFrames(guiGraphics);
     }
 
     @Override
     protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         guiGraphics.drawString(this.font, this.title, this.titleLabelX, this.titleLabelY, 0x4A3927, false);
         guiGraphics.drawString(this.font, this.playerInventoryTitle, this.inventoryLabelX, this.inventoryLabelY, 0x4A3927, false);
+        guiGraphics.drawString(this.font, Component.literal(String.valueOf(this.menu.getStoredCount())), 154, 6, 0x4A3927, false);
     }
 
     private void drawSlotFrames(GuiGraphics guiGraphics) {
         for (int row = 0; row < 3; row++) {
             for (int column = 0; column < 9; column++) {
-                drawSlot(guiGraphics, this.leftPos + 7 + column * 18, this.topPos + 17 + row * 18);
+                this.drawSlot(guiGraphics, this.leftPos + 7 + column * 18, this.topPos + 17 + row * 18);
             }
         }
 
         for (int row = 0; row < 3; row++) {
             for (int column = 0; column < 9; column++) {
-                drawSlot(guiGraphics, this.leftPos + 7 + column * 18, this.topPos + 83 + row * 18);
+                this.drawSlot(guiGraphics, this.leftPos + 7 + column * 18, this.topPos + 83 + row * 18);
             }
         }
 
         for (int column = 0; column < 9; column++) {
-            drawSlot(guiGraphics, this.leftPos + 7 + column * 18, this.topPos + 141);
+            this.drawSlot(guiGraphics, this.leftPos + 7 + column * 18, this.topPos + 141);
         }
     }
 
