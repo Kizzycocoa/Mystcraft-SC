@@ -239,7 +239,7 @@ public class SlantBoardBlockEntityRenderer
         if (state.hasDisplayItem) {
             poseStack.pushPose();
 
-            // DO NOT CHANGE: solved placement values.
+            // DO NOT CHANGE: these are the solved placement values.
             poseStack.translate(0.0F, 0.50F, 0.0F);
             poseStack.mulPose(Axis.XP.rotationDegrees(-109.06F));
             poseStack.mulPose(Axis.ZP.rotationDegrees(180.0F));
@@ -260,7 +260,7 @@ public class SlantBoardBlockEntityRenderer
                 poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
 
                 // DO NOT CHANGE: solved placement values.
-                poseStack.translate(0.0F, 0.10F, 0.21F);
+                poseStack.translate(0.0F, 0.90F, 0.21F);
                 poseStack.scale(0.85F, 0.85F, 0.85F);
 
                 // Backing/page/item
