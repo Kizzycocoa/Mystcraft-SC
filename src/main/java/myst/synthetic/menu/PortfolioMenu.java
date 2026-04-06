@@ -12,23 +12,12 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ClickType;
-import net.minecraft.world.inventory.ContainerData;
-import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
 public class PortfolioMenu extends AbstractContainerMenu {
 
-    public static final int BUTTON_PREV_PAGE = 1;
-    public static final int BUTTON_NEXT_PAGE = 2;
-    public static final int BUTTON_TAKE_VISIBLE_START = 100;
-
-    public static final int GRID_COLUMNS = 7;
-    public static final int GRID_ROWS = 4;
-    public static final int PAGES_PER_SCREEN = GRID_COLUMNS * GRID_ROWS;
-
-    private static final int DATA_SCREEN_PAGE = 0;
-    private static final int DATA_COUNT = 1;
+    public static final int BUTTON_TAKE_ABSOLUTE_START = 1000;
 
     private static final int PLAYER_INV_START = 0;
     private static final int PLAYER_INV_END = PLAYER_INV_START + 27;
@@ -37,24 +26,16 @@ public class PortfolioMenu extends AbstractContainerMenu {
 
     private final Inventory playerInventory;
     private final int hostSlot;
-    private final ContainerData data;
 
     public PortfolioMenu(int containerId, Inventory playerInventory) {
-        this(containerId, playerInventory, playerInventory.getSelectedSlot(), new SimpleContainerData(DATA_COUNT));
+        this(containerId, playerInventory, playerInventory.getSelectedSlot());
     }
 
     public PortfolioMenu(int containerId, Inventory playerInventory, int hostSlot) {
-        this(containerId, playerInventory, hostSlot, new SimpleContainerData(DATA_COUNT));
-    }
-
-    private PortfolioMenu(int containerId, Inventory playerInventory, int hostSlot, ContainerData data) {
         super(MystcraftMenus.PORTFOLIO, containerId);
 
         this.playerInventory = playerInventory;
         this.hostSlot = hostSlot;
-        this.data = data;
-
-        checkContainerDataCount(data, DATA_COUNT);
 
         for (int row = 0; row < 3; row++) {
             for (int column = 0; column < 9; column++) {
@@ -79,9 +60,6 @@ public class PortfolioMenu extends AbstractContainerMenu {
                     locked
             ));
         }
-
-        this.addDataSlots(this.data);
-        this.clampScreenPage();
     }
 
     @Override
@@ -160,21 +138,8 @@ public class PortfolioMenu extends AbstractContainerMenu {
 
     @Override
     public boolean clickMenuButton(Player player, int id) {
-        if (id == BUTTON_PREV_PAGE) {
-            this.data.set(DATA_SCREEN_PAGE, this.getScreenPage() - 1);
-            this.clampScreenPage();
-            return true;
-        }
-
-        if (id == BUTTON_NEXT_PAGE) {
-            this.data.set(DATA_SCREEN_PAGE, this.getScreenPage() + 1);
-            this.clampScreenPage();
-            return true;
-        }
-
-        if (id >= BUTTON_TAKE_VISIBLE_START && id < BUTTON_TAKE_VISIBLE_START + PAGES_PER_SCREEN) {
-            int localIndex = id - BUTTON_TAKE_VISIBLE_START;
-            int absoluteIndex = this.getVisibleStartIndex() + localIndex;
+        if (id >= BUTTON_TAKE_ABSOLUTE_START) {
+            int absoluteIndex = id - BUTTON_TAKE_ABSOLUTE_START;
 
             ItemStack removed = this.removePageAt(absoluteIndex);
             if (removed.isEmpty()) {
@@ -185,7 +150,6 @@ public class PortfolioMenu extends AbstractContainerMenu {
                 player.drop(removed, false);
             }
 
-            this.clampScreenPage();
             this.broadcastFullState(player);
             return true;
         }
@@ -205,41 +169,8 @@ public class PortfolioMenu extends AbstractContainerMenu {
         return this.getPortfolioData().size();
     }
 
-    public int getScreenPage() {
-        return this.data.get(DATA_SCREEN_PAGE);
-    }
-
-    public int getScreenCount() {
-        int stored = this.getStoredCount();
-        return Math.max(1, (stored + PAGES_PER_SCREEN - 1) / PAGES_PER_SCREEN);
-    }
-
-    public int getVisibleStartIndex() {
-        return this.getScreenPage() * PAGES_PER_SCREEN;
-    }
-
-    public int getVisibleCount() {
-        int remaining = this.getStoredCount() - this.getVisibleStartIndex();
-        return Math.max(0, Math.min(PAGES_PER_SCREEN, remaining));
-    }
-
-    public ItemStack getVisiblePage(int localIndex) {
-        if (localIndex < 0 || localIndex >= PAGES_PER_SCREEN) {
-            return ItemStack.EMPTY;
-        }
-
-        int absoluteIndex = this.getVisibleStartIndex() + localIndex;
-        return this.getPortfolioData().getPage(absoluteIndex);
-    }
-
     private ItemStack getHostStack() {
         return this.playerInventory.getItem(this.hostSlot);
-    }
-
-    private void clampScreenPage() {
-        int maxPage = this.getScreenCount() - 1;
-        int clamped = Math.max(0, Math.min(this.getScreenPage(), maxPage));
-        this.data.set(DATA_SCREEN_PAGE, clamped);
     }
 
     private void absorbPageStack(ItemStack stack) {
@@ -261,7 +192,6 @@ public class PortfolioMenu extends AbstractContainerMenu {
 
         ItemPortfolio.setData(this.getHostStack(), data);
         stack.setCount(0);
-        this.clampScreenPage();
     }
 
     private boolean absorbFolderStack(ItemStack folder) {
@@ -291,7 +221,6 @@ public class PortfolioMenu extends AbstractContainerMenu {
                 NonNullList.withSize(FolderDataComponent.MAX_SLOTS, ItemStack.EMPTY)
         );
 
-        this.clampScreenPage();
         return true;
     }
 
