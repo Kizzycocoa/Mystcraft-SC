@@ -3,6 +3,7 @@ package myst.synthetic;
 import myst.synthetic.client.gui.FolderScreen;
 import myst.synthetic.client.gui.InkMixerScreen;
 import myst.synthetic.client.gui.LinkBookScreen;
+import myst.synthetic.client.gui.PortfolioScreen;
 import myst.synthetic.client.gui.SingleSlotScreen;
 import myst.synthetic.client.page.PagePreviewExporter;
 import myst.synthetic.client.page.PageRenderCache;
@@ -33,6 +34,7 @@ public class MystcraftSyntheticCodexClient implements ClientModInitializer {
 	public void onInitializeClient() {
 		ComponentTooltipAppenderRegistry.addAfter(DataComponents.DAMAGE, MystcraftDataComponents.PAGE_DATA);
 		ComponentTooltipAppenderRegistry.addAfter(DataComponents.CUSTOM_NAME, MystcraftDataComponents.FOLDER_DATA);
+		ComponentTooltipAppenderRegistry.addAfter(DataComponents.CUSTOM_NAME, MystcraftDataComponents.PORTFOLIO_DATA);
 
 		BlockEntityRenderers.register(MystcraftBlockEntities.STAR_FISSURE, StarFissureBlockEntityRenderer::new);
 		BlockEntityRenderers.register(MystcraftBlockEntities.SLANT_BOARD, SlantBoardBlockEntityRenderer::new);
@@ -64,6 +66,7 @@ public class MystcraftSyntheticCodexClient implements ClientModInitializer {
 		MenuScreens.register(MystcraftMenus.INK_MIXER, InkMixerScreen::new);
 		MenuScreens.register(MystcraftMenus.DISPLAY_CONTAINER, SingleSlotScreen::new);
 		MenuScreens.register(MystcraftMenus.FOLDER, FolderScreen::new);
+		MenuScreens.register(MystcraftMenus.PORTFOLIO, PortfolioScreen::new);
 
 		InkScreenOverlay.initialize();
 

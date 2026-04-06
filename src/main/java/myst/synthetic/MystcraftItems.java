@@ -4,7 +4,9 @@ import java.util.function.Function;
 
 import myst.synthetic.component.MystcraftDataComponents;
 import myst.synthetic.component.PageDataComponent;
+import myst.synthetic.component.PortfolioDataComponent;
 import myst.synthetic.item.ItemFolder;
+import myst.synthetic.item.ItemPortfolio;
 import myst.synthetic.item.ItemInkVial;
 import myst.synthetic.item.ItemLinkbook;
 import myst.synthetic.item.ItemPage;
@@ -45,8 +47,17 @@ public class MystcraftItems {
                     .stacksTo(32)
                     .component(MystcraftDataComponents.FOLDER_DATA, myst.synthetic.component.FolderDataComponent.EMPTY)
     );
-
-    public static final Item PORTFOLIO = register("portfolio", Item::new, new Item.Properties().stacksTo(1));
+    public static final Item PORTFOLIO =
+            register(
+                    "portfolio",
+                    ItemPortfolio::new,
+                    new Item.Properties()
+                            .stacksTo(1)
+                            .component(
+                                    MystcraftDataComponents.PORTFOLIO_DATA,
+                                    PortfolioDataComponent.EMPTY
+                            )
+            );
     public static final Item VIAL = register("vial", ItemInkVial::new, new Item.Properties().stacksTo(16));
     public static final Item BAHRO_LEATHER = register("bahro_leather", Item::new, new Item.Properties());
 

@@ -32,4 +32,12 @@ public class BlockEntitySlantBoard extends BlockEntityDisplayContainer {
 
 		blockEntity.setChanged();
 	}
+
+	public ItemStack getPage() {
+		return this.getStoredItem();
+	}
+
+	public void clearPage() {
+		this.setStoredItem(ItemStack.EMPTY);
+	}
 }

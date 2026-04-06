@@ -3,6 +3,7 @@ package myst.synthetic;
 import myst.synthetic.menu.DisplayContainerMenu;
 import myst.synthetic.menu.FolderMenu;
 import myst.synthetic.menu.InkMixerMenu;
+import myst.synthetic.menu.PortfolioMenu;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
@@ -27,6 +28,12 @@ public final class MystcraftMenus {
             BuiltInRegistries.MENU,
             Identifier.fromNamespaceAndPath("mystcraft-sc", "folder"),
             new MenuType<>(FolderMenu::new, FeatureFlags.DEFAULT_FLAGS)
+    );
+
+    public static final MenuType<PortfolioMenu> PORTFOLIO = Registry.register(
+            BuiltInRegistries.MENU,
+            Identifier.fromNamespaceAndPath("mystcraft-sc", "portfolio"),
+            new MenuType<>(PortfolioMenu::new, FeatureFlags.DEFAULT_FLAGS)
     );
 
     private MystcraftMenus() {

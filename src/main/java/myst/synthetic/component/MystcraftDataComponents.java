@@ -23,6 +23,14 @@ public final class MystcraftDataComponents {
                     .persistent(FolderDataComponent.CODEC)
                     .build()
     );
+    public static final DataComponentType<PortfolioDataComponent> PORTFOLIO_DATA =
+            Registry.register(
+                    BuiltInRegistries.DATA_COMPONENT_TYPE,
+                    Identifier.fromNamespaceAndPath("mystcraft-sc", "portfolio_data"),
+                    DataComponentType.<PortfolioDataComponent>builder()
+                            .persistent(PortfolioDataComponent.CODEC)
+                            .build()
+            );
 
     private MystcraftDataComponents() {
     }

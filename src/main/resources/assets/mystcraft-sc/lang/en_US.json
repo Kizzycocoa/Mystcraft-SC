@@ -81,6 +81,7 @@
     "item.mystcraft-sc.page.symbol_named": "%s Page",
     "tooltip.mystcraft-sc.folder.empty": "Empty",
     "tooltip.mystcraft-sc.folder.page_count": "Stored pages: %s",
+    "tooltip.mystcraft-sc.portfolio.count": "Stored pages: %s",
 
     "symbol.mystcraft-sc.debug.test_symbol": "Test Symbol",
     "symbol.mystcraft-sc.celestial.suns_normal": "Normal Sun",
