@@ -14,7 +14,12 @@ import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class FolderMenu extends AbstractContainerMenu {
+
+    public static final int BUTTON_TAKE_ORDERED_START = 1000;
 
     private static final int FOLDER_SLOT_COUNT = FolderDataComponent.MAX_SLOTS;
     private static final int PLAYER_INV_START = FOLDER_SLOT_COUNT;
@@ -42,11 +47,8 @@ public class FolderMenu extends AbstractContainerMenu {
             this.folderInventory.setItem(i, contents.get(i));
         }
 
-        for (int row = 0; row < 3; row++) {
-            for (int column = 0; column < 9; column++) {
-                int slot = column + row * 9;
-                this.addSlot(new FolderSlot(this.folderInventory, slot, 8 + column * 18, 18 + row * 18));
-            }
+        for (int i = 0; i < FOLDER_SLOT_COUNT; i++) {
+            this.addSlot(new FolderSlot(this.folderInventory, i, -1000, -1000));
         }
 
         for (int row = 0; row < 3; row++) {
@@ -56,7 +58,7 @@ public class FolderMenu extends AbstractContainerMenu {
                         playerInventory,
                         slot,
                         8 + column * 18,
-                        84 + row * 18,
+                        151 + row * 18,
                         false
                 ));
             }
@@ -68,7 +70,7 @@ public class FolderMenu extends AbstractContainerMenu {
                     playerInventory,
                     column,
                     8 + column * 18,
-                    142,
+                    209,
                     locked
             ));
         }
@@ -100,6 +102,28 @@ public class FolderMenu extends AbstractContainerMenu {
 
         super.clicked(slotId, button, clickType, player);
         this.saveBackToHost();
+    }
+
+    @Override
+    public boolean clickMenuButton(Player player, int id) {
+        if (id >= BUTTON_TAKE_ORDERED_START && id < BUTTON_TAKE_ORDERED_START + FOLDER_SLOT_COUNT) {
+            int index = id - BUTTON_TAKE_ORDERED_START;
+            ItemStack removed = this.folderInventory.removeItemNoUpdate(index);
+
+            if (removed.isEmpty()) {
+                return false;
+            }
+
+            if (!player.getInventory().add(removed)) {
+                player.drop(removed, false);
+            }
+
+            this.saveBackToHost();
+            this.broadcastChanges();
+            return true;
+        }
+
+        return false;
     }
 
     @Override
@@ -156,16 +180,25 @@ public class FolderMenu extends AbstractContainerMenu {
         super.removed(player);
     }
 
-    public int getStoredCount() {
-        int count = 0;
+    public List<ItemStack> getBrowserItems() {
+        List<ItemStack> pages = new ArrayList<>();
 
+        int largest = -1;
         for (int i = 0; i < FOLDER_SLOT_COUNT; i++) {
             if (!this.folderInventory.getItem(i).isEmpty()) {
-                count++;
+                largest = i;
             }
         }
 
-        return count;
+        if (largest < 0) {
+            return pages;
+        }
+
+        for (int i = 0; i <= largest; i++) {
+            pages.add(this.folderInventory.getItem(i).copy());
+        }
+
+        return pages;
     }
 
     private ItemStack getHostStack() {

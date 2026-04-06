@@ -1,6 +1,7 @@
 package myst.synthetic.component;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import myst.synthetic.MystcraftItems;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.NonNullList;
@@ -26,10 +27,17 @@ public record FolderDataComponent(
             NonNullList.withSize(MAX_SLOTS, ItemStack.EMPTY)
     );
 
+    private record SlotEntry(int slot, ItemStack stack) {
+        private static final Codec<SlotEntry> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                Codec.INT.fieldOf("slot").forGetter(SlotEntry::slot),
+                ItemStack.CODEC.fieldOf("stack").forGetter(SlotEntry::stack)
+        ).apply(instance, SlotEntry::new));
+    }
+
     public static final Codec<FolderDataComponent> CODEC =
-            ItemStack.CODEC.listOf().xmap(
-                    FolderDataComponent::fromList,
-                    FolderDataComponent::toList
+            SlotEntry.CODEC.listOf().xmap(
+                    FolderDataComponent::fromEntries,
+                    FolderDataComponent::toEntries
             );
 
     public FolderDataComponent {
@@ -89,25 +97,44 @@ public record FolderDataComponent(
         return new FolderDataComponent(cleaned);
     }
 
-    private static FolderDataComponent fromList(List<ItemStack> list) {
+    private static FolderDataComponent fromEntries(List<SlotEntry> entries) {
         NonNullList<ItemStack> slots = NonNullList.withSize(MAX_SLOTS, ItemStack.EMPTY);
 
-        for (int i = 0; i < Math.min(list.size(), MAX_SLOTS); i++) {
-            ItemStack stack = list.get(i);
+        if (entries == null) {
+            return new FolderDataComponent(slots);
+        }
 
-            if (isValidFolderEntry(stack)) {
-                slots.set(i, stack.copyWithCount(1));
+        for (SlotEntry entry : entries) {
+            if (entry == null) {
+                continue;
             }
+
+            int slot = entry.slot();
+            ItemStack stack = entry.stack();
+
+            if (slot < 0 || slot >= MAX_SLOTS) {
+                continue;
+            }
+
+            if (!isValidFolderEntry(stack)) {
+                continue;
+            }
+
+            slots.set(slot, stack.copyWithCount(1));
         }
 
         return new FolderDataComponent(slots);
     }
 
-    private List<ItemStack> toList() {
-        List<ItemStack> out = new ArrayList<>(MAX_SLOTS);
+    private List<SlotEntry> toEntries() {
+        List<SlotEntry> out = new ArrayList<>();
 
         for (int i = 0; i < MAX_SLOTS; i++) {
-            out.add(this.pages.get(i).copy());
+            ItemStack stack = this.pages.get(i);
+
+            if (isValidFolderEntry(stack)) {
+                out.add(new SlotEntry(i, stack.copyWithCount(1)));
+            }
         }
 
         return out;

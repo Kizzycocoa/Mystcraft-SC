@@ -82,6 +82,9 @@
     "tooltip.mystcraft-sc.folder.empty": "Empty",
     "tooltip.mystcraft-sc.folder.page_count": "Stored pages: %s",
     "tooltip.mystcraft-sc.portfolio.count": "Stored pages: %s",
+    "screen.mystcraft-sc.page_browser.search": "Search",
+    "screen.mystcraft-sc.page_browser.copies": "Copies: %s",
+    "screen.mystcraft-sc.page_browser.preview_only": "Preview only",
 
     "symbol.mystcraft-sc.debug.test_symbol": "Test Symbol",
     "symbol.mystcraft-sc.celestial.suns_normal": "Normal Sun",
