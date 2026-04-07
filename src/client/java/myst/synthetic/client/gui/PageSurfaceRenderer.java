@@ -1,19 +1,12 @@
 package myst.synthetic.client.gui;
 
-import myst.synthetic.client.page.PageRenderCache;
-import myst.synthetic.client.render.PageRenderKey;
-import myst.synthetic.page.Page;
+import myst.synthetic.client.render.PageCardRenderer;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
 
 public final class PageSurfaceRenderer {
-
-    public static final Identifier PAGE_CARD_TEXTURE =
-            Identifier.fromNamespaceAndPath("mystcraft-sc", "textures/gui/bookui_pagel.png");
 
     public static final int PAGE_WIDTH = 30;
     public static final int PAGE_HEIGHT = 40;
@@ -70,7 +63,7 @@ public final class PageSurfaceRenderer {
                     mouseX >= drawX && mouseX < drawX + PAGE_WIDTH
                             && mouseY >= drawY && mouseY < drawY + PAGE_HEIGHT;
 
-            drawPageCard(guiGraphics, drawX, drawY, entry.stack(), entry.placeholder(), hovered);
+            PageCardRenderer.drawPageCard(guiGraphics, drawX, drawY, entry.stack(), entry.placeholder(), hovered);
         }
 
         guiGraphics.disableScissor();
@@ -128,70 +121,6 @@ public final class PageSurfaceRenderer {
         }
 
         return Math.max(0, maxBottom - SURFACE_HEIGHT);
-    }
-
-    private static void drawPageCard(GuiGraphics guiGraphics, int x, int y, ItemStack stack, boolean placeholder, boolean hovered) {
-        guiGraphics.blit(
-                RenderPipelines.GUI_TEXTURED,
-                PAGE_CARD_TEXTURE,
-                x,
-                y,
-                156,
-                0,
-                PAGE_WIDTH,
-                PAGE_HEIGHT,
-                256,
-                256
-        );
-
-        if (placeholder) {
-            guiGraphics.fill(x, y, x + PAGE_WIDTH, y + PAGE_HEIGHT, 0xAA111111);
-        } else {
-            drawPageContents(guiGraphics, x, y, stack);
-        }
-
-        if (hovered) {
-            guiGraphics.fill(x, y, x + PAGE_WIDTH, y + PAGE_HEIGHT, 0x30FFFFFF);
-        }
-    }
-
-    private static void drawPageContents(GuiGraphics guiGraphics, int x, int y, ItemStack stack) {
-        if (stack.isEmpty()) {
-            return;
-        }
-
-        if (Page.isLinkPanel(stack)) {
-            guiGraphics.fill(
-                    x + 5,
-                    y + 8,
-                    x + PAGE_WIDTH - 5,
-                    y + 18,
-                    0xFF000000
-            );
-            return;
-        }
-
-        Identifier symbol = Page.getSymbol(stack);
-        if (symbol != null) {
-            Identifier texture = PageRenderCache.getTexture(new PageRenderKey(PageRenderKey.Kind.SYMBOL, symbol));
-
-            int symbolSize = 16;
-            int drawX = x + (PAGE_WIDTH - symbolSize) / 2;
-            int drawY = y + 12;
-
-            guiGraphics.blit(
-                    RenderPipelines.GUI_TEXTURED,
-                    texture,
-                    drawX,
-                    drawY,
-                    0,
-                    0,
-                    symbolSize,
-                    symbolSize,
-                    symbolSize,
-                    symbolSize
-            );
-        }
     }
 
     public record SurfaceEntry(
