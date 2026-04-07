@@ -54,7 +54,7 @@ public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
         super.init();
 
         this.sortButton = this.addRenderableWidget(
-                Button.builder(Component.literal("AZ"), button -> {})
+                Button.builder(Component.empty(), button -> {})
                         .pos(this.leftPos, this.topPos)
                         .size(18, 18)
                         .build()
@@ -62,7 +62,7 @@ public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
         this.sortButton.active = false;
 
         this.allButton = this.addRenderableWidget(
-                Button.builder(Component.literal("ALL"), button -> {})
+                Button.builder(Component.empty(), button -> {})
                         .pos(this.leftPos + 18, this.topPos)
                         .size(18, 18)
                         .build()
@@ -124,6 +124,8 @@ public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
                 this.scroll,
                 this.getMaxScroll()
         );
+
+        this.drawLegacySmallButtonLabels(guiGraphics);
     }
 
     @Override
@@ -259,6 +261,21 @@ public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
 
         this.entries = built;
         this.scroll = Math.max(0, Math.min(this.scroll, this.getMaxScroll()));
+    }
+
+    private void drawLegacySmallButtonLabels(GuiGraphics guiGraphics) {
+        guiGraphics.pose().pushMatrix();
+        guiGraphics.pose().scale(0.5F, 0.5F);
+
+        int azX = (this.leftPos * 2) + 10;
+        int azY = (this.topPos * 2) + 8;
+        guiGraphics.drawString(this.font, "AZ", azX, azY, 0xA0A0A0, false);
+
+        int allX = ((this.leftPos + 18) * 2) + 6;
+        int allY = (this.topPos * 2) + 8;
+        guiGraphics.drawString(this.font, "ALL", allX, allY, 0xA0A0A0, false);
+
+        guiGraphics.pose().popMatrix();
     }
 
     private int getMaxScroll() {

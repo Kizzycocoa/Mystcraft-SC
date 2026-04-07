@@ -107,15 +107,19 @@ public class FolderMenu extends AbstractContainerMenu {
     public boolean clickMenuButton(Player player, int id) {
         if (id >= BUTTON_TAKE_ORDERED_START && id < BUTTON_TAKE_ORDERED_START + FOLDER_SLOT_COUNT) {
             int index = id - BUTTON_TAKE_ORDERED_START;
-            ItemStack removed = this.folderInventory.removeItemNoUpdate(index);
 
-            if (removed.isEmpty()) {
+            ItemStack existing = this.folderInventory.getItem(index);
+            if (existing.isEmpty()) {
                 return false;
             }
 
-            if (!player.getInventory().add(removed)) {
-                player.drop(removed, false);
+            // Legacy-style mouse pickup: only pick up if the mouse is empty.
+            if (!this.getCarried().isEmpty()) {
+                return false;
             }
+
+            this.folderInventory.setItem(index, ItemStack.EMPTY);
+            this.setCarried(existing.copy());
 
             this.saveBackToHost();
             this.broadcastChanges();
@@ -140,8 +144,8 @@ public class FolderMenu extends AbstractContainerMenu {
 
             ItemStack toInsert = carried.copyWithCount(1);
             this.folderInventory.setItem(index, toInsert);
-            carried.shrink(1);
 
+            carried.shrink(1);
             if (carried.isEmpty()) {
                 this.setCarried(ItemStack.EMPTY);
             } else {
@@ -170,19 +174,13 @@ public class FolderMenu extends AbstractContainerMenu {
                 return false;
             }
 
-            ItemStack inserted = carried.copyWithCount(1);
-            this.folderInventory.setItem(index, inserted);
-
-            carried.shrink(1);
-
-            if (carried.isEmpty()) {
-                this.setCarried(existing.copy());
-            } else {
-                this.setCarried(carried);
-                if (!player.getInventory().add(existing.copy())) {
-                    player.drop(existing.copy(), false);
-                }
+            // Proper mouse-style swap: only allow true swap when the carried stack is a single page/paper.
+            if (carried.getCount() != 1) {
+                return false;
             }
+
+            this.folderInventory.setItem(index, carried.copyWithCount(1));
+            this.setCarried(existing.copy());
 
             this.saveBackToHost();
             this.broadcastChanges();
