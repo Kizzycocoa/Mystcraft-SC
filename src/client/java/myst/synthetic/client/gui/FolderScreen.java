@@ -93,7 +93,7 @@ public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
         guiGraphics.pose().pushMatrix();
         guiGraphics.pose().translate(drawX, drawY);
         guiGraphics.pose().scale(scale, scale);
-        guiGraphics.drawString(this.font, text, 0, 0, 0x404040, false);
+        guiGraphics.drawString(this.font, text, 0, 0, 0xFF404040, false);
         guiGraphics.pose().popMatrix();
     }
 
