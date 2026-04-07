@@ -35,7 +35,6 @@ public class ItemFolder extends Item {
 		}
 
 		ItemStack stack = player.getItemInHand(hand);
-		syncFolderStackState(stack);
 
 		if (stack.getCount() != 1) {
 			return InteractionResult.PASS;
@@ -62,7 +61,6 @@ public class ItemFolder extends Item {
 	}
 
 	public static NonNullList<ItemStack> createInventory(ItemStack stack) {
-		syncFolderStackState(stack);
 		return getFolderData(stack).toSlotList();
 	}
 

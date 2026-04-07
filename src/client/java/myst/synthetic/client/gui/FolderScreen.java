@@ -21,9 +21,6 @@ import java.util.List;
 
 public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
 
-    private static final Identifier NOTEBOOK_TEXTURE =
-            Identifier.fromNamespaceAndPath("mystcraft-sc", "textures/gui/notebook.png");
-
     private static final Identifier DESK_TEXTURE =
             Identifier.fromNamespaceAndPath("mystcraft-sc", "textures/gui/writingdesk.png");
 
@@ -47,9 +44,9 @@ public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
         this.imageWidth = SURFACE_WIDTH;
         this.imageHeight = TOTAL_HEIGHT;
         this.inventoryLabelX = 8;
-        this.inventoryLabelY = 158;
+        this.inventoryLabelY = 140;
         this.titleLabelX = 8;
-        this.titleLabelY = 158;
+        this.titleLabelY = 140;
     }
 
     @Override
@@ -57,11 +54,12 @@ public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
         super.init();
 
         this.sortButton = this.addRenderableWidget(
-                Button.builder(Component.literal("AZ"), button -> this.rebuildEntries())
+                Button.builder(Component.literal("AZ"), button -> {})
                         .pos(this.leftPos, this.topPos)
                         .size(18, 18)
                         .build()
         );
+        this.sortButton.active = false;
 
         this.allButton = this.addRenderableWidget(
                 Button.builder(Component.literal("ALL"), button -> {})
@@ -82,31 +80,18 @@ public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
         this.searchBox.setBordered(false);
         this.searchBox.setEditable(false);
         this.addRenderableWidget(this.searchBox);
-
-        this.rebuildEntries();
     }
 
     @Override
     public void containerTick() {
         super.containerTick();
-        this.rebuildEntries();
     }
 
     @Override
     protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
-        guiGraphics.blit(
-                RenderPipelines.GUI_TEXTURED,
-                NOTEBOOK_TEXTURE,
-                this.leftPos,
-                this.topPos,
-                0,
-                0,
-                SURFACE_WIDTH,
-                SURFACE_HEIGHT,
-                256,
-                256
-        );
+        this.rebuildEntries(mouseX, mouseY);
 
+        // legacy folder draws the lower desk strip only
         guiGraphics.blit(
                 RenderPipelines.GUI_TEXTURED,
                 DESK_TEXTURE,
@@ -120,6 +105,10 @@ public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
                 256
         );
 
+        // legacy top control strip + search box background
+        guiGraphics.fill(this.leftPos + 40, this.topPos, this.leftPos + 176, this.topPos + 18, 0xFF000000);
+
+        PageSurfaceRenderer.drawSurfaceBackground(guiGraphics, this.leftPos, this.topPos);
         PageSurfaceRenderer.drawEntries(
                 guiGraphics,
                 this.leftPos,
@@ -174,7 +163,7 @@ public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
             return true;
         }
 
-        int hoveredSlot = PageSurfaceRenderer.getHoveredSlot(this.entries, this.leftPos, this.topPos, mouseX, mouseY, this.scroll);
+        int hoveredSlot = PageSurfaceRenderer.getHoveredOrderedSlot(this.leftPos, this.topPos, mouseX, mouseY, this.scroll);
         if (hoveredSlot >= 0 && this.minecraft != null && this.minecraft.gameMode != null) {
             ItemStack stack = this.menu.getOrderedItem(hoveredSlot);
 
@@ -227,12 +216,18 @@ public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
         this.renderPageTooltip(guiGraphics, mouseX, mouseY);
     }
 
-    private void rebuildEntries() {
+    private void rebuildEntries(int mouseX, int mouseY) {
         List<PageSurfaceRenderer.SurfaceEntry> built = new ArrayList<>();
 
         int lastIndex = this.menu.findLastMeaningfulIndex();
+
+        int hoveredPreviewSlot = -1;
         if (this.menu.canPreviewPlace()) {
-            lastIndex = Math.max(lastIndex, this.menu.findNextPreviewIndex());
+            hoveredPreviewSlot = PageSurfaceRenderer.getHoveredOrderedSlot(this.leftPos, this.topPos, mouseX, mouseY, this.scroll);
+        }
+
+        if (hoveredPreviewSlot >= 0) {
+            lastIndex = Math.max(lastIndex, hoveredPreviewSlot);
         }
 
         if (lastIndex < 0) {
@@ -241,10 +236,10 @@ public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
             return;
         }
 
-        int x = 0;
-        int y = 0;
-
         for (int i = 0; i <= lastIndex; i++) {
+            int x = (i % PageSurfaceRenderer.COLUMNS) * PageSurfaceRenderer.PAGE_X_STEP;
+            int y = (i / PageSurfaceRenderer.COLUMNS) * PageSurfaceRenderer.PAGE_Y_STEP;
+
             ItemStack stack = this.menu.getOrderedItem(i);
             boolean placeholder = stack.isEmpty();
 
@@ -255,12 +250,6 @@ public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
                     x,
                     y
             ));
-
-            x += PageSurfaceRenderer.PAGE_X_STEP;
-            if (x + PageSurfaceRenderer.PAGE_WIDTH > PageSurfaceRenderer.SURFACE_WIDTH) {
-                x = 0;
-                y += PageSurfaceRenderer.PAGE_Y_STEP;
-            }
         }
 
         this.entries = built;
@@ -298,7 +287,7 @@ public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
     }
 
     private void renderPageTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        int hoveredSlot = PageSurfaceRenderer.getHoveredSlot(this.entries, this.leftPos, this.topPos, mouseX, mouseY, this.scroll);
+        int hoveredSlot = PageSurfaceRenderer.getHoveredOrderedSlot(this.leftPos, this.topPos, mouseX, mouseY, this.scroll);
         if (hoveredSlot < 0 || this.minecraft == null || this.minecraft.player == null) {
             return;
         }

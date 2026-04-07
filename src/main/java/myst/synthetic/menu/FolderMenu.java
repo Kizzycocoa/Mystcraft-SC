@@ -59,7 +59,7 @@ public class FolderMenu extends AbstractContainerMenu {
                         playerInventory,
                         slot,
                         8 + column * 18,
-                        151 + row * 18,
+                        135 + row * 18,
                         false
                 ));
             }
@@ -71,7 +71,7 @@ public class FolderMenu extends AbstractContainerMenu {
                     playerInventory,
                     column,
                     8 + column * 18,
-                    209,
+                    193,
                     locked
             ));
         }
@@ -212,40 +212,15 @@ public class FolderMenu extends AbstractContainerMenu {
         super.removed(player);
     }
 
-    public List<ItemStack> getBrowserItems() {
-        List<ItemStack> pages = new ArrayList<>();
-
-        int largest = -1;
-        for (int i = 0; i < FOLDER_SLOT_COUNT; i++) {
-            if (!this.folderInventory.getItem(i).isEmpty()) {
-                largest = i;
-            }
-        }
-
-        if (!this.getCarried().isEmpty()) {
-            largest = Math.max(largest, this.findNextPreviewIndex());
-        }
-
-        if (largest < 0) {
-            return pages;
-        }
-
-        for (int i = 0; i <= largest; i++) {
-            pages.add(this.folderInventory.getItem(i).copy());
-        }
-
-        return pages;
-    }
-
-    public boolean canPreviewPlace() {
-        return ItemFolder.canStore(this.getCarried());
-    }
-
     public ItemStack getOrderedItem(int index) {
         if (index < 0 || index >= FOLDER_SLOT_COUNT) {
             return ItemStack.EMPTY;
         }
         return this.folderInventory.getItem(index).copy();
+    }
+
+    public boolean canPreviewPlace() {
+        return ItemFolder.canStore(this.getCarried());
     }
 
     public int findLastMeaningfulIndex() {
@@ -256,15 +231,6 @@ public class FolderMenu extends AbstractContainerMenu {
             }
         }
         return largest;
-    }
-
-    public int findNextPreviewIndex() {
-        for (int i = 0; i < FOLDER_SLOT_COUNT; i++) {
-            if (this.folderInventory.getItem(i).isEmpty()) {
-                return i;
-            }
-        }
-        return FOLDER_SLOT_COUNT - 1;
     }
 
     private ItemStack getHostStack() {

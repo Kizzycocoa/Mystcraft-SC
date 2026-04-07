@@ -22,15 +22,24 @@ public final class PageSurfaceRenderer {
 
     public static final int SURFACE_X = 0;
     public static final int SURFACE_Y = 19;
-    public static final int SURFACE_WIDTH = 156;
-    public static final int SURFACE_HEIGHT = 112;
+    public static final int SURFACE_PAGE_WIDTH = 156;
+    public static final int SURFACE_HEIGHT = 114;
 
     public static final int SCROLLBAR_X = 156;
     public static final int SCROLLBAR_Y = 19;
     public static final int SCROLLBAR_WIDTH = 20;
-    public static final int SCROLLBAR_HEIGHT = 112;
+    public static final int SCROLLBAR_HEIGHT = 114;
+
+    public static final int COLUMNS = 5;
 
     private PageSurfaceRenderer() {
+    }
+
+    public static void drawSurfaceBackground(GuiGraphics guiGraphics, int guiLeft, int guiTop) {
+        int x = guiLeft + SURFACE_X;
+        int y = guiTop + SURFACE_Y;
+
+        guiGraphics.fill(x, y, x + SURFACE_PAGE_WIDTH, y + SURFACE_HEIGHT, 0xAA000000);
     }
 
     public static void drawPlaceholderPage(GuiGraphics guiGraphics, int x, int y, boolean hovered) {
@@ -89,32 +98,6 @@ public final class PageSurfaceRenderer {
         guiGraphics.fill(x + 5, y + knobOffset + 1, x + 15, y + knobOffset + knobHeight - 1, 0xFF9A9A9A);
     }
 
-    public static int getHoveredSlot(List<SurfaceEntry> entries, int guiLeft, int guiTop, int mouseX, int mouseY, int scroll) {
-        for (SurfaceEntry entry : entries) {
-            int drawX = guiLeft + SURFACE_X + entry.x();
-            int drawY = guiTop + SURFACE_Y + entry.y() - scroll;
-
-            if (mouseX >= drawX && mouseX < drawX + PAGE_WIDTH && mouseY >= drawY && mouseY < drawY + PAGE_HEIGHT) {
-                return entry.slotIndex();
-            }
-        }
-
-        return -1;
-    }
-
-    public static int getMaxScroll(List<SurfaceEntry> entries) {
-        int maxBottom = 0;
-
-        for (SurfaceEntry entry : entries) {
-            int bottom = entry.y() + PAGE_HEIGHT;
-            if (bottom > maxBottom) {
-                maxBottom = bottom;
-            }
-        }
-
-        return Math.max(0, maxBottom - SURFACE_HEIGHT);
-    }
-
     public static void drawEntries(
             GuiGraphics guiGraphics,
             int guiLeft,
@@ -126,7 +109,6 @@ public final class PageSurfaceRenderer {
     ) {
         int clipLeft = guiLeft + SURFACE_X;
         int clipTop = guiTop + SURFACE_Y;
-        int clipRight = clipLeft + SURFACE_WIDTH;
         int clipBottom = clipTop + SURFACE_HEIGHT;
 
         for (SurfaceEntry entry : entries) {
@@ -149,6 +131,44 @@ public final class PageSurfaceRenderer {
         }
     }
 
+    public static int getHoveredOrderedSlot(int guiLeft, int guiTop, int mouseX, int mouseY, int scroll) {
+        int relX = mouseX - (guiLeft + SURFACE_X);
+        int relY = mouseY - (guiTop + SURFACE_Y) + scroll;
+
+        if (relX < 0 || relY < 0 || relX >= SURFACE_PAGE_WIDTH || relY >= SURFACE_HEIGHT + scroll) {
+            return -1;
+        }
+
+        int col = relX / PAGE_X_STEP;
+        int row = relY / PAGE_Y_STEP;
+
+        if (col < 0 || col >= COLUMNS || row < 0) {
+            return -1;
+        }
+
+        int localX = relX % PAGE_X_STEP;
+        int localY = relY % PAGE_Y_STEP;
+
+        if (localX >= PAGE_WIDTH || localY >= PAGE_HEIGHT) {
+            return -1;
+        }
+
+        return row * COLUMNS + col;
+    }
+
+    public static int getMaxScroll(List<SurfaceEntry> entries) {
+        int maxBottom = 0;
+
+        for (SurfaceEntry entry : entries) {
+            int bottom = entry.y() + PAGE_HEIGHT + 6;
+            if (bottom > maxBottom) {
+                maxBottom = bottom;
+            }
+        }
+
+        return Math.max(0, maxBottom - SURFACE_HEIGHT);
+    }
+
     public static Identifier getPageTexture(ItemStack stack) {
         if (stack.isEmpty()) {
             return PAGE_BACKGROUND;
@@ -158,7 +178,7 @@ public final class PageSurfaceRenderer {
             return PageRenderCache.getTexture(new PageRenderKey(PageRenderKey.Kind.LINK_PANEL, null));
         }
 
-        var symbol = Page.getSymbol(stack);
+        Identifier symbol = Page.getSymbol(stack);
         if (symbol != null) {
             return PageRenderCache.getTexture(new PageRenderKey(PageRenderKey.Kind.SYMBOL, symbol));
         }
