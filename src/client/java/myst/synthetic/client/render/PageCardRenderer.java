@@ -1,6 +1,7 @@
 package myst.synthetic.client.render;
 
 import myst.synthetic.client.page.PageRenderCache;
+import myst.synthetic.client.page.PageTextureCompositor;
 import myst.synthetic.page.Page;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -15,20 +16,17 @@ public final class PageCardRenderer {
     public static final int CARD_WIDTH = 30;
     public static final int CARD_HEIGHT = 40;
 
-    // slightly larger + slightly higher than vanilla positioning
     private static final int INNER_X = 0;
     private static final int INNER_Y = 4;
     private static final int INNER_W = 30;
     private static final int INNER_H = 30;
 
-    // compositor now outputs full-resolution logical page space
-    private static final int CONTENT_TEXTURE_SIZE = 64;
+    private static final int CONTENT_TEXTURE_SIZE = PageTextureCompositor.CONTENT_SIZE;
 
     private PageCardRenderer() {
     }
 
     public static void drawPageCard(GuiGraphics guiGraphics, int x, int y, ItemStack stack, boolean placeholder, boolean hovered) {
-
         guiGraphics.blit(
                 RenderPipelines.GUI_TEXTURED,
                 PAGE_CARD_TEXTURE,
@@ -54,8 +52,9 @@ public final class PageCardRenderer {
     }
 
     private static void drawPageContents(GuiGraphics guiGraphics, int x, int y, ItemStack stack) {
-
-        if (stack.isEmpty()) return;
+        if (stack.isEmpty()) {
+            return;
+        }
 
         Identifier texture = getContentTexture(stack);
 
@@ -69,28 +68,22 @@ public final class PageCardRenderer {
                 INNER_W,
                 INNER_H,
                 CONTENT_TEXTURE_SIZE,
+                CONTENT_TEXTURE_SIZE,
+                CONTENT_TEXTURE_SIZE,
                 CONTENT_TEXTURE_SIZE
         );
     }
 
     private static Identifier getContentTexture(ItemStack stack) {
-
         if (Page.isLinkPanel(stack)) {
-            return PageRenderCache.getTexture(
-                    new PageRenderKey(PageRenderKey.Kind.LINK_PANEL_CONTENT, null)
-            );
+            return PageRenderCache.getTexture(new PageRenderKey(PageRenderKey.Kind.LINK_PANEL_CONTENT, null));
         }
 
         Identifier symbol = Page.getSymbol(stack);
-
         if (symbol != null) {
-            return PageRenderCache.getTexture(
-                    new PageRenderKey(PageRenderKey.Kind.SYMBOL_CONTENT, symbol)
-            );
+            return PageRenderCache.getTexture(new PageRenderKey(PageRenderKey.Kind.SYMBOL_CONTENT, symbol));
         }
 
-        return PageRenderCache.getTexture(
-                new PageRenderKey(PageRenderKey.Kind.BLANK_CONTENT, null)
-        );
+        return PageRenderCache.getTexture(new PageRenderKey(PageRenderKey.Kind.BLANK_CONTENT, null));
     }
 }
