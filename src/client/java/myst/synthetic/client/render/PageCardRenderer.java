@@ -15,8 +15,6 @@ public final class PageCardRenderer {
     public static final int CARD_WIDTH = 30;
     public static final int CARD_HEIGHT = 40;
 
-    // Legacy-style inner drawing window:
-    // the old drawPage() used a 29x29 symbol region centered vertically on the 30x40 page.
     private static final int INNER_X = 1;
     private static final int INNER_Y = 5;
     private static final int INNER_W = 29;
@@ -55,7 +53,7 @@ public final class PageCardRenderer {
             return;
         }
 
-        Identifier texture = getComposedTexture(stack);
+        Identifier texture = getContentTexture(stack);
 
         guiGraphics.blit(
                 RenderPipelines.GUI_TEXTURED,
@@ -66,21 +64,21 @@ public final class PageCardRenderer {
                 0,
                 INNER_W,
                 INNER_H,
-                16,
-                16
+                INNER_W,
+                INNER_H
         );
     }
 
-    private static Identifier getComposedTexture(ItemStack stack) {
+    private static Identifier getContentTexture(ItemStack stack) {
         if (Page.isLinkPanel(stack)) {
-            return PageRenderCache.getTexture(new PageRenderKey(PageRenderKey.Kind.LINK_PANEL, null));
+            return PageRenderCache.getTexture(new PageRenderKey(PageRenderKey.Kind.LINK_PANEL_CONTENT, null));
         }
 
         Identifier symbol = Page.getSymbol(stack);
         if (symbol != null) {
-            return PageRenderCache.getTexture(new PageRenderKey(PageRenderKey.Kind.SYMBOL, symbol));
+            return PageRenderCache.getTexture(new PageRenderKey(PageRenderKey.Kind.SYMBOL_CONTENT, symbol));
         }
 
-        return PageRenderCache.getTexture(new PageRenderKey(PageRenderKey.Kind.BLANK, null));
+        return PageRenderCache.getTexture(new PageRenderKey(PageRenderKey.Kind.BLANK_CONTENT, null));
     }
 }

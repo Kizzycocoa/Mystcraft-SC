@@ -11,14 +11,24 @@ public record PageRenderKey(
     public enum Kind {
         BLANK,
         LINK_PANEL,
-        SYMBOL
+        SYMBOL,
+        BLANK_CONTENT,
+        LINK_PANEL_CONTENT,
+        SYMBOL_CONTENT
     }
 
     public String cacheKey() {
         return switch (kind) {
             case BLANK -> "blank";
             case LINK_PANEL -> "link_panel";
-            case SYMBOL -> "symbol_" + (symbolId == null ? "missing" : symbolId.toString().replace(':', '_').replace('/', '_'));
+            case SYMBOL -> "symbol_" + sanitize(symbolId);
+            case BLANK_CONTENT -> "blank_content";
+            case LINK_PANEL_CONTENT -> "link_panel_content";
+            case SYMBOL_CONTENT -> "symbol_content_" + sanitize(symbolId);
         };
+    }
+
+    private static String sanitize(@Nullable Identifier id) {
+        return id == null ? "missing" : id.toString().replace(':', '_').replace('/', '_');
     }
 }

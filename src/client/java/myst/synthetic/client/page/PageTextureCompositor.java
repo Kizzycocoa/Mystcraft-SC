@@ -1,11 +1,9 @@
 package myst.synthetic.client.page;
 
-import myst.synthetic.page.emblem.PageGlyphSlot;
 import myst.synthetic.page.emblem.ResolvedPageEmblem;
 import myst.synthetic.page.emblem.ResolvedPageWord;
 
 import javax.imageio.ImageIO;
-import java.awt.Color;
 import java.awt.Rectangle;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
@@ -23,6 +21,8 @@ public final class PageTextureCompositor {
     private static final int COMPONENT_SIZE = 64;
     private static final int COMPONENTS_PER_ROW = 8;
     private static final float POEM_SCALE = 0.9F;
+
+    private static final int CONTENT_SIZE = 29;
 
     private PageTextureCompositor() {
     }
@@ -72,6 +72,53 @@ public final class PageTextureCompositor {
         }
 
         return downscaleToFinal(page);
+    }
+
+    public static BufferedImage composeBlankContent() {
+        return new BufferedImage(CONTENT_SIZE, CONTENT_SIZE, BufferedImage.TYPE_INT_ARGB);
+    }
+
+    public static BufferedImage composeLinkPanelContent() {
+        BufferedImage image = new BufferedImage(CONTENT_SIZE, CONTENT_SIZE, BufferedImage.TYPE_INT_ARGB);
+
+        int width = 21;
+        int height = 9;
+        int startX = (CONTENT_SIZE - width) / 2;
+        int startY = (CONTENT_SIZE - height) / 2;
+
+        for (int x = startX; x < startX + width; x++) {
+            for (int y = startY; y < startY + height; y++) {
+                image.setRGB(x, y, 0xFF000000);
+            }
+        }
+
+        return image;
+    }
+
+    public static BufferedImage composeSymbolContent(ResolvedPageEmblem emblem) {
+        BufferedImage source = loadImage(SYMBOL_COMPONENTS_PATH);
+        BufferedImage content = new BufferedImage(CONTENT_SIZE, CONTENT_SIZE, BufferedImage.TYPE_INT_ARGB);
+
+        if (emblem == null || emblem.isEmpty()) {
+            stitchWord(content, null, getContentTarget(-1), source);
+            return content;
+        }
+
+        List<ResolvedPageWord> words = emblem.words();
+        if (words.size() > 0) {
+            stitchWord(content, words.get(0), getContentTarget(0), source);
+        }
+        if (words.size() > 1) {
+            stitchWord(content, words.get(1), getContentTarget(1), source);
+        }
+        if (words.size() > 2) {
+            stitchWord(content, words.get(2), getContentTarget(2), source);
+        }
+        if (words.size() > 3) {
+            stitchWord(content, words.get(3), getContentTarget(3), source);
+        }
+
+        return content;
     }
 
     private static void stitchWord(BufferedImage targetImage, ResolvedPageWord word, Rectangle targetRect, BufferedImage source) {
@@ -163,6 +210,16 @@ public final class PageTextureCompositor {
             case 1 -> new Rectangle(88, 48, 64, 64);
             case 0 -> new Rectangle(48, 8, 64, 64);
             default -> new Rectangle(48, 48, 64, 64);
+        };
+    }
+
+    private static Rectangle getContentTarget(int index) {
+        return switch (index) {
+            case 3 -> new Rectangle(0, 10, 11, 11);
+            case 2 -> new Rectangle(9, 18, 11, 11);
+            case 1 -> new Rectangle(18, 10, 11, 11);
+            case 0 -> new Rectangle(9, 0, 11, 11);
+            default -> new Rectangle(9, 9, 11, 11);
         };
     }
 

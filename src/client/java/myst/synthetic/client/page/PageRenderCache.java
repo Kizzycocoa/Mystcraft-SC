@@ -41,6 +41,12 @@ public final class PageRenderCache {
                 ResolvedPageEmblem emblem = key.symbolId() == null ? null : PageEmblemResolver.resolve(key.symbolId());
                 yield PageTextureCompositor.composeSymbolPage(emblem);
             }
+            case BLANK_CONTENT -> PageTextureCompositor.composeBlankContent();
+            case LINK_PANEL_CONTENT -> PageTextureCompositor.composeLinkPanelContent();
+            case SYMBOL_CONTENT -> {
+                ResolvedPageEmblem emblem = key.symbolId() == null ? null : PageEmblemResolver.resolve(key.symbolId());
+                yield PageTextureCompositor.composeSymbolContent(emblem);
+            }
         };
 
         Identifier textureId = Identifier.fromNamespaceAndPath(
@@ -70,28 +76,20 @@ public final class PageRenderCache {
         return nativeImage;
     }
 
-
     public static void prewarmAll() {
         if (prewarmed) {
             return;
         }
         prewarmed = true;
 
-        getAsset(new myst.synthetic.client.render.PageRenderKey(
-                myst.synthetic.client.render.PageRenderKey.Kind.BLANK,
-                null
-        ));
-
-        getAsset(new myst.synthetic.client.render.PageRenderKey(
-                myst.synthetic.client.render.PageRenderKey.Kind.LINK_PANEL,
-                null
-        ));
+        getAsset(new PageRenderKey(PageRenderKey.Kind.BLANK, null));
+        getAsset(new PageRenderKey(PageRenderKey.Kind.LINK_PANEL, null));
+        getAsset(new PageRenderKey(PageRenderKey.Kind.BLANK_CONTENT, null));
+        getAsset(new PageRenderKey(PageRenderKey.Kind.LINK_PANEL_CONTENT, null));
 
         for (myst.synthetic.page.symbol.PageSymbol symbol : myst.synthetic.page.symbol.PageSymbolRegistry.values()) {
-            getAsset(new myst.synthetic.client.render.PageRenderKey(
-                    myst.synthetic.client.render.PageRenderKey.Kind.SYMBOL,
-                    symbol.id()
-            ));
+            getAsset(new PageRenderKey(PageRenderKey.Kind.SYMBOL, symbol.id()));
+            getAsset(new PageRenderKey(PageRenderKey.Kind.SYMBOL_CONTENT, symbol.id()));
         }
     }
 }
