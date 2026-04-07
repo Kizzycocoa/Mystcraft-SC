@@ -91,7 +91,6 @@ public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
     protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
         this.rebuildEntries(mouseX, mouseY);
 
-        // legacy folder draws the lower desk strip only
         guiGraphics.blit(
                 RenderPipelines.GUI_TEXTURED,
                 DESK_TEXTURE,
@@ -105,7 +104,6 @@ public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
                 256
         );
 
-        // legacy top control strip + search box background
         guiGraphics.fill(this.leftPos + 40, this.topPos, this.leftPos + 176, this.topPos + 18, 0xFF000000);
 
         PageSurfaceRenderer.drawSurfaceBackground(guiGraphics, this.leftPos, this.topPos);
@@ -168,10 +166,17 @@ public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
             ItemStack stack = this.menu.getOrderedItem(hoveredSlot);
 
             if (!stack.isEmpty()) {
-                this.minecraft.gameMode.handleInventoryButtonClick(
-                        this.menu.containerId,
-                        FolderMenu.BUTTON_TAKE_ORDERED_START + hoveredSlot
-                );
+                if (this.menu.canPreviewPlace()) {
+                    this.minecraft.gameMode.handleInventoryButtonClick(
+                            this.menu.containerId,
+                            FolderMenu.BUTTON_SWAP_ORDERED_START + hoveredSlot
+                    );
+                } else {
+                    this.minecraft.gameMode.handleInventoryButtonClick(
+                            this.menu.containerId,
+                            FolderMenu.BUTTON_TAKE_ORDERED_START + hoveredSlot
+                    );
+                }
                 return true;
             }
 
@@ -275,8 +280,8 @@ public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
         }
 
         int trackTop = this.topPos + PageSurfaceRenderer.SCROLLBAR_Y;
-        int trackBottom = trackTop + PageSurfaceRenderer.SCROLLBAR_HEIGHT - 16;
-        int clampedMouse = Math.max(trackTop, Math.min(mouseY - 8, trackBottom));
+        int trackBottom = trackTop + PageSurfaceRenderer.SCROLLBAR_HEIGHT - 18;
+        int clampedMouse = Math.max(trackTop, Math.min(mouseY - 9, trackBottom));
 
         int knobTravel = trackBottom - trackTop;
         if (knobTravel <= 0) {

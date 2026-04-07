@@ -12,8 +12,8 @@ import java.util.List;
 
 public final class PageSurfaceRenderer {
 
-    public static final Identifier PAGE_BACKGROUND =
-            Identifier.fromNamespaceAndPath("mystcraft-sc", "textures/item/page_background.png");
+    public static final Identifier PAGE_CARD_TEXTURE =
+            Identifier.fromNamespaceAndPath("mystcraft-sc", "textures/gui/bookui_pagel.png");
 
     public static final int PAGE_WIDTH = 30;
     public static final int PAGE_HEIGHT = 40;
@@ -42,62 +42,6 @@ public final class PageSurfaceRenderer {
         guiGraphics.fill(x, y, x + SURFACE_PAGE_WIDTH, y + SURFACE_HEIGHT, 0xAA000000);
     }
 
-    public static void drawPlaceholderPage(GuiGraphics guiGraphics, int x, int y, boolean hovered) {
-        guiGraphics.blit(
-                RenderPipelines.GUI_TEXTURED,
-                PAGE_BACKGROUND,
-                x,
-                y,
-                0,
-                0,
-                PAGE_WIDTH,
-                PAGE_HEIGHT,
-                16,
-                16
-        );
-
-        guiGraphics.fill(x, y, x + PAGE_WIDTH, y + PAGE_HEIGHT, 0xAA111111);
-
-        if (hovered) {
-            guiGraphics.fill(x, y, x + PAGE_WIDTH, y + PAGE_HEIGHT, 0x40FFFFFF);
-        }
-    }
-
-    public static void drawRealPage(GuiGraphics guiGraphics, int x, int y, ItemStack stack, boolean hovered) {
-        Identifier texture = getPageTexture(stack);
-
-        guiGraphics.blit(
-                RenderPipelines.GUI_TEXTURED,
-                texture,
-                x,
-                y,
-                0,
-                0,
-                PAGE_WIDTH,
-                PAGE_HEIGHT,
-                16,
-                16
-        );
-
-        if (hovered) {
-            guiGraphics.fill(x, y, x + PAGE_WIDTH, y + PAGE_HEIGHT, 0x30FFFFFF);
-        }
-    }
-
-    public static void drawScrollbar(GuiGraphics guiGraphics, int guiLeft, int guiTop, int scroll, int maxScroll) {
-        int x = guiLeft + SCROLLBAR_X;
-        int y = guiTop + SCROLLBAR_Y;
-
-        guiGraphics.fill(x + 7, y, x + 13, y + SCROLLBAR_HEIGHT, 0xFF5A5A5A);
-
-        int knobHeight = 16;
-        int knobTravel = SCROLLBAR_HEIGHT - knobHeight;
-        int knobOffset = maxScroll <= 0 ? 0 : (scroll * knobTravel) / maxScroll;
-
-        guiGraphics.fill(x + 4, y + knobOffset, x + 16, y + knobOffset + knobHeight, 0xFFCFCFCF);
-        guiGraphics.fill(x + 5, y + knobOffset + 1, x + 15, y + knobOffset + knobHeight - 1, 0xFF9A9A9A);
-    }
-
     public static void drawEntries(
             GuiGraphics guiGraphics,
             int guiLeft,
@@ -109,7 +53,10 @@ public final class PageSurfaceRenderer {
     ) {
         int clipLeft = guiLeft + SURFACE_X;
         int clipTop = guiTop + SURFACE_Y;
+        int clipRight = clipLeft + SURFACE_PAGE_WIDTH;
         int clipBottom = clipTop + SURFACE_HEIGHT;
+
+        guiGraphics.enableScissor(clipLeft, clipTop, clipRight, clipBottom);
 
         for (SurfaceEntry entry : entries) {
             int drawX = guiLeft + SURFACE_X + entry.x();
@@ -123,19 +70,33 @@ public final class PageSurfaceRenderer {
                     mouseX >= drawX && mouseX < drawX + PAGE_WIDTH
                             && mouseY >= drawY && mouseY < drawY + PAGE_HEIGHT;
 
-            if (entry.placeholder()) {
-                drawPlaceholderPage(guiGraphics, drawX, drawY, hovered);
-            } else {
-                drawRealPage(guiGraphics, drawX, drawY, entry.stack(), hovered);
-            }
+            drawPageCard(guiGraphics, drawX, drawY, entry.stack(), entry.placeholder(), hovered);
         }
+
+        guiGraphics.disableScissor();
+    }
+
+    public static void drawScrollbar(GuiGraphics guiGraphics, int guiLeft, int guiTop, int scroll, int maxScroll) {
+        int x = guiLeft + SCROLLBAR_X;
+        int y = guiTop + SCROLLBAR_Y;
+
+        guiGraphics.fill(x + 6, y, x + 14, y + SCROLLBAR_HEIGHT, 0xFF9C9C9C);
+        guiGraphics.fill(x + 7, y + 1, x + 13, y + SCROLLBAR_HEIGHT - 1, 0xFF5E5E5E);
+
+        int knobHeight = 18;
+        int knobTravel = SCROLLBAR_HEIGHT - knobHeight;
+        int knobOffset = maxScroll <= 0 ? 0 : (scroll * knobTravel) / maxScroll;
+
+        guiGraphics.fill(x + 2, y + knobOffset, x + 18, y + knobOffset + knobHeight, 0xFFF2F2F2);
+        guiGraphics.fill(x + 3, y + knobOffset + 1, x + 17, y + knobOffset + knobHeight - 1, 0xFFBDBDBD);
+        guiGraphics.fill(x + 4, y + knobOffset + 2, x + 16, y + knobOffset + knobHeight - 2, 0xFF7D7D7D);
     }
 
     public static int getHoveredOrderedSlot(int guiLeft, int guiTop, int mouseX, int mouseY, int scroll) {
         int relX = mouseX - (guiLeft + SURFACE_X);
         int relY = mouseY - (guiTop + SURFACE_Y) + scroll;
 
-        if (relX < 0 || relY < 0 || relX >= SURFACE_PAGE_WIDTH || relY >= SURFACE_HEIGHT + scroll) {
+        if (relX < 0 || relY < 0 || relX >= SURFACE_PAGE_WIDTH) {
             return -1;
         }
 
@@ -169,21 +130,68 @@ public final class PageSurfaceRenderer {
         return Math.max(0, maxBottom - SURFACE_HEIGHT);
     }
 
-    public static Identifier getPageTexture(ItemStack stack) {
+    private static void drawPageCard(GuiGraphics guiGraphics, int x, int y, ItemStack stack, boolean placeholder, boolean hovered) {
+        guiGraphics.blit(
+                RenderPipelines.GUI_TEXTURED,
+                PAGE_CARD_TEXTURE,
+                x,
+                y,
+                156,
+                0,
+                PAGE_WIDTH,
+                PAGE_HEIGHT,
+                256,
+                256
+        );
+
+        if (placeholder) {
+            guiGraphics.fill(x, y, x + PAGE_WIDTH, y + PAGE_HEIGHT, 0xAA111111);
+        } else {
+            drawPageContents(guiGraphics, x, y, stack);
+        }
+
+        if (hovered) {
+            guiGraphics.fill(x, y, x + PAGE_WIDTH, y + PAGE_HEIGHT, 0x30FFFFFF);
+        }
+    }
+
+    private static void drawPageContents(GuiGraphics guiGraphics, int x, int y, ItemStack stack) {
         if (stack.isEmpty()) {
-            return PAGE_BACKGROUND;
+            return;
         }
 
         if (Page.isLinkPanel(stack)) {
-            return PageRenderCache.getTexture(new PageRenderKey(PageRenderKey.Kind.LINK_PANEL, null));
+            guiGraphics.fill(
+                    x + 5,
+                    y + 8,
+                    x + PAGE_WIDTH - 5,
+                    y + 18,
+                    0xFF000000
+            );
+            return;
         }
 
         Identifier symbol = Page.getSymbol(stack);
         if (symbol != null) {
-            return PageRenderCache.getTexture(new PageRenderKey(PageRenderKey.Kind.SYMBOL, symbol));
-        }
+            Identifier texture = PageRenderCache.getTexture(new PageRenderKey(PageRenderKey.Kind.SYMBOL, symbol));
 
-        return PageRenderCache.getTexture(new PageRenderKey(PageRenderKey.Kind.BLANK, null));
+            int symbolSize = 16;
+            int drawX = x + (PAGE_WIDTH - symbolSize) / 2;
+            int drawY = y + 12;
+
+            guiGraphics.blit(
+                    RenderPipelines.GUI_TEXTURED,
+                    texture,
+                    drawX,
+                    drawY,
+                    0,
+                    0,
+                    symbolSize,
+                    symbolSize,
+                    symbolSize,
+                    symbolSize
+            );
+        }
     }
 
     public record SurfaceEntry(

@@ -14,13 +14,11 @@ import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class FolderMenu extends AbstractContainerMenu {
 
     public static final int BUTTON_TAKE_ORDERED_START = 1000;
     public static final int BUTTON_PLACE_ORDERED_START = 2000;
+    public static final int BUTTON_SWAP_ORDERED_START = 3000;
 
     private static final int FOLDER_SLOT_COUNT = FolderDataComponent.MAX_SLOTS;
     private static final int PLAYER_INV_START = FOLDER_SLOT_COUNT;
@@ -148,6 +146,42 @@ public class FolderMenu extends AbstractContainerMenu {
                 this.setCarried(ItemStack.EMPTY);
             } else {
                 this.setCarried(carried);
+            }
+
+            this.saveBackToHost();
+            this.broadcastChanges();
+            return true;
+        }
+
+        if (id >= BUTTON_SWAP_ORDERED_START && id < BUTTON_SWAP_ORDERED_START + FOLDER_SLOT_COUNT) {
+            int index = id - BUTTON_SWAP_ORDERED_START;
+
+            if (index < 0 || index >= FOLDER_SLOT_COUNT) {
+                return false;
+            }
+
+            ItemStack existing = this.folderInventory.getItem(index);
+            if (existing.isEmpty()) {
+                return false;
+            }
+
+            ItemStack carried = this.getCarried();
+            if (!ItemFolder.canStore(carried)) {
+                return false;
+            }
+
+            ItemStack inserted = carried.copyWithCount(1);
+            this.folderInventory.setItem(index, inserted);
+
+            carried.shrink(1);
+
+            if (carried.isEmpty()) {
+                this.setCarried(existing.copy());
+            } else {
+                this.setCarried(carried);
+                if (!player.getInventory().add(existing.copy())) {
+                    player.drop(existing.copy(), false);
+                }
             }
 
             this.saveBackToHost();

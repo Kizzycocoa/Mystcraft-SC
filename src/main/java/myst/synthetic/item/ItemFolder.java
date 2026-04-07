@@ -21,6 +21,9 @@ public class ItemFolder extends Item {
 	private static final int EMPTY_STACK_SIZE = 32;
 	private static final int SINGLE_STACK_SIZE = 1;
 
+	private static final Identifier EMPTY_FOLDER_MODEL =
+			Identifier.fromNamespaceAndPath("mystcraft-sc", "folder");
+
 	private static final Identifier FILLED_FOLDER_MODEL =
 			Identifier.fromNamespaceAndPath("mystcraft-sc", "folder_filled");
 
@@ -84,10 +87,9 @@ public class ItemFolder extends Item {
 				singleStack ? SINGLE_STACK_SIZE : EMPTY_STACK_SIZE
 		);
 
-		if (filled) {
-			stack.set(DataComponents.ITEM_MODEL, FILLED_FOLDER_MODEL);
-		} else {
-			stack.remove(DataComponents.ITEM_MODEL);
-		}
+		stack.set(
+				DataComponents.ITEM_MODEL,
+				filled ? FILLED_FOLDER_MODEL : EMPTY_FOLDER_MODEL
+		);
 	}
 }
