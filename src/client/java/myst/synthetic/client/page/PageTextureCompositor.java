@@ -24,6 +24,12 @@ public final class PageTextureCompositor {
 
     private static final int CONTENT_SIZE = 29;
 
+    // Crop the inner symbol area out of the final 64x64 page render.
+    // This gives us content-only output that matches the same layout as the real page.
+    private static final int FINAL_PAGE_SIZE = 64;
+    private static final int CONTENT_CROP_X = 17;
+    private static final int CONTENT_CROP_Y = 17;
+
     private PageTextureCompositor() {
     }
 
@@ -52,25 +58,7 @@ public final class PageTextureCompositor {
         BufferedImage page = buildWorkingBackground();
         BufferedImage source = loadImage(SYMBOL_COMPONENTS_PATH);
 
-        if (emblem == null || emblem.isEmpty()) {
-            stitchWord(page, null, getPageTarget(-1), source);
-            return downscaleToFinal(page);
-        }
-
-        List<ResolvedPageWord> words = emblem.words();
-        if (words.size() > 0) {
-            stitchWord(page, words.get(0), getPageTarget(0), source);
-        }
-        if (words.size() > 1) {
-            stitchWord(page, words.get(1), getPageTarget(1), source);
-        }
-        if (words.size() > 2) {
-            stitchWord(page, words.get(2), getPageTarget(2), source);
-        }
-        if (words.size() > 3) {
-            stitchWord(page, words.get(3), getPageTarget(3), source);
-        }
-
+        stitchEmblem(page, emblem, source);
         return downscaleToFinal(page);
     }
 
@@ -79,46 +67,52 @@ public final class PageTextureCompositor {
     }
 
     public static BufferedImage composeLinkPanelContent() {
-        BufferedImage image = new BufferedImage(CONTENT_SIZE, CONTENT_SIZE, BufferedImage.TYPE_INT_ARGB);
+        BufferedImage working = createTransparentWorkingCanvas();
 
-        int width = 21;
-        int height = 9;
-        int startX = (CONTENT_SIZE - width) / 2;
-        int startY = (CONTENT_SIZE - height) / 2;
+        int width = 110;
+        int height = 45;
+        int startX = 25;
+        int startY = 30;
 
-        for (int x = startX; x < startX + width; x++) {
-            for (int y = startY; y < startY + height; y++) {
-                image.setRGB(x, y, 0xFF000000);
+        for (int x = startX; x <= startX + width; x++) {
+            for (int y = startY; y <= startY + height; y++) {
+                working.setRGB(x, y, 0xFF000000);
             }
         }
 
-        return image;
+        BufferedImage finalSized = downscaleToFinal(working);
+        return cropContentWindow(finalSized);
     }
 
     public static BufferedImage composeSymbolContent(ResolvedPageEmblem emblem) {
+        BufferedImage working = createTransparentWorkingCanvas();
         BufferedImage source = loadImage(SYMBOL_COMPONENTS_PATH);
-        BufferedImage content = new BufferedImage(CONTENT_SIZE, CONTENT_SIZE, BufferedImage.TYPE_INT_ARGB);
 
+        stitchEmblem(working, emblem, source);
+
+        BufferedImage finalSized = downscaleToFinal(working);
+        return cropContentWindow(finalSized);
+    }
+
+    private static void stitchEmblem(BufferedImage target, ResolvedPageEmblem emblem, BufferedImage source) {
         if (emblem == null || emblem.isEmpty()) {
-            stitchWord(content, null, getContentTarget(-1), source);
-            return content;
+            stitchWord(target, null, getPageTarget(-1), source);
+            return;
         }
 
         List<ResolvedPageWord> words = emblem.words();
         if (words.size() > 0) {
-            stitchWord(content, words.get(0), getContentTarget(0), source);
+            stitchWord(target, words.get(0), getPageTarget(0), source);
         }
         if (words.size() > 1) {
-            stitchWord(content, words.get(1), getContentTarget(1), source);
+            stitchWord(target, words.get(1), getPageTarget(1), source);
         }
         if (words.size() > 2) {
-            stitchWord(content, words.get(2), getContentTarget(2), source);
+            stitchWord(target, words.get(2), getPageTarget(2), source);
         }
         if (words.size() > 3) {
-            stitchWord(content, words.get(3), getContentTarget(3), source);
+            stitchWord(target, words.get(3), getPageTarget(3), source);
         }
-
-        return content;
     }
 
     private static void stitchWord(BufferedImage targetImage, ResolvedPageWord word, Rectangle targetRect, BufferedImage source) {
@@ -213,21 +207,33 @@ public final class PageTextureCompositor {
         };
     }
 
-    private static Rectangle getContentTarget(int index) {
-        return switch (index) {
-            case 3 -> new Rectangle(0, 10, 11, 11);
-            case 2 -> new Rectangle(9, 18, 11, 11);
-            case 1 -> new Rectangle(18, 10, 11, 11);
-            case 0 -> new Rectangle(9, 0, 11, 11);
-            default -> new Rectangle(9, 9, 11, 11);
-        };
-    }
-
     private static BufferedImage buildWorkingBackground() {
         BufferedImage base = loadImage(PAGE_BACKGROUND_PATH);
         BufferedImage scaled = scaleImage(base, 5.0);
         ColorModel colorModel = scaled.getColorModel();
         return new BufferedImage(colorModel, scaled.copyData(null), colorModel.isAlphaPremultiplied(), null);
+    }
+
+    private static BufferedImage createTransparentWorkingCanvas() {
+        BufferedImage reference = buildWorkingBackground();
+        return new BufferedImage(reference.getWidth(), reference.getHeight(), BufferedImage.TYPE_INT_ARGB);
+    }
+
+    private static BufferedImage cropContentWindow(BufferedImage finalSized) {
+        BufferedImage cropped = new BufferedImage(CONTENT_SIZE, CONTENT_SIZE, BufferedImage.TYPE_INT_ARGB);
+
+        for (int x = 0; x < CONTENT_SIZE; x++) {
+            for (int y = 0; y < CONTENT_SIZE; y++) {
+                int srcX = CONTENT_CROP_X + x;
+                int srcY = CONTENT_CROP_Y + y;
+
+                if (srcX >= 0 && srcX < finalSized.getWidth() && srcY >= 0 && srcY < finalSized.getHeight()) {
+                    cropped.setRGB(x, y, finalSized.getRGB(srcX, srcY));
+                }
+            }
+        }
+
+        return cropped;
     }
 
     private static BufferedImage downscaleToFinal(BufferedImage source) {
