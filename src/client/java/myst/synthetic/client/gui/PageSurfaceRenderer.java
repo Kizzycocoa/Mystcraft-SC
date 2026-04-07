@@ -2,11 +2,16 @@ package myst.synthetic.client.gui;
 
 import myst.synthetic.client.render.PageCardRenderer;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
 
 public final class PageSurfaceRenderer {
+
+    private static final Identifier SCROLLBAR_TEXTURE =
+            Identifier.fromNamespaceAndPath("mystcraft-sc", "textures/gui/scrollbar.png");
 
     public static final int PAGE_WIDTH = 30;
     public static final int PAGE_HEIGHT = 40;
@@ -73,29 +78,84 @@ public final class PageSurfaceRenderer {
         int x = guiLeft + SCROLLBAR_X;
         int y = guiTop + SCROLLBAR_Y;
 
-        guiGraphics.fill(x + 6, y, x + 14, y + SCROLLBAR_HEIGHT, 0xFF9C9C9C);
-        guiGraphics.fill(x + 7, y + 1, x + 13, y + SCROLLBAR_HEIGHT - 1, 0xFF5E5E5E);
+        // top cap
+        guiGraphics.blit(
+                RenderPipelines.GUI_TEXTURED,
+                SCROLLBAR_TEXTURE,
+                x,
+                y,
+                0,
+                0,
+                20,
+                4,
+                32,
+                32
+        );
 
-        int knobHeight = 18;
-        int knobTravel = SCROLLBAR_HEIGHT - knobHeight;
-        int knobOffset = maxScroll <= 0 ? 0 : (scroll * knobTravel) / maxScroll;
+        // middle tiled background
+        int middleY = y + 4;
+        int middleHeight = SCROLLBAR_HEIGHT - 8;
+        for (int dy = 0; dy < middleHeight; dy += 22) {
+            int sliceHeight = Math.min(22, middleHeight - dy);
+            guiGraphics.blit(
+                    RenderPipelines.GUI_TEXTURED,
+                    SCROLLBAR_TEXTURE,
+                    x,
+                    middleY + dy,
+                    0,
+                    4,
+                    20,
+                    sliceHeight,
+                    32,
+                    32
+            );
+        }
 
-        guiGraphics.fill(x + 2, y + knobOffset, x + 18, y + knobOffset + knobHeight, 0xFFF2F2F2);
-        guiGraphics.fill(x + 3, y + knobOffset + 1, x + 17, y + knobOffset + knobHeight - 1, 0xFFBDBDBD);
-        guiGraphics.fill(x + 4, y + knobOffset + 2, x + 16, y + knobOffset + knobHeight - 2, 0xFF7D7D7D);
+        // bottom cap
+        guiGraphics.blit(
+                RenderPipelines.GUI_TEXTURED,
+                SCROLLBAR_TEXTURE,
+                x,
+                y + SCROLLBAR_HEIGHT - 4,
+                0,
+                26,
+                20,
+                4,
+                32,
+                32
+        );
+
+        int sliderTop = y + 4;
+        int sliderBottom = y + SCROLLBAR_HEIGHT - 15;
+        float sliderPos = maxScroll <= 0 ? 0.0F : scroll / (float) maxScroll;
+        if (sliderPos < 0.0F) sliderPos = 0.0F;
+        if (sliderPos > 1.0F) sliderPos = 1.0F;
+
+        int knobY = sliderTop + Math.round((sliderBottom - sliderTop) * sliderPos);
+
+        guiGraphics.blit(
+                RenderPipelines.GUI_TEXTURED,
+                SCROLLBAR_TEXTURE,
+                x + 4,
+                knobY,
+                20,
+                0,
+                12,
+                15,
+                32,
+                32
+        );
     }
 
     public static int getHoveredOrderedSlot(int guiLeft, int guiTop, int mouseX, int mouseY, int scroll) {
-        int screenX = mouseX - (guiLeft + SURFACE_X);
-        int screenY = mouseY - (guiTop + SURFACE_Y);
+        int relX = mouseX - (guiLeft + SURFACE_X);
+        int relY = mouseY - (guiTop + SURFACE_Y);
 
-        // Confine interaction strictly to the visible page window.
-        if (screenX < 0 || screenY < 0 || screenX >= SURFACE_PAGE_WIDTH || screenY >= SURFACE_HEIGHT) {
+        if (relX < 0 || relY < 0 || relX >= SURFACE_PAGE_WIDTH || relY >= SURFACE_HEIGHT) {
             return -1;
         }
 
-        int relX = screenX;
-        int relY = screenY + scroll;
+        relY += scroll;
 
         int col = relX / PAGE_X_STEP;
         int row = relY / PAGE_Y_STEP;
@@ -134,5 +194,14 @@ public final class PageSurfaceRenderer {
             int x,
             int y
     ) {
+    }
+    public static boolean isOverPageArea(int guiLeft, int guiTop, int mouseX, int mouseY) {
+        int relX = mouseX - (guiLeft + SURFACE_X);
+        int relY = mouseY - (guiTop + SURFACE_Y);
+
+        return relX >= 0
+                && relY >= 0
+                && relX < SURFACE_PAGE_WIDTH
+                && relY < SURFACE_HEIGHT;
     }
 }

@@ -52,14 +52,12 @@ public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
     @Override
     protected void init() {
         super.init();
-
         this.sortButton = this.addRenderableWidget(
                 Button.builder(Component.empty(), button -> {})
                         .pos(this.leftPos, this.topPos)
                         .size(18, 18)
                         .build()
         );
-        this.sortButton.active = false;
 
         this.allButton = this.addRenderableWidget(
                 Button.builder(Component.empty(), button -> {})
@@ -67,7 +65,6 @@ public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
                         .size(18, 18)
                         .build()
         );
-        this.allButton.active = false;
 
         this.searchBox = new EditBox(
                 this.font,
@@ -80,6 +77,18 @@ public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
         this.searchBox.setBordered(false);
         this.searchBox.setEditable(false);
         this.addRenderableWidget(this.searchBox);
+    }
+
+    private void drawLegacyButtonText(GuiGraphics guiGraphics, Button button, String text) {
+        int availableWidth = button.getWidth() - 4;
+        int textWidth = this.font.width(text);
+        float scale = textWidth > availableWidth ? (float) availableWidth / (float) textWidth : 1.0F;
+
+        guiGraphics.pose().pushMatrix();
+        guiGraphics.pose().translate(button.getX() + 2.0F, button.getY() + 2.0F);
+        guiGraphics.pose().scale(scale, scale);
+        guiGraphics.drawString(this.font, text, 0, 0, 0x000000, false);
+        guiGraphics.pose().popMatrix();
     }
 
     @Override
@@ -124,8 +133,6 @@ public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
                 this.scroll,
                 this.getMaxScroll()
         );
-
-        this.drawLegacySmallButtonLabels(guiGraphics);
     }
 
     @Override
@@ -163,34 +170,47 @@ public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
             return true;
         }
 
-        int hoveredSlot = PageSurfaceRenderer.getHoveredOrderedSlot(this.leftPos, this.topPos, mouseX, mouseY, this.scroll);
-        if (hoveredSlot >= 0 && this.minecraft != null && this.minecraft.gameMode != null) {
-            ItemStack stack = this.menu.getOrderedItem(hoveredSlot);
+        if (PageSurfaceRenderer.isOverPageArea(this.leftPos, this.topPos, mouseX, mouseY)) {
+            int hoveredSlot = PageSurfaceRenderer.getHoveredOrderedSlot(
+                    this.leftPos,
+                    this.topPos,
+                    mouseX,
+                    mouseY,
+                    this.scroll
+            );
 
-            if (!stack.isEmpty()) {
+            if (hoveredSlot >= 0 && this.minecraft != null && this.minecraft.gameMode != null) {
+                ItemStack stack = this.menu.getOrderedItem(hoveredSlot);
+
+                if (!stack.isEmpty()) {
+                    if (this.menu.canPreviewPlace()) {
+                        this.minecraft.gameMode.handleInventoryButtonClick(
+                                this.menu.containerId,
+                                FolderMenu.BUTTON_SWAP_ORDERED_START + hoveredSlot
+                        );
+                    } else {
+                        this.minecraft.gameMode.handleInventoryButtonClick(
+                                this.menu.containerId,
+                                FolderMenu.BUTTON_TAKE_ORDERED_START + hoveredSlot
+                        );
+                    }
+                    return true;
+                }
+
                 if (this.menu.canPreviewPlace()) {
                     this.minecraft.gameMode.handleInventoryButtonClick(
                             this.menu.containerId,
-                            FolderMenu.BUTTON_SWAP_ORDERED_START + hoveredSlot
+                            FolderMenu.BUTTON_PLACE_ORDERED_START + hoveredSlot
                     );
-                } else {
-                    this.minecraft.gameMode.handleInventoryButtonClick(
-                            this.menu.containerId,
-                            FolderMenu.BUTTON_TAKE_ORDERED_START + hoveredSlot
-                    );
+                    return true;
                 }
-                return true;
             }
 
-            if (this.menu.canPreviewPlace()) {
-                this.minecraft.gameMode.handleInventoryButtonClick(
-                        this.menu.containerId,
-                        FolderMenu.BUTTON_PLACE_ORDERED_START + hoveredSlot
-                );
-                return true;
-            }
+            // Consume blank-surface clicks so they do not fall through as outside-slot clicks.
+            return true;
         }
 
+        // Player inventory / hotbar clicks must go through vanilla slot handling.
         return super.mouseClicked(event, doubleClick);
     }
 
@@ -214,7 +234,8 @@ public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         this.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
         super.render(guiGraphics, mouseX, mouseY, partialTick);
-
+        this.drawLegacyButtonText(guiGraphics, this.sortButton, "AZ");
+        this.drawLegacyButtonText(guiGraphics, this.allButton, "ALL");
         if (this.searchBox != null) {
             this.searchBox.render(guiGraphics, mouseX, mouseY, partialTick);
         }
@@ -229,8 +250,15 @@ public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
         int lastIndex = this.menu.findLastMeaningfulIndex();
 
         int hoveredPreviewSlot = -1;
-        if (this.menu.canPreviewPlace()) {
-            hoveredPreviewSlot = PageSurfaceRenderer.getHoveredOrderedSlot(this.leftPos, this.topPos, mouseX, mouseY, this.scroll);
+        if (this.menu.canPreviewPlace()
+                && PageSurfaceRenderer.isOverPageArea(this.leftPos, this.topPos, mouseX, mouseY)) {
+            hoveredPreviewSlot = PageSurfaceRenderer.getHoveredOrderedSlot(
+                    this.leftPos,
+                    this.topPos,
+                    mouseX,
+                    mouseY,
+                    this.scroll
+            );
         }
 
         if (hoveredPreviewSlot >= 0) {
@@ -261,21 +289,6 @@ public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
 
         this.entries = built;
         this.scroll = Math.max(0, Math.min(this.scroll, this.getMaxScroll()));
-    }
-
-    private void drawLegacySmallButtonLabels(GuiGraphics guiGraphics) {
-        guiGraphics.pose().pushMatrix();
-        guiGraphics.pose().scale(0.5F, 0.5F);
-
-        int azX = (this.leftPos * 2) + 10;
-        int azY = (this.topPos * 2) + 8;
-        guiGraphics.drawString(this.font, "AZ", azX, azY, 0xA0A0A0, false);
-
-        int allX = ((this.leftPos + 18) * 2) + 6;
-        int allY = (this.topPos * 2) + 8;
-        guiGraphics.drawString(this.font, "ALL", allX, allY, 0xA0A0A0, false);
-
-        guiGraphics.pose().popMatrix();
     }
 
     private int getMaxScroll() {
@@ -309,6 +322,9 @@ public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
     }
 
     private void renderPageTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        if (!PageSurfaceRenderer.isOverPageArea(this.leftPos, this.topPos, mouseX, mouseY)) {
+            return;
+        }
         int hoveredSlot = PageSurfaceRenderer.getHoveredOrderedSlot(this.leftPos, this.topPos, mouseX, mouseY, this.scroll);
         if (hoveredSlot < 0 || this.minecraft == null || this.minecraft.player == null) {
             return;
