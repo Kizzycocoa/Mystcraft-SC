@@ -30,6 +30,9 @@ public final class PageTextureCompositor {
     public static final int CONTENT_RESOLUTION_SCALE = 4;
     public static final int CONTENT_SIZE = FINAL_PAGE_SIZE * CONTENT_RESOLUTION_SCALE;
 
+    // 1px transparent border on every side so resampling is symmetric
+    private static final int PADDED_COMPONENT_SIZE = COMPONENT_SIZE + 2;
+
     private PageTextureCompositor() {
     }
 
@@ -147,21 +150,31 @@ public final class PageTextureCompositor {
             int iconX = (component % COMPONENTS_PER_ROW) * COMPONENT_SIZE;
             int iconY = (component / COMPONENTS_PER_ROW) * COMPONENT_SIZE;
 
+            BufferedImage paddedGlyph = extractPaddedGlyph(source, iconX, iconY);
+
             for (int x = 0; x < scaledSize; x++) {
-                int srcX = (x * COMPONENT_SIZE) / scaledSize;
+                int srcX = (x * PADDED_COMPONENT_SIZE) / scaledSize;
+                if (srcX >= PADDED_COMPONENT_SIZE) {
+                    srcX = PADDED_COMPONENT_SIZE - 1;
+                }
+
                 int tx = targetRect.x + inset + x;
                 if (tx < 0 || tx >= targetImage.getWidth()) {
                     continue;
                 }
 
                 for (int y = 0; y < scaledSize; y++) {
-                    int srcY = (y * COMPONENT_SIZE) / scaledSize;
+                    int srcY = (y * PADDED_COMPONENT_SIZE) / scaledSize;
+                    if (srcY >= PADDED_COMPONENT_SIZE) {
+                        srcY = PADDED_COMPONENT_SIZE - 1;
+                    }
+
                     int ty = targetRect.y + inset + y;
                     if (ty < 0 || ty >= targetImage.getHeight()) {
                         continue;
                     }
 
-                    int argb = source.getRGB(iconX + srcX, iconY + srcY);
+                    int argb = paddedGlyph.getRGB(srcX, srcY);
                     int alpha = (argb >>> 24) & 0xFF;
                     if (alpha == 0) {
                         continue;
@@ -173,7 +186,18 @@ public final class PageTextureCompositor {
                 }
             }
         }
+    }
 
+    private static BufferedImage extractPaddedGlyph(BufferedImage atlas, int iconX, int iconY) {
+        BufferedImage padded = new BufferedImage(PADDED_COMPONENT_SIZE, PADDED_COMPONENT_SIZE, BufferedImage.TYPE_INT_ARGB);
+
+        for (int x = 0; x < COMPONENT_SIZE; x++) {
+            for (int y = 0; y < COMPONENT_SIZE; y++) {
+                padded.setRGB(x + 1, y + 1, atlas.getRGB(iconX + x, iconY + y));
+            }
+        }
+
+        return padded;
     }
 
     private static int blend(int targetInitialColor, int currentColor, int targetColor) {
