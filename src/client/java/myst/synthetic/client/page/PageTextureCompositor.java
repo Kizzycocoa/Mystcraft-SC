@@ -27,7 +27,7 @@ public final class PageTextureCompositor {
     // 1 = 64x64 content
     // 2 = 128x128 content
     // 4 = 256x256 content
-    public static final int CONTENT_RESOLUTION_SCALE = 2;
+    public static final int CONTENT_RESOLUTION_SCALE = 4;
     public static final int CONTENT_SIZE = FINAL_PAGE_SIZE * CONTENT_RESOLUTION_SCALE;
 
     private PageTextureCompositor() {
