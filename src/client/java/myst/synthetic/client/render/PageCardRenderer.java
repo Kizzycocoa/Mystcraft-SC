@@ -15,19 +15,20 @@ public final class PageCardRenderer {
     public static final int CARD_WIDTH = 30;
     public static final int CARD_HEIGHT = 40;
 
-    // Slightly larger and slightly higher than before.
+    // slightly larger + slightly higher than vanilla positioning
     private static final int INNER_X = 0;
     private static final int INNER_Y = 4;
     private static final int INNER_W = 30;
     private static final int INNER_H = 30;
 
-    // Matches the new 2x compositor content output.
-    private static final int CONTENT_TEXTURE_SIZE = 58;
+    // compositor now outputs full-resolution logical page space
+    private static final int CONTENT_TEXTURE_SIZE = 64;
 
     private PageCardRenderer() {
     }
 
     public static void drawPageCard(GuiGraphics guiGraphics, int x, int y, ItemStack stack, boolean placeholder, boolean hovered) {
+
         guiGraphics.blit(
                 RenderPipelines.GUI_TEXTURED,
                 PAGE_CARD_TEXTURE,
@@ -53,9 +54,8 @@ public final class PageCardRenderer {
     }
 
     private static void drawPageContents(GuiGraphics guiGraphics, int x, int y, ItemStack stack) {
-        if (stack.isEmpty()) {
-            return;
-        }
+
+        if (stack.isEmpty()) return;
 
         Identifier texture = getContentTexture(stack);
 
@@ -74,15 +74,23 @@ public final class PageCardRenderer {
     }
 
     private static Identifier getContentTexture(ItemStack stack) {
+
         if (Page.isLinkPanel(stack)) {
-            return PageRenderCache.getTexture(new PageRenderKey(PageRenderKey.Kind.LINK_PANEL_CONTENT, null));
+            return PageRenderCache.getTexture(
+                    new PageRenderKey(PageRenderKey.Kind.LINK_PANEL_CONTENT, null)
+            );
         }
 
         Identifier symbol = Page.getSymbol(stack);
+
         if (symbol != null) {
-            return PageRenderCache.getTexture(new PageRenderKey(PageRenderKey.Kind.SYMBOL_CONTENT, symbol));
+            return PageRenderCache.getTexture(
+                    new PageRenderKey(PageRenderKey.Kind.SYMBOL_CONTENT, symbol)
+            );
         }
 
-        return PageRenderCache.getTexture(new PageRenderKey(PageRenderKey.Kind.BLANK_CONTENT, null));
+        return PageRenderCache.getTexture(
+                new PageRenderKey(PageRenderKey.Kind.BLANK_CONTENT, null)
+        );
     }
 }
