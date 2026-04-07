@@ -58,6 +58,7 @@ public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
                         .size(18, 18)
                         .build()
         );
+        this.sortButton.active = false;
 
         this.allButton = this.addRenderableWidget(
                 Button.builder(Component.empty(), button -> {})
@@ -65,6 +66,7 @@ public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
                         .size(18, 18)
                         .build()
         );
+        this.allButton.active = false;
 
         this.searchBox = new EditBox(
                 this.font,
@@ -79,15 +81,19 @@ public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
         this.addRenderableWidget(this.searchBox);
     }
 
-    private void drawLegacyButtonText(GuiGraphics guiGraphics, Button button, String text) {
-        int availableWidth = button.getWidth() - 4;
+    private void drawLegacyButtonText(GuiGraphics guiGraphics, int x, int y, String text) {
+        int availableWidth = 14;
         int textWidth = this.font.width(text);
         float scale = textWidth > availableWidth ? (float) availableWidth / (float) textWidth : 1.0F;
 
+        float scaledWidth = textWidth * scale;
+        float drawX = x + ((18.0F - scaledWidth) / 2.0F);
+        float drawY = y + ((18.0F - 8.0F * scale) / 2.0F);
+
         guiGraphics.pose().pushMatrix();
-        guiGraphics.pose().translate(button.getX() + 2.0F, button.getY() + 2.0F);
+        guiGraphics.pose().translate(drawX, drawY);
         guiGraphics.pose().scale(scale, scale);
-        guiGraphics.drawString(this.font, text, 0, 0, 0x000000, false);
+        guiGraphics.drawString(this.font, text, 0, 0, 0x404040, false);
         guiGraphics.pose().popMatrix();
     }
 
@@ -138,6 +144,9 @@ public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
     @Override
     protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         guiGraphics.drawString(this.font, this.playerInventoryTitle, this.inventoryLabelX, this.inventoryLabelY, 0x404040, false);
+
+        this.drawLegacyButtonText(guiGraphics, 0, 0, "AZ");
+        this.drawLegacyButtonText(guiGraphics, 18, 0, "ALL");
     }
 
     @Override
@@ -234,8 +243,6 @@ public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         this.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
         super.render(guiGraphics, mouseX, mouseY, partialTick);
-        this.drawLegacyButtonText(guiGraphics, this.sortButton, "AZ");
-        this.drawLegacyButtonText(guiGraphics, this.allButton, "ALL");
         if (this.searchBox != null) {
             this.searchBox.render(guiGraphics, mouseX, mouseY, partialTick);
         }
