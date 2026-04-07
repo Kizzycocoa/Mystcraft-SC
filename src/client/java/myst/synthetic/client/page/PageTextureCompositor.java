@@ -22,8 +22,10 @@ public final class PageTextureCompositor {
     private static final int COMPONENTS_PER_ROW = 8;
     private static final float POEM_SCALE = 0.9F;
 
-    private static final int CONTENT_SIZE = 29;
     private static final int FINAL_PAGE_SIZE = 64;
+
+    // Render the content face at 2x the old size so the page card can downsample it.
+    private static final int CONTENT_SIZE = 58;
 
     private PageTextureCompositor() {
     }

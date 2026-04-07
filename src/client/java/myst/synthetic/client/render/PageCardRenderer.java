@@ -15,10 +15,14 @@ public final class PageCardRenderer {
     public static final int CARD_WIDTH = 30;
     public static final int CARD_HEIGHT = 40;
 
-    private static final int INNER_X = 1;
-    private static final int INNER_Y = 5;
-    private static final int INNER_W = 29;
-    private static final int INNER_H = 29;
+    // Slightly larger and slightly higher than before.
+    private static final int INNER_X = 0;
+    private static final int INNER_Y = 4;
+    private static final int INNER_W = 30;
+    private static final int INNER_H = 30;
+
+    // Matches the new 2x compositor content output.
+    private static final int CONTENT_TEXTURE_SIZE = 58;
 
     private PageCardRenderer() {
     }
@@ -64,8 +68,8 @@ public final class PageCardRenderer {
                 0,
                 INNER_W,
                 INNER_H,
-                INNER_W,
-                INNER_H
+                CONTENT_TEXTURE_SIZE,
+                CONTENT_TEXTURE_SIZE
         );
     }
 
