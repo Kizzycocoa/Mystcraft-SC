@@ -144,9 +144,6 @@ public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
     @Override
     protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         guiGraphics.drawString(this.font, this.playerInventoryTitle, this.inventoryLabelX, this.inventoryLabelY, 0x404040, false);
-
-        this.drawLegacyButtonText(guiGraphics, 0, 0, "AZ");
-        this.drawLegacyButtonText(guiGraphics, 18, 0, "ALL");
     }
 
     @Override
@@ -243,6 +240,10 @@ public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         this.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
         super.render(guiGraphics, mouseX, mouseY, partialTick);
+
+        this.drawLegacyButtonText(guiGraphics, this.leftPos, this.topPos, "AZ");
+        this.drawLegacyButtonText(guiGraphics, this.leftPos + 18, this.topPos, "ALL");
+
         if (this.searchBox != null) {
             this.searchBox.render(guiGraphics, mouseX, mouseY, partialTick);
         }
