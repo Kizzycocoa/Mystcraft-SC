@@ -20,6 +20,7 @@ import java.util.List;
 public class FolderMenu extends AbstractContainerMenu {
 
     public static final int BUTTON_TAKE_ORDERED_START = 1000;
+    public static final int BUTTON_PLACE_ORDERED_START = 2000;
 
     private static final int FOLDER_SLOT_COUNT = FolderDataComponent.MAX_SLOTS;
     private static final int PLAYER_INV_START = FOLDER_SLOT_COUNT;
@@ -123,6 +124,37 @@ public class FolderMenu extends AbstractContainerMenu {
             return true;
         }
 
+        if (id >= BUTTON_PLACE_ORDERED_START && id < BUTTON_PLACE_ORDERED_START + FOLDER_SLOT_COUNT) {
+            int index = id - BUTTON_PLACE_ORDERED_START;
+
+            if (index < 0 || index >= FOLDER_SLOT_COUNT) {
+                return false;
+            }
+
+            if (!this.folderInventory.getItem(index).isEmpty()) {
+                return false;
+            }
+
+            ItemStack carried = this.getCarried();
+            if (!ItemFolder.canStore(carried)) {
+                return false;
+            }
+
+            ItemStack toInsert = carried.copyWithCount(1);
+            this.folderInventory.setItem(index, toInsert);
+            carried.shrink(1);
+
+            if (carried.isEmpty()) {
+                this.setCarried(ItemStack.EMPTY);
+            } else {
+                this.setCarried(carried);
+            }
+
+            this.saveBackToHost();
+            this.broadcastChanges();
+            return true;
+        }
+
         return false;
     }
 
@@ -190,6 +222,10 @@ public class FolderMenu extends AbstractContainerMenu {
             }
         }
 
+        if (!this.getCarried().isEmpty()) {
+            largest = Math.max(largest, this.findNextPreviewIndex());
+        }
+
         if (largest < 0) {
             return pages;
         }
@@ -199,6 +235,36 @@ public class FolderMenu extends AbstractContainerMenu {
         }
 
         return pages;
+    }
+
+    public boolean canPreviewPlace() {
+        return ItemFolder.canStore(this.getCarried());
+    }
+
+    public ItemStack getOrderedItem(int index) {
+        if (index < 0 || index >= FOLDER_SLOT_COUNT) {
+            return ItemStack.EMPTY;
+        }
+        return this.folderInventory.getItem(index).copy();
+    }
+
+    public int findLastMeaningfulIndex() {
+        int largest = -1;
+        for (int i = 0; i < FOLDER_SLOT_COUNT; i++) {
+            if (!this.folderInventory.getItem(i).isEmpty()) {
+                largest = i;
+            }
+        }
+        return largest;
+    }
+
+    public int findNextPreviewIndex() {
+        for (int i = 0; i < FOLDER_SLOT_COUNT; i++) {
+            if (this.folderInventory.getItem(i).isEmpty()) {
+                return i;
+            }
+        }
+        return FOLDER_SLOT_COUNT - 1;
     }
 
     private ItemStack getHostStack() {
