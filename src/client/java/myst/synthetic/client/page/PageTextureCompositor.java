@@ -237,7 +237,7 @@ public final class PageTextureCompositor {
         java.awt.geom.AffineTransform transform = java.awt.geom.AffineTransform.getScaleInstance(scale, scale);
         AffineTransformOp op = new AffineTransformOp(
                 transform,
-                scale > 1.0 ? AffineTransformOp.TYPE_NEAREST_NEIGHBOR : AffineTransformOp.TYPE_BILINEAR
+                AffineTransformOp.TYPE_BILINEAR
         );
 
         op.filter(source, output);
