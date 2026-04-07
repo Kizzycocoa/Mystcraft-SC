@@ -177,21 +177,36 @@ public final class PageTextureCompositor {
     }
 
     private static int blend(int targetInitialColor, int currentColor, int targetColor) {
-        float srcAlpha = ((currentColor >>> 24) & 0xFF) / 255.0F;
+        float srcA = ((currentColor >>> 24) & 0xFF) / 255.0F;
+        if (srcA <= 0.0F) {
+            return targetColor;
+        }
 
-        float srcRed = ((targetInitialColor >>> 16) & 0xFF) / 255.0F;
-        float srcGreen = ((targetInitialColor >>> 8) & 0xFF) / 255.0F;
-        float srcBlue = (targetInitialColor & 0xFF) / 255.0F;
+        float srcR = ((targetInitialColor >>> 16) & 0xFF) / 255.0F;
+        float srcG = ((targetInitialColor >>> 8) & 0xFF) / 255.0F;
+        float srcB = (targetInitialColor & 0xFF) / 255.0F;
 
-        float dstRed = ((targetColor >>> 16) & 0xFF) / 255.0F;
-        float dstGreen = ((targetColor >>> 8) & 0xFF) / 255.0F;
-        float dstBlue = (targetColor & 0xFF) / 255.0F;
+        float dstA = ((targetColor >>> 24) & 0xFF) / 255.0F;
+        float dstR = ((targetColor >>> 16) & 0xFF) / 255.0F;
+        float dstG = ((targetColor >>> 8) & 0xFF) / 255.0F;
+        float dstB = (targetColor & 0xFF) / 255.0F;
 
-        int outRed = clamp255((srcRed * srcAlpha + dstRed * (1.0F - srcAlpha)) * 255.0F);
-        int outGreen = clamp255((srcGreen * srcAlpha + dstGreen * (1.0F - srcAlpha)) * 255.0F);
-        int outBlue = clamp255((srcBlue * srcAlpha + dstBlue * (1.0F - srcAlpha)) * 255.0F);
+        float outA = srcA + dstA * (1.0F - srcA);
 
-        return (255 << 24) | (outRed << 16) | (outGreen << 8) | outBlue;
+        if (outA <= 0.0F) {
+            return 0;
+        }
+
+        float outR = (srcR * srcA + dstR * dstA * (1.0F - srcA)) / outA;
+        float outG = (srcG * srcA + dstG * dstA * (1.0F - srcA)) / outA;
+        float outB = (srcB * srcA + dstB * dstA * (1.0F - srcA)) / outA;
+
+        int a = clamp255(outA * 255.0F);
+        int r = clamp255(outR * 255.0F);
+        int g = clamp255(outG * 255.0F);
+        int b = clamp255(outB * 255.0F);
+
+        return (a << 24) | (r << 16) | (g << 8) | b;
     }
 
     private static int clamp255(float value) {
