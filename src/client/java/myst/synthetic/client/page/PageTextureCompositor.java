@@ -23,12 +23,7 @@ public final class PageTextureCompositor {
     private static final float POEM_SCALE = 0.9F;
 
     private static final int CONTENT_SIZE = 29;
-
-    // Crop the inner symbol area out of the final 64x64 page render.
-    // This gives us content-only output that matches the same layout as the real page.
     private static final int FINAL_PAGE_SIZE = 64;
-    private static final int CONTENT_CROP_X = 17;
-    private static final int CONTENT_CROP_Y = 17;
 
     private PageTextureCompositor() {
     }
@@ -81,7 +76,7 @@ public final class PageTextureCompositor {
         }
 
         BufferedImage finalSized = downscaleToFinal(working);
-        return cropContentWindow(finalSized);
+        return scaleFinalPageToContent(finalSized);
     }
 
     public static BufferedImage composeSymbolContent(ResolvedPageEmblem emblem) {
@@ -91,7 +86,7 @@ public final class PageTextureCompositor {
         stitchEmblem(working, emblem, source);
 
         BufferedImage finalSized = downscaleToFinal(working);
-        return cropContentWindow(finalSized);
+        return scaleFinalPageToContent(finalSized);
     }
 
     private static void stitchEmblem(BufferedImage target, ResolvedPageEmblem emblem, BufferedImage source) {
@@ -219,21 +214,9 @@ public final class PageTextureCompositor {
         return new BufferedImage(reference.getWidth(), reference.getHeight(), BufferedImage.TYPE_INT_ARGB);
     }
 
-    private static BufferedImage cropContentWindow(BufferedImage finalSized) {
-        BufferedImage cropped = new BufferedImage(CONTENT_SIZE, CONTENT_SIZE, BufferedImage.TYPE_INT_ARGB);
-
-        for (int x = 0; x < CONTENT_SIZE; x++) {
-            for (int y = 0; y < CONTENT_SIZE; y++) {
-                int srcX = CONTENT_CROP_X + x;
-                int srcY = CONTENT_CROP_Y + y;
-
-                if (srcX >= 0 && srcX < finalSized.getWidth() && srcY >= 0 && srcY < finalSized.getHeight()) {
-                    cropped.setRGB(x, y, finalSized.getRGB(srcX, srcY));
-                }
-            }
-        }
-
-        return cropped;
+    private static BufferedImage scaleFinalPageToContent(BufferedImage finalSized) {
+        double scale = (double) CONTENT_SIZE / (double) FINAL_PAGE_SIZE;
+        return scaleImage(finalSized, scale);
     }
 
     private static BufferedImage downscaleToFinal(BufferedImage source) {
