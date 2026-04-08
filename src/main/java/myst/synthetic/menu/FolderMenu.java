@@ -20,7 +20,7 @@ public class FolderMenu extends AbstractContainerMenu {
     public static final int BUTTON_PLACE_ORDERED_START = 2000;
     public static final int BUTTON_SWAP_ORDERED_START = 3000;
 
-    private static final int FOLDER_SLOT_COUNT = FolderDataComponent.MAX_SLOTS;
+    public static final int FOLDER_SLOT_COUNT = FolderDataComponent.MAX_SLOTS;
     private static final int PLAYER_INV_START = FOLDER_SLOT_COUNT;
     private static final int PLAYER_INV_END = PLAYER_INV_START + 27;
     private static final int HOTBAR_START = PLAYER_INV_END;

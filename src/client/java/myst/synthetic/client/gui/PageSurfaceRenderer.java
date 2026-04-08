@@ -1,6 +1,7 @@
 package myst.synthetic.client.gui;
 
 import myst.synthetic.client.render.PageCardRenderer;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
@@ -42,6 +43,7 @@ public final class PageSurfaceRenderer {
 
     public static void drawEntries(
             GuiGraphics guiGraphics,
+            Font font,
             int guiLeft,
             int guiTop,
             int mouseX,
@@ -69,6 +71,17 @@ public final class PageSurfaceRenderer {
                             && mouseY >= drawY && mouseY < drawY + PAGE_HEIGHT;
 
             PageCardRenderer.drawPageCard(guiGraphics, drawX, drawY, entry.stack(), entry.placeholder(), hovered);
+
+            if (entry.count() > 1) {
+                guiGraphics.drawString(
+                        font,
+                        Integer.toString(entry.count()),
+                        drawX + 1,
+                        drawY + 31,
+                        0xFFFFFFFF,
+                        false
+                );
+            }
         }
 
         guiGraphics.disableScissor();
@@ -78,7 +91,6 @@ public final class PageSurfaceRenderer {
         int x = guiLeft + SCROLLBAR_X;
         int y = guiTop + SCROLLBAR_Y;
 
-        // top cap
         guiGraphics.blit(
                 RenderPipelines.GUI_TEXTURED,
                 SCROLLBAR_TEXTURE,
@@ -92,7 +104,6 @@ public final class PageSurfaceRenderer {
                 32
         );
 
-        // middle tiled background
         int middleY = y + 4;
         int middleHeight = SCROLLBAR_HEIGHT - 8;
         for (int dy = 0; dy < middleHeight; dy += 22) {
@@ -111,7 +122,6 @@ public final class PageSurfaceRenderer {
             );
         }
 
-        // bottom cap
         guiGraphics.blit(
                 RenderPipelines.GUI_TEXTURED,
                 SCROLLBAR_TEXTURE,
@@ -174,6 +184,27 @@ public final class PageSurfaceRenderer {
         return row * COLUMNS + col;
     }
 
+    public static SurfaceEntry getHoveredEntry(
+            int guiLeft,
+            int guiTop,
+            int mouseX,
+            int mouseY,
+            int scroll,
+            List<SurfaceEntry> entries
+    ) {
+        for (SurfaceEntry entry : entries) {
+            int drawX = guiLeft + SURFACE_X + entry.x();
+            int drawY = guiTop + SURFACE_Y + entry.y() - scroll;
+
+            if (mouseX >= drawX && mouseX < drawX + PAGE_WIDTH
+                    && mouseY >= drawY && mouseY < drawY + PAGE_HEIGHT) {
+                return entry;
+            }
+        }
+
+        return null;
+    }
+
     public static int getMaxScroll(List<SurfaceEntry> entries) {
         int maxBottom = 0;
 
@@ -187,14 +218,6 @@ public final class PageSurfaceRenderer {
         return Math.max(0, maxBottom - SURFACE_HEIGHT);
     }
 
-    public record SurfaceEntry(
-            int slotIndex,
-            ItemStack stack,
-            boolean placeholder,
-            int x,
-            int y
-    ) {
-    }
     public static boolean isOverPageArea(int guiLeft, int guiTop, int mouseX, int mouseY) {
         int relX = mouseX - (guiLeft + SURFACE_X);
         int relY = mouseY - (guiTop + SURFACE_Y);
@@ -203,5 +226,16 @@ public final class PageSurfaceRenderer {
                 && relY >= 0
                 && relX < SURFACE_PAGE_WIDTH
                 && relY < SURFACE_HEIGHT;
+    }
+
+    public record SurfaceEntry(
+            int slotIndex,
+            ItemStack stack,
+            boolean placeholder,
+            int count,
+            String searchName,
+            int x,
+            int y
+    ) {
     }
 }

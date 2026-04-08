@@ -1,6 +1,9 @@
 package myst.synthetic.client.gui;
 
 import myst.synthetic.menu.FolderMenu;
+import myst.synthetic.page.Page;
+import myst.synthetic.page.symbol.PageSymbol;
+import myst.synthetic.page.symbol.PageSymbolRegistry;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
@@ -17,7 +20,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 
 public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
 
@@ -37,6 +42,9 @@ public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
     private boolean draggingScrollbar = false;
     private int scroll = 0;
 
+    private boolean sortAlphabetically = true;
+    private boolean showAllSymbols = false;
+
     private List<PageSurfaceRenderer.SurfaceEntry> entries = List.of();
 
     public FolderScreen(FolderMenu menu, Inventory playerInventory, Component title) {
@@ -52,21 +60,26 @@ public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
     @Override
     protected void init() {
         super.init();
+
         this.sortButton = this.addRenderableWidget(
-                Button.builder(Component.empty(), button -> {})
+                Button.builder(Component.empty(), button -> {
+                            this.sortAlphabetically = true;
+                            this.scroll = 0;
+                        })
                         .pos(this.leftPos, this.topPos)
                         .size(18, 18)
                         .build()
         );
-        this.sortButton.active = false;
 
         this.allButton = this.addRenderableWidget(
-                Button.builder(Component.empty(), button -> {})
+                Button.builder(Component.empty(), button -> {
+                            this.showAllSymbols = !this.showAllSymbols;
+                            this.scroll = 0;
+                        })
                         .pos(this.leftPos + 18, this.topPos)
                         .size(18, 18)
                         .build()
         );
-        this.allButton.active = false;
 
         this.searchBox = new EditBox(
                 this.font,
@@ -77,7 +90,8 @@ public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
                 Component.translatable("screen.mystcraft-sc.page_browser.search")
         );
         this.searchBox.setBordered(false);
-        this.searchBox.setEditable(false);
+        this.searchBox.setMaxLength(64);
+        this.searchBox.setResponder(text -> this.scroll = 0);
         this.addRenderableWidget(this.searchBox);
     }
 
@@ -124,6 +138,7 @@ public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
         PageSurfaceRenderer.drawSurfaceBackground(guiGraphics, this.leftPos, this.topPos);
         PageSurfaceRenderer.drawEntries(
                 guiGraphics,
+                this.font,
                 this.leftPos,
                 this.topPos,
                 mouseX,
@@ -143,7 +158,7 @@ public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
 
     @Override
     protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        guiGraphics.drawString(this.font, this.playerInventoryTitle, this.inventoryLabelX, this.inventoryLabelY, 0x404040, false);
+        guiGraphics.drawString(this.font, this.playerInventoryTitle, this.inventoryLabelX, this.inventoryLabelY, 0xFF404040, false);
     }
 
     @Override
@@ -166,8 +181,15 @@ public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
         int mouseX = (int) event.x();
         int mouseY = (int) event.y();
 
-        if (this.searchBox != null && this.searchBox.mouseClicked(event, doubleClick)) {
-            return true;
+        if (this.searchBox != null && this.isMouseOverSearchBox(mouseX, mouseY)) {
+            if (event.button() == 1) {
+                this.searchBox.setValue("");
+                return true;
+            }
+
+            if (this.searchBox.mouseClicked(event, doubleClick)) {
+                return true;
+            }
         }
 
         if (this.isOverScrollbar(mouseX, mouseY)) {
@@ -177,33 +199,42 @@ public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
         }
 
         if (PageSurfaceRenderer.isOverPageArea(this.leftPos, this.topPos, mouseX, mouseY)) {
-            int hoveredSlot = PageSurfaceRenderer.getHoveredOrderedSlot(
+            PageSurfaceRenderer.SurfaceEntry hoveredEntry = PageSurfaceRenderer.getHoveredEntry(
                     this.leftPos,
                     this.topPos,
                     mouseX,
                     mouseY,
-                    this.scroll
+                    this.scroll,
+                    this.entries
             );
 
-            if (hoveredSlot >= 0 && this.minecraft != null && this.minecraft.gameMode != null) {
-                ItemStack stack = this.menu.getOrderedItem(hoveredSlot);
-
-                if (!stack.isEmpty()) {
-                    if (this.menu.canPreviewPlace()) {
+            if (hoveredEntry != null && this.minecraft != null && this.minecraft.gameMode != null) {
+                if (hoveredEntry.slotIndex() >= 0 && !hoveredEntry.stack().isEmpty()) {
+                    if (this.isDefaultOrderedView() && this.menu.canPreviewPlace()) {
                         this.minecraft.gameMode.handleInventoryButtonClick(
                                 this.menu.containerId,
-                                FolderMenu.BUTTON_SWAP_ORDERED_START + hoveredSlot
+                                FolderMenu.BUTTON_SWAP_ORDERED_START + hoveredEntry.slotIndex()
                         );
                     } else {
                         this.minecraft.gameMode.handleInventoryButtonClick(
                                 this.menu.containerId,
-                                FolderMenu.BUTTON_TAKE_ORDERED_START + hoveredSlot
+                                FolderMenu.BUTTON_TAKE_ORDERED_START + hoveredEntry.slotIndex()
                         );
                     }
                     return true;
                 }
+            }
 
-                if (this.menu.canPreviewPlace()) {
+            if (this.isDefaultOrderedView() && this.minecraft != null && this.minecraft.gameMode != null && this.menu.canPreviewPlace()) {
+                int hoveredSlot = PageSurfaceRenderer.getHoveredOrderedSlot(
+                        this.leftPos,
+                        this.topPos,
+                        mouseX,
+                        mouseY,
+                        this.scroll
+                );
+
+                if (hoveredSlot >= 0) {
                     this.minecraft.gameMode.handleInventoryButtonClick(
                             this.menu.containerId,
                             FolderMenu.BUTTON_PLACE_ORDERED_START + hoveredSlot
@@ -212,11 +243,9 @@ public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
                 }
             }
 
-            // Consume blank-surface clicks so they do not fall through as outside-slot clicks.
             return true;
         }
 
-        // Player inventory / hotbar clicks must go through vanilla slot handling.
         return super.mouseClicked(event, doubleClick);
     }
 
@@ -253,6 +282,15 @@ public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
     }
 
     private void rebuildEntries(int mouseX, int mouseY) {
+        if (this.isDefaultOrderedView()) {
+            this.rebuildOrderedEntries(mouseX, mouseY);
+            return;
+        }
+
+        this.rebuildCollectionEntries();
+    }
+
+    private void rebuildOrderedEntries(int mouseX, int mouseY) {
         List<PageSurfaceRenderer.SurfaceEntry> built = new ArrayList<>();
 
         int lastIndex = this.menu.findLastMeaningfulIndex();
@@ -290,12 +328,96 @@ public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
                     i,
                     stack.copy(),
                     placeholder,
+                    stack.isEmpty() ? 0 : 1,
+                    this.getSearchName(stack),
                     x,
                     y
             ));
         }
 
         this.entries = built;
+        this.scroll = Math.max(0, Math.min(this.scroll, this.getMaxScroll()));
+    }
+
+    private void rebuildCollectionEntries() {
+        List<AggregatedEntry> built = new ArrayList<>();
+        String normalizedSearch = normalize(this.searchBox == null ? "" : this.searchBox.getValue());
+
+        for (int slotIndex = 0; slotIndex < FolderMenu.FOLDER_SLOT_COUNT; slotIndex++) {
+            ItemStack stack = this.menu.getOrderedItem(slotIndex);
+            if (stack.isEmpty()) {
+                continue;
+            }
+
+            String searchName = this.getSearchName(stack);
+            if (!this.matchesSearch(normalizedSearch, searchName)) {
+                continue;
+            }
+
+            AggregatedEntry existing = null;
+            for (AggregatedEntry entry : built) {
+                if (ItemStack.isSameItemSameComponents(entry.stack, stack)) {
+                    existing = entry;
+                    break;
+                }
+            }
+
+            if (existing != null) {
+                existing.count++;
+            } else {
+                built.add(new AggregatedEntry(slotIndex, stack.copyWithCount(1), 1, searchName, false));
+            }
+        }
+
+        if (this.showAllSymbols) {
+            for (PageSymbol symbol : PageSymbolRegistry.values()) {
+                ItemStack virtualPage = Page.createSymbolPage(symbol.id());
+                String searchName = symbol.displayName().getString();
+
+                if (!this.matchesSearch(normalizedSearch, searchName)) {
+                    continue;
+                }
+
+                boolean found = false;
+                for (AggregatedEntry entry : built) {
+                    if (ItemStack.isSameItemSameComponents(entry.stack, virtualPage)) {
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (!found) {
+                    built.add(new AggregatedEntry(-1, virtualPage, 0, searchName, true));
+                }
+            }
+        }
+
+        if (this.sortAlphabetically) {
+            built.sort(
+                    Comparator.comparing((AggregatedEntry entry) -> normalize(entry.searchName))
+                            .thenComparingInt(entry -> entry.slotIndex < 0 ? Integer.MAX_VALUE : entry.slotIndex)
+            );
+        }
+
+        List<PageSurfaceRenderer.SurfaceEntry> rendered = new ArrayList<>();
+        for (int i = 0; i < built.size(); i++) {
+            AggregatedEntry entry = built.get(i);
+
+            int x = (i % PageSurfaceRenderer.COLUMNS) * PageSurfaceRenderer.PAGE_X_STEP;
+            int y = (i / PageSurfaceRenderer.COLUMNS) * PageSurfaceRenderer.PAGE_Y_STEP;
+
+            rendered.add(new PageSurfaceRenderer.SurfaceEntry(
+                    entry.slotIndex,
+                    entry.stack.copy(),
+                    entry.placeholder,
+                    entry.count,
+                    entry.searchName,
+                    x,
+                    y
+            ));
+        }
+
+        this.entries = rendered;
         this.scroll = Math.max(0, Math.min(this.scroll, this.getMaxScroll()));
     }
 
@@ -308,6 +430,13 @@ public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
         int y = this.topPos + PageSurfaceRenderer.SCROLLBAR_Y;
         return mouseX >= x && mouseX < x + PageSurfaceRenderer.SCROLLBAR_WIDTH
                 && mouseY >= y && mouseY < y + PageSurfaceRenderer.SCROLLBAR_HEIGHT;
+    }
+
+    private boolean isMouseOverSearchBox(int mouseX, int mouseY) {
+        return mouseX >= this.leftPos + 40
+                && mouseX < this.leftPos + 176
+                && mouseY >= this.topPos
+                && mouseY < this.topPos + 18;
     }
 
     private void scrollToMouse(int mouseY) {
@@ -333,18 +462,22 @@ public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
         if (!PageSurfaceRenderer.isOverPageArea(this.leftPos, this.topPos, mouseX, mouseY)) {
             return;
         }
-        int hoveredSlot = PageSurfaceRenderer.getHoveredOrderedSlot(this.leftPos, this.topPos, mouseX, mouseY, this.scroll);
-        if (hoveredSlot < 0 || this.minecraft == null || this.minecraft.player == null) {
-            return;
-        }
 
-        ItemStack stack = this.menu.getOrderedItem(hoveredSlot);
-        if (stack.isEmpty()) {
+        PageSurfaceRenderer.SurfaceEntry hoveredEntry = PageSurfaceRenderer.getHoveredEntry(
+                this.leftPos,
+                this.topPos,
+                mouseX,
+                mouseY,
+                this.scroll,
+                this.entries
+        );
+
+        if (hoveredEntry == null || hoveredEntry.stack().isEmpty() || this.minecraft == null || this.minecraft.player == null) {
             return;
         }
 
         List<ClientTooltipComponent> tooltip = new ArrayList<>();
-        for (var line : stack.getTooltipLines(
+        for (var line : hoveredEntry.stack().getTooltipLines(
                 net.minecraft.world.item.Item.TooltipContext.EMPTY,
                 this.minecraft.player,
                 TooltipFlag.Default.NORMAL
@@ -360,5 +493,51 @@ public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
                 DefaultTooltipPositioner.INSTANCE,
                 null
         );
+    }
+
+    private boolean isDefaultOrderedView() {
+        return !this.showAllSymbols && normalize(this.searchBox == null ? "" : this.searchBox.getValue()).isEmpty();
+    }
+
+    private String getSearchName(ItemStack stack) {
+        if (stack.isEmpty()) {
+            return "";
+        }
+
+        Identifier symbolId = Page.getSymbol(stack);
+        if (symbolId != null) {
+            PageSymbol symbol = PageSymbolRegistry.get(symbolId);
+            if (symbol != null) {
+                return symbol.displayName().getString();
+            }
+
+            return symbolId.getPath();
+        }
+
+        return stack.getHoverName().getString();
+    }
+
+    private boolean matchesSearch(String normalizedSearch, String searchName) {
+        return normalizedSearch.isEmpty() || normalize(searchName).contains(normalizedSearch);
+    }
+
+    private static String normalize(String text) {
+        return text == null ? "" : text.toLowerCase(Locale.ROOT);
+    }
+
+    private static final class AggregatedEntry {
+        private final int slotIndex;
+        private final ItemStack stack;
+        private int count;
+        private final String searchName;
+        private final boolean placeholder;
+
+        private AggregatedEntry(int slotIndex, ItemStack stack, int count, String searchName, boolean placeholder) {
+            this.slotIndex = slotIndex;
+            this.stack = stack;
+            this.count = count;
+            this.searchName = searchName;
+            this.placeholder = placeholder;
+        }
     }
 }
