@@ -43,7 +43,7 @@ public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
     private static final int SEARCH_FRAME_HEIGHT = 18;
 
     private static final int LEGACY_SEARCH_TEXT_X_INSET = 4;
-    private static final int LEGACY_SEARCH_TEXT_Y_OFFSET = 5;
+    private static final int LEGACY_SEARCH_TEXT_Y_OFFSET = 10;
 
     private LegacyTinyToggleButton sortButton;
     private LegacyTinyToggleButton allButton;
