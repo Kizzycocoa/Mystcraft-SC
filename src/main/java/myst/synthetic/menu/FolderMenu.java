@@ -19,6 +19,7 @@ public class FolderMenu extends AbstractContainerMenu {
     public static final int BUTTON_TAKE_ORDERED_START = 1000;
     public static final int BUTTON_PLACE_ORDERED_START = 2000;
     public static final int BUTTON_SWAP_ORDERED_START = 3000;
+    public static final int BUTTON_TAKE_TO_INVENTORY_START = 4000;
 
     public static final int FOLDER_SLOT_COUNT = FolderDataComponent.MAX_SLOTS;
     private static final int PLAYER_INV_START = FOLDER_SLOT_COUNT;
@@ -75,6 +76,16 @@ public class FolderMenu extends AbstractContainerMenu {
         }
     }
 
+    private boolean moveSingleToPlayerInventory(ItemStack stack) {
+        ItemStack moving = stack.copy();
+
+        if (!this.moveItemStackTo(moving, PLAYER_INV_START, HOTBAR_END, true)) {
+            return false;
+        }
+
+        return moving.isEmpty();
+    }
+
     @Override
     public void slotsChanged(Container container) {
         super.slotsChanged(container);
@@ -112,6 +123,7 @@ public class FolderMenu extends AbstractContainerMenu {
             if (existing.isEmpty()) {
                 return false;
             }
+
 
             // Legacy-style mouse pickup: only pick up if the mouse is empty.
             if (!this.getCarried().isEmpty()) {
@@ -186,7 +198,28 @@ public class FolderMenu extends AbstractContainerMenu {
             this.broadcastChanges();
             return true;
         }
+        if (id >= BUTTON_TAKE_TO_INVENTORY_START && id < BUTTON_TAKE_TO_INVENTORY_START + FOLDER_SLOT_COUNT) {
+            int index = id - BUTTON_TAKE_TO_INVENTORY_START;
 
+            if (index < 0 || index >= FOLDER_SLOT_COUNT) {
+                return false;
+            }
+
+            ItemStack existing = this.folderInventory.getItem(index);
+            if (existing.isEmpty()) {
+                return false;
+            }
+
+            if (!this.moveSingleToPlayerInventory(existing)) {
+                return false;
+            }
+
+            this.folderInventory.setItem(index, ItemStack.EMPTY);
+
+            this.saveBackToHost();
+            this.broadcastChanges();
+            return true;
+        }
         return false;
     }
 

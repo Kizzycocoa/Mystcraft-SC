@@ -5,6 +5,7 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.client.gui.screens.Screen;
 
 import java.util.List;
 
@@ -57,11 +58,15 @@ public class PortfolioScreen extends PageBrowserScreen<PortfolioMenu> {
             return;
         }
 
-        if (entry == null) {
+        if (entry == null || entry.absoluteIndex < 0) {
             return;
         }
 
-        if (entry.absoluteIndex < 0) {
+        if (this.minecraft.options.keyShift.isDown()) {
+            this.minecraft.gameMode.handleInventoryButtonClick(
+                    this.menu.containerId,
+                    PortfolioMenu.BUTTON_TAKE_TO_INVENTORY_START + entry.absoluteIndex
+            );
             return;
         }
 

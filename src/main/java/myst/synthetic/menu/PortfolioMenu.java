@@ -14,11 +14,14 @@ import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.Container;
+import net.minecraft.world.item.Items;
+import java.util.List;
 
 public class PortfolioMenu extends AbstractContainerMenu {
 
     public static final int BUTTON_TAKE_ABSOLUTE_START = 1000;
-    public static final int BUTTON_ABSORB_CARRIED = 2000;
+    public static final int BUTTON_TAKE_TO_INVENTORY_START = 2000;
+    public static final int BUTTON_ABSORB_CARRIED = 3000;
 
     private static final int PLAYER_INV_START = 0;
     private static final int PLAYER_INV_END = PLAYER_INV_START + 27;
@@ -61,6 +64,16 @@ public class PortfolioMenu extends AbstractContainerMenu {
                     locked
             ));
         }
+    }
+
+    private boolean moveSingleToPlayerInventory(ItemStack stack) {
+        ItemStack moving = stack.copy();
+
+        if (!this.moveItemStackTo(moving, PLAYER_INV_START, HOTBAR_END, true)) {
+            return false;
+        }
+
+        return moving.isEmpty();
     }
 
     @Override
@@ -168,7 +181,24 @@ public class PortfolioMenu extends AbstractContainerMenu {
             return true;
         }
 
-        if (id >= BUTTON_TAKE_ABSOLUTE_START && id < BUTTON_ABSORB_CARRIED) {
+        if (id >= BUTTON_TAKE_TO_INVENTORY_START && id < BUTTON_ABSORB_CARRIED) {
+            int absoluteIndex = id - BUTTON_TAKE_TO_INVENTORY_START;
+
+            ItemStack removed = this.getPortfolioData().getPage(absoluteIndex);
+            if (removed.isEmpty()) {
+                return false;
+            }
+
+            if (!this.moveSingleToPlayerInventory(removed)) {
+                return false;
+            }
+
+            ItemPortfolio.setData(this.getHostStack(), this.getPortfolioData().removeAt(absoluteIndex));
+            this.broadcastFullState(player);
+            return true;
+        }
+
+        if (id >= BUTTON_TAKE_ABSOLUTE_START && id < BUTTON_TAKE_TO_INVENTORY_START) {
             int absoluteIndex = id - BUTTON_TAKE_ABSOLUTE_START;
 
             ItemStack removed = this.removePageAt(absoluteIndex);
@@ -237,13 +267,23 @@ public class PortfolioMenu extends AbstractContainerMenu {
 
         PortfolioDataComponent portfolioData = this.getPortfolioData();
         FolderDataComponent folderData = ItemFolder.getFolderData(folder);
+        NonNullList<ItemStack> remaining = NonNullList.withSize(FolderDataComponent.MAX_SLOTS, ItemStack.EMPTY);
 
         boolean changed = false;
 
-        for (ItemStack stack : folderData.toSlotList()) {
-            if (!stack.isEmpty() && stack.is(MystcraftItems.PAGE)) {
+        List<ItemStack> slots = folderData.toSlotList();
+        for (int i = 0; i < slots.size(); i++) {
+            ItemStack stack = slots.get(i);
+
+            if (stack.isEmpty()) {
+                continue;
+            }
+
+            if (stack.is(MystcraftItems.PAGE)) {
                 portfolioData = portfolioData.add(stack);
                 changed = true;
+            } else if (stack.is(Items.PAPER)) {
+                remaining.set(i, stack.copy());
             }
         }
 
@@ -252,10 +292,7 @@ public class PortfolioMenu extends AbstractContainerMenu {
         }
 
         ItemPortfolio.setData(this.getHostStack(), portfolioData);
-        ItemFolder.saveInventory(
-                folder,
-                NonNullList.withSize(FolderDataComponent.MAX_SLOTS, ItemStack.EMPTY)
-        );
+        ItemFolder.saveInventory(folder, remaining);
 
         return true;
     }

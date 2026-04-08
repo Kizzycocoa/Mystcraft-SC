@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+import net.minecraft.client.gui.screens.Screen;
 
 public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
 
@@ -274,7 +275,12 @@ public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
 
             if (hoveredEntry != null && this.minecraft != null && this.minecraft.gameMode != null) {
                 if (hoveredEntry.slotIndex() >= 0 && !hoveredEntry.stack().isEmpty()) {
-                    if (this.isOrderedPlacementView() && this.menu.canPreviewPlace()) {
+                    if (this.minecraft.options.keyShift.isDown()) {
+                        this.minecraft.gameMode.handleInventoryButtonClick(
+                                this.menu.containerId,
+                                FolderMenu.BUTTON_TAKE_TO_INVENTORY_START + hoveredEntry.slotIndex()
+                        );
+                    } else if (this.isOrderedPlacementView() && this.menu.canPreviewPlace()) {
                         this.minecraft.gameMode.handleInventoryButtonClick(
                                 this.menu.containerId,
                                 FolderMenu.BUTTON_SWAP_ORDERED_START + hoveredEntry.slotIndex()
