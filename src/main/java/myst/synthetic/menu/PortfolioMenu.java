@@ -139,23 +139,6 @@ public class PortfolioMenu extends AbstractContainerMenu {
 
     @Override
     public boolean clickMenuButton(Player player, int id) {
-        if (id >= BUTTON_TAKE_ABSOLUTE_START) {
-            int absoluteIndex = id - BUTTON_TAKE_ABSOLUTE_START;
-
-            ItemStack removed = this.removePageAt(absoluteIndex);
-            if (removed.isEmpty()) {
-                return false;
-            }
-
-            if (!this.getCarried().isEmpty()) {
-                return false;
-            }
-
-            this.setCarried(removed.copy());
-            this.broadcastFullState(player);
-            return true;
-        }
-
         if (id == BUTTON_ABSORB_CARRIED) {
             ItemStack carried = this.getCarried();
             if (carried.isEmpty()) {
@@ -181,6 +164,23 @@ public class PortfolioMenu extends AbstractContainerMenu {
                 this.setCarried(carried);
             }
 
+            this.broadcastFullState(player);
+            return true;
+        }
+
+        if (id >= BUTTON_TAKE_ABSOLUTE_START && id < BUTTON_ABSORB_CARRIED) {
+            int absoluteIndex = id - BUTTON_TAKE_ABSOLUTE_START;
+
+            ItemStack removed = this.removePageAt(absoluteIndex);
+            if (removed.isEmpty()) {
+                return false;
+            }
+
+            if (!this.getCarried().isEmpty()) {
+                return false;
+            }
+
+            this.setCarried(removed.copy());
             this.broadcastFullState(player);
             return true;
         }
