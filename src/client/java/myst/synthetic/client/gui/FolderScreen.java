@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.KeyEvent;
 
 public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
 
@@ -158,7 +160,24 @@ public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
 
     @Override
     protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        guiGraphics.drawString(this.font, this.playerInventoryTitle, this.inventoryLabelX, this.inventoryLabelY, 0xFF404040, false);
+    }
+
+    @Override
+    public boolean keyPressed(KeyEvent input) {
+        if (this.searchBox != null && this.searchBox.isFocused() && this.searchBox.keyPressed(input)) {
+            return true;
+        }
+
+        return super.keyPressed(input);
+    }
+
+    @Override
+    public boolean charTyped(CharacterEvent input) {
+        if (this.searchBox != null && this.searchBox.isFocused() && this.searchBox.charTyped(input)) {
+            return true;
+        }
+
+        return super.charTyped(input);
     }
 
     @Override
@@ -182,6 +201,9 @@ public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
         int mouseY = (int) event.y();
 
         if (this.searchBox != null && this.isMouseOverSearchBox(mouseX, mouseY)) {
+            this.setFocused(this.searchBox);
+            this.searchBox.setFocused(true);
+
             if (event.button() == 1) {
                 this.searchBox.setValue("");
                 return true;
@@ -190,6 +212,10 @@ public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
             if (this.searchBox.mouseClicked(event, doubleClick)) {
                 return true;
             }
+
+            return true;
+        } else if (this.searchBox != null) {
+            this.searchBox.setFocused(false);
         }
 
         if (this.isOverScrollbar(mouseX, mouseY)) {
@@ -272,10 +298,6 @@ public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
 
         this.drawLegacyButtonText(guiGraphics, this.leftPos, this.topPos, "AZ");
         this.drawLegacyButtonText(guiGraphics, this.leftPos + 18, this.topPos, "ALL");
-
-        if (this.searchBox != null) {
-            this.searchBox.render(guiGraphics, mouseX, mouseY, partialTick);
-        }
 
         this.renderTooltip(guiGraphics, mouseX, mouseY);
         this.renderPageTooltip(guiGraphics, mouseX, mouseY);

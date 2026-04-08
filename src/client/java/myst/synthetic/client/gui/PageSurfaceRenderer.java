@@ -67,7 +67,9 @@ public final class PageSurfaceRenderer {
             }
 
             boolean hovered =
-                    mouseX >= drawX && mouseX < drawX + PAGE_WIDTH
+                    mouseX >= clipLeft && mouseX < clipRight
+                            && mouseY >= clipTop && mouseY < clipBottom
+                            && mouseX >= drawX && mouseX < drawX + PAGE_WIDTH
                             && mouseY >= drawY && mouseY < drawY + PAGE_HEIGHT;
 
             PageCardRenderer.drawPageCard(guiGraphics, drawX, drawY, entry.stack(), entry.placeholder(), hovered);
@@ -192,9 +194,20 @@ public final class PageSurfaceRenderer {
             int scroll,
             List<SurfaceEntry> entries
     ) {
+        if (!isOverPageArea(guiLeft, guiTop, mouseX, mouseY)) {
+            return null;
+        }
+
+        int clipTop = guiTop + SURFACE_Y;
+        int clipBottom = clipTop + SURFACE_HEIGHT;
+
         for (SurfaceEntry entry : entries) {
             int drawX = guiLeft + SURFACE_X + entry.x();
             int drawY = guiTop + SURFACE_Y + entry.y() - scroll;
+
+            if (drawY + PAGE_HEIGHT <= clipTop || drawY >= clipBottom) {
+                continue;
+            }
 
             if (mouseX >= drawX && mouseX < drawX + PAGE_WIDTH
                     && mouseY >= drawY && mouseY < drawY + PAGE_HEIGHT) {
