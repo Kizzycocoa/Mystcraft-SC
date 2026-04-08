@@ -50,23 +50,22 @@ public class LegacyTinyToggleButton extends Button {
         guiGraphics.fill(x1 + 1, y1 + 1, x2 - 1, y2 - 1, inner);
 
         if (hovered) {
-            guiGraphics.fill(x1 + 1, y1 + 1, x2 - 1, y2 - 1, 0x33FFFFFF);
+            guiGraphics.fill(x1, y1, x2, y2, 0x90FFFFFF);
         }
 
-        this.drawScaledCenteredText(guiGraphics, textColor, selected ? 1 : 0);
+        this.drawLegacyScaledText(guiGraphics, textColor);
     }
 
-    private void drawScaledCenteredText(GuiGraphics guiGraphics, int color, int pressedOffset) {
+    private void drawLegacyScaledText(GuiGraphics guiGraphics, int color) {
+        int textX = this.getX() + 2;
+        int textY = this.getY() + 2;
         int availableWidth = this.width - 4;
+
         int textWidth = this.font.width(this.label);
         float scale = textWidth > availableWidth ? (float) availableWidth / (float) textWidth : 1.0F;
 
-        float scaledWidth = textWidth * scale;
-        float drawX = this.getX() + ((this.width - scaledWidth) / 2.0F) + pressedOffset;
-        float drawY = this.getY() + ((this.height - (8.0F * scale)) / 2.0F) + pressedOffset;
-
         guiGraphics.pose().pushMatrix();
-        guiGraphics.pose().translate(drawX, drawY);
+        guiGraphics.pose().translate(textX, textY);
         guiGraphics.pose().scale(scale, scale);
         guiGraphics.drawString(this.font, this.label, 0, 0, color, false);
         guiGraphics.pose().popMatrix();

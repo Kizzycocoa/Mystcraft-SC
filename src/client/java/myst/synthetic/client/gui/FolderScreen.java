@@ -1,16 +1,18 @@
 package myst.synthetic.client.gui;
 
+import myst.synthetic.client.gui.widget.LegacyTinyToggleButton;
 import myst.synthetic.menu.FolderMenu;
 import myst.synthetic.page.Page;
 import myst.synthetic.page.symbol.PageSymbol;
 import myst.synthetic.page.symbol.PageSymbolRegistry;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTextTooltip;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
@@ -23,9 +25,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
-import net.minecraft.client.input.CharacterEvent;
-import net.minecraft.client.input.KeyEvent;
-import myst.synthetic.client.gui.widget.LegacyTinyToggleButton;
 
 public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
 
@@ -38,6 +37,14 @@ public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
     private static final int INVENTORY_HEIGHT = 80;
     private static final int TOTAL_HEIGHT = SURFACE_HEIGHT + BUTTON_SIZE + INVENTORY_HEIGHT + 1;
 
+    private static final int SEARCH_FRAME_X = 40;
+    private static final int SEARCH_FRAME_Y = 0;
+    private static final int SEARCH_FRAME_WIDTH = 136;
+    private static final int SEARCH_FRAME_HEIGHT = 18;
+
+    private static final int LEGACY_SEARCH_TEXT_X_INSET = 4;
+    private static final int LEGACY_SEARCH_TEXT_Y_OFFSET = 5;
+
     private LegacyTinyToggleButton sortButton;
     private LegacyTinyToggleButton allButton;
     private EditBox searchBox;
@@ -45,7 +52,7 @@ public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
     private boolean draggingScrollbar = false;
     private int scroll = 0;
 
-    private boolean sortAlphabetically = true;
+    private boolean sortAlphabetically = false;
     private boolean showAllSymbols = false;
 
     private List<PageSurfaceRenderer.SurfaceEntry> entries = List.of();
@@ -74,7 +81,7 @@ public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
                         this.font,
                         () -> this.sortAlphabetically,
                         button -> {
-                            this.sortAlphabetically = true;
+                            this.sortAlphabetically = !this.sortAlphabetically;
                             this.scroll = 0;
                         }
                 )
@@ -98,10 +105,10 @@ public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
 
         this.searchBox = new EditBox(
                 this.font,
-                this.leftPos + 41,
-                this.topPos + 1,
-                134,
-                16,
+                this.leftPos + SEARCH_FRAME_X + LEGACY_SEARCH_TEXT_X_INSET,
+                this.topPos + SEARCH_FRAME_Y,
+                SEARCH_FRAME_WIDTH - (LEGACY_SEARCH_TEXT_X_INSET * 2),
+                SEARCH_FRAME_HEIGHT,
                 Component.translatable("screen.mystcraft-sc.page_browser.search")
         );
         this.searchBox.setBordered(false);
@@ -109,15 +116,15 @@ public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
         this.searchBox.setTextColor(0xFFE0E0E0);
         this.searchBox.setTextColorUneditable(0xFF707070);
         this.searchBox.setResponder(text -> this.scroll = 0);
-        this.addRenderableWidget(this.searchBox);
         this.searchBox.setCanLoseFocus(true);
+        this.addRenderableWidget(this.searchBox);
     }
 
     private void drawLegacySearchBox(GuiGraphics guiGraphics) {
-        int x1 = this.leftPos + 40;
-        int y1 = this.topPos;
-        int x2 = this.leftPos + 176;
-        int y2 = this.topPos + 18;
+        int x1 = this.leftPos + SEARCH_FRAME_X;
+        int y1 = this.topPos + SEARCH_FRAME_Y;
+        int x2 = x1 + SEARCH_FRAME_WIDTH;
+        int y2 = y1 + SEARCH_FRAME_HEIGHT;
 
         boolean focused = this.searchBox != null && this.searchBox.isFocused();
 
@@ -145,8 +152,8 @@ public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
         guiGraphics.drawString(
                 this.font,
                 "Search...",
-                this.searchBox.getX() + 1,
-                this.searchBox.getY() + 4,
+                this.leftPos + SEARCH_FRAME_X + LEGACY_SEARCH_TEXT_X_INSET,
+                this.topPos + SEARCH_FRAME_Y + LEGACY_SEARCH_TEXT_Y_OFFSET,
                 0xFF707070,
                 false
         );
@@ -270,7 +277,7 @@ public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
 
             if (hoveredEntry != null && this.minecraft != null && this.minecraft.gameMode != null) {
                 if (hoveredEntry.slotIndex() >= 0 && !hoveredEntry.stack().isEmpty()) {
-                    if (this.isDefaultOrderedView() && this.menu.canPreviewPlace()) {
+                    if (this.isOrderedPlacementView() && this.menu.canPreviewPlace()) {
                         this.minecraft.gameMode.handleInventoryButtonClick(
                                 this.menu.containerId,
                                 FolderMenu.BUTTON_SWAP_ORDERED_START + hoveredEntry.slotIndex()
@@ -285,7 +292,7 @@ public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
                 }
             }
 
-            if (this.isDefaultOrderedView() && this.minecraft != null && this.minecraft.gameMode != null && this.menu.canPreviewPlace()) {
+            if (this.isOrderedPlacementView() && this.minecraft != null && this.minecraft.gameMode != null && this.menu.canPreviewPlace()) {
                 int hoveredSlot = PageSurfaceRenderer.getHoveredOrderedSlot(
                         this.leftPos,
                         this.topPos,
@@ -337,7 +344,7 @@ public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
     }
 
     private void rebuildEntries(int mouseX, int mouseY) {
-        if (this.isDefaultOrderedView()) {
+        if (this.isOrderedPlacementView()) {
             this.rebuildOrderedEntries(mouseX, mouseY);
             return;
         }
@@ -488,10 +495,10 @@ public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
     }
 
     private boolean isMouseOverSearchBox(int mouseX, int mouseY) {
-        return mouseX >= this.leftPos + 40
-                && mouseX < this.leftPos + 176
-                && mouseY >= this.topPos
-                && mouseY < this.topPos + 18;
+        return mouseX >= this.leftPos + SEARCH_FRAME_X
+                && mouseX < this.leftPos + SEARCH_FRAME_X + SEARCH_FRAME_WIDTH
+                && mouseY >= this.topPos + SEARCH_FRAME_Y
+                && mouseY < this.topPos + SEARCH_FRAME_Y + SEARCH_FRAME_HEIGHT;
     }
 
     private void scrollToMouse(int mouseY) {
@@ -550,8 +557,10 @@ public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
         );
     }
 
-    private boolean isDefaultOrderedView() {
-        return !this.showAllSymbols && normalize(this.searchBox == null ? "" : this.searchBox.getValue()).isEmpty();
+    private boolean isOrderedPlacementView() {
+        return !this.sortAlphabetically
+                && !this.showAllSymbols
+                && normalize(this.searchBox == null ? "" : this.searchBox.getValue()).isEmpty();
     }
 
     private String getSearchName(ItemStack stack) {
