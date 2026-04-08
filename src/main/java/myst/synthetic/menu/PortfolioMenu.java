@@ -7,17 +7,18 @@ import myst.synthetic.component.PortfolioDataComponent;
 import myst.synthetic.item.ItemFolder;
 import myst.synthetic.item.ItemPortfolio;
 import net.minecraft.core.NonNullList;
-import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.Container;
 
 public class PortfolioMenu extends AbstractContainerMenu {
 
     public static final int BUTTON_TAKE_ABSOLUTE_START = 1000;
+    public static final int BUTTON_ABSORB_CARRIED = 2000;
 
     private static final int PLAYER_INV_START = 0;
     private static final int PLAYER_INV_END = PLAYER_INV_START + 27;
@@ -44,7 +45,7 @@ public class PortfolioMenu extends AbstractContainerMenu {
                         playerInventory,
                         slot,
                         8 + column * 18,
-                        84 + row * 18,
+                        135 + row * 18,
                         false
                 ));
             }
@@ -56,7 +57,7 @@ public class PortfolioMenu extends AbstractContainerMenu {
                     playerInventory,
                     column,
                     8 + column * 18,
-                    142,
+                    193,
                     locked
             ));
         }
@@ -146,8 +147,38 @@ public class PortfolioMenu extends AbstractContainerMenu {
                 return false;
             }
 
-            if (!player.getInventory().add(removed)) {
-                player.drop(removed, false);
+            if (!this.getCarried().isEmpty()) {
+                return false;
+            }
+
+            this.setCarried(removed.copy());
+            this.broadcastFullState(player);
+            return true;
+        }
+
+        if (id == BUTTON_ABSORB_CARRIED) {
+            ItemStack carried = this.getCarried();
+            if (carried.isEmpty()) {
+                return false;
+            }
+
+            boolean changed = false;
+
+            if (carried.is(MystcraftItems.PAGE)) {
+                this.absorbPageStack(carried);
+                changed = true;
+            } else if (carried.is(MystcraftItems.FOLDER)) {
+                changed = this.absorbFolderStack(carried);
+            }
+
+            if (!changed) {
+                return false;
+            }
+
+            if (carried.isEmpty()) {
+                this.setCarried(ItemStack.EMPTY);
+            } else {
+                this.setCarried(carried);
             }
 
             this.broadcastFullState(player);
@@ -167,6 +198,11 @@ public class PortfolioMenu extends AbstractContainerMenu {
 
     public int getStoredCount() {
         return this.getPortfolioData().size();
+    }
+
+    public boolean canAbsorbCarried() {
+        ItemStack carried = this.getCarried();
+        return carried.is(MystcraftItems.PAGE) || carried.is(MystcraftItems.FOLDER);
     }
 
     private ItemStack getHostStack() {
@@ -258,7 +294,6 @@ public class PortfolioMenu extends AbstractContainerMenu {
 
         return slot.getContainerSlot() == this.hostSlot;
     }
-
     private static final class LockedPlayerSlot extends Slot {
         private final boolean locked;
 

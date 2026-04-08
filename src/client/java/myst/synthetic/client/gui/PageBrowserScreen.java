@@ -254,11 +254,7 @@ public abstract class PageBrowserScreen<T extends net.minecraft.world.inventory.
 
         if (PageSurfaceRenderer.isOverPageArea(this.leftPos, this.topPos, mouseX, mouseY)) {
             DisplayEntry hovered = this.getHoveredEntry(mouseX, mouseY);
-            if (hovered != null) {
-                this.onSurfaceClicked(hovered, event);
-                return true;
-            }
-
+            this.onSurfaceClicked(hovered, event);
             return true;
         }
 
