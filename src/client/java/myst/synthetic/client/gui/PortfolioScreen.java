@@ -45,7 +45,23 @@ public class PortfolioScreen extends PageBrowserScreen<PortfolioMenu> {
 
     @Override
     protected void onSurfaceClicked(DisplayEntry entry, MouseButtonEvent event) {
-        if (entry.absoluteIndex < 0 || this.minecraft == null || this.minecraft.gameMode == null) {
+        if (this.minecraft == null || this.minecraft.gameMode == null) {
+            return;
+        }
+
+        if (this.menu.canAbsorbCarried()) {
+            this.minecraft.gameMode.handleInventoryButtonClick(
+                    this.menu.containerId,
+                    PortfolioMenu.BUTTON_ABSORB_CARRIED
+            );
+            return;
+        }
+
+        if (entry == null) {
+            return;
+        }
+
+        if (entry.absoluteIndex < 0) {
             return;
         }
 

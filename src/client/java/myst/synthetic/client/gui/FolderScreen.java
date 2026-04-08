@@ -106,7 +106,7 @@ public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
         this.searchBox = new EditBox(
                 this.font,
                 this.leftPos + SEARCH_FRAME_X + LEGACY_SEARCH_TEXT_X_INSET,
-                this.topPos + SEARCH_FRAME_Y,
+                this.topPos + SEARCH_FRAME_Y + 3,
                 SEARCH_FRAME_WIDTH - (LEGACY_SEARCH_TEXT_X_INSET * 2),
                 SEARCH_FRAME_HEIGHT,
                 Component.translatable("screen.mystcraft-sc.page_browser.search")
