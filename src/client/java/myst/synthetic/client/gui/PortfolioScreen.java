@@ -41,8 +41,6 @@ public class PortfolioScreen extends PageBrowserScreen<PortfolioMenu> {
                 built.add(new DisplayEntry(stack.copy(), i, 1, searchName));
             }
         }
-
-        this.arrangeLinear(built);
     }
 
     @Override

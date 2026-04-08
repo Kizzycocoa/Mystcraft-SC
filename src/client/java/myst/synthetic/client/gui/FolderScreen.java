@@ -106,7 +106,7 @@ public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
         this.searchBox = new EditBox(
                 this.font,
                 this.leftPos + SEARCH_FRAME_X + LEGACY_SEARCH_TEXT_X_INSET,
-                this.topPos + SEARCH_FRAME_Y,
+                this.topPos + SEARCH_FRAME_Y - 3,
                 SEARCH_FRAME_WIDTH - (LEGACY_SEARCH_TEXT_X_INSET * 2),
                 SEARCH_FRAME_HEIGHT,
                 Component.translatable("screen.mystcraft-sc.page_browser.search")
@@ -204,17 +204,14 @@ public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
     }
 
     @Override
-    public boolean keyPressed(KeyEvent input) {
-        if (this.searchBox != null && this.searchBox.isFocused() && this.searchBox.keyPressed(input)) {
-            return true;
-        }
-
-        return super.keyPressed(input);
-    }
-
-    @Override
     public boolean charTyped(CharacterEvent input) {
-        if (this.searchBox != null && this.searchBox.isFocused() && this.searchBox.charTyped(input)) {
+
+        if (this.searchBox != null && this.searchBox.isFocused()) {
+
+            if (this.searchBox.charTyped(input)) {
+                return true;
+            }
+
             return true;
         }
 
@@ -603,5 +600,26 @@ public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
             this.searchName = searchName;
             this.placeholder = placeholder;
         }
+    }
+    @Override
+    public boolean keyPressed(KeyEvent input) {
+
+        if (this.searchBox != null && this.searchBox.isFocused()) {
+
+            // allow ESC to close screen
+            if (input.key() == 256) {
+                return super.keyPressed(input);
+            }
+
+            // forward typing to search box
+            if (this.searchBox.keyPressed(input)) {
+                return true;
+            }
+
+            // swallow EVERYTHING else
+            return true;
+        }
+
+        return super.keyPressed(input);
     }
 }

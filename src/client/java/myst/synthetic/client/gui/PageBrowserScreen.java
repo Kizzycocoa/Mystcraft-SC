@@ -1,15 +1,17 @@
 package myst.synthetic.client.gui;
 
+import myst.synthetic.client.gui.widget.LegacyTinyToggleButton;
 import myst.synthetic.page.Page;
 import myst.synthetic.page.symbol.PageSymbol;
 import myst.synthetic.page.symbol.PageSymbolRegistry;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTextTooltip;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
@@ -26,9 +28,6 @@ import java.util.Locale;
 public abstract class PageBrowserScreen<T extends net.minecraft.world.inventory.AbstractContainerMenu>
         extends AbstractContainerScreen<T> {
 
-    protected static final Identifier NOTEBOOK_TEXTURE =
-            Identifier.fromNamespaceAndPath("mystcraft-sc", "textures/gui/notebook.png");
-
     protected static final Identifier DESK_TEXTURE =
             Identifier.fromNamespaceAndPath("mystcraft-sc", "textures/gui/writingdesk.png");
 
@@ -38,33 +37,23 @@ public abstract class PageBrowserScreen<T extends net.minecraft.world.inventory.
     protected static final int INVENTORY_HEIGHT = 80;
     protected static final int TOTAL_HEIGHT = SURFACE_HEIGHT + BUTTON_SIZE + INVENTORY_HEIGHT + 1;
 
-    protected static final int SEARCH_X = (BUTTON_SIZE + 2) * 2;
-    protected static final int SEARCH_Y = 0;
-    protected static final int SEARCH_WIDTH = SURFACE_WIDTH - SEARCH_X;
-    protected static final int SEARCH_HEIGHT = BUTTON_SIZE;
+    protected static final int SEARCH_FRAME_X = 40;
+    protected static final int SEARCH_FRAME_Y = 0;
+    protected static final int SEARCH_FRAME_WIDTH = 136;
+    protected static final int SEARCH_FRAME_HEIGHT = 18;
 
-    protected static final int PAGE_SURFACE_X = 0;
-    protected static final int PAGE_SURFACE_Y = BUTTON_SIZE + 1;
-    protected static final int PAGE_SURFACE_WIDTH = SURFACE_WIDTH;
-    protected static final int PAGE_SURFACE_HEIGHT = SURFACE_HEIGHT - BUTTON_SIZE;
-
-    protected static final int SCROLLBAR_RESERVED_WIDTH = 20;
-    protected static final int PAGE_DRAW_WIDTH = PAGE_SURFACE_WIDTH - SCROLLBAR_RESERVED_WIDTH;
-
-    protected static final float PAGE_WIDTH = 30.0f;
-    protected static final float PAGE_HEIGHT = 40.0f;
-    protected static final float PAGE_X_STEP = PAGE_WIDTH + 1.0f;
-    protected static final float PAGE_Y_STEP = PAGE_HEIGHT + 1.0f;
+    protected static final int LEGACY_SEARCH_TEXT_X_INSET = 4;
+    protected static final int LEGACY_SEARCH_TEXT_Y_OFFSET = 5;
 
     protected static final Comparator<DisplayEntry> ENTRY_COMPARATOR =
             Comparator.comparing((DisplayEntry entry) -> normalize(entry.searchName))
-                    .thenComparingInt(entry -> entry.absoluteIndex);
+                    .thenComparingInt(entry -> entry.absoluteIndex < 0 ? Integer.MAX_VALUE : entry.absoluteIndex);
 
-    protected Button sortButton;
-    protected Button allButton;
+    protected LegacyTinyToggleButton sortButton;
+    protected LegacyTinyToggleButton allButton;
     protected EditBox searchBox;
 
-    protected boolean sortAlphabetically = true;
+    protected boolean sortAlphabetically = false;
     protected boolean showAllSymbols = false;
     protected boolean draggingScrollbar = false;
     protected int scroll = 0;
@@ -86,38 +75,56 @@ public abstract class PageBrowserScreen<T extends net.minecraft.world.inventory.
         super.init();
 
         this.sortButton = this.addRenderableWidget(
-                Button.builder(this.sortButtonText(), button -> {
+                new LegacyTinyToggleButton(
+                        this.leftPos,
+                        this.topPos,
+                        18,
+                        18,
+                        "AZ",
+                        this.font,
+                        () -> this.sortAlphabetically,
+                        button -> {
                             this.sortAlphabetically = !this.sortAlphabetically;
-                            button.setMessage(this.sortButtonText());
+                            this.scroll = 0;
                             this.rebuildDisplayEntries();
-                        })
-                        .pos(this.leftPos, this.topPos)
-                        .size(BUTTON_SIZE, BUTTON_SIZE)
-                        .build()
+                        }
+                )
         );
 
         this.allButton = this.addRenderableWidget(
-                Button.builder(this.allButtonText(), button -> {
+                new LegacyTinyToggleButton(
+                        this.leftPos + 18,
+                        this.topPos,
+                        18,
+                        18,
+                        "ALL",
+                        this.font,
+                        () -> this.showAllSymbols,
+                        button -> {
                             this.showAllSymbols = !this.showAllSymbols;
-                            button.setMessage(this.allButtonText());
+                            this.scroll = 0;
                             this.rebuildDisplayEntries();
-                        })
-                        .pos(this.leftPos + BUTTON_SIZE, this.topPos)
-                        .size(BUTTON_SIZE, BUTTON_SIZE)
-                        .build()
+                        }
+                )
         );
 
         this.searchBox = new EditBox(
                 this.font,
-                this.leftPos + SEARCH_X,
-                this.topPos + SEARCH_Y,
-                SEARCH_WIDTH,
-                SEARCH_HEIGHT,
+                this.leftPos + SEARCH_FRAME_X + LEGACY_SEARCH_TEXT_X_INSET,
+                this.topPos + SEARCH_FRAME_Y - 3,
+                SEARCH_FRAME_WIDTH - (LEGACY_SEARCH_TEXT_X_INSET * 2),
+                SEARCH_FRAME_HEIGHT,
                 Component.translatable("screen.mystcraft-sc.page_browser.search")
         );
         this.searchBox.setBordered(false);
         this.searchBox.setMaxLength(64);
-        this.searchBox.setResponder(text -> this.rebuildDisplayEntries());
+        this.searchBox.setTextColor(0xFFE0E0E0);
+        this.searchBox.setTextColorUneditable(0xFF707070);
+        this.searchBox.setResponder(text -> {
+            this.scroll = 0;
+            this.rebuildDisplayEntries();
+        });
+        this.searchBox.setCanLoseFocus(true);
         this.addRenderableWidget(this.searchBox);
 
         this.rebuildDisplayEntries();
@@ -131,18 +138,7 @@ public abstract class PageBrowserScreen<T extends net.minecraft.world.inventory.
 
     @Override
     protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
-        guiGraphics.blit(
-                RenderPipelines.GUI_TEXTURED,
-                NOTEBOOK_TEXTURE,
-                this.leftPos,
-                this.topPos,
-                0,
-                0,
-                SURFACE_WIDTH,
-                SURFACE_HEIGHT,
-                256,
-                256
-        );
+        this.drawLegacySearchBox(guiGraphics);
 
         guiGraphics.blit(
                 RenderPipelines.GUI_TEXTURED,
@@ -157,13 +153,59 @@ public abstract class PageBrowserScreen<T extends net.minecraft.world.inventory.
                 256
         );
 
-        this.drawPageSurface(guiGraphics, mouseX, mouseY);
-        this.drawScrollbar(guiGraphics);
+        PageSurfaceRenderer.drawSurfaceBackground(guiGraphics, this.leftPos, this.topPos);
+        PageSurfaceRenderer.drawEntries(
+                guiGraphics,
+                this.font,
+                this.leftPos,
+                this.topPos,
+                mouseX,
+                mouseY,
+                this.scroll,
+                this.toSurfaceEntries()
+        );
+
+        PageSurfaceRenderer.drawScrollbar(
+                guiGraphics,
+                this.leftPos,
+                this.topPos,
+                this.scroll,
+                this.getMaxScroll()
+        );
     }
 
     @Override
     protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        guiGraphics.drawString(this.font, this.playerInventoryTitle, this.inventoryLabelX, this.inventoryLabelY, 0x404040, false);
+    }
+
+    @Override
+    public boolean keyPressed(KeyEvent input) {
+        if (this.searchBox != null && this.searchBox.isFocused()) {
+            if (input.key() == 256) {
+                return super.keyPressed(input);
+            }
+
+            if (this.searchBox.keyPressed(input)) {
+                return true;
+            }
+
+            return true;
+        }
+
+        return super.keyPressed(input);
+    }
+
+    @Override
+    public boolean charTyped(CharacterEvent input) {
+        if (this.searchBox != null && this.searchBox.isFocused()) {
+            if (this.searchBox.charTyped(input)) {
+                return true;
+            }
+
+            return true;
+        }
+
+        return super.charTyped(input);
     }
 
     @Override
@@ -186,8 +228,22 @@ public abstract class PageBrowserScreen<T extends net.minecraft.world.inventory.
         int mouseX = (int) event.x();
         int mouseY = (int) event.y();
 
-        if (this.searchBox != null && this.searchBox.mouseClicked(event, doubleClick)) {
+        if (this.searchBox != null && this.isMouseOverSearchBox(mouseX, mouseY)) {
+            this.setFocused(this.searchBox);
+            this.searchBox.setFocused(true);
+
+            if (event.button() == 1) {
+                this.searchBox.setValue("");
+                return true;
+            }
+
+            if (this.searchBox.mouseClicked(event, doubleClick)) {
+                return true;
+            }
+
             return true;
+        } else if (this.searchBox != null) {
+            this.searchBox.setFocused(false);
         }
 
         if (this.isOverScrollbar(mouseX, mouseY)) {
@@ -196,9 +252,13 @@ public abstract class PageBrowserScreen<T extends net.minecraft.world.inventory.
             return true;
         }
 
-        DisplayEntry hovered = this.getHoveredEntry(mouseX, mouseY);
-        if (hovered != null) {
-            this.onSurfaceClicked(hovered, event);
+        if (PageSurfaceRenderer.isOverPageArea(this.leftPos, this.topPos, mouseX, mouseY)) {
+            DisplayEntry hovered = this.getHoveredEntry(mouseX, mouseY);
+            if (hovered != null) {
+                this.onSurfaceClicked(hovered, event);
+                return true;
+            }
+
             return true;
         }
 
@@ -226,9 +286,7 @@ public abstract class PageBrowserScreen<T extends net.minecraft.world.inventory.
         this.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
         super.render(guiGraphics, mouseX, mouseY, partialTick);
 
-        if (this.searchBox != null) {
-            this.searchBox.render(guiGraphics, mouseX, mouseY, partialTick);
-        }
+        this.renderSearchGhostText(guiGraphics);
 
         this.renderTooltip(guiGraphics, mouseX, mouseY);
         this.renderPageTooltip(guiGraphics, mouseX, mouseY);
@@ -267,6 +325,8 @@ public abstract class PageBrowserScreen<T extends net.minecraft.world.inventory.
             built.sort(ENTRY_COMPARATOR);
         }
 
+        this.arrangeLinear(built);
+
         this.displayEntries = built;
         this.scroll = Math.max(0, Math.min(this.scroll, this.getMaxScroll()));
     }
@@ -290,75 +350,31 @@ public abstract class PageBrowserScreen<T extends net.minecraft.world.inventory.
         return stack.getHoverName().getString();
     }
 
-    protected Component sortButtonText() {
-        return this.sortAlphabetically ? Component.literal("[AZ]") : Component.literal("AZ");
-    }
+    protected void arrangeLinear(List<DisplayEntry> entries) {
+        float x = 0.0f;
+        float y = 0.0f;
 
-    protected Component allButtonText() {
-        return this.showAllSymbols ? Component.literal("[ALL]") : Component.literal("ALL");
-    }
+        for (DisplayEntry entry : entries) {
+            entry.x = x;
+            entry.y = y;
 
-    protected void drawPageSurface(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        int surfaceLeft = this.leftPos + PAGE_SURFACE_X;
-        int surfaceTop = this.topPos + PAGE_SURFACE_Y;
-
-        guiGraphics.fill(
-                surfaceLeft,
-                surfaceTop,
-                surfaceLeft + PAGE_DRAW_WIDTH,
-                surfaceTop + PAGE_SURFACE_HEIGHT,
-                0xAA000000
-        );
-
-        for (DisplayEntry entry : this.displayEntries) {
-            int drawX = surfaceLeft + Math.round(entry.x);
-            int drawY = surfaceTop + Math.round(entry.y) - this.scroll;
-
-            if (drawY + PAGE_HEIGHT < surfaceTop || drawY > surfaceTop + PAGE_SURFACE_HEIGHT) {
-                continue;
-            }
-
-            guiGraphics.renderItem(entry.stack, drawX + 7, drawY + 8);
-
-            if (entry.count > 1) {
-                guiGraphics.drawString(this.font, Integer.toString(entry.count), drawX + 1, drawY + 31, 0xFFFFFF, false);
-            }
-
-            if (entry.absoluteIndex < 0) {
-                guiGraphics.fill(drawX, drawY, drawX + (int) PAGE_WIDTH, drawY + (int) PAGE_HEIGHT, 0x60000000);
-            }
-
-            if (mouseX >= drawX && mouseX < drawX + PAGE_WIDTH && mouseY >= drawY && mouseY < drawY + PAGE_HEIGHT) {
-                guiGraphics.fill(drawX, drawY, drawX + (int) PAGE_WIDTH, drawY + (int) PAGE_HEIGHT, 0x40FFFFFF);
+            x += PageSurfaceRenderer.PAGE_X_STEP;
+            if (x + PageSurfaceRenderer.PAGE_X_STEP > PageSurfaceRenderer.SURFACE_PAGE_WIDTH) {
+                x = 0.0f;
+                y += PageSurfaceRenderer.PAGE_Y_STEP;
             }
         }
-    }
-
-    protected void drawScrollbar(GuiGraphics guiGraphics) {
-        int trackX = this.leftPos + PAGE_DRAW_WIDTH;
-        int trackY = this.topPos + PAGE_SURFACE_Y;
-        int trackHeight = PAGE_SURFACE_HEIGHT;
-
-        guiGraphics.fill(trackX + 8, trackY, trackX + 12, trackY + trackHeight, 0xFF241A12);
-
-        int maxScroll = this.getMaxScroll();
-        int knobTravel = trackHeight - 16;
-        int knobOffset = maxScroll <= 0 ? 0 : (this.scroll * knobTravel) / maxScroll;
-        int knobY = trackY + knobOffset;
-
-        guiGraphics.fill(trackX + 6, knobY, trackX + 14, knobY + 16, 0xFF8C7A5B);
-        guiGraphics.fill(trackX + 7, knobY + 1, trackX + 13, knobY + 15, 0xFFB49B75);
     }
 
     protected int getMaxScroll() {
         int maxBottom = 0;
         for (DisplayEntry entry : this.displayEntries) {
-            int bottom = Math.round(entry.y + PAGE_HEIGHT + 6);
+            int bottom = Math.round(entry.y + PageSurfaceRenderer.PAGE_HEIGHT + 6);
             if (bottom > maxBottom) {
                 maxBottom = bottom;
             }
         }
-        return Math.max(0, maxBottom - PAGE_SURFACE_HEIGHT);
+        return Math.max(0, maxBottom - PageSurfaceRenderer.SURFACE_HEIGHT);
     }
 
     protected void scrollToMouse(int mouseY) {
@@ -368,9 +384,9 @@ public abstract class PageBrowserScreen<T extends net.minecraft.world.inventory.
             return;
         }
 
-        int trackTop = this.topPos + PAGE_SURFACE_Y;
-        int trackBottom = trackTop + PAGE_SURFACE_HEIGHT - 16;
-        int clampedMouse = Math.max(trackTop, Math.min(mouseY - 8, trackBottom));
+        int trackTop = this.topPos + PageSurfaceRenderer.SCROLLBAR_Y;
+        int trackBottom = trackTop + PageSurfaceRenderer.SCROLLBAR_HEIGHT - 18;
+        int clampedMouse = Math.max(trackTop, Math.min(mouseY - 9, trackBottom));
 
         int knobTravel = trackBottom - trackTop;
         if (knobTravel <= 0) {
@@ -381,20 +397,37 @@ public abstract class PageBrowserScreen<T extends net.minecraft.world.inventory.
     }
 
     protected boolean isOverScrollbar(int mouseX, int mouseY) {
-        int x = this.leftPos + PAGE_DRAW_WIDTH + 6;
-        int y = this.topPos + PAGE_SURFACE_Y;
-        return mouseX >= x && mouseX < x + 8 && mouseY >= y && mouseY < y + PAGE_SURFACE_HEIGHT;
+        int x = this.leftPos + PageSurfaceRenderer.SCROLLBAR_X;
+        int y = this.topPos + PageSurfaceRenderer.SCROLLBAR_Y;
+        return mouseX >= x && mouseX < x + PageSurfaceRenderer.SCROLLBAR_WIDTH
+                && mouseY >= y && mouseY < y + PageSurfaceRenderer.SCROLLBAR_HEIGHT;
+    }
+
+    protected boolean isMouseOverSearchBox(int mouseX, int mouseY) {
+        return mouseX >= this.leftPos + SEARCH_FRAME_X
+                && mouseX < this.leftPos + SEARCH_FRAME_X + SEARCH_FRAME_WIDTH
+                && mouseY >= this.topPos + SEARCH_FRAME_Y
+                && mouseY < this.topPos + SEARCH_FRAME_Y + SEARCH_FRAME_HEIGHT;
     }
 
     protected DisplayEntry getHoveredEntry(int mouseX, int mouseY) {
-        int surfaceLeft = this.leftPos + PAGE_SURFACE_X;
-        int surfaceTop = this.topPos + PAGE_SURFACE_Y;
+        if (!PageSurfaceRenderer.isOverPageArea(this.leftPos, this.topPos, mouseX, mouseY)) {
+            return null;
+        }
+
+        int clipTop = this.topPos + PageSurfaceRenderer.SURFACE_Y;
+        int clipBottom = clipTop + PageSurfaceRenderer.SURFACE_HEIGHT;
 
         for (DisplayEntry entry : this.displayEntries) {
-            int drawX = surfaceLeft + Math.round(entry.x);
-            int drawY = surfaceTop + Math.round(entry.y) - this.scroll;
+            int drawX = this.leftPos + PageSurfaceRenderer.SURFACE_X + Math.round(entry.x);
+            int drawY = this.topPos + PageSurfaceRenderer.SURFACE_Y + Math.round(entry.y) - this.scroll;
 
-            if (mouseX >= drawX && mouseX < drawX + PAGE_WIDTH && mouseY >= drawY && mouseY < drawY + PAGE_HEIGHT) {
+            if (drawY + PageSurfaceRenderer.PAGE_HEIGHT <= clipTop || drawY >= clipBottom) {
+                continue;
+            }
+
+            if (mouseX >= drawX && mouseX < drawX + PageSurfaceRenderer.PAGE_WIDTH
+                    && mouseY >= drawY && mouseY < drawY + PageSurfaceRenderer.PAGE_HEIGHT) {
                 return entry;
             }
         }
@@ -403,6 +436,10 @@ public abstract class PageBrowserScreen<T extends net.minecraft.world.inventory.
     }
 
     protected void renderPageTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        if (!PageSurfaceRenderer.isOverPageArea(this.leftPos, this.topPos, mouseX, mouseY)) {
+            return;
+        }
+
         DisplayEntry entry = this.getHoveredEntry(mouseX, mouseY);
 
         if (entry == null || entry.stack.isEmpty() || this.minecraft == null || this.minecraft.player == null) {
@@ -439,20 +476,52 @@ public abstract class PageBrowserScreen<T extends net.minecraft.world.inventory.
         );
     }
 
-    protected void arrangeLinear(List<DisplayEntry> entries) {
-        float x = 0.0f;
-        float y = 0.0f;
+    protected void drawLegacySearchBox(GuiGraphics guiGraphics) {
+        int x1 = this.leftPos + SEARCH_FRAME_X;
+        int y1 = this.topPos + SEARCH_FRAME_Y;
+        int x2 = x1 + SEARCH_FRAME_WIDTH;
+        int y2 = y1 + SEARCH_FRAME_HEIGHT;
 
-        for (DisplayEntry entry : entries) {
-            entry.x = x;
-            entry.y = y;
+        boolean focused = this.searchBox != null && this.searchBox.isFocused();
 
-            x += PAGE_X_STEP;
-            if (x + PAGE_X_STEP > PAGE_DRAW_WIDTH) {
-                x = 0.0f;
-                y += PAGE_Y_STEP;
-            }
+        int outer = focused ? 0xFFC0C0C0 : 0xFFA0A0A0;
+        int inner = 0xFF000000;
+
+        guiGraphics.fill(x1, y1, x2, y2, outer);
+        guiGraphics.fill(x1 + 1, y1 + 1, x2 - 1, y2 - 1, inner);
+    }
+
+    protected void renderSearchGhostText(GuiGraphics guiGraphics) {
+        if (this.searchBox == null || !this.searchBox.getValue().isEmpty()) {
+            return;
         }
+
+        guiGraphics.drawString(
+                this.font,
+                "Search...",
+                this.leftPos + SEARCH_FRAME_X + LEGACY_SEARCH_TEXT_X_INSET,
+                this.topPos + SEARCH_FRAME_Y + LEGACY_SEARCH_TEXT_Y_OFFSET,
+                0xFF707070,
+                false
+        );
+    }
+
+    protected List<PageSurfaceRenderer.SurfaceEntry> toSurfaceEntries() {
+        List<PageSurfaceRenderer.SurfaceEntry> entries = new ArrayList<>(this.displayEntries.size());
+
+        for (DisplayEntry entry : this.displayEntries) {
+            entries.add(new PageSurfaceRenderer.SurfaceEntry(
+                    entry.absoluteIndex,
+                    entry.stack.copy(),
+                    entry.absoluteIndex < 0,
+                    entry.count,
+                    entry.searchName,
+                    Math.round(entry.x),
+                    Math.round(entry.y)
+            ));
+        }
+
+        return entries;
     }
 
     protected static String normalize(String text) {
