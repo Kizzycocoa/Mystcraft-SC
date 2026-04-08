@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Locale;
 import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
+import myst.synthetic.client.gui.widget.LegacyTinyToggleButton;
 
 public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
 
@@ -37,8 +38,8 @@ public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
     private static final int INVENTORY_HEIGHT = 80;
     private static final int TOTAL_HEIGHT = SURFACE_HEIGHT + BUTTON_SIZE + INVENTORY_HEIGHT + 1;
 
-    private Button sortButton;
-    private Button allButton;
+    private LegacyTinyToggleButton sortButton;
+    private LegacyTinyToggleButton allButton;
     private EditBox searchBox;
 
     private boolean draggingScrollbar = false;
@@ -64,58 +65,91 @@ public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
         super.init();
 
         this.sortButton = this.addRenderableWidget(
-                Button.builder(Component.empty(), button -> {
+                new LegacyTinyToggleButton(
+                        this.leftPos,
+                        this.topPos,
+                        18,
+                        18,
+                        "AZ",
+                        this.font,
+                        () -> this.sortAlphabetically,
+                        button -> {
                             this.sortAlphabetically = true;
                             this.scroll = 0;
-                        })
-                        .pos(this.leftPos, this.topPos)
-                        .size(18, 18)
-                        .build()
+                        }
+                )
         );
 
         this.allButton = this.addRenderableWidget(
-                Button.builder(Component.empty(), button -> {
+                new LegacyTinyToggleButton(
+                        this.leftPos + 18,
+                        this.topPos,
+                        18,
+                        18,
+                        "ALL",
+                        this.font,
+                        () -> this.showAllSymbols,
+                        button -> {
                             this.showAllSymbols = !this.showAllSymbols;
                             this.scroll = 0;
-                        })
-                        .pos(this.leftPos + 18, this.topPos)
-                        .size(18, 18)
-                        .build()
+                        }
+                )
         );
 
         this.searchBox = new EditBox(
                 this.font,
-                this.leftPos + 40,
-                this.topPos,
-                136,
-                18,
+                this.leftPos + 41,
+                this.topPos + 1,
+                134,
+                16,
                 Component.translatable("screen.mystcraft-sc.page_browser.search")
         );
         this.searchBox.setBordered(false);
         this.searchBox.setMaxLength(64);
+        this.searchBox.setTextColor(0xFFE0E0E0);
+        this.searchBox.setTextColorUneditable(0xFF707070);
         this.searchBox.setResponder(text -> this.scroll = 0);
         this.addRenderableWidget(this.searchBox);
+        this.searchBox.setCanLoseFocus(true);
     }
 
-    private void drawLegacyButtonText(GuiGraphics guiGraphics, int x, int y, String text) {
-        int availableWidth = 14;
-        int textWidth = this.font.width(text);
-        float scale = textWidth > availableWidth ? (float) availableWidth / (float) textWidth : 1.0F;
+    private void drawLegacySearchBox(GuiGraphics guiGraphics) {
+        int x1 = this.leftPos + 40;
+        int y1 = this.topPos;
+        int x2 = this.leftPos + 176;
+        int y2 = this.topPos + 18;
 
-        float scaledWidth = textWidth * scale;
-        float drawX = x + ((18.0F - scaledWidth) / 2.0F);
-        float drawY = y + ((18.0F - 8.0F * scale) / 2.0F);
+        boolean focused = this.searchBox != null && this.searchBox.isFocused();
 
-        guiGraphics.pose().pushMatrix();
-        guiGraphics.pose().translate(drawX, drawY);
-        guiGraphics.pose().scale(scale, scale);
-        guiGraphics.drawString(this.font, text, 0, 0, 0xFF404040, false);
-        guiGraphics.pose().popMatrix();
+        int outer = focused ? 0xFFC0C0C0 : 0xFFA0A0A0;
+        int inner = 0xFF000000;
+
+        guiGraphics.fill(x1, y1, x2, y2, outer);
+        guiGraphics.fill(x1 + 1, y1 + 1, x2 - 1, y2 - 1, inner);
     }
 
     @Override
     public void containerTick() {
         super.containerTick();
+    }
+
+    private void renderSearchGhostText(GuiGraphics guiGraphics) {
+        if (this.searchBox == null) {
+            return;
+        }
+
+        if (!this.searchBox.getValue().isEmpty()) {
+            return;
+        }
+
+        guiGraphics.drawString(
+                this.font,
+                "Search...",
+                this.searchBox.getX() + 1,
+                this.searchBox.getY() + 4,
+                0xFF707070,
+                false
+        );
     }
 
     @Override
@@ -135,7 +169,7 @@ public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
                 256
         );
 
-        guiGraphics.fill(this.leftPos + 40, this.topPos, this.leftPos + 176, this.topPos + 18, 0xFF000000);
+        this.drawLegacySearchBox(guiGraphics);
 
         PageSurfaceRenderer.drawSurfaceBackground(guiGraphics, this.leftPos, this.topPos);
         PageSurfaceRenderer.drawEntries(
@@ -296,8 +330,7 @@ public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
         this.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
         super.render(guiGraphics, mouseX, mouseY, partialTick);
 
-        this.drawLegacyButtonText(guiGraphics, this.leftPos, this.topPos, "AZ");
-        this.drawLegacyButtonText(guiGraphics, this.leftPos + 18, this.topPos, "ALL");
+        this.renderSearchGhostText(guiGraphics);
 
         this.renderTooltip(guiGraphics, mouseX, mouseY);
         this.renderPageTooltip(guiGraphics, mouseX, mouseY);
