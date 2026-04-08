@@ -275,7 +275,7 @@ public class FolderScreen extends AbstractContainerScreen<FolderMenu> {
 
             if (hoveredEntry != null && this.minecraft != null && this.minecraft.gameMode != null) {
                 if (hoveredEntry.slotIndex() >= 0 && !hoveredEntry.stack().isEmpty()) {
-                    if (this.minecraft.options.keyShift.isDown()) {
+                    if (event.hasShiftDown()) {
                         this.minecraft.gameMode.handleInventoryButtonClick(
                                 this.menu.containerId,
                                 FolderMenu.BUTTON_TAKE_TO_INVENTORY_START + hoveredEntry.slotIndex()

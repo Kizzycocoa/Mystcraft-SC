@@ -62,7 +62,7 @@ public class PortfolioScreen extends PageBrowserScreen<PortfolioMenu> {
             return;
         }
 
-        if (this.minecraft.options.keyShift.isDown()) {
+        if (event.hasShiftDown()) {
             this.minecraft.gameMode.handleInventoryButtonClick(
                     this.menu.containerId,
                     PortfolioMenu.BUTTON_TAKE_TO_INVENTORY_START + entry.absoluteIndex
