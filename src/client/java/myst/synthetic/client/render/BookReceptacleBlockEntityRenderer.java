@@ -72,7 +72,6 @@ public class BookReceptacleBlockEntityRenderer
         // Initial placement guess. This is the part you will likely tweak in-game.
         poseStack.translate(0.0F, 0.01F, -0.16F);
         poseStack.mulPose(Axis.YP.rotationDegrees(-90.0F));
-        poseStack.mulPose(Axis.ZP.rotationDegrees(90.0F));
         poseStack.scale(0.48F, 0.48F, 0.48F);
 
         this.bookRenderHelper.submitBook(
