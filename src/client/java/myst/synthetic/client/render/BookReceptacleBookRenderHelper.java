@@ -24,7 +24,7 @@ public final class BookReceptacleBookRenderHelper {
      * The 4th float is the open amount.
      */
     private static final BookModel.State RECEPTACLE_BOOK_STATE =
-            new BookModel.State(0.0F, 0.0F, 0.0F, 0.0F);
+            new BookModel.State(0.0F, 0.0F, 0.0F, 0.05F);
 
     private final BookModel bookModel;
 
