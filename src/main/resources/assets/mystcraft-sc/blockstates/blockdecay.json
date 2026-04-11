@@ -1,11 +1,11 @@
 {
   "variants": {
-    "decay=black":  { "model": "mystcraft-sc:block/blockdecay_black" },
-    "decay=red":    { "model": "mystcraft-sc:block/blockdecay_red" },
-    "decay=green":  { "model": "mystcraft-sc:block/blockdecay_green" },
-    "decay=blue":   { "model": "mystcraft-sc:block/blockdecay_blue" },
-    "decay=purple": { "model": "mystcraft-sc:block/blockdecay_purple" },
-    "decay=yellow": { "model": "mystcraft-sc:block/blockdecay_yellow" },
-    "decay=white":  { "model": "mystcraft-sc:block/blockdecay_white" }
+    "decay=black":  { "model": "mystcraft-sc:block/decay/blockdecay_black" },
+    "decay=red":    { "model": "mystcraft-sc:block/decay/blockdecay_red" },
+    "decay=green":  { "model": "mystcraft-sc:block/decay/blockdecay_green" },
+    "decay=blue":   { "model": "mystcraft-sc:block/decay/blockdecay_blue" },
+    "decay=purple": { "model": "mystcraft-sc:block/decay/blockdecay_purple" },
+    "decay=yellow": { "model": "mystcraft-sc:block/decay/blockdecay_yellow" },
+    "decay=white":  { "model": "mystcraft-sc:block/decay/blockdecay_white" }
   }
 }

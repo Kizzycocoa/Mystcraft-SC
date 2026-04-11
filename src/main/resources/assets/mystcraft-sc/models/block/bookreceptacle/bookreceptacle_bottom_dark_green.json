@@ -1,5 +1,5 @@
 {
-	"parent": "mystcraft-sc:block/bookreceptacle_bottom_parent",
+	"parent": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_parent",
 	"textures": {
 		"0": "mystcraft-sc:block/crystal/crystal_dark_green",
 		"1": "mystcraft-sc:block/crystal/book_receptacle_dark_green",
