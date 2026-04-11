@@ -104,7 +104,7 @@ public class BlockLinkPortal extends TransparentBlock {
     ) {
         super.neighborChanged(state, level, pos, neighborBlock, orientation, movedByPiston);
 
-        if (level.isClientSide()) {
+        if (level.isClientSide() || myst.synthetic.util.PortalUtils.isMutating(level)) {
             return;
         }
 

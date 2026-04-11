@@ -74,7 +74,7 @@ public class BlockCrystal extends Block {
 	) {
 		super.neighborChanged(state, level, pos, neighborBlock, orientation, movedByPiston);
 
-		if (level.isClientSide()) {
+		if (level.isClientSide() || myst.synthetic.util.PortalUtils.isMutating(level)) {
 			return;
 		}
 

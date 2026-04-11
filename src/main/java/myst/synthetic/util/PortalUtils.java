@@ -3,6 +3,7 @@ package myst.synthetic.util;
 import java.util.ArrayDeque;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Set;
 import myst.synthetic.MystcraftBlocks;
@@ -22,54 +23,131 @@ public final class PortalUtils {
 
     private static final int MAX_FRAME_SCAN = 21;
 
+    /**
+     * Prevent recursive neighbor-update rebuild storms.
+     */
+    private static final Map<Level, Integer> MUTATION_DEPTH = new IdentityHashMap<>();
+    private static final Map<Level, Set<QueuedRefresh>> PENDING_REFRESHES = new IdentityHashMap<>();
+
     private PortalUtils() {
     }
 
+    public static boolean isMutating(Level level) {
+        return MUTATION_DEPTH.getOrDefault(level, 0) > 0;
+    }
+
+    private static void beginMutation(Level level) {
+        MUTATION_DEPTH.put(level, MUTATION_DEPTH.getOrDefault(level, 0) + 1);
+    }
+
+    private static void endMutation(Level level) {
+        int depth = MUTATION_DEPTH.getOrDefault(level, 0);
+        if (depth <= 1) {
+            MUTATION_DEPTH.remove(level);
+            flushQueuedRefreshes(level);
+        } else {
+            MUTATION_DEPTH.put(level, depth - 1);
+        }
+    }
+
+    private static void queueRefresh(Level level, BlockPos origin, CrystalColor color) {
+        PENDING_REFRESHES
+                .computeIfAbsent(level, ignored -> new HashSet<>())
+                .add(new QueuedRefresh(origin.immutable(), color));
+    }
+
+    private static void flushQueuedRefreshes(Level level) {
+        Set<QueuedRefresh> queued = PENDING_REFRESHES.remove(level);
+        if (queued == null || queued.isEmpty()) {
+            return;
+        }
+
+        // Process on a stable world state, but still guarded.
+        beginMutation(level);
+        try {
+            Set<BlockPos> receptacles = new HashSet<>();
+
+            for (QueuedRefresh refresh : queued) {
+                for (Direction direction : Direction.values()) {
+                    BlockPos neighborPos = refresh.origin.relative(direction);
+                    collectOwningReceptaclesFrom(level, neighborPos, refresh.color, receptacles);
+                }
+            }
+
+            for (BlockPos receptaclePos : receptacles) {
+                BlockEntity be = level.getBlockEntity(receptaclePos);
+                if (be instanceof BlockEntityBookReceptacle receptacle
+                        && receptacle.hasValidPortalBook()
+                        && receptacle.hasValidSupportCrystal()) {
+                    CrystalColor color = receptacle.getBlockState().getValue(BlockBookReceptacle.COLOR);
+                    firePortal(level, receptaclePos, color);
+                }
+            }
+        } finally {
+            int depth = MUTATION_DEPTH.getOrDefault(level, 0);
+            if (depth <= 1) {
+                MUTATION_DEPTH.remove(level);
+            } else {
+                MUTATION_DEPTH.put(level, depth - 1);
+            }
+        }
+    }
+
     public static void firePortal(Level level, BlockPos receptaclePos, CrystalColor requiredColor) {
-        BlockEntity be = level.getBlockEntity(receptaclePos);
-        if (!(be instanceof BlockEntityBookReceptacle receptacle)) {
-            return;
+        beginMutation(level);
+        try {
+            BlockEntity be = level.getBlockEntity(receptaclePos);
+            if (!(be instanceof BlockEntityBookReceptacle receptacle)) {
+                return;
+            }
+
+            if (!receptacle.hasValidPortalBook()) {
+                return;
+            }
+
+            if (!receptacle.hasValidSupportCrystal()) {
+                return;
+            }
+
+            BlockPos basePos = receptacle.getSupportCrystalPos();
+            BlockState baseState = level.getBlockState(basePos);
+
+            if (!baseState.is(MystcraftBlocks.CRYSTAL)) {
+                return;
+            }
+
+            if (baseState.getValue(BlockCrystal.COLOR) != requiredColor) {
+                return;
+            }
+
+            depolarizeFrom(level, basePos, requiredColor);
+
+            Set<BlockPos> activeCrystalNetwork = pathCrystalNetwork(level, receptaclePos, basePos, requiredColor);
+            fillPortalFrames(level, activeCrystalNetwork, requiredColor);
+        } finally {
+            endMutation(level);
         }
-
-        if (!receptacle.hasValidPortalBook()) {
-            return;
-        }
-
-        if (!receptacle.hasValidSupportCrystal()) {
-            return;
-        }
-
-        BlockPos basePos = receptacle.getSupportCrystalPos();
-        BlockState baseState = level.getBlockState(basePos);
-
-        if (!baseState.is(MystcraftBlocks.CRYSTAL)) {
-            return;
-        }
-
-        if (baseState.getValue(BlockCrystal.COLOR) != requiredColor) {
-            return;
-        }
-
-        depolarizeFrom(level, basePos, requiredColor);
-
-        Set<BlockPos> activeCrystalNetwork = pathCrystalNetwork(level, receptaclePos, basePos, requiredColor);
-        fillPortalFrames(level, activeCrystalNetwork, requiredColor);
     }
 
     public static void shutdownPortal(Level level, BlockPos receptaclePos) {
-        BlockEntity be = level.getBlockEntity(receptaclePos);
-        if (!(be instanceof BlockEntityBookReceptacle receptacle)) {
-            return;
+        beginMutation(level);
+        try {
+            BlockEntity be = level.getBlockEntity(receptaclePos);
+            if (!(be instanceof BlockEntityBookReceptacle receptacle)) {
+                return;
+            }
+
+            if (!receptacle.hasValidSupportCrystal()) {
+                return;
+            }
+
+            BlockPos basePos = receptacle.getSupportCrystalPos();
+            CrystalColor requiredColor = receptacle.getBlockState().getValue(BlockBookReceptacle.COLOR);
+
+            depolarizeFrom(level, basePos, requiredColor);
+        } finally {
+            endMutation(level);
         }
-
-        if (!receptacle.hasValidSupportCrystal()) {
-            return;
-        }
-
-        BlockPos basePos = receptacle.getSupportCrystalPos();
-        CrystalColor requiredColor = receptacle.getBlockState().getValue(BlockBookReceptacle.COLOR);
-
-        depolarizeFrom(level, basePos, requiredColor);
     }
 
     private static Set<BlockPos> pathCrystalNetwork(
@@ -331,36 +409,12 @@ public final class PortalUtils {
         return isFramedAlongAxis(level, portalPos, axis, requiredColor);
     }
 
-    private static boolean hasConflictingAdjacentPortalAxis(
-            Level level,
-            BlockPos pos,
-            CrystalColor requiredColor,
-            Direction.Axis axis
-    ) {
-        for (Direction direction : Direction.values()) {
-            BlockPos neighborPos = pos.relative(direction);
-            BlockState neighborState = level.getBlockState(neighborPos);
-
-            if (!neighborState.is(MystcraftBlocks.LINK_PORTAL)) {
-                continue;
-            }
-
-            if (!neighborState.getValue(BlockLinkPortal.ACTIVE)) {
-                continue;
-            }
-
-            if (neighborState.getValue(BlockLinkPortal.COLOR) != requiredColor) {
-                continue;
-            }
-
-            if (neighborState.getValue(BlockLinkPortal.RENDER_ROTATION) != axis) {
-                return true;
-            }
+    public static void refreshNearbyReceptacles(Level level, BlockPos origin, CrystalColor requiredColor) {
+        if (isMutating(level)) {
+            queueRefresh(level, origin, requiredColor);
+            return;
         }
 
-        return false;
-    }
-    public static void refreshNearbyReceptacles(Level level, BlockPos origin, CrystalColor requiredColor) {
         Set<BlockPos> receptacles = new HashSet<>();
 
         for (Direction direction : Direction.values()) {
@@ -368,14 +422,19 @@ public final class PortalUtils {
             collectOwningReceptaclesFrom(level, neighborPos, requiredColor, receptacles);
         }
 
-        for (BlockPos receptaclePos : receptacles) {
-            BlockEntity be = level.getBlockEntity(receptaclePos);
-            if (be instanceof BlockEntityBookReceptacle receptacle
-                    && receptacle.hasValidPortalBook()
-                    && receptacle.hasValidSupportCrystal()
-                    && receptacle.getBlockState().getValue(BlockBookReceptacle.COLOR) == requiredColor) {
-                firePortal(level, receptaclePos, requiredColor);
+        beginMutation(level);
+        try {
+            for (BlockPos receptaclePos : receptacles) {
+                BlockEntity be = level.getBlockEntity(receptaclePos);
+                if (be instanceof BlockEntityBookReceptacle receptacle
+                        && receptacle.hasValidPortalBook()
+                        && receptacle.hasValidSupportCrystal()
+                        && receptacle.getBlockState().getValue(BlockBookReceptacle.COLOR) == requiredColor) {
+                    firePortal(level, receptaclePos, requiredColor);
+                }
             }
+        } finally {
+            endMutation(level);
         }
     }
 
@@ -577,6 +636,36 @@ public final class PortalUtils {
         return false;
     }
 
+    private static boolean hasConflictingAdjacentPortalAxis(
+            Level level,
+            BlockPos pos,
+            CrystalColor requiredColor,
+            Direction.Axis axis
+    ) {
+        for (Direction direction : Direction.values()) {
+            BlockPos neighborPos = pos.relative(direction);
+            BlockState neighborState = level.getBlockState(neighborPos);
+
+            if (!neighborState.is(MystcraftBlocks.LINK_PORTAL)) {
+                continue;
+            }
+
+            if (!neighborState.getValue(BlockLinkPortal.ACTIVE)) {
+                continue;
+            }
+
+            if (neighborState.getValue(BlockLinkPortal.COLOR) != requiredColor) {
+                continue;
+            }
+
+            if (neighborState.getValue(BlockLinkPortal.RENDER_ROTATION) != axis) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private static void addSameColorNeighbors(
             Level level,
             BlockPos pos,
@@ -632,5 +721,8 @@ public final class PortalUtils {
         }
 
         throw new IllegalArgumentException("Positions are not adjacent: " + from + " -> " + to);
+    }
+
+    private record QueuedRefresh(BlockPos origin, CrystalColor color) {
     }
 }
