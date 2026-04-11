@@ -28,6 +28,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
+import myst.synthetic.block.BlockLinkPortal;
 
 public class MystcraftBlocks {
 
@@ -37,6 +38,19 @@ public class MystcraftBlocks {
             BlockBehaviour.Properties blockSettings
     ) {
         return register(name, blockFactory, blockSettings, BlockItem::new);
+    }
+    public static <T extends Block> T registerNoItem(
+            String name,
+            Function<BlockBehaviour.Properties, T> blockFactory,
+            BlockBehaviour.Properties blockSettings
+    ) {
+        Identifier id = Identifier.fromNamespaceAndPath("mystcraft-sc", name);
+
+        ResourceKey<Block> blockKey = ResourceKey.create(Registries.BLOCK, id);
+        T block = blockFactory.apply(blockSettings.setId(blockKey));
+        Registry.register(BuiltInRegistries.BLOCK, blockKey, block);
+
+        return block;
     }
 
     public static <T extends Block> T register(
@@ -159,6 +173,19 @@ public class MystcraftBlocks {
                     .sound(SoundType.GLASS)
                     .noOcclusion()
                     .lightLevel(state -> 8)
+    );
+
+    public static final Block LINK_PORTAL = registerNoItem(
+            "linkportal",
+            BlockLinkPortal::new,
+            BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.COLOR_BLACK)
+                    .strength(-1.0F, 3600000.0F)
+                    .noCollision()
+                    .noLootTable()
+                    .noOcclusion()
+                    .lightLevel(state -> 11)
+                    .sound(SoundType.GLASS)
     );
 
     public static void initialize() {
