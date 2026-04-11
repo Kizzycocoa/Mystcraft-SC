@@ -87,6 +87,7 @@ public class BlockCrystal extends Block {
 		if (!myst.synthetic.util.PortalUtils.isCrystalStillValid(level, pos, requiredColor)) {
 			level.setBlock(pos, getDisabledState(state), Block.UPDATE_ALL);
 			myst.synthetic.util.PortalUtils.validateAround(level, pos, requiredColor);
+			myst.synthetic.util.PortalUtils.refreshNearbyReceptacles(level, pos, requiredColor);
 		}
 	}
 
