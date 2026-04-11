@@ -1,10 +1,13 @@
 package myst.synthetic.block.entity;
 
 import myst.synthetic.MystcraftBlockEntities;
+import myst.synthetic.block.BlockBookReceptacle;
+import myst.synthetic.block.BlockCrystal;
+import myst.synthetic.util.PortalUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class BlockEntityBookReceptacle extends BlockEntityDisplayContainer {
 
@@ -15,6 +18,54 @@ public class BlockEntityBookReceptacle extends BlockEntityDisplayContainer {
 	@Override
 	public boolean canAcceptDisplayItem(ItemStack stack) {
 		return DisplayItemRules.canGoInBookReceptacle(stack);
+	}
+
+	public ItemStack getBook() {
+		return this.getStoredItem();
+	}
+
+	public boolean hasBook() {
+		return this.hasStoredItem();
+	}
+
+	public void clearBook() {
+		this.clearContent();
+	}
+
+	public void setStoredItem(ItemStack stack) {
+		this.setItem(0, stack);
+	}
+
+	public boolean hasValidPortalBook() {
+		ItemStack stack = this.getBook();
+		return !stack.isEmpty() && DisplayItemRules.canGoInBookReceptacle(stack);
+	}
+
+	public BlockPos getSupportCrystalPos() {
+		BlockState state = this.getBlockState();
+		return BlockBookReceptacle.getSupportPos(
+				this.getBlockPos(),
+				state.getValue(BlockBookReceptacle.FACE),
+				state.getValue(BlockBookReceptacle.FACING)
+		);
+	}
+
+	public BlockState getSupportCrystalState() {
+		if (this.level == null) {
+			return null;
+		}
+		return this.level.getBlockState(getSupportCrystalPos());
+	}
+
+	public boolean hasValidSupportCrystal() {
+		if (this.level == null) {
+			return false;
+		}
+
+		BlockState support = getSupportCrystalState();
+		return support != null
+				&& support.is(myst.synthetic.MystcraftBlocks.CRYSTAL)
+				&& support.getValue(BlockCrystal.COLOR) == this.getBlockState().getValue(BlockBookReceptacle.COLOR);
 	}
 
 	@Override
@@ -28,25 +79,37 @@ public class BlockEntityBookReceptacle extends BlockEntityDisplayContainer {
 		BlockState state = this.getBlockState();
 		boolean hasBook = this.hasStoredItem();
 
-		if (state.hasProperty(myst.synthetic.block.BlockBookReceptacle.HAS_BOOK)
-				&& state.getValue(myst.synthetic.block.BlockBookReceptacle.HAS_BOOK) != hasBook) {
+		if (state.hasProperty(BlockBookReceptacle.HAS_BOOK)
+				&& state.getValue(BlockBookReceptacle.HAS_BOOK) != hasBook) {
 			this.level.setBlock(
 					this.worldPosition,
-					state.setValue(myst.synthetic.block.BlockBookReceptacle.HAS_BOOK, hasBook),
+					state.setValue(BlockBookReceptacle.HAS_BOOK, hasBook),
 					Block.UPDATE_ALL
 			);
 		}
+
+		handleItemChange();
 	}
 
-	public ItemStack getBook() {
-		return this.getStoredItem();
-	}
+	public void handleItemChange() {
+		if (this.level == null || this.level.isClientSide()) {
+			return;
+		}
 
-	public boolean hasBook() {
-		return this.hasStoredItem();
-	}
+		PortalUtils.shutdownPortal(this.level, this.worldPosition);
 
-	public void clearBook() {
-		this.clearContent();
+		if (!hasValidPortalBook()) {
+			return;
+		}
+
+		if (!hasValidSupportCrystal()) {
+			return;
+		}
+
+		PortalUtils.firePortal(
+				this.level,
+				this.worldPosition,
+				this.getBlockState().getValue(BlockBookReceptacle.COLOR)
+		);
 	}
 }

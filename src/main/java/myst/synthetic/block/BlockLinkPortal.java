@@ -2,6 +2,7 @@ package myst.synthetic.block;
 
 import com.mojang.serialization.MapCodec;
 import myst.synthetic.MystcraftBlocks;
+import myst.synthetic.block.property.CrystalColor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.Entity;
@@ -27,10 +28,9 @@ public class BlockLinkPortal extends TransparentBlock {
 
     public static final MapCodec<BlockLinkPortal> CODEC = simpleCodec(BlockLinkPortal::new);
 
-    // Full 6-direction legacy-style source pointer back toward the receptacle path.
+    public static final EnumProperty<CrystalColor> COLOR = EnumProperty.create("color", CrystalColor.class);
     public static final EnumProperty<Direction> SOURCE_DIRECTION = EnumProperty.create("source", Direction.class);
-    public static final BooleanProperty IS_PART_OF_PORTAL = BooleanProperty.create("active");
-
+    public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
     public static final EnumProperty<Direction.Axis> RENDER_ROTATION =
             EnumProperty.create("renderface", Direction.Axis.class);
     public static final BooleanProperty HAS_ROTATION = BooleanProperty.create("hasface");
@@ -43,10 +43,11 @@ public class BlockLinkPortal extends TransparentBlock {
     public BlockLinkPortal(BlockBehaviour.Properties properties) {
         super(properties);
         this.registerDefaultState(this.stateDefinition.any()
+                .setValue(COLOR, CrystalColor.BABY_BLUE)
+                .setValue(SOURCE_DIRECTION, Direction.DOWN)
+                .setValue(ACTIVE, false)
                 .setValue(HAS_ROTATION, false)
-                .setValue(RENDER_ROTATION, Direction.Axis.X)
-                .setValue(IS_PART_OF_PORTAL, false)
-                .setValue(SOURCE_DIRECTION, Direction.DOWN));
+                .setValue(RENDER_ROTATION, Direction.Axis.X));
     }
 
     @Override
@@ -56,7 +57,7 @@ public class BlockLinkPortal extends TransparentBlock {
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(SOURCE_DIRECTION, IS_PART_OF_PORTAL, HAS_ROTATION, RENDER_ROTATION);
+        builder.add(COLOR, SOURCE_DIRECTION, ACTIVE, HAS_ROTATION, RENDER_ROTATION);
     }
 
     @Override
@@ -107,7 +108,11 @@ public class BlockLinkPortal extends TransparentBlock {
             return;
         }
 
-        // Legacy calls PortalUtils.validatePortal(world, pos) here.
+        if (!state.getValue(ACTIVE)) {
+            return;
+        }
+
+        myst.synthetic.util.PortalUtils.validatePortal(level, pos);
     }
 
     @Override
@@ -123,10 +128,10 @@ public class BlockLinkPortal extends TransparentBlock {
             return;
         }
 
-        // Legacy:
-        // 1. trace back through source-direction to the Book Receptacle
-        // 2. get the inserted portal activator / linking book
-        // 3. call its onPortalCollision logic
+        // Next step hooks in here:
+        // 1. Trace back to the receptacle via source directions
+        // 2. Get the stored link/descriptive book
+        // 3. Trigger the book's portal collision logic
     }
 
     @Override
@@ -138,7 +143,43 @@ public class BlockLinkPortal extends TransparentBlock {
         return state.is(MystcraftBlocks.LINK_PORTAL);
     }
 
-    public static boolean isPortalOrCrystal(BlockState state) {
-        return state.is(MystcraftBlocks.LINK_PORTAL) || state.is(MystcraftBlocks.CRYSTAL);
+    public static boolean isActivePortal(BlockState state) {
+        return state.is(MystcraftBlocks.LINK_PORTAL) && state.getValue(ACTIVE);
+    }
+
+    public static BlockState getDisabledState(BlockState state) {
+        return state
+                .setValue(ACTIVE, false)
+                .setValue(SOURCE_DIRECTION, Direction.DOWN)
+                .setValue(HAS_ROTATION, false)
+                .setValue(RENDER_ROTATION, Direction.Axis.X);
+    }
+
+    public static BlockState getDirectedState(
+            BlockState state,
+            CrystalColor color,
+            Direction sourceDirection,
+            Direction.Axis renderAxis,
+            boolean hasRotation
+    ) {
+        return state
+                .setValue(COLOR, color)
+                .setValue(ACTIVE, true)
+                .setValue(SOURCE_DIRECTION, sourceDirection)
+                .setValue(RENDER_ROTATION, renderAxis)
+                .setValue(HAS_ROTATION, hasRotation);
+    }
+
+    public static boolean canConductFrom(BlockState state, CrystalColor requiredColor) {
+        return state.is(MystcraftBlocks.LINK_PORTAL)
+                && state.getValue(COLOR) == requiredColor;
+    }
+
+    public static CrystalColor getColor(BlockState state) {
+        return state.getValue(COLOR);
+    }
+
+    public static Direction getSourceDirection(BlockState state) {
+        return state.getValue(SOURCE_DIRECTION);
     }
 }
