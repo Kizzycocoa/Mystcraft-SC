@@ -18,10 +18,10 @@ import org.jetbrains.annotations.Nullable;
 public class BookReceptacleBlockEntityRenderer
         implements BlockEntityRenderer<BlockEntityBookReceptacle, BookReceptacleRenderState> {
 
-    private final BookstandBookRenderHelper bookRenderHelper;
+    private final BookReceptacleBookRenderHelper bookRenderHelper;
 
     public BookReceptacleBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
-        this.bookRenderHelper = new BookstandBookRenderHelper();
+        this.bookRenderHelper = new BookReceptacleBookRenderHelper();
     }
 
     @Override
@@ -70,10 +70,10 @@ public class BookReceptacleBlockEntityRenderer
         applyMountRotation(poseStack, state.face, state.facing);
 
         // Initial placement guess. This is the part you will likely tweak in-game.
-        poseStack.translate(0.0F, 0.0F, -0.185F);
+        poseStack.translate(0.0F, 0.01F, -0.16F);
         poseStack.mulPose(Axis.YP.rotationDegrees(-90.0F));
         poseStack.mulPose(Axis.ZP.rotationDegrees(90.0F));
-        poseStack.scale(0.62F, 0.62F, 0.62F);
+        poseStack.scale(0.48F, 0.48F, 0.48F);
 
         this.bookRenderHelper.submitBook(
                 state.contentType,
