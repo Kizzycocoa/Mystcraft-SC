@@ -3,6 +3,8 @@ package myst.synthetic.block;
 import com.mojang.serialization.MapCodec;
 import myst.synthetic.MystcraftBlocks;
 import myst.synthetic.block.entity.BlockEntityBookReceptacle;
+import myst.synthetic.block.entity.BlockEntityDisplayContainer;
+import myst.synthetic.block.entity.DisplayItemRules;
 import myst.synthetic.block.property.CrystalColor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -14,7 +16,6 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.Mirror;
@@ -34,7 +35,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
-public class BlockBookReceptacle extends BaseEntityBlock {
+public class BlockBookReceptacle extends BlockDisplayContainer {
 
     public static final MapCodec<BlockBookReceptacle> CODEC = simpleCodec(BlockBookReceptacle::new);
 
@@ -60,7 +61,7 @@ public class BlockBookReceptacle extends BaseEntityBlock {
     }
 
     @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
+    protected MapCodec<? extends BlockDisplayContainer> codec() {
         return CODEC;
     }
 
@@ -189,7 +190,36 @@ public class BlockBookReceptacle extends BaseEntityBlock {
     }
 
     @Override
-    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
+    protected InteractionResult useWithoutItem(
+            BlockState state,
+            Level level,
+            BlockPos pos,
+            Player player,
+            BlockHitResult hit
+    ) {
+        if (!(level.getBlockEntity(pos) instanceof BlockEntityBookReceptacle receptacle)) {
+            return InteractionResult.PASS;
+        }
+
+        if (!receptacle.hasBook()) {
+            return InteractionResult.PASS;
+        }
+
+        if (level.isClientSide()) {
+            return InteractionResult.SUCCESS;
+        }
+
+        ItemStack stored = receptacle.getBook();
+        if (stored.isEmpty()) {
+            return InteractionResult.PASS;
+        }
+
+        if (!player.getMainHandItem().isEmpty()) {
+            return InteractionResult.PASS;
+        }
+
+        receptacle.clearBook();
+        player.setItemInHand(InteractionHand.MAIN_HAND, stored.copy());
         return InteractionResult.SUCCESS;
     }
 
@@ -202,6 +232,75 @@ public class BlockBookReceptacle extends BaseEntityBlock {
             Player player,
             InteractionHand hand,
             BlockHitResult hit
+    ) {
+        if (!(level.getBlockEntity(pos) instanceof BlockEntityBookReceptacle receptacle)) {
+            return InteractionResult.PASS;
+        }
+
+        boolean validHeldBook = DisplayItemRules.canGoInBookReceptacle(stack);
+        boolean hasStoredBook = receptacle.hasBook();
+
+        if (level.isClientSide()) {
+            if (validHeldBook || hasStoredBook) {
+                return InteractionResult.SUCCESS;
+            }
+            return InteractionResult.PASS;
+        }
+
+        // Empty receptacle: only valid books may be inserted.
+        if (!hasStoredBook) {
+            if (!validHeldBook || stack.isEmpty()) {
+                return InteractionResult.PASS;
+            }
+
+            receptacle.setStoredItem(stack.copyWithCount(1));
+            if (!player.getAbilities().instabuild) {
+                stack.shrink(1);
+            }
+            return InteractionResult.SUCCESS;
+        }
+
+        // Occupied receptacle + valid book in hand = swap.
+        if (validHeldBook && !stack.isEmpty()) {
+            ItemStack oldBook = receptacle.getBook().copy();
+            ItemStack newBook = stack.copyWithCount(1);
+
+            if (stack.getCount() == 1) {
+                receptacle.setStoredItem(newBook);
+                player.setItemInHand(hand, oldBook);
+                return InteractionResult.SUCCESS;
+            }
+
+            if (!player.getInventory().add(oldBook)) {
+                return InteractionResult.PASS;
+            }
+
+            receptacle.setStoredItem(newBook);
+            if (!player.getAbilities().instabuild) {
+                stack.shrink(1);
+            }
+            return InteractionResult.SUCCESS;
+        }
+
+        // Occupied receptacle + invalid item in hand = withdraw to inventory if possible.
+        ItemStack oldBook = receptacle.getBook().copy();
+        if (!player.getInventory().add(oldBook)) {
+            return InteractionResult.PASS;
+        }
+
+        receptacle.clearBook();
+        return InteractionResult.SUCCESS;
+    }
+
+    @Override
+    protected InteractionResult openDisplayUi(
+            BlockState state,
+            Level level,
+            BlockPos pos,
+            Player player,
+            InteractionHand hand,
+            BlockHitResult hit,
+            BlockEntityDisplayContainer blockEntity
     ) {
         return InteractionResult.PASS;
     }

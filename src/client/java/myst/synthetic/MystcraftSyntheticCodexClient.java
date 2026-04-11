@@ -12,6 +12,7 @@ import myst.synthetic.client.render.InkScreenOverlay;
 import myst.synthetic.client.render.LinkbookEntityRenderer;
 import myst.synthetic.client.render.SlantBoardBlockEntityRenderer;
 import myst.synthetic.client.render.StarFissureBlockEntityRenderer;
+import myst.synthetic.client.render.BookReceptacleBlockEntityRenderer;
 import myst.synthetic.component.MystcraftDataComponents;
 import myst.synthetic.config.MystcraftConfig;
 import net.fabricmc.api.ClientModInitializer;
@@ -68,6 +69,10 @@ public class MystcraftSyntheticCodexClient implements ClientModInitializer {
 		MenuScreens.register(MystcraftMenus.FOLDER, FolderScreen::new);
 		MenuScreens.register(MystcraftMenus.PORTFOLIO, PortfolioScreen::new);
 
+		BlockEntityRenderers.register(
+				MystcraftBlockEntities.BOOK_RECEPTACLE,
+				BookReceptacleBlockEntityRenderer::new
+		);
 		InkScreenOverlay.initialize();
 
 		ClientTickEvents.END_CLIENT_TICK.register(new ClientTickEvents.EndTick() {

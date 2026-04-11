@@ -44,6 +44,11 @@ public final class DisplayItemRules {
 
 		return DisplayContentType.EMPTY;
 	}
+	public static boolean canGoInBookReceptacle(ItemStack stack) {
+		DisplayContentType type = classify(stack);
+		return type == DisplayContentType.LINKING_BOOK
+				|| type == DisplayContentType.DESCRIPTIVE_BOOK;
+	}
 
 	public static boolean canGoInBookstand(ItemStack stack) {
 		return classify(stack).isBookLike();
