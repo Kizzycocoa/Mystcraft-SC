@@ -70,9 +70,9 @@ public class BookReceptacleBlockEntityRenderer
         applyMountRotation(poseStack, state.face, state.facing);
 
         // Initial placement guess. This is the part you will likely tweak in-game.
-        poseStack.translate(0.0F, 0.01F, -0.46F);
+        poseStack.translate(0.0F, 0.01F, 0.2F);
         poseStack.mulPose(Axis.YP.rotationDegrees(-90.0F));
-        poseStack.scale(0.8F, 0.8F, 0.8F);
+        poseStack.scale(0.9F, 0.9F, 0.9F);
 
         this.bookRenderHelper.submitBook(
                 state.contentType,
