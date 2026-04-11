@@ -218,6 +218,7 @@ public final class PortalUtils {
     private static void fillPortalFrames(Level level, Set<BlockPos> activeCrystalNetwork, CrystalColor requiredColor) {
         ArrayDeque<BlockPos> candidates = new ArrayDeque<>();
         Set<BlockPos> seenCandidates = new HashSet<>();
+        Set<BlockPos> consumedPortalCells = new HashSet<>();
 
         for (BlockPos crystalPos : activeCrystalNetwork) {
             for (Direction direction : Direction.values()) {
@@ -229,46 +230,175 @@ public final class PortalUtils {
         }
 
         while (!candidates.isEmpty()) {
-            BlockPos pos = candidates.removeFirst();
-            BlockState state = level.getBlockState(pos);
+            BlockPos seedPos = candidates.removeFirst();
 
-            if (!isPortalFillSpace(state)) {
+            if (consumedPortalCells.contains(seedPos)) {
                 continue;
             }
 
-            Direction.Axis axis = findPortalAxis(level, pos, requiredColor);
+            BlockState seedState = level.getBlockState(seedPos);
+            if (!isPortalFillSpace(seedState)) {
+                continue;
+            }
+
+            Direction.Axis axis = findPortalAxis(level, seedPos, requiredColor);
             if (axis == null) {
                 continue;
             }
 
-            if (hasConflictingAdjacentPortalAxis(level, pos, requiredColor, axis)) {
+            Set<BlockPos> region = collectPlanarPortalRegion(level, seedPos, axis);
+            if (region.isEmpty()) {
                 continue;
             }
 
-            BlockPos sourcePos = findAdjacentActiveConductor(level, pos, requiredColor);
-            if (sourcePos == null) {
+            if (!isPortalRegionFullyFramed(level, region, axis, requiredColor)) {
                 continue;
             }
 
-            Direction sourceDirection = directionFromTo(pos, sourcePos);
+            if (regionTouchesConflictingPortalAxis(level, region, requiredColor, axis)) {
+                continue;
+            }
 
-            BlockState portalState = BlockLinkPortal.getDirectedState(
-                    MystcraftBlocks.LINK_PORTAL.defaultBlockState(),
-                    requiredColor,
-                    sourceDirection,
-                    axis,
-                    true
-            );
+            boolean regionTouchesNetwork = false;
 
-            level.setBlock(pos, portalState, Block.UPDATE_ALL);
+            for (BlockPos pos : region) {
+                BlockPos sourcePos = findAdjacentActiveConductor(level, pos, requiredColor);
+                if (sourcePos != null) {
+                    regionTouchesNetwork = true;
+                    break;
+                }
+            }
 
-            for (Direction direction : Direction.values()) {
+            if (!regionTouchesNetwork) {
+                continue;
+            }
+
+            for (BlockPos pos : region) {
+                BlockPos sourcePos = findAdjacentActiveConductor(level, pos, requiredColor);
+                if (sourcePos == null) {
+                    // Fallback: point at any already-placed portal in this region if possible.
+                    sourcePos = findAdjacentPlacedPortal(level, pos, requiredColor, axis);
+                }
+                if (sourcePos == null) {
+                    sourcePos = findAnyAdjacentRegionCell(region, pos);
+                }
+                if (sourcePos == null) {
+                    continue;
+                }
+
+                Direction sourceDirection = directionFromTo(pos, sourcePos);
+
+                BlockState portalState = BlockLinkPortal.getDirectedState(
+                        MystcraftBlocks.LINK_PORTAL.defaultBlockState(),
+                        requiredColor,
+                        sourceDirection,
+                        axis,
+                        true
+                );
+
+                level.setBlock(pos, portalState, Block.UPDATE_ALL);
+                consumedPortalCells.add(pos);
+            }
+        }
+    }
+
+    private static Set<BlockPos> collectPlanarPortalRegion(Level level, BlockPos seedPos, Direction.Axis axis) {
+        Set<BlockPos> visited = new HashSet<>();
+        ArrayDeque<BlockPos> queue = new ArrayDeque<>();
+
+        queue.add(seedPos);
+
+        while (!queue.isEmpty()) {
+            BlockPos pos = queue.removeFirst();
+            if (!visited.add(pos)) {
+                continue;
+            }
+
+            if (!isPortalFillSpace(level.getBlockState(pos))) {
+                continue;
+            }
+
+            for (Direction direction : planarDirections(axis)) {
+                queue.add(pos.relative(direction));
+            }
+        }
+
+        return visited;
+    }
+
+    private static boolean isPortalRegionFullyFramed(
+            Level level,
+            Set<BlockPos> region,
+            Direction.Axis axis,
+            CrystalColor requiredColor
+    ) {
+        for (BlockPos pos : region) {
+            for (Direction direction : planarDirections(axis)) {
                 BlockPos neighborPos = pos.relative(direction);
-                if (seenCandidates.add(neighborPos)) {
-                    candidates.add(neighborPos);
+
+                if (region.contains(neighborPos)) {
+                    continue;
+                }
+
+                BlockState neighborState = level.getBlockState(neighborPos);
+                if (!neighborState.is(MystcraftBlocks.CRYSTAL)
+                        || !neighborState.getValue(BlockCrystal.ACTIVE)
+                        || neighborState.getValue(BlockCrystal.COLOR) != requiredColor) {
+                    return false;
                 }
             }
         }
+
+        return true;
+    }
+
+    private static boolean regionTouchesConflictingPortalAxis(
+            Level level,
+            Set<BlockPos> region,
+            CrystalColor requiredColor,
+            Direction.Axis axis
+    ) {
+        for (BlockPos pos : region) {
+            if (hasConflictingAdjacentPortalAxis(level, pos, requiredColor, axis)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static Direction[] planarDirections(Direction.Axis axis) {
+        return switch (axis) {
+            case X -> new Direction[]{Direction.UP, Direction.DOWN, Direction.NORTH, Direction.SOUTH};
+            case Y -> new Direction[]{Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST};
+            case Z -> new Direction[]{Direction.UP, Direction.DOWN, Direction.WEST, Direction.EAST};
+        };
+    }
+
+    private static BlockPos findAdjacentPlacedPortal(Level level, BlockPos pos, CrystalColor requiredColor, Direction.Axis axis) {
+        for (Direction direction : Direction.values()) {
+            BlockPos neighborPos = pos.relative(direction);
+            BlockState neighborState = level.getBlockState(neighborPos);
+
+            if (neighborState.is(MystcraftBlocks.LINK_PORTAL)
+                    && neighborState.getValue(BlockLinkPortal.ACTIVE)
+                    && neighborState.getValue(BlockLinkPortal.COLOR) == requiredColor
+                    && neighborState.getValue(BlockLinkPortal.RENDER_ROTATION) == axis) {
+                return neighborPos;
+            }
+        }
+
+        return null;
+    }
+
+    private static BlockPos findAnyAdjacentRegionCell(Set<BlockPos> region, BlockPos pos) {
+        for (Direction direction : Direction.values()) {
+            BlockPos neighborPos = pos.relative(direction);
+            if (region.contains(neighborPos)) {
+                return neighborPos;
+            }
+        }
+
+        return null;
     }
 
     public static void depolarizeFrom(Level level, BlockPos startPos, CrystalColor requiredColor) {
