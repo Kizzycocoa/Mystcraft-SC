@@ -1,6 +1,6 @@
 {
     "parent": "block/cube_all",
     "textures": {
-        "all": "mystcraft-sc:block/Crystal/crystal_silver"
+        "all": "mystcraft-sc:block/crystal/crystal_silver"
     }
 }

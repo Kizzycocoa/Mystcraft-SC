@@ -29,7 +29,7 @@
     ],
     "fallback": {
       "type": "minecraft:model",
-      "model": "mystcraft-sc:block/crystal_baby_blue"
+      "model": "mystcraft-sc:block/crystal/crystal_baby_blue"
     }
   }
 }
