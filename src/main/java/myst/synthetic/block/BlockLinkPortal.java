@@ -5,9 +5,10 @@ import myst.synthetic.MystcraftBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.InsideBlockEffectApplier;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.TransparentBlock;
@@ -15,10 +16,8 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.redstone.Orientation;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -28,10 +27,12 @@ public class BlockLinkPortal extends TransparentBlock {
 
     public static final MapCodec<BlockLinkPortal> CODEC = simpleCodec(BlockLinkPortal::new);
 
-    public static final DirectionProperty SOURCE_DIRECTION = DirectionProperty.create("source");
+    // Full 6-direction legacy-style source pointer back toward the receptacle path.
+    public static final EnumProperty<Direction> SOURCE_DIRECTION = EnumProperty.create("source", Direction.class);
     public static final BooleanProperty IS_PART_OF_PORTAL = BooleanProperty.create("active");
 
-    public static final EnumProperty<Direction.Axis> RENDER_ROTATION = EnumProperty.create("renderface", Direction.Axis.class);
+    public static final EnumProperty<Direction.Axis> RENDER_ROTATION =
+            EnumProperty.create("renderface", Direction.Axis.class);
     public static final BooleanProperty HAS_ROTATION = BooleanProperty.create("hasface");
 
     private static final VoxelShape SHAPE_EW = Block.box(6.0, 0.0, 0.0, 10.0, 16.0, 16.0);
@@ -107,13 +108,17 @@ public class BlockLinkPortal extends TransparentBlock {
         }
 
         // Legacy calls PortalUtils.validatePortal(world, pos) here.
-        // Wire that in once the crystal/source-direction network logic is ported.
     }
 
     @Override
-    protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
-        super.entityInside(state, level, pos, entity);
-
+    protected void entityInside(
+            BlockState state,
+            Level level,
+            BlockPos pos,
+            Entity entity,
+            InsideBlockEffectApplier applier,
+            boolean pastEdges
+    ) {
         if (level.isClientSide()) {
             return;
         }
@@ -125,7 +130,7 @@ public class BlockLinkPortal extends TransparentBlock {
     }
 
     @Override
-    protected boolean canBeReplaced(BlockState state, net.minecraft.world.item.context.BlockPlaceContext useContext) {
+    protected boolean canBeReplaced(BlockState state, BlockPlaceContext useContext) {
         return false;
     }
 
