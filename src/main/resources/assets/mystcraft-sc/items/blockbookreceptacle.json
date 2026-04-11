@@ -9,7 +9,7 @@
       { "when": "olive",      "model": { "type": "minecraft:model", "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_olive" } },
       { "when": "yellow",     "model": { "type": "minecraft:model", "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_yellow" } },
       { "when": "dark_green", "model": { "type": "minecraft:model", "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_dark_green" } },
-      { "when": "green",      "model": { "type": "minecraft:model", "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_sidegreen" } },
+      { "when": "green",      "model": { "type": "minecraft:model", "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_green" } },
       { "when": "teal",       "model": { "type": "minecraft:model", "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_teal" } },
       { "when": "cyan",       "model": { "type": "minecraft:model", "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_cyan" } },
       { "when": "navy",       "model": { "type": "minecraft:model", "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_navy" } },
