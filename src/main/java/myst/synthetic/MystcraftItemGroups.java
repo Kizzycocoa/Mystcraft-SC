@@ -16,9 +16,12 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.component.CustomData;
 import myst.synthetic.api.hook.LinkPropertyAPI;
 import myst.synthetic.page.Page;
-import myst.synthetic.page.symbol.MystcraftPageSymbols;
 import myst.synthetic.page.symbol.PageSymbol;
 import myst.synthetic.page.symbol.PageSymbolRegistry;
+import myst.synthetic.block.BlockCrystal;
+import myst.synthetic.block.BlockBookReceptacle;
+import myst.synthetic.block.property.CrystalColor;
+import net.minecraft.world.item.component.BlockItemStateProperties;
 
 import java.util.List;
 
@@ -79,6 +82,32 @@ public class MystcraftItemGroups {
         return stack;
     }
 
+    public static ItemStack createCrystalVariant(CrystalColor color) {
+        ItemStack stack = new ItemStack(MystcraftBlocks.CRYSTAL);
+        stack.set(
+                DataComponents.BLOCK_STATE,
+                BlockItemStateProperties.EMPTY.with(BlockCrystal.COLOR, color)
+        );
+        stack.set(
+                DataComponents.ITEM_NAME,
+                Component.translatable("item.mystcraft-sc.crystal." + color.getSerializedName())
+        );
+        return stack;
+    }
+
+    public static ItemStack createBookReceptacleVariant(CrystalColor color) {
+        ItemStack stack = new ItemStack(MystcraftBlocks.BOOK_RECEPTACLE_BLOCK);
+        stack.set(
+                DataComponents.BLOCK_STATE,
+                BlockItemStateProperties.EMPTY.with(BlockBookReceptacle.COLOR, color)
+        );
+        stack.set(
+                DataComponents.ITEM_NAME,
+                Component.translatable("item.mystcraft-sc.book_receptacle." + color.getSerializedName())
+        );
+        return stack;
+    }
+
     private static String getWoodModelKey(WoodType wood) {
         return switch (wood) {
             default -> wood.getSerializedName();
@@ -102,6 +131,7 @@ public class MystcraftItemGroups {
                         output.accept(MystcraftItems.PORTFOLIO);
                         output.accept(MystcraftItems.BAHRO_LEATHER);
                         output.accept(MystcraftItems.GLASSES);
+
                         for (WoodType wood : WoodType.values()) {
                             output.accept(createDeskVariant(wood));
                         }
@@ -117,11 +147,18 @@ public class MystcraftItemGroups {
                         for (WoodType wood : WoodType.values()) {
                             output.accept(createBookstandVariant(wood));
                         }
+
                         output.accept(MystcraftBlocks.INK_MIXER_BLOCK);
                         output.accept(MystcraftBlocks.LINK_MODIFIER_BLOCK);
                         output.accept(MystcraftBlocks.BOOK_BINDER_BLOCK);
-                        output.accept(MystcraftBlocks.BOOK_RECEPTACLE_BLOCK);
-                        output.accept(MystcraftBlocks.CRYSTAL);
+
+                        for (CrystalColor color : CrystalColor.values()) {
+                            output.accept(createCrystalVariant(color));
+                        }
+                        for (CrystalColor color : CrystalColor.values()) {
+                            output.accept(createBookReceptacleVariant(color));
+                        }
+
                         for (DecayType type : DecayType.values()) {
 
                             ItemStack stack = new ItemStack(MystcraftBlocks.BLOCKDECAY);

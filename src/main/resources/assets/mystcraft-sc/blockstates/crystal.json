@@ -1,7 +1,26 @@
 {
   "variants": {
-    "": {
-      "model": "mystcraft-sc:block/crystal"
-    }
+    "color=maroon":     { "model": "mystcraft-sc:block/crystal/crystal_maroon" },
+    "color=red":        { "model": "mystcraft-sc:block/crystal/crystal_red" },
+    "color=olive":      { "model": "mystcraft-sc:block/crystal/crystal_olive" },
+    "color=yellow":     { "model": "mystcraft-sc:block/crystal/crystal_yellow" },
+    "color=dark_green": { "model": "mystcraft-sc:block/crystal/crystal_dark_green" },
+    "color=green":      { "model": "mystcraft-sc:block/crystal/crystal_green" },
+    "color=teal":       { "model": "mystcraft-sc:block/crystal/crystal_teal" },
+    "color=cyan":       { "model": "mystcraft-sc:block/crystal/crystal_cyan" },
+    "color=navy":       { "model": "mystcraft-sc:block/crystal/crystal_navy" },
+    "color=blue":       { "model": "mystcraft-sc:block/crystal/crystal_blue" },
+    "color=purple":     { "model": "mystcraft-sc:block/crystal/crystal_purple" },
+    "color=magenta":    { "model": "mystcraft-sc:block/crystal/crystal_magenta" },
+    "color=black":      { "model": "mystcraft-sc:block/crystal/crystal_black" },
+    "color=grey":       { "model": "mystcraft-sc:block/crystal/crystal_grey" },
+    "color=silver":     { "model": "mystcraft-sc:block/crystal/crystal_silver" },
+    "color=white":      { "model": "mystcraft-sc:block/crystal/crystal_white" },
+    "color=orange":     { "model": "mystcraft-sc:block/crystal/crystal_orange" },
+    "color=lime":       { "model": "mystcraft-sc:block/crystal/crystal_lime" },
+    "color=citrus":     { "model": "mystcraft-sc:block/crystal/crystal_citrus" },
+    "color=pink":       { "model": "mystcraft-sc:block/crystal/crystal_pink" },
+    "color=dark_grey":  { "model": "mystcraft-sc:block/crystal/crystal_dark_grey" },
+    "color=baby_blue":  { "model": "mystcraft-sc:block/crystal/crystal_baby_blue" }
   }
 }

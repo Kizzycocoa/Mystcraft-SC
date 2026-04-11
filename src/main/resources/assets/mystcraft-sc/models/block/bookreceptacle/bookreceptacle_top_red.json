@@ -1,0 +1,8 @@
+{
+	"parent": "mystcraft-sc:block/bookreceptacle_top_parent",
+	"textures": {
+		"0": "mystcraft-sc:block/crystal/crystal_red",
+		"1": "mystcraft-sc:block/crystal/book_receptacle_red",
+		"particle": "mystcraft-sc:block/crystal/crystal_red"
+	}
+}

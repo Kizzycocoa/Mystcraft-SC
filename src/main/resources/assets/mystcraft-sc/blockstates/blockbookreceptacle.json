@@ -1,17 +1,2336 @@
 {
-    "variants": {
-        "facing=south,has_book=false": { "model": "mystcraft-sc:block/bookreceptacle_model", "x": 0,   "y": 0 },
-        "facing=west,has_book=false":  { "model": "mystcraft-sc:block/bookreceptacle_model", "x": 0,   "y": 90 },
-        "facing=north,has_book=false": { "model": "mystcraft-sc:block/bookreceptacle_model", "x": 0,   "y": 180 },
-        "facing=east,has_book=false":  { "model": "mystcraft-sc:block/bookreceptacle_model", "x": 0,   "y": 270 },
-        "facing=up,has_book=false":    { "model": "mystcraft-sc:block/bookreceptacle_model", "x": 270, "y": 0 },
-        "facing=down,has_book=false":  { "model": "mystcraft-sc:block/bookreceptacle_model", "x": 90,  "y": 0 },
-
-        "facing=south,has_book=true":  { "model": "mystcraft-sc:block/bookreceptacle_model", "x": 0,   "y": 0 },
-        "facing=west,has_book=true":   { "model": "mystcraft-sc:block/bookreceptacle_model", "x": 0,   "y": 90 },
-        "facing=north,has_book=true":  { "model": "mystcraft-sc:block/bookreceptacle_model", "x": 0,   "y": 180 },
-        "facing=east,has_book=true":   { "model": "mystcraft-sc:block/bookreceptacle_model", "x": 0,   "y": 270 },
-        "facing=up,has_book=true":     { "model": "mystcraft-sc:block/bookreceptacle_model", "x": 270, "y": 0 },
-        "facing=down,has_book=true":   { "model": "mystcraft-sc:block/bookreceptacle_model", "x": 90,  "y": 0 }
+  "variants": {
+    "face=wall,facing=north,color=maroon,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_maroon",
+      "y": 180
+    },
+    "face=wall,facing=south,color=maroon,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_maroon"
+    },
+    "face=wall,facing=west,color=maroon,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_maroon",
+      "y": 90
+    },
+    "face=wall,facing=east,color=maroon,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_maroon",
+      "y": 270
+    },
+    "face=floor,facing=north,color=maroon,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_maroon",
+      "x": 270,
+      "y": 180
+    },
+    "face=floor,facing=south,color=maroon,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_maroon",
+      "x": 270
+    },
+    "face=floor,facing=west,color=maroon,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_maroon",
+      "x": 270,
+      "y": 90
+    },
+    "face=floor,facing=east,color=maroon,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_maroon",
+      "x": 270,
+      "y": 270
+    },
+    "face=ceiling,facing=north,color=maroon,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_maroon",
+      "x": 90
+    },
+    "face=ceiling,facing=south,color=maroon,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_maroon",
+      "x": 90,
+      "y": 180
+    },
+    "face=ceiling,facing=west,color=maroon,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_maroon",
+      "x": 90,
+      "y": 270
+    },
+    "face=ceiling,facing=east,color=maroon,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_maroon",
+      "x": 90,
+      "y": 90
+    },
+    "face=wall,facing=north,color=maroon,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_maroon",
+      "y": 180
+    },
+    "face=wall,facing=south,color=maroon,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_maroon"
+    },
+    "face=wall,facing=west,color=maroon,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_maroon",
+      "y": 90
+    },
+    "face=wall,facing=east,color=maroon,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_maroon",
+      "y": 270
+    },
+    "face=floor,facing=north,color=maroon,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_maroon",
+      "x": 270,
+      "y": 180
+    },
+    "face=floor,facing=south,color=maroon,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_maroon",
+      "x": 270
+    },
+    "face=floor,facing=west,color=maroon,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_maroon",
+      "x": 270,
+      "y": 90
+    },
+    "face=floor,facing=east,color=maroon,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_maroon",
+      "x": 270,
+      "y": 270
+    },
+    "face=ceiling,facing=north,color=maroon,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_maroon",
+      "x": 90
+    },
+    "face=ceiling,facing=south,color=maroon,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_maroon",
+      "x": 90,
+      "y": 180
+    },
+    "face=ceiling,facing=west,color=maroon,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_maroon",
+      "x": 90,
+      "y": 270
+    },
+    "face=ceiling,facing=east,color=maroon,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_maroon",
+      "x": 90,
+      "y": 90
+    },
+    "face=wall,facing=north,color=red,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_red",
+      "y": 180
+    },
+    "face=wall,facing=south,color=red,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_red"
+    },
+    "face=wall,facing=west,color=red,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_red",
+      "y": 90
+    },
+    "face=wall,facing=east,color=red,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_red",
+      "y": 270
+    },
+    "face=floor,facing=north,color=red,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_red",
+      "x": 270,
+      "y": 180
+    },
+    "face=floor,facing=south,color=red,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_red",
+      "x": 270
+    },
+    "face=floor,facing=west,color=red,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_red",
+      "x": 270,
+      "y": 90
+    },
+    "face=floor,facing=east,color=red,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_red",
+      "x": 270,
+      "y": 270
+    },
+    "face=ceiling,facing=north,color=red,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_red",
+      "x": 90
+    },
+    "face=ceiling,facing=south,color=red,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_red",
+      "x": 90,
+      "y": 180
+    },
+    "face=ceiling,facing=west,color=red,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_red",
+      "x": 90,
+      "y": 270
+    },
+    "face=ceiling,facing=east,color=red,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_red",
+      "x": 90,
+      "y": 90
+    },
+    "face=wall,facing=north,color=red,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_red",
+      "y": 180
+    },
+    "face=wall,facing=south,color=red,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_red"
+    },
+    "face=wall,facing=west,color=red,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_red",
+      "y": 90
+    },
+    "face=wall,facing=east,color=red,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_red",
+      "y": 270
+    },
+    "face=floor,facing=north,color=red,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_red",
+      "x": 270,
+      "y": 180
+    },
+    "face=floor,facing=south,color=red,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_red",
+      "x": 270
+    },
+    "face=floor,facing=west,color=red,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_red",
+      "x": 270,
+      "y": 90
+    },
+    "face=floor,facing=east,color=red,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_red",
+      "x": 270,
+      "y": 270
+    },
+    "face=ceiling,facing=north,color=red,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_red",
+      "x": 90
+    },
+    "face=ceiling,facing=south,color=red,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_red",
+      "x": 90,
+      "y": 180
+    },
+    "face=ceiling,facing=west,color=red,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_red",
+      "x": 90,
+      "y": 270
+    },
+    "face=ceiling,facing=east,color=red,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_red",
+      "x": 90,
+      "y": 90
+    },
+    "face=wall,facing=north,color=olive,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_olive",
+      "y": 180
+    },
+    "face=wall,facing=south,color=olive,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_olive"
+    },
+    "face=wall,facing=west,color=olive,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_olive",
+      "y": 90
+    },
+    "face=wall,facing=east,color=olive,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_olive",
+      "y": 270
+    },
+    "face=floor,facing=north,color=olive,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_olive",
+      "x": 270,
+      "y": 180
+    },
+    "face=floor,facing=south,color=olive,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_olive",
+      "x": 270
+    },
+    "face=floor,facing=west,color=olive,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_olive",
+      "x": 270,
+      "y": 90
+    },
+    "face=floor,facing=east,color=olive,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_olive",
+      "x": 270,
+      "y": 270
+    },
+    "face=ceiling,facing=north,color=olive,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_olive",
+      "x": 90
+    },
+    "face=ceiling,facing=south,color=olive,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_olive",
+      "x": 90,
+      "y": 180
+    },
+    "face=ceiling,facing=west,color=olive,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_olive",
+      "x": 90,
+      "y": 270
+    },
+    "face=ceiling,facing=east,color=olive,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_olive",
+      "x": 90,
+      "y": 90
+    },
+    "face=wall,facing=north,color=olive,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_olive",
+      "y": 180
+    },
+    "face=wall,facing=south,color=olive,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_olive"
+    },
+    "face=wall,facing=west,color=olive,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_olive",
+      "y": 90
+    },
+    "face=wall,facing=east,color=olive,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_olive",
+      "y": 270
+    },
+    "face=floor,facing=north,color=olive,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_olive",
+      "x": 270,
+      "y": 180
+    },
+    "face=floor,facing=south,color=olive,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_olive",
+      "x": 270
+    },
+    "face=floor,facing=west,color=olive,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_olive",
+      "x": 270,
+      "y": 90
+    },
+    "face=floor,facing=east,color=olive,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_olive",
+      "x": 270,
+      "y": 270
+    },
+    "face=ceiling,facing=north,color=olive,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_olive",
+      "x": 90
+    },
+    "face=ceiling,facing=south,color=olive,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_olive",
+      "x": 90,
+      "y": 180
+    },
+    "face=ceiling,facing=west,color=olive,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_olive",
+      "x": 90,
+      "y": 270
+    },
+    "face=ceiling,facing=east,color=olive,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_olive",
+      "x": 90,
+      "y": 90
+    },
+    "face=wall,facing=north,color=yellow,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_yellow",
+      "y": 180
+    },
+    "face=wall,facing=south,color=yellow,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_yellow"
+    },
+    "face=wall,facing=west,color=yellow,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_yellow",
+      "y": 90
+    },
+    "face=wall,facing=east,color=yellow,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_yellow",
+      "y": 270
+    },
+    "face=floor,facing=north,color=yellow,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_yellow",
+      "x": 270,
+      "y": 180
+    },
+    "face=floor,facing=south,color=yellow,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_yellow",
+      "x": 270
+    },
+    "face=floor,facing=west,color=yellow,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_yellow",
+      "x": 270,
+      "y": 90
+    },
+    "face=floor,facing=east,color=yellow,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_yellow",
+      "x": 270,
+      "y": 270
+    },
+    "face=ceiling,facing=north,color=yellow,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_yellow",
+      "x": 90
+    },
+    "face=ceiling,facing=south,color=yellow,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_yellow",
+      "x": 90,
+      "y": 180
+    },
+    "face=ceiling,facing=west,color=yellow,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_yellow",
+      "x": 90,
+      "y": 270
+    },
+    "face=ceiling,facing=east,color=yellow,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_yellow",
+      "x": 90,
+      "y": 90
+    },
+    "face=wall,facing=north,color=yellow,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_yellow",
+      "y": 180
+    },
+    "face=wall,facing=south,color=yellow,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_yellow"
+    },
+    "face=wall,facing=west,color=yellow,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_yellow",
+      "y": 90
+    },
+    "face=wall,facing=east,color=yellow,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_yellow",
+      "y": 270
+    },
+    "face=floor,facing=north,color=yellow,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_yellow",
+      "x": 270,
+      "y": 180
+    },
+    "face=floor,facing=south,color=yellow,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_yellow",
+      "x": 270
+    },
+    "face=floor,facing=west,color=yellow,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_yellow",
+      "x": 270,
+      "y": 90
+    },
+    "face=floor,facing=east,color=yellow,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_yellow",
+      "x": 270,
+      "y": 270
+    },
+    "face=ceiling,facing=north,color=yellow,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_yellow",
+      "x": 90
+    },
+    "face=ceiling,facing=south,color=yellow,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_yellow",
+      "x": 90,
+      "y": 180
+    },
+    "face=ceiling,facing=west,color=yellow,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_yellow",
+      "x": 90,
+      "y": 270
+    },
+    "face=ceiling,facing=east,color=yellow,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_yellow",
+      "x": 90,
+      "y": 90
+    },
+    "face=wall,facing=north,color=dark_green,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_dark_green",
+      "y": 180
+    },
+    "face=wall,facing=south,color=dark_green,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_dark_green"
+    },
+    "face=wall,facing=west,color=dark_green,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_dark_green",
+      "y": 90
+    },
+    "face=wall,facing=east,color=dark_green,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_dark_green",
+      "y": 270
+    },
+    "face=floor,facing=north,color=dark_green,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_dark_green",
+      "x": 270,
+      "y": 180
+    },
+    "face=floor,facing=south,color=dark_green,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_dark_green",
+      "x": 270
+    },
+    "face=floor,facing=west,color=dark_green,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_dark_green",
+      "x": 270,
+      "y": 90
+    },
+    "face=floor,facing=east,color=dark_green,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_dark_green",
+      "x": 270,
+      "y": 270
+    },
+    "face=ceiling,facing=north,color=dark_green,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_dark_green",
+      "x": 90
+    },
+    "face=ceiling,facing=south,color=dark_green,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_dark_green",
+      "x": 90,
+      "y": 180
+    },
+    "face=ceiling,facing=west,color=dark_green,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_dark_green",
+      "x": 90,
+      "y": 270
+    },
+    "face=ceiling,facing=east,color=dark_green,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_dark_green",
+      "x": 90,
+      "y": 90
+    },
+    "face=wall,facing=north,color=dark_green,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_dark_green",
+      "y": 180
+    },
+    "face=wall,facing=south,color=dark_green,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_dark_green"
+    },
+    "face=wall,facing=west,color=dark_green,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_dark_green",
+      "y": 90
+    },
+    "face=wall,facing=east,color=dark_green,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_dark_green",
+      "y": 270
+    },
+    "face=floor,facing=north,color=dark_green,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_dark_green",
+      "x": 270,
+      "y": 180
+    },
+    "face=floor,facing=south,color=dark_green,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_dark_green",
+      "x": 270
+    },
+    "face=floor,facing=west,color=dark_green,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_dark_green",
+      "x": 270,
+      "y": 90
+    },
+    "face=floor,facing=east,color=dark_green,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_dark_green",
+      "x": 270,
+      "y": 270
+    },
+    "face=ceiling,facing=north,color=dark_green,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_dark_green",
+      "x": 90
+    },
+    "face=ceiling,facing=south,color=dark_green,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_dark_green",
+      "x": 90,
+      "y": 180
+    },
+    "face=ceiling,facing=west,color=dark_green,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_dark_green",
+      "x": 90,
+      "y": 270
+    },
+    "face=ceiling,facing=east,color=dark_green,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_dark_green",
+      "x": 90,
+      "y": 90
+    },
+    "face=wall,facing=north,color=green,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_green",
+      "y": 180
+    },
+    "face=wall,facing=south,color=green,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_green"
+    },
+    "face=wall,facing=west,color=green,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_green",
+      "y": 90
+    },
+    "face=wall,facing=east,color=green,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_green",
+      "y": 270
+    },
+    "face=floor,facing=north,color=green,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_green",
+      "x": 270,
+      "y": 180
+    },
+    "face=floor,facing=south,color=green,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_green",
+      "x": 270
+    },
+    "face=floor,facing=west,color=green,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_green",
+      "x": 270,
+      "y": 90
+    },
+    "face=floor,facing=east,color=green,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_green",
+      "x": 270,
+      "y": 270
+    },
+    "face=ceiling,facing=north,color=green,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_green",
+      "x": 90
+    },
+    "face=ceiling,facing=south,color=green,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_green",
+      "x": 90,
+      "y": 180
+    },
+    "face=ceiling,facing=west,color=green,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_green",
+      "x": 90,
+      "y": 270
+    },
+    "face=ceiling,facing=east,color=green,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_green",
+      "x": 90,
+      "y": 90
+    },
+    "face=wall,facing=north,color=green,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_green",
+      "y": 180
+    },
+    "face=wall,facing=south,color=green,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_green"
+    },
+    "face=wall,facing=west,color=green,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_green",
+      "y": 90
+    },
+    "face=wall,facing=east,color=green,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_green",
+      "y": 270
+    },
+    "face=floor,facing=north,color=green,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_green",
+      "x": 270,
+      "y": 180
+    },
+    "face=floor,facing=south,color=green,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_green",
+      "x": 270
+    },
+    "face=floor,facing=west,color=green,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_green",
+      "x": 270,
+      "y": 90
+    },
+    "face=floor,facing=east,color=green,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_green",
+      "x": 270,
+      "y": 270
+    },
+    "face=ceiling,facing=north,color=green,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_green",
+      "x": 90
+    },
+    "face=ceiling,facing=south,color=green,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_green",
+      "x": 90,
+      "y": 180
+    },
+    "face=ceiling,facing=west,color=green,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_green",
+      "x": 90,
+      "y": 270
+    },
+    "face=ceiling,facing=east,color=green,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_green",
+      "x": 90,
+      "y": 90
+    },
+    "face=wall,facing=north,color=teal,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_teal",
+      "y": 180
+    },
+    "face=wall,facing=south,color=teal,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_teal"
+    },
+    "face=wall,facing=west,color=teal,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_teal",
+      "y": 90
+    },
+    "face=wall,facing=east,color=teal,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_teal",
+      "y": 270
+    },
+    "face=floor,facing=north,color=teal,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_teal",
+      "x": 270,
+      "y": 180
+    },
+    "face=floor,facing=south,color=teal,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_teal",
+      "x": 270
+    },
+    "face=floor,facing=west,color=teal,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_teal",
+      "x": 270,
+      "y": 90
+    },
+    "face=floor,facing=east,color=teal,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_teal",
+      "x": 270,
+      "y": 270
+    },
+    "face=ceiling,facing=north,color=teal,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_teal",
+      "x": 90
+    },
+    "face=ceiling,facing=south,color=teal,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_teal",
+      "x": 90,
+      "y": 180
+    },
+    "face=ceiling,facing=west,color=teal,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_teal",
+      "x": 90,
+      "y": 270
+    },
+    "face=ceiling,facing=east,color=teal,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_teal",
+      "x": 90,
+      "y": 90
+    },
+    "face=wall,facing=north,color=teal,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_teal",
+      "y": 180
+    },
+    "face=wall,facing=south,color=teal,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_teal"
+    },
+    "face=wall,facing=west,color=teal,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_teal",
+      "y": 90
+    },
+    "face=wall,facing=east,color=teal,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_teal",
+      "y": 270
+    },
+    "face=floor,facing=north,color=teal,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_teal",
+      "x": 270,
+      "y": 180
+    },
+    "face=floor,facing=south,color=teal,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_teal",
+      "x": 270
+    },
+    "face=floor,facing=west,color=teal,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_teal",
+      "x": 270,
+      "y": 90
+    },
+    "face=floor,facing=east,color=teal,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_teal",
+      "x": 270,
+      "y": 270
+    },
+    "face=ceiling,facing=north,color=teal,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_teal",
+      "x": 90
+    },
+    "face=ceiling,facing=south,color=teal,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_teal",
+      "x": 90,
+      "y": 180
+    },
+    "face=ceiling,facing=west,color=teal,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_teal",
+      "x": 90,
+      "y": 270
+    },
+    "face=ceiling,facing=east,color=teal,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_teal",
+      "x": 90,
+      "y": 90
+    },
+    "face=wall,facing=north,color=cyan,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_cyan",
+      "y": 180
+    },
+    "face=wall,facing=south,color=cyan,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_cyan"
+    },
+    "face=wall,facing=west,color=cyan,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_cyan",
+      "y": 90
+    },
+    "face=wall,facing=east,color=cyan,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_cyan",
+      "y": 270
+    },
+    "face=floor,facing=north,color=cyan,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_cyan",
+      "x": 270,
+      "y": 180
+    },
+    "face=floor,facing=south,color=cyan,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_cyan",
+      "x": 270
+    },
+    "face=floor,facing=west,color=cyan,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_cyan",
+      "x": 270,
+      "y": 90
+    },
+    "face=floor,facing=east,color=cyan,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_cyan",
+      "x": 270,
+      "y": 270
+    },
+    "face=ceiling,facing=north,color=cyan,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_cyan",
+      "x": 90
+    },
+    "face=ceiling,facing=south,color=cyan,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_cyan",
+      "x": 90,
+      "y": 180
+    },
+    "face=ceiling,facing=west,color=cyan,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_cyan",
+      "x": 90,
+      "y": 270
+    },
+    "face=ceiling,facing=east,color=cyan,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_cyan",
+      "x": 90,
+      "y": 90
+    },
+    "face=wall,facing=north,color=cyan,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_cyan",
+      "y": 180
+    },
+    "face=wall,facing=south,color=cyan,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_cyan"
+    },
+    "face=wall,facing=west,color=cyan,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_cyan",
+      "y": 90
+    },
+    "face=wall,facing=east,color=cyan,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_cyan",
+      "y": 270
+    },
+    "face=floor,facing=north,color=cyan,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_cyan",
+      "x": 270,
+      "y": 180
+    },
+    "face=floor,facing=south,color=cyan,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_cyan",
+      "x": 270
+    },
+    "face=floor,facing=west,color=cyan,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_cyan",
+      "x": 270,
+      "y": 90
+    },
+    "face=floor,facing=east,color=cyan,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_cyan",
+      "x": 270,
+      "y": 270
+    },
+    "face=ceiling,facing=north,color=cyan,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_cyan",
+      "x": 90
+    },
+    "face=ceiling,facing=south,color=cyan,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_cyan",
+      "x": 90,
+      "y": 180
+    },
+    "face=ceiling,facing=west,color=cyan,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_cyan",
+      "x": 90,
+      "y": 270
+    },
+    "face=ceiling,facing=east,color=cyan,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_cyan",
+      "x": 90,
+      "y": 90
+    },
+    "face=wall,facing=north,color=navy,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_navy",
+      "y": 180
+    },
+    "face=wall,facing=south,color=navy,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_navy"
+    },
+    "face=wall,facing=west,color=navy,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_navy",
+      "y": 90
+    },
+    "face=wall,facing=east,color=navy,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_navy",
+      "y": 270
+    },
+    "face=floor,facing=north,color=navy,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_navy",
+      "x": 270,
+      "y": 180
+    },
+    "face=floor,facing=south,color=navy,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_navy",
+      "x": 270
+    },
+    "face=floor,facing=west,color=navy,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_navy",
+      "x": 270,
+      "y": 90
+    },
+    "face=floor,facing=east,color=navy,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_navy",
+      "x": 270,
+      "y": 270
+    },
+    "face=ceiling,facing=north,color=navy,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_navy",
+      "x": 90
+    },
+    "face=ceiling,facing=south,color=navy,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_navy",
+      "x": 90,
+      "y": 180
+    },
+    "face=ceiling,facing=west,color=navy,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_navy",
+      "x": 90,
+      "y": 270
+    },
+    "face=ceiling,facing=east,color=navy,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_navy",
+      "x": 90,
+      "y": 90
+    },
+    "face=wall,facing=north,color=navy,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_navy",
+      "y": 180
+    },
+    "face=wall,facing=south,color=navy,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_navy"
+    },
+    "face=wall,facing=west,color=navy,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_navy",
+      "y": 90
+    },
+    "face=wall,facing=east,color=navy,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_navy",
+      "y": 270
+    },
+    "face=floor,facing=north,color=navy,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_navy",
+      "x": 270,
+      "y": 180
+    },
+    "face=floor,facing=south,color=navy,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_navy",
+      "x": 270
+    },
+    "face=floor,facing=west,color=navy,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_navy",
+      "x": 270,
+      "y": 90
+    },
+    "face=floor,facing=east,color=navy,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_navy",
+      "x": 270,
+      "y": 270
+    },
+    "face=ceiling,facing=north,color=navy,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_navy",
+      "x": 90
+    },
+    "face=ceiling,facing=south,color=navy,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_navy",
+      "x": 90,
+      "y": 180
+    },
+    "face=ceiling,facing=west,color=navy,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_navy",
+      "x": 90,
+      "y": 270
+    },
+    "face=ceiling,facing=east,color=navy,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_navy",
+      "x": 90,
+      "y": 90
+    },
+    "face=wall,facing=north,color=blue,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_blue",
+      "y": 180
+    },
+    "face=wall,facing=south,color=blue,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_blue"
+    },
+    "face=wall,facing=west,color=blue,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_blue",
+      "y": 90
+    },
+    "face=wall,facing=east,color=blue,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_blue",
+      "y": 270
+    },
+    "face=floor,facing=north,color=blue,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_blue",
+      "x": 270,
+      "y": 180
+    },
+    "face=floor,facing=south,color=blue,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_blue",
+      "x": 270
+    },
+    "face=floor,facing=west,color=blue,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_blue",
+      "x": 270,
+      "y": 90
+    },
+    "face=floor,facing=east,color=blue,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_blue",
+      "x": 270,
+      "y": 270
+    },
+    "face=ceiling,facing=north,color=blue,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_blue",
+      "x": 90
+    },
+    "face=ceiling,facing=south,color=blue,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_blue",
+      "x": 90,
+      "y": 180
+    },
+    "face=ceiling,facing=west,color=blue,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_blue",
+      "x": 90,
+      "y": 270
+    },
+    "face=ceiling,facing=east,color=blue,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_blue",
+      "x": 90,
+      "y": 90
+    },
+    "face=wall,facing=north,color=blue,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_blue",
+      "y": 180
+    },
+    "face=wall,facing=south,color=blue,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_blue"
+    },
+    "face=wall,facing=west,color=blue,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_blue",
+      "y": 90
+    },
+    "face=wall,facing=east,color=blue,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_blue",
+      "y": 270
+    },
+    "face=floor,facing=north,color=blue,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_blue",
+      "x": 270,
+      "y": 180
+    },
+    "face=floor,facing=south,color=blue,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_blue",
+      "x": 270
+    },
+    "face=floor,facing=west,color=blue,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_blue",
+      "x": 270,
+      "y": 90
+    },
+    "face=floor,facing=east,color=blue,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_blue",
+      "x": 270,
+      "y": 270
+    },
+    "face=ceiling,facing=north,color=blue,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_blue",
+      "x": 90
+    },
+    "face=ceiling,facing=south,color=blue,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_blue",
+      "x": 90,
+      "y": 180
+    },
+    "face=ceiling,facing=west,color=blue,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_blue",
+      "x": 90,
+      "y": 270
+    },
+    "face=ceiling,facing=east,color=blue,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_blue",
+      "x": 90,
+      "y": 90
+    },
+    "face=wall,facing=north,color=purple,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_purple",
+      "y": 180
+    },
+    "face=wall,facing=south,color=purple,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_purple"
+    },
+    "face=wall,facing=west,color=purple,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_purple",
+      "y": 90
+    },
+    "face=wall,facing=east,color=purple,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_purple",
+      "y": 270
+    },
+    "face=floor,facing=north,color=purple,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_purple",
+      "x": 270,
+      "y": 180
+    },
+    "face=floor,facing=south,color=purple,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_purple",
+      "x": 270
+    },
+    "face=floor,facing=west,color=purple,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_purple",
+      "x": 270,
+      "y": 90
+    },
+    "face=floor,facing=east,color=purple,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_purple",
+      "x": 270,
+      "y": 270
+    },
+    "face=ceiling,facing=north,color=purple,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_purple",
+      "x": 90
+    },
+    "face=ceiling,facing=south,color=purple,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_purple",
+      "x": 90,
+      "y": 180
+    },
+    "face=ceiling,facing=west,color=purple,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_purple",
+      "x": 90,
+      "y": 270
+    },
+    "face=ceiling,facing=east,color=purple,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_purple",
+      "x": 90,
+      "y": 90
+    },
+    "face=wall,facing=north,color=purple,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_purple",
+      "y": 180
+    },
+    "face=wall,facing=south,color=purple,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_purple"
+    },
+    "face=wall,facing=west,color=purple,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_purple",
+      "y": 90
+    },
+    "face=wall,facing=east,color=purple,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_purple",
+      "y": 270
+    },
+    "face=floor,facing=north,color=purple,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_purple",
+      "x": 270,
+      "y": 180
+    },
+    "face=floor,facing=south,color=purple,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_purple",
+      "x": 270
+    },
+    "face=floor,facing=west,color=purple,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_purple",
+      "x": 270,
+      "y": 90
+    },
+    "face=floor,facing=east,color=purple,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_purple",
+      "x": 270,
+      "y": 270
+    },
+    "face=ceiling,facing=north,color=purple,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_purple",
+      "x": 90
+    },
+    "face=ceiling,facing=south,color=purple,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_purple",
+      "x": 90,
+      "y": 180
+    },
+    "face=ceiling,facing=west,color=purple,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_purple",
+      "x": 90,
+      "y": 270
+    },
+    "face=ceiling,facing=east,color=purple,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_purple",
+      "x": 90,
+      "y": 90
+    },
+    "face=wall,facing=north,color=magenta,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_magenta",
+      "y": 180
+    },
+    "face=wall,facing=south,color=magenta,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_magenta"
+    },
+    "face=wall,facing=west,color=magenta,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_magenta",
+      "y": 90
+    },
+    "face=wall,facing=east,color=magenta,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_magenta",
+      "y": 270
+    },
+    "face=floor,facing=north,color=magenta,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_magenta",
+      "x": 270,
+      "y": 180
+    },
+    "face=floor,facing=south,color=magenta,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_magenta",
+      "x": 270
+    },
+    "face=floor,facing=west,color=magenta,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_magenta",
+      "x": 270,
+      "y": 90
+    },
+    "face=floor,facing=east,color=magenta,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_magenta",
+      "x": 270,
+      "y": 270
+    },
+    "face=ceiling,facing=north,color=magenta,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_magenta",
+      "x": 90
+    },
+    "face=ceiling,facing=south,color=magenta,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_magenta",
+      "x": 90,
+      "y": 180
+    },
+    "face=ceiling,facing=west,color=magenta,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_magenta",
+      "x": 90,
+      "y": 270
+    },
+    "face=ceiling,facing=east,color=magenta,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_magenta",
+      "x": 90,
+      "y": 90
+    },
+    "face=wall,facing=north,color=magenta,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_magenta",
+      "y": 180
+    },
+    "face=wall,facing=south,color=magenta,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_magenta"
+    },
+    "face=wall,facing=west,color=magenta,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_magenta",
+      "y": 90
+    },
+    "face=wall,facing=east,color=magenta,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_magenta",
+      "y": 270
+    },
+    "face=floor,facing=north,color=magenta,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_magenta",
+      "x": 270,
+      "y": 180
+    },
+    "face=floor,facing=south,color=magenta,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_magenta",
+      "x": 270
+    },
+    "face=floor,facing=west,color=magenta,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_magenta",
+      "x": 270,
+      "y": 90
+    },
+    "face=floor,facing=east,color=magenta,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_magenta",
+      "x": 270,
+      "y": 270
+    },
+    "face=ceiling,facing=north,color=magenta,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_magenta",
+      "x": 90
+    },
+    "face=ceiling,facing=south,color=magenta,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_magenta",
+      "x": 90,
+      "y": 180
+    },
+    "face=ceiling,facing=west,color=magenta,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_magenta",
+      "x": 90,
+      "y": 270
+    },
+    "face=ceiling,facing=east,color=magenta,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_magenta",
+      "x": 90,
+      "y": 90
+    },
+    "face=wall,facing=north,color=black,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_black",
+      "y": 180
+    },
+    "face=wall,facing=south,color=black,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_black"
+    },
+    "face=wall,facing=west,color=black,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_black",
+      "y": 90
+    },
+    "face=wall,facing=east,color=black,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_black",
+      "y": 270
+    },
+    "face=floor,facing=north,color=black,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_black",
+      "x": 270,
+      "y": 180
+    },
+    "face=floor,facing=south,color=black,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_black",
+      "x": 270
+    },
+    "face=floor,facing=west,color=black,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_black",
+      "x": 270,
+      "y": 90
+    },
+    "face=floor,facing=east,color=black,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_black",
+      "x": 270,
+      "y": 270
+    },
+    "face=ceiling,facing=north,color=black,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_black",
+      "x": 90
+    },
+    "face=ceiling,facing=south,color=black,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_black",
+      "x": 90,
+      "y": 180
+    },
+    "face=ceiling,facing=west,color=black,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_black",
+      "x": 90,
+      "y": 270
+    },
+    "face=ceiling,facing=east,color=black,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_black",
+      "x": 90,
+      "y": 90
+    },
+    "face=wall,facing=north,color=black,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_black",
+      "y": 180
+    },
+    "face=wall,facing=south,color=black,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_black"
+    },
+    "face=wall,facing=west,color=black,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_black",
+      "y": 90
+    },
+    "face=wall,facing=east,color=black,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_black",
+      "y": 270
+    },
+    "face=floor,facing=north,color=black,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_black",
+      "x": 270,
+      "y": 180
+    },
+    "face=floor,facing=south,color=black,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_black",
+      "x": 270
+    },
+    "face=floor,facing=west,color=black,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_black",
+      "x": 270,
+      "y": 90
+    },
+    "face=floor,facing=east,color=black,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_black",
+      "x": 270,
+      "y": 270
+    },
+    "face=ceiling,facing=north,color=black,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_black",
+      "x": 90
+    },
+    "face=ceiling,facing=south,color=black,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_black",
+      "x": 90,
+      "y": 180
+    },
+    "face=ceiling,facing=west,color=black,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_black",
+      "x": 90,
+      "y": 270
+    },
+    "face=ceiling,facing=east,color=black,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_black",
+      "x": 90,
+      "y": 90
+    },
+    "face=wall,facing=north,color=grey,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_grey",
+      "y": 180
+    },
+    "face=wall,facing=south,color=grey,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_grey"
+    },
+    "face=wall,facing=west,color=grey,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_grey",
+      "y": 90
+    },
+    "face=wall,facing=east,color=grey,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_grey",
+      "y": 270
+    },
+    "face=floor,facing=north,color=grey,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_grey",
+      "x": 270,
+      "y": 180
+    },
+    "face=floor,facing=south,color=grey,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_grey",
+      "x": 270
+    },
+    "face=floor,facing=west,color=grey,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_grey",
+      "x": 270,
+      "y": 90
+    },
+    "face=floor,facing=east,color=grey,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_grey",
+      "x": 270,
+      "y": 270
+    },
+    "face=ceiling,facing=north,color=grey,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_grey",
+      "x": 90
+    },
+    "face=ceiling,facing=south,color=grey,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_grey",
+      "x": 90,
+      "y": 180
+    },
+    "face=ceiling,facing=west,color=grey,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_grey",
+      "x": 90,
+      "y": 270
+    },
+    "face=ceiling,facing=east,color=grey,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_grey",
+      "x": 90,
+      "y": 90
+    },
+    "face=wall,facing=north,color=grey,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_grey",
+      "y": 180
+    },
+    "face=wall,facing=south,color=grey,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_grey"
+    },
+    "face=wall,facing=west,color=grey,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_grey",
+      "y": 90
+    },
+    "face=wall,facing=east,color=grey,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_grey",
+      "y": 270
+    },
+    "face=floor,facing=north,color=grey,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_grey",
+      "x": 270,
+      "y": 180
+    },
+    "face=floor,facing=south,color=grey,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_grey",
+      "x": 270
+    },
+    "face=floor,facing=west,color=grey,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_grey",
+      "x": 270,
+      "y": 90
+    },
+    "face=floor,facing=east,color=grey,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_grey",
+      "x": 270,
+      "y": 270
+    },
+    "face=ceiling,facing=north,color=grey,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_grey",
+      "x": 90
+    },
+    "face=ceiling,facing=south,color=grey,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_grey",
+      "x": 90,
+      "y": 180
+    },
+    "face=ceiling,facing=west,color=grey,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_grey",
+      "x": 90,
+      "y": 270
+    },
+    "face=ceiling,facing=east,color=grey,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_grey",
+      "x": 90,
+      "y": 90
+    },
+    "face=wall,facing=north,color=silver,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_silver",
+      "y": 180
+    },
+    "face=wall,facing=south,color=silver,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_silver"
+    },
+    "face=wall,facing=west,color=silver,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_silver",
+      "y": 90
+    },
+    "face=wall,facing=east,color=silver,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_silver",
+      "y": 270
+    },
+    "face=floor,facing=north,color=silver,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_silver",
+      "x": 270,
+      "y": 180
+    },
+    "face=floor,facing=south,color=silver,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_silver",
+      "x": 270
+    },
+    "face=floor,facing=west,color=silver,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_silver",
+      "x": 270,
+      "y": 90
+    },
+    "face=floor,facing=east,color=silver,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_silver",
+      "x": 270,
+      "y": 270
+    },
+    "face=ceiling,facing=north,color=silver,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_silver",
+      "x": 90
+    },
+    "face=ceiling,facing=south,color=silver,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_silver",
+      "x": 90,
+      "y": 180
+    },
+    "face=ceiling,facing=west,color=silver,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_silver",
+      "x": 90,
+      "y": 270
+    },
+    "face=ceiling,facing=east,color=silver,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_silver",
+      "x": 90,
+      "y": 90
+    },
+    "face=wall,facing=north,color=silver,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_silver",
+      "y": 180
+    },
+    "face=wall,facing=south,color=silver,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_silver"
+    },
+    "face=wall,facing=west,color=silver,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_silver",
+      "y": 90
+    },
+    "face=wall,facing=east,color=silver,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_silver",
+      "y": 270
+    },
+    "face=floor,facing=north,color=silver,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_silver",
+      "x": 270,
+      "y": 180
+    },
+    "face=floor,facing=south,color=silver,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_silver",
+      "x": 270
+    },
+    "face=floor,facing=west,color=silver,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_silver",
+      "x": 270,
+      "y": 90
+    },
+    "face=floor,facing=east,color=silver,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_silver",
+      "x": 270,
+      "y": 270
+    },
+    "face=ceiling,facing=north,color=silver,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_silver",
+      "x": 90
+    },
+    "face=ceiling,facing=south,color=silver,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_silver",
+      "x": 90,
+      "y": 180
+    },
+    "face=ceiling,facing=west,color=silver,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_silver",
+      "x": 90,
+      "y": 270
+    },
+    "face=ceiling,facing=east,color=silver,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_silver",
+      "x": 90,
+      "y": 90
+    },
+    "face=wall,facing=north,color=white,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_white",
+      "y": 180
+    },
+    "face=wall,facing=south,color=white,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_white"
+    },
+    "face=wall,facing=west,color=white,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_white",
+      "y": 90
+    },
+    "face=wall,facing=east,color=white,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_white",
+      "y": 270
+    },
+    "face=floor,facing=north,color=white,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_white",
+      "x": 270,
+      "y": 180
+    },
+    "face=floor,facing=south,color=white,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_white",
+      "x": 270
+    },
+    "face=floor,facing=west,color=white,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_white",
+      "x": 270,
+      "y": 90
+    },
+    "face=floor,facing=east,color=white,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_white",
+      "x": 270,
+      "y": 270
+    },
+    "face=ceiling,facing=north,color=white,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_white",
+      "x": 90
+    },
+    "face=ceiling,facing=south,color=white,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_white",
+      "x": 90,
+      "y": 180
+    },
+    "face=ceiling,facing=west,color=white,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_white",
+      "x": 90,
+      "y": 270
+    },
+    "face=ceiling,facing=east,color=white,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_white",
+      "x": 90,
+      "y": 90
+    },
+    "face=wall,facing=north,color=white,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_white",
+      "y": 180
+    },
+    "face=wall,facing=south,color=white,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_white"
+    },
+    "face=wall,facing=west,color=white,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_white",
+      "y": 90
+    },
+    "face=wall,facing=east,color=white,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_white",
+      "y": 270
+    },
+    "face=floor,facing=north,color=white,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_white",
+      "x": 270,
+      "y": 180
+    },
+    "face=floor,facing=south,color=white,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_white",
+      "x": 270
+    },
+    "face=floor,facing=west,color=white,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_white",
+      "x": 270,
+      "y": 90
+    },
+    "face=floor,facing=east,color=white,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_white",
+      "x": 270,
+      "y": 270
+    },
+    "face=ceiling,facing=north,color=white,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_white",
+      "x": 90
+    },
+    "face=ceiling,facing=south,color=white,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_white",
+      "x": 90,
+      "y": 180
+    },
+    "face=ceiling,facing=west,color=white,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_white",
+      "x": 90,
+      "y": 270
+    },
+    "face=ceiling,facing=east,color=white,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_white",
+      "x": 90,
+      "y": 90
+    },
+    "face=wall,facing=north,color=orange,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_orange",
+      "y": 180
+    },
+    "face=wall,facing=south,color=orange,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_orange"
+    },
+    "face=wall,facing=west,color=orange,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_orange",
+      "y": 90
+    },
+    "face=wall,facing=east,color=orange,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_orange",
+      "y": 270
+    },
+    "face=floor,facing=north,color=orange,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_orange",
+      "x": 270,
+      "y": 180
+    },
+    "face=floor,facing=south,color=orange,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_orange",
+      "x": 270
+    },
+    "face=floor,facing=west,color=orange,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_orange",
+      "x": 270,
+      "y": 90
+    },
+    "face=floor,facing=east,color=orange,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_orange",
+      "x": 270,
+      "y": 270
+    },
+    "face=ceiling,facing=north,color=orange,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_orange",
+      "x": 90
+    },
+    "face=ceiling,facing=south,color=orange,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_orange",
+      "x": 90,
+      "y": 180
+    },
+    "face=ceiling,facing=west,color=orange,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_orange",
+      "x": 90,
+      "y": 270
+    },
+    "face=ceiling,facing=east,color=orange,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_orange",
+      "x": 90,
+      "y": 90
+    },
+    "face=wall,facing=north,color=orange,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_orange",
+      "y": 180
+    },
+    "face=wall,facing=south,color=orange,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_orange"
+    },
+    "face=wall,facing=west,color=orange,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_orange",
+      "y": 90
+    },
+    "face=wall,facing=east,color=orange,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_orange",
+      "y": 270
+    },
+    "face=floor,facing=north,color=orange,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_orange",
+      "x": 270,
+      "y": 180
+    },
+    "face=floor,facing=south,color=orange,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_orange",
+      "x": 270
+    },
+    "face=floor,facing=west,color=orange,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_orange",
+      "x": 270,
+      "y": 90
+    },
+    "face=floor,facing=east,color=orange,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_orange",
+      "x": 270,
+      "y": 270
+    },
+    "face=ceiling,facing=north,color=orange,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_orange",
+      "x": 90
+    },
+    "face=ceiling,facing=south,color=orange,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_orange",
+      "x": 90,
+      "y": 180
+    },
+    "face=ceiling,facing=west,color=orange,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_orange",
+      "x": 90,
+      "y": 270
+    },
+    "face=ceiling,facing=east,color=orange,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_orange",
+      "x": 90,
+      "y": 90
+    },
+    "face=wall,facing=north,color=lime,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_lime",
+      "y": 180
+    },
+    "face=wall,facing=south,color=lime,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_lime"
+    },
+    "face=wall,facing=west,color=lime,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_lime",
+      "y": 90
+    },
+    "face=wall,facing=east,color=lime,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_lime",
+      "y": 270
+    },
+    "face=floor,facing=north,color=lime,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_lime",
+      "x": 270,
+      "y": 180
+    },
+    "face=floor,facing=south,color=lime,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_lime",
+      "x": 270
+    },
+    "face=floor,facing=west,color=lime,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_lime",
+      "x": 270,
+      "y": 90
+    },
+    "face=floor,facing=east,color=lime,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_lime",
+      "x": 270,
+      "y": 270
+    },
+    "face=ceiling,facing=north,color=lime,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_lime",
+      "x": 90
+    },
+    "face=ceiling,facing=south,color=lime,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_lime",
+      "x": 90,
+      "y": 180
+    },
+    "face=ceiling,facing=west,color=lime,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_lime",
+      "x": 90,
+      "y": 270
+    },
+    "face=ceiling,facing=east,color=lime,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_lime",
+      "x": 90,
+      "y": 90
+    },
+    "face=wall,facing=north,color=lime,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_lime",
+      "y": 180
+    },
+    "face=wall,facing=south,color=lime,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_lime"
+    },
+    "face=wall,facing=west,color=lime,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_lime",
+      "y": 90
+    },
+    "face=wall,facing=east,color=lime,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_lime",
+      "y": 270
+    },
+    "face=floor,facing=north,color=lime,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_lime",
+      "x": 270,
+      "y": 180
+    },
+    "face=floor,facing=south,color=lime,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_lime",
+      "x": 270
+    },
+    "face=floor,facing=west,color=lime,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_lime",
+      "x": 270,
+      "y": 90
+    },
+    "face=floor,facing=east,color=lime,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_lime",
+      "x": 270,
+      "y": 270
+    },
+    "face=ceiling,facing=north,color=lime,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_lime",
+      "x": 90
+    },
+    "face=ceiling,facing=south,color=lime,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_lime",
+      "x": 90,
+      "y": 180
+    },
+    "face=ceiling,facing=west,color=lime,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_lime",
+      "x": 90,
+      "y": 270
+    },
+    "face=ceiling,facing=east,color=lime,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_lime",
+      "x": 90,
+      "y": 90
+    },
+    "face=wall,facing=north,color=citrus,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_citrus",
+      "y": 180
+    },
+    "face=wall,facing=south,color=citrus,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_citrus"
+    },
+    "face=wall,facing=west,color=citrus,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_citrus",
+      "y": 90
+    },
+    "face=wall,facing=east,color=citrus,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_citrus",
+      "y": 270
+    },
+    "face=floor,facing=north,color=citrus,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_citrus",
+      "x": 270,
+      "y": 180
+    },
+    "face=floor,facing=south,color=citrus,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_citrus",
+      "x": 270
+    },
+    "face=floor,facing=west,color=citrus,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_citrus",
+      "x": 270,
+      "y": 90
+    },
+    "face=floor,facing=east,color=citrus,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_citrus",
+      "x": 270,
+      "y": 270
+    },
+    "face=ceiling,facing=north,color=citrus,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_citrus",
+      "x": 90
+    },
+    "face=ceiling,facing=south,color=citrus,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_citrus",
+      "x": 90,
+      "y": 180
+    },
+    "face=ceiling,facing=west,color=citrus,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_citrus",
+      "x": 90,
+      "y": 270
+    },
+    "face=ceiling,facing=east,color=citrus,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_citrus",
+      "x": 90,
+      "y": 90
+    },
+    "face=wall,facing=north,color=citrus,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_citrus",
+      "y": 180
+    },
+    "face=wall,facing=south,color=citrus,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_citrus"
+    },
+    "face=wall,facing=west,color=citrus,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_citrus",
+      "y": 90
+    },
+    "face=wall,facing=east,color=citrus,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_citrus",
+      "y": 270
+    },
+    "face=floor,facing=north,color=citrus,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_citrus",
+      "x": 270,
+      "y": 180
+    },
+    "face=floor,facing=south,color=citrus,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_citrus",
+      "x": 270
+    },
+    "face=floor,facing=west,color=citrus,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_citrus",
+      "x": 270,
+      "y": 90
+    },
+    "face=floor,facing=east,color=citrus,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_citrus",
+      "x": 270,
+      "y": 270
+    },
+    "face=ceiling,facing=north,color=citrus,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_citrus",
+      "x": 90
+    },
+    "face=ceiling,facing=south,color=citrus,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_citrus",
+      "x": 90,
+      "y": 180
+    },
+    "face=ceiling,facing=west,color=citrus,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_citrus",
+      "x": 90,
+      "y": 270
+    },
+    "face=ceiling,facing=east,color=citrus,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_citrus",
+      "x": 90,
+      "y": 90
+    },
+    "face=wall,facing=north,color=pink,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_pink",
+      "y": 180
+    },
+    "face=wall,facing=south,color=pink,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_pink"
+    },
+    "face=wall,facing=west,color=pink,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_pink",
+      "y": 90
+    },
+    "face=wall,facing=east,color=pink,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_pink",
+      "y": 270
+    },
+    "face=floor,facing=north,color=pink,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_pink",
+      "x": 270,
+      "y": 180
+    },
+    "face=floor,facing=south,color=pink,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_pink",
+      "x": 270
+    },
+    "face=floor,facing=west,color=pink,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_pink",
+      "x": 270,
+      "y": 90
+    },
+    "face=floor,facing=east,color=pink,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_pink",
+      "x": 270,
+      "y": 270
+    },
+    "face=ceiling,facing=north,color=pink,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_pink",
+      "x": 90
+    },
+    "face=ceiling,facing=south,color=pink,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_pink",
+      "x": 90,
+      "y": 180
+    },
+    "face=ceiling,facing=west,color=pink,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_pink",
+      "x": 90,
+      "y": 270
+    },
+    "face=ceiling,facing=east,color=pink,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_pink",
+      "x": 90,
+      "y": 90
+    },
+    "face=wall,facing=north,color=pink,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_pink",
+      "y": 180
+    },
+    "face=wall,facing=south,color=pink,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_pink"
+    },
+    "face=wall,facing=west,color=pink,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_pink",
+      "y": 90
+    },
+    "face=wall,facing=east,color=pink,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_pink",
+      "y": 270
+    },
+    "face=floor,facing=north,color=pink,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_pink",
+      "x": 270,
+      "y": 180
+    },
+    "face=floor,facing=south,color=pink,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_pink",
+      "x": 270
+    },
+    "face=floor,facing=west,color=pink,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_pink",
+      "x": 270,
+      "y": 90
+    },
+    "face=floor,facing=east,color=pink,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_pink",
+      "x": 270,
+      "y": 270
+    },
+    "face=ceiling,facing=north,color=pink,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_pink",
+      "x": 90
+    },
+    "face=ceiling,facing=south,color=pink,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_pink",
+      "x": 90,
+      "y": 180
+    },
+    "face=ceiling,facing=west,color=pink,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_pink",
+      "x": 90,
+      "y": 270
+    },
+    "face=ceiling,facing=east,color=pink,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_pink",
+      "x": 90,
+      "y": 90
+    },
+    "face=wall,facing=north,color=dark_grey,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_dark_grey",
+      "y": 180
+    },
+    "face=wall,facing=south,color=dark_grey,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_dark_grey"
+    },
+    "face=wall,facing=west,color=dark_grey,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_dark_grey",
+      "y": 90
+    },
+    "face=wall,facing=east,color=dark_grey,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_dark_grey",
+      "y": 270
+    },
+    "face=floor,facing=north,color=dark_grey,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_dark_grey",
+      "x": 270,
+      "y": 180
+    },
+    "face=floor,facing=south,color=dark_grey,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_dark_grey",
+      "x": 270
+    },
+    "face=floor,facing=west,color=dark_grey,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_dark_grey",
+      "x": 270,
+      "y": 90
+    },
+    "face=floor,facing=east,color=dark_grey,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_dark_grey",
+      "x": 270,
+      "y": 270
+    },
+    "face=ceiling,facing=north,color=dark_grey,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_dark_grey",
+      "x": 90
+    },
+    "face=ceiling,facing=south,color=dark_grey,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_dark_grey",
+      "x": 90,
+      "y": 180
+    },
+    "face=ceiling,facing=west,color=dark_grey,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_dark_grey",
+      "x": 90,
+      "y": 270
+    },
+    "face=ceiling,facing=east,color=dark_grey,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_dark_grey",
+      "x": 90,
+      "y": 90
+    },
+    "face=wall,facing=north,color=dark_grey,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_dark_grey",
+      "y": 180
+    },
+    "face=wall,facing=south,color=dark_grey,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_dark_grey"
+    },
+    "face=wall,facing=west,color=dark_grey,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_dark_grey",
+      "y": 90
+    },
+    "face=wall,facing=east,color=dark_grey,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_dark_grey",
+      "y": 270
+    },
+    "face=floor,facing=north,color=dark_grey,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_dark_grey",
+      "x": 270,
+      "y": 180
+    },
+    "face=floor,facing=south,color=dark_grey,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_dark_grey",
+      "x": 270
+    },
+    "face=floor,facing=west,color=dark_grey,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_dark_grey",
+      "x": 270,
+      "y": 90
+    },
+    "face=floor,facing=east,color=dark_grey,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_dark_grey",
+      "x": 270,
+      "y": 270
+    },
+    "face=ceiling,facing=north,color=dark_grey,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_dark_grey",
+      "x": 90
+    },
+    "face=ceiling,facing=south,color=dark_grey,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_dark_grey",
+      "x": 90,
+      "y": 180
+    },
+    "face=ceiling,facing=west,color=dark_grey,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_dark_grey",
+      "x": 90,
+      "y": 270
+    },
+    "face=ceiling,facing=east,color=dark_grey,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_dark_grey",
+      "x": 90,
+      "y": 90
+    },
+    "face=wall,facing=north,color=baby_blue,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_baby_blue",
+      "y": 180
+    },
+    "face=wall,facing=south,color=baby_blue,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_baby_blue"
+    },
+    "face=wall,facing=west,color=baby_blue,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_baby_blue",
+      "y": 90
+    },
+    "face=wall,facing=east,color=baby_blue,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_baby_blue",
+      "y": 270
+    },
+    "face=floor,facing=north,color=baby_blue,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_baby_blue",
+      "x": 270,
+      "y": 180
+    },
+    "face=floor,facing=south,color=baby_blue,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_baby_blue",
+      "x": 270
+    },
+    "face=floor,facing=west,color=baby_blue,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_baby_blue",
+      "x": 270,
+      "y": 90
+    },
+    "face=floor,facing=east,color=baby_blue,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_baby_blue",
+      "x": 270,
+      "y": 270
+    },
+    "face=ceiling,facing=north,color=baby_blue,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_baby_blue",
+      "x": 90
+    },
+    "face=ceiling,facing=south,color=baby_blue,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_baby_blue",
+      "x": 90,
+      "y": 180
+    },
+    "face=ceiling,facing=west,color=baby_blue,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_baby_blue",
+      "x": 90,
+      "y": 270
+    },
+    "face=ceiling,facing=east,color=baby_blue,has_book=false": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_baby_blue",
+      "x": 90,
+      "y": 90
+    },
+    "face=wall,facing=north,color=baby_blue,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_baby_blue",
+      "y": 180
+    },
+    "face=wall,facing=south,color=baby_blue,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_baby_blue"
+    },
+    "face=wall,facing=west,color=baby_blue,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_baby_blue",
+      "y": 90
+    },
+    "face=wall,facing=east,color=baby_blue,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_side_baby_blue",
+      "y": 270
+    },
+    "face=floor,facing=north,color=baby_blue,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_baby_blue",
+      "x": 270,
+      "y": 180
+    },
+    "face=floor,facing=south,color=baby_blue,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_baby_blue",
+      "x": 270
+    },
+    "face=floor,facing=west,color=baby_blue,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_baby_blue",
+      "x": 270,
+      "y": 90
+    },
+    "face=floor,facing=east,color=baby_blue,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_top_baby_blue",
+      "x": 270,
+      "y": 270
+    },
+    "face=ceiling,facing=north,color=baby_blue,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_baby_blue",
+      "x": 90
+    },
+    "face=ceiling,facing=south,color=baby_blue,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_baby_blue",
+      "x": 90,
+      "y": 180
+    },
+    "face=ceiling,facing=west,color=baby_blue,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_baby_blue",
+      "x": 90,
+      "y": 270
+    },
+    "face=ceiling,facing=east,color=baby_blue,has_book=true": {
+      "model": "mystcraft-sc:block/bookreceptacle/bookreceptacle_bottom_baby_blue",
+      "x": 90,
+      "y": 90
     }
+  }
 }

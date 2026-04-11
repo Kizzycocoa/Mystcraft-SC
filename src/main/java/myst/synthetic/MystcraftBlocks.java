@@ -11,6 +11,7 @@ import myst.synthetic.block.BlockLinkModifier;
 import myst.synthetic.block.BlockSlantBoard;
 import myst.synthetic.block.BlockStarFissure;
 import myst.synthetic.block.BlockWritingDesk;
+import myst.synthetic.block.BlockCrystal;
 import myst.synthetic.item.DecayBlockItem;
 import myst.synthetic.item.ItemBookstand;
 import myst.synthetic.item.ItemSlantBoard;
@@ -64,11 +65,12 @@ public class MystcraftBlocks {
 
     public static final Block CRYSTAL = register(
             "crystal",
-            Block::new,
+            BlockCrystal::new,
             BlockBehaviour.Properties.of()
                     .mapColor(MapColor.ICE)
                     .strength(1.0F)
                     .sound(SoundType.GLASS)
+                    .lightLevel(state -> 8)
     );
 
     public static final Block BLOCKDECAY = register(
@@ -156,6 +158,7 @@ public class MystcraftBlocks {
                     .strength(1.0F)
                     .sound(SoundType.GLASS)
                     .noOcclusion()
+                    .lightLevel(state -> 8)
     );
 
     public static void initialize() {

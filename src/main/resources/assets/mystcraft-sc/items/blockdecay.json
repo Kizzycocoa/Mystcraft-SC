@@ -8,48 +8,48 @@
         "when": "red",
         "model": {
           "type": "minecraft:model",
-          "model": "mystcraft-sc:block/blockdecay_red"
+          "model": "mystcraft-sc:block/decay/blockdecay_red"
         }
       },
       {
         "when": "green",
         "model": {
           "type": "minecraft:model",
-          "model": "mystcraft-sc:block/blockdecay_green"
+          "model": "mystcraft-sc:block/decay/blockdecay_green"
         }
       },
       {
         "when": "blue",
         "model": {
           "type": "minecraft:model",
-          "model": "mystcraft-sc:block/blockdecay_blue"
+          "model": "mystcraft-sc:block/decay/blockdecay_blue"
         }
       },
       {
         "when": "purple",
         "model": {
           "type": "minecraft:model",
-          "model": "mystcraft-sc:block/blockdecay_purple"
+          "model": "mystcraft-sc:block/decay/blockdecay_purple"
         }
       },
       {
         "when": "yellow",
         "model": {
           "type": "minecraft:model",
-          "model": "mystcraft-sc:block/blockdecay_yellow"
+          "model": "mystcraft-sc:block/decay/blockdecay_yellow"
         }
       },
       {
         "when": "white",
         "model": {
           "type": "minecraft:model",
-          "model": "mystcraft-sc:block/blockdecay_white"
+          "model": "mystcraft-sc:block/decay/blockdecay_white"
         }
       }
     ],
     "fallback": {
       "type": "minecraft:model",
-      "model": "mystcraft-sc:block/blockdecay_black"
+      "model": "mystcraft-sc:block/decay/blockdecay_black"
     }
   }
 }

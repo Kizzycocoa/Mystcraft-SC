@@ -1,8 +1,29 @@
-This mod intends to contain and revamp content from multiple sources, covered by differing licenses. You may find these licenses below as features get added to the mod:
+Mystcraft-SC (Synthetic Codex)
+License Notice and Upstream Attribution
+=======================================
 
-///////////////////
-/////Mystcraft/////
-///////////////////
+This project is a modernization port of Mystcraft Legacy (1.12) and incorporates
+code and concepts from several Mystcraft-related sub-mods.
+
+All included upstream components retain their original licenses.
+
+The following licensing groups apply.
+
+====================================================================
+LGPL-3.0 LICENSED COMPONENTS
+============================
+
+The following components are licensed under the GNU Lesser General Public License v3.0:
+
+* Mystcraft Legacy (1.12) — XCompWiz
+* Mystcraft Pages - Floydman
+* More Mystcraft - Floydman
+* LTTA - Floydman
+
+Because this project is a derivative modernization port of Mystcraft Legacy,
+the overall project is distributed under LGPL-3.0.
+
+---
 
 GNU LESSER GENERAL PUBLIC LICENSE
 Version 3, 29 June 2007
@@ -61,13 +82,21 @@ Each version is given a distinguishing version number. If the Library as you rec
 
 If the Library as you received it specifies that a proxy can decide whether future versions of the GNU Lesser General Public License shall apply, that proxy's public statement of acceptance of any version is permanent authorization for you to choose that version for the Library.
 
-//////////////////////////////////////
-/////<Future mod integration TBA>/////
-//////////////////////////////////////
+====================================================================
+MIT LICENSED COMPONENTS
+=======================
 
-MIT License
+The following components are licensed under the MIT License:
 
-Copyright (c) 2019 Linking Tweaks developers
+* MystLibrary - Veovis Muad'dib
+* Mystcraft Info - Veovis Muad'dib
+* Linking Tweaks - Veovis Muad'dib
+
+---
+
+## MIT License
+
+Copyright (c) their respective authors
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
