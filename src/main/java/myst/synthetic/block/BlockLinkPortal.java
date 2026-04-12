@@ -2,11 +2,20 @@ package myst.synthetic.block;
 
 import com.mojang.serialization.MapCodec;
 import myst.synthetic.MystcraftBlocks;
+import myst.synthetic.block.entity.BlockEntityBookReceptacle;
 import myst.synthetic.block.property.CrystalColor;
+import myst.synthetic.linking.LinkController;
+import myst.synthetic.linking.LinkOptions;
+import myst.synthetic.util.PortalUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.InsideBlockEffectApplier;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -104,7 +113,7 @@ public class BlockLinkPortal extends TransparentBlock {
     ) {
         super.neighborChanged(state, level, pos, neighborBlock, orientation, movedByPiston);
 
-        if (level.isClientSide() || myst.synthetic.util.PortalUtils.isMutating(level)) {
+        if (level.isClientSide() || PortalUtils.isMutating(level)) {
             return;
         }
 
@@ -112,7 +121,7 @@ public class BlockLinkPortal extends TransparentBlock {
             return;
         }
 
-        myst.synthetic.util.PortalUtils.validatePortal(level, pos);
+        PortalUtils.validatePortal(level, pos);
     }
 
     @Override
@@ -128,10 +137,50 @@ public class BlockLinkPortal extends TransparentBlock {
             return;
         }
 
-        // Next step hooks in here:
-        // 1. Trace back to the receptacle via source directions
-        // 2. Get the stored link/descriptive book
-        // 3. Trigger the book's portal collision logic
+        if (!state.getValue(ACTIVE)) {
+            return;
+        }
+
+        if (!entity.isAlive() || entity.isPassenger() || entity.isVehicle()) {
+            return;
+        }
+
+        BlockEntityBookReceptacle receptacle = PortalUtils.getOwningReceptacle(level, pos);
+        if (receptacle == null) {
+            level.removeBlock(pos, false);
+            return;
+        }
+
+        if (!receptacle.hasValidPortalBook() || !receptacle.hasValidSupportCrystal()) {
+            level.removeBlock(pos, false);
+            return;
+        }
+
+        ItemStack book = receptacle.getBook();
+        if (book.isEmpty()) {
+            level.removeBlock(pos, false);
+            return;
+        }
+
+        CustomData customData = book.get(DataComponents.CUSTOM_DATA);
+        if (customData == null) {
+            return;
+        }
+
+        CompoundTag tag = customData.copyTag();
+        LinkOptions info = new LinkOptions(tag);
+
+        String targetDimension = info.getDimensionUID();
+        if (targetDimension == null || targetDimension.isBlank()) {
+            return;
+        }
+
+        String currentDimension = extractDimensionId(level.dimension().toString());
+        if (currentDimension.equals(targetDimension)) {
+            return;
+        }
+
+        LinkController.travelEntity(level, entity, info);
     }
 
     @Override
@@ -181,5 +230,16 @@ public class BlockLinkPortal extends TransparentBlock {
 
     public static Direction getSourceDirection(BlockState state) {
         return state.getValue(SOURCE_DIRECTION);
+    }
+
+    private static String extractDimensionId(String raw) {
+        int slash = raw.lastIndexOf('/');
+        int end = raw.lastIndexOf(']');
+
+        if (slash >= 0 && end > slash) {
+            return raw.substring(slash + 1, end).trim();
+        }
+
+        return raw;
     }
 }
