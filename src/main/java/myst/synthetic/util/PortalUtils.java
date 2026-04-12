@@ -118,7 +118,7 @@ public final class PortalUtils {
 
             depolarizeFrom(level, basePos, requiredColor);
             onPulse(level, basePos, requiredColor);
-            pathTo(level, basePos, requiredColor);
+            pathTo(level, receptaclePos, requiredColor);
         } finally {
             endMutation(level);
         }
@@ -150,7 +150,8 @@ public final class PortalUtils {
         ArrayDeque<BlockPos> created = new ArrayDeque<>();
         Set<BlockPos> visited = new HashSet<>();
 
-        frontier.add(basePos);
+        // Start from the air around the support crystal, not the crystal itself.
+        addSurrounding(frontier, basePos);
 
         while (!frontier.isEmpty()) {
             BlockPos pos = frontier.removeFirst();
