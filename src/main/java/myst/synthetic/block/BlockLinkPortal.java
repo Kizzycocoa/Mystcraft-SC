@@ -10,10 +10,11 @@ import myst.synthetic.util.PortalUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.InsideBlockEffectApplier;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -125,6 +126,23 @@ public class BlockLinkPortal extends TransparentBlock {
     }
 
     @Override
+    public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
+        if (!state.getValue(ACTIVE)) {
+            return;
+        }
+
+        if (random.nextInt(4) != 0) {
+            return;
+        }
+
+        int color = getClientPortalColor(level, pos);
+
+        for (int i = 0; i < 2; i++) {
+            spawnPortalParticle(level, pos, state, random, color);
+        }
+    }
+
+    @Override
     protected void entityInside(
             BlockState state,
             Level level,
@@ -183,6 +201,16 @@ public class BlockLinkPortal extends TransparentBlock {
         LinkController.travelEntity(level, entity, info);
     }
 
+    private static String extractDimensionId(String raw) {
+        int slash = raw.lastIndexOf('/');
+        int end = raw.lastIndexOf(']');
+
+        if (slash >= 0 && end > slash) {
+            return raw.substring(slash + 1, end).trim();
+        }
+
+        return raw;
+    }
     @Override
     protected boolean canBeReplaced(BlockState state, BlockPlaceContext useContext) {
         return false;
@@ -232,14 +260,71 @@ public class BlockLinkPortal extends TransparentBlock {
         return state.getValue(SOURCE_DIRECTION);
     }
 
-    private static String extractDimensionId(String raw) {
-        int slash = raw.lastIndexOf('/');
-        int end = raw.lastIndexOf(']');
+    private static int getClientPortalColor(Level level, BlockPos pos) {
+        BlockEntityBookReceptacle receptacle = PortalUtils.getOwningReceptacle(level, pos);
+        if (receptacle == null) {
+            return 0xFFFFFF;
+        }
+        return receptacle.getPortalColor();
+    }
 
-        if (slash >= 0 && end > slash) {
-            return raw.substring(slash + 1, end).trim();
+    private static void spawnPortalParticle(
+            Level level,
+            BlockPos pos,
+            BlockState state,
+            RandomSource random,
+            int color
+    ) {
+        double x;
+        double y;
+        double z;
+        double vx;
+        double vy;
+        double vz;
+
+        double centerX = pos.getX() + 0.5D;
+        double centerY = pos.getY() + 0.5D;
+        double centerZ = pos.getZ() + 0.5D;
+
+        switch (state.getValue(RENDER_ROTATION)) {
+            case X -> {
+                x = centerX + (random.nextBoolean() ? 0.30D : -0.30D);
+                y = pos.getY() + random.nextDouble();
+                z = pos.getZ() + random.nextDouble();
+                vx = (random.nextDouble() - 0.5D) * 0.04D;
+                vy = (random.nextDouble() - 0.5D) * 0.04D;
+                vz = (random.nextDouble() - 0.5D) * 0.04D;
+            }
+            case Y -> {
+                x = pos.getX() + random.nextDouble();
+                y = centerY + (random.nextBoolean() ? 0.30D : -0.30D);
+                z = pos.getZ() + random.nextDouble();
+                vx = (random.nextDouble() - 0.5D) * 0.04D;
+                vy = (random.nextDouble() - 0.5D) * 0.04D;
+                vz = (random.nextDouble() - 0.5D) * 0.04D;
+            }
+            case Z -> {
+                x = pos.getX() + random.nextDouble();
+                y = pos.getY() + random.nextDouble();
+                z = centerZ + (random.nextBoolean() ? 0.30D : -0.30D);
+                vx = (random.nextDouble() - 0.5D) * 0.04D;
+                vy = (random.nextDouble() - 0.5D) * 0.04D;
+                vz = (random.nextDouble() - 0.5D) * 0.04D;
+            }
+            default -> {
+                x = pos.getX() + random.nextDouble();
+                y = pos.getY() + random.nextDouble();
+                z = pos.getZ() + random.nextDouble();
+                vx = 0.0D;
+                vy = 0.0D;
+                vz = 0.0D;
+            }
         }
 
-        return raw;
+        level.addParticle(
+                new DustParticleOptions(color, 1.0F),
+                x, y, z,
+                vx, vy, vz
+        );
     }
 }

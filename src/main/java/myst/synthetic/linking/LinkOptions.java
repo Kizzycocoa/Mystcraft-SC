@@ -110,10 +110,22 @@ public class LinkOptions implements ILinkInfo {
 
     public static @NotNull String getDisplayName(@Nullable CompoundTag tag) {
         if (tag != null && tag.contains("DisplayName")) {
-            return tag.getString("DisplayName").orElse("???");
+            String value = tag.getString("DisplayName").orElse("");
+            if (!value.isBlank()) {
+                return value;
+            }
+        }
+        if (tag != null && tag.contains("AgeName")) {
+            String value = tag.getString("AgeName").orElse("");
+            if (!value.isBlank()) {
+                return value;
+            }
         }
         if (tag != null && tag.contains("agename")) {
-            return tag.getString("agename").orElse("???");
+            String value = tag.getString("agename").orElse("");
+            if (!value.isBlank()) {
+                return value;
+            }
         }
         return "???";
     }

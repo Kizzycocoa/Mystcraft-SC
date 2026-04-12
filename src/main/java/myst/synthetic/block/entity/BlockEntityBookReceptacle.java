@@ -1,8 +1,10 @@
 package myst.synthetic.block.entity;
 
 import myst.synthetic.MystcraftBlockEntities;
+import myst.synthetic.MystcraftBlocks;
 import myst.synthetic.block.BlockBookReceptacle;
 import myst.synthetic.block.BlockCrystal;
+import myst.synthetic.linking.LinkColorUtil;
 import myst.synthetic.util.PortalUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
@@ -26,6 +28,10 @@ public class BlockEntityBookReceptacle extends BlockEntityDisplayContainer {
 
 	public boolean hasBook() {
 		return this.hasStoredItem();
+	}
+
+	public int getPortalColor() {
+		return LinkColorUtil.getPortalColor(this.getBook());
 	}
 
 	public void clearBook() {
@@ -64,7 +70,7 @@ public class BlockEntityBookReceptacle extends BlockEntityDisplayContainer {
 
 		BlockState support = getSupportCrystalState();
 		return support != null
-				&& support.is(myst.synthetic.MystcraftBlocks.CRYSTAL)
+				&& support.is(MystcraftBlocks.CRYSTAL)
 				&& support.getValue(BlockCrystal.COLOR) == this.getBlockState().getValue(BlockBookReceptacle.COLOR);
 	}
 
