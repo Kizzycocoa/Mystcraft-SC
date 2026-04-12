@@ -191,7 +191,7 @@ public final class PortalUtils {
                 + validLinkPortalScore(level.getBlockState(pos.south()), requiredColor)
                 + validLinkPortalScore(level.getBlockState(pos.north()), requiredColor);
 
-        if (score > 1) {
+        if (score > 0) {
             level.setBlock(
                     pos,
                     MystcraftBlocks.LINK_PORTAL.defaultBlockState()
