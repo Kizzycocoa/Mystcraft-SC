@@ -246,7 +246,7 @@ public final class PortalUtils {
                 continue;
             }
 
-            Set<BlockPos> region = collectPlanarPortalRegion(level, seedPos, axis);
+            Set<BlockPos> region = collectPlanarPortalRegion(level, seedPos, axis, requiredColor);
             if (region.isEmpty()) {
                 continue;
             }
@@ -259,17 +259,7 @@ public final class PortalUtils {
                 continue;
             }
 
-            boolean regionTouchesNetwork = false;
-
-            for (BlockPos pos : region) {
-                BlockPos sourcePos = findAdjacentActiveConductor(level, pos, requiredColor);
-                if (sourcePos != null) {
-                    regionTouchesNetwork = true;
-                    break;
-                }
-            }
-
-            if (!regionTouchesNetwork) {
+            if (!regionTouchesActiveNetwork(level, region, requiredColor)) {
                 continue;
             }
 
@@ -302,7 +292,12 @@ public final class PortalUtils {
         }
     }
 
-    private static Set<BlockPos> collectPlanarPortalRegion(Level level, BlockPos seedPos, Direction.Axis axis) {
+    private static Set<BlockPos> collectPlanarPortalRegion(
+            Level level,
+            BlockPos seedPos,
+            Direction.Axis axis,
+            CrystalColor requiredColor
+    ) {
         Set<BlockPos> visited = new HashSet<>();
         ArrayDeque<BlockPos> queue = new ArrayDeque<>();
 
@@ -314,7 +309,11 @@ public final class PortalUtils {
                 continue;
             }
 
-            if (!isPortalFillSpace(level.getBlockState(pos))) {
+            BlockState state = level.getBlockState(pos);
+
+            if (!isPortalFillSpace(state)
+                    && !(state.is(MystcraftBlocks.LINK_PORTAL)
+                    && state.getValue(BlockLinkPortal.COLOR) == requiredColor)) {
                 continue;
             }
 
@@ -333,23 +332,26 @@ public final class PortalUtils {
             CrystalColor requiredColor
     ) {
         for (BlockPos pos : region) {
-            for (Direction direction : planarDirections(axis)) {
-                BlockPos neighborPos = pos.relative(direction);
-
-                if (region.contains(neighborPos)) {
-                    continue;
-                }
-
-                BlockState neighborState = level.getBlockState(neighborPos);
-                if (!neighborState.is(MystcraftBlocks.CRYSTAL)
-                        || !neighborState.getValue(BlockCrystal.ACTIVE)
-                        || neighborState.getValue(BlockCrystal.COLOR) != requiredColor) {
-                    return false;
-                }
+            if (!isFramedAlongAxis(level, pos, axis, requiredColor)) {
+                return false;
             }
         }
 
         return true;
+    }
+
+    private static boolean regionTouchesActiveNetwork(
+            Level level,
+            Set<BlockPos> region,
+            CrystalColor requiredColor
+    ) {
+        for (BlockPos pos : region) {
+            if (findAdjacentActiveConductor(level, pos, requiredColor) != null) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private static boolean regionTouchesConflictingPortalAxis(
