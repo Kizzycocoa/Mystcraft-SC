@@ -118,7 +118,7 @@ public final class PortalUtils {
 
             depolarizeFrom(level, basePos, requiredColor);
             onPulse(level, basePos, requiredColor);
-            pathTo(level, receptaclePos, requiredColor);
+            pathTo(level, basePos, requiredColor);
         } finally {
             endMutation(level);
         }
@@ -148,13 +148,14 @@ public final class PortalUtils {
     private static void onPulse(Level level, BlockPos basePos, CrystalColor requiredColor) {
         ArrayDeque<BlockPos> frontier = new ArrayDeque<>();
         ArrayDeque<BlockPos> created = new ArrayDeque<>();
-        Set<BlockPos> seen = new HashSet<>();
+        Set<BlockPos> visited = new HashSet<>();
 
-        addSurrounding(frontier, basePos);
+        frontier.add(basePos);
 
         while (!frontier.isEmpty()) {
             BlockPos pos = frontier.removeFirst();
-            if (!seen.add(pos)) {
+
+            if (!visited.add(pos)) {
                 continue;
             }
 
@@ -163,6 +164,7 @@ public final class PortalUtils {
 
         while (!created.isEmpty()) {
             BlockPos pos = created.removeLast();
+
             if (!checkPortalTension(level, pos, requiredColor)) {
                 level.removeBlock(pos, false);
             }
@@ -177,7 +179,7 @@ public final class PortalUtils {
             ArrayDeque<BlockPos> created
     ) {
         BlockState state = level.getBlockState(pos);
-        if (!state.isAir()) {
+        if (!state.canBeReplaced()) {
             return;
         }
 
