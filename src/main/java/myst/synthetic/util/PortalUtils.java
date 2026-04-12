@@ -1,6 +1,7 @@
 package myst.synthetic.util;
 
 import java.util.ArrayDeque;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.Map;
@@ -13,12 +14,15 @@ import myst.synthetic.block.entity.BlockEntityBookReceptacle;
 import myst.synthetic.block.property.CrystalColor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 public final class PortalUtils {
+
+    private static final int MAX_FRAME_SCAN = 21;
 
     /**
      * Prevent recursive neighbor-update rebuild storms.
@@ -117,8 +121,9 @@ public final class PortalUtils {
             }
 
             depolarizeFrom(level, basePos, requiredColor);
-            onPulse(level, basePos, requiredColor);
-            pathTo(level, receptaclePos, requiredColor);
+
+            Set<BlockPos> activeCrystalNetwork = pathCrystalNetwork(level, receptaclePos, basePos, requiredColor);
+            fillPortalFrames(level, activeCrystalNetwork, requiredColor);
         } finally {
             endMutation(level);
         }
@@ -145,290 +150,160 @@ public final class PortalUtils {
         }
     }
 
-    private static void onPulse(Level level, BlockPos basePos, CrystalColor requiredColor) {
-        ArrayDeque<BlockPos> frontier = new ArrayDeque<>();
-        ArrayDeque<BlockPos> created = new ArrayDeque<>();
+    private static Set<BlockPos> pathCrystalNetwork(
+            Level level,
+            BlockPos receptaclePos,
+            BlockPos basePos,
+            CrystalColor requiredColor
+    ) {
+        ArrayDeque<BlockPos> queue = new ArrayDeque<>();
         Set<BlockPos> visited = new HashSet<>();
+        Map<BlockPos, BlockPos> parentByPos = new HashMap<>();
 
-        // Start from the air around the support crystal, not the crystal itself.
-        addSurrounding(frontier, basePos);
+        queue.add(basePos);
+        parentByPos.put(basePos, receptaclePos);
 
-        while (!frontier.isEmpty()) {
-            BlockPos pos = frontier.removeFirst();
-
+        while (!queue.isEmpty()) {
+            BlockPos pos = queue.removeFirst();
             if (!visited.add(pos)) {
                 continue;
             }
 
-            expandPortal(level, pos, requiredColor, frontier, created);
-        }
-
-        while (!created.isEmpty()) {
-            BlockPos pos = created.removeLast();
-
-            if (!checkPortalTension(level, pos, requiredColor)) {
-                level.removeBlock(pos, false);
-            }
-        }
-    }
-
-    private static void expandPortal(
-            Level level,
-            BlockPos pos,
-            CrystalColor requiredColor,
-            ArrayDeque<BlockPos> frontier,
-            ArrayDeque<BlockPos> created
-    ) {
-        BlockState state = level.getBlockState(pos);
-        if (!state.canBeReplaced()) {
-            return;
-        }
-
-        int score = validLinkPortalScore(level.getBlockState(pos.east()), requiredColor)
-                + validLinkPortalScore(level.getBlockState(pos.west()), requiredColor)
-                + validLinkPortalScore(level.getBlockState(pos.above()), requiredColor)
-                + validLinkPortalScore(level.getBlockState(pos.below()), requiredColor)
-                + validLinkPortalScore(level.getBlockState(pos.south()), requiredColor)
-                + validLinkPortalScore(level.getBlockState(pos.north()), requiredColor);
-
-        if (score > 0) {
-            level.setBlock(
-                    pos,
-                    MystcraftBlocks.LINK_PORTAL.defaultBlockState()
-                            .setValue(BlockLinkPortal.COLOR, requiredColor)
-                            .setValue(BlockLinkPortal.ACTIVE, false)
-                            .setValue(BlockLinkPortal.SOURCE_DIRECTION, Direction.DOWN)
-                            .setValue(BlockLinkPortal.HAS_ROTATION, false)
-                            .setValue(BlockLinkPortal.RENDER_ROTATION, Direction.Axis.X),
-                    Block.UPDATE_ALL
-            );
-
-            created.add(pos);
-            addSurrounding(frontier, pos);
-        }
-    }
-
-    private static void pathTo(Level level, BlockPos receptaclePos, CrystalColor requiredColor) {
-        ArrayDeque<BlockPos> crystals = new ArrayDeque<>();
-        ArrayDeque<BlockPos> portals = new ArrayDeque<>();
-        ArrayDeque<BlockPos> repath = new ArrayDeque<>();
-        Set<BlockPos> redraw = new HashSet<>();
-
-        crystals.add(receptaclePos);
-
-        while (!portals.isEmpty() || !crystals.isEmpty()) {
-            while (!crystals.isEmpty()) {
-                BlockPos pos = crystals.removeFirst();
-
-                directPortal(level, pos.east(), Direction.WEST, requiredColor, crystals, portals);
-                directPortal(level, pos.above(), Direction.DOWN, requiredColor, crystals, portals);
-                directPortal(level, pos.south(), Direction.NORTH, requiredColor, crystals, portals);
-                directPortal(level, pos.west(), Direction.EAST, requiredColor, crystals, portals);
-                directPortal(level, pos.below(), Direction.UP, requiredColor, crystals, portals);
-                directPortal(level, pos.north(), Direction.SOUTH, requiredColor, crystals, portals);
-
-                redraw.add(pos);
-            }
-
-            if (!portals.isEmpty()) {
-                BlockPos pos = portals.removeFirst();
-
-                directPortal(level, pos.east(), Direction.WEST, requiredColor, crystals, portals);
-                directPortal(level, pos.above(), Direction.DOWN, requiredColor, crystals, portals);
-                directPortal(level, pos.south(), Direction.NORTH, requiredColor, crystals, portals);
-                directPortal(level, pos.west(), Direction.EAST, requiredColor, crystals, portals);
-                directPortal(level, pos.below(), Direction.UP, requiredColor, crystals, portals);
-                directPortal(level, pos.north(), Direction.SOUTH, requiredColor, crystals, portals);
-
-                if (level.getBlockState(pos).is(MystcraftBlocks.LINK_PORTAL)) {
-                    repath.add(pos);
-                }
-            }
-        }
-
-        while (!repath.isEmpty()) {
-            BlockPos pos = repath.removeFirst();
             BlockState state = level.getBlockState(pos);
-            if (!state.is(MystcraftBlocks.LINK_PORTAL)) {
+            if (!state.is(MystcraftBlocks.CRYSTAL)) {
                 continue;
             }
 
-            if (!isPortalBlockStable(level, pos, requiredColor)) {
-                repathNeighbors(level, pos, requiredColor);
-                level.removeBlock(pos, false);
-                addSurrounding(repath, pos);
-            } else {
-                BlockState fixed = state
-                        .setValue(BlockLinkPortal.HAS_ROTATION, true)
-                        .setValue(BlockLinkPortal.RENDER_ROTATION, resolvePortalAxis(level, pos, requiredColor));
-                level.setBlock(pos, fixed, Block.UPDATE_ALL);
-                redraw.add(pos);
+            if (state.getValue(BlockCrystal.COLOR) != requiredColor) {
+                continue;
             }
-        }
 
-        for (BlockPos pos : redraw) {
-            BlockState state = level.getBlockState(pos);
-            level.sendBlockUpdated(pos, state, state, Block.UPDATE_ALL);
-        }
-    }
+            BlockPos parentPos = parentByPos.get(pos);
+            if (parentPos == null) {
+                continue;
+            }
 
-    private static void directPortal(
-            Level level,
-            BlockPos pos,
-            Direction sourceDirection,
-            CrystalColor requiredColor,
-            ArrayDeque<BlockPos> crystals,
-            ArrayDeque<BlockPos> portals
-    ) {
-        BlockState state = level.getBlockState(pos);
-        if (validLinkPortalScore(state, requiredColor) == 0) {
-            return;
-        }
+            Direction sourceDirection = directionFromTo(pos, parentPos);
 
-        if (isBlockActive(state)) {
-            return;
-        }
-
-        if (state.is(MystcraftBlocks.CRYSTAL)) {
             level.setBlock(
                     pos,
                     BlockCrystal.getDirectedState(state, sourceDirection),
                     Block.UPDATE_ALL
             );
-            crystals.add(pos);
-            return;
+
+            for (Direction direction : Direction.values()) {
+                BlockPos neighborPos = pos.relative(direction);
+
+                if (visited.contains(neighborPos) || parentByPos.containsKey(neighborPos)) {
+                    continue;
+                }
+
+                BlockState neighborState = level.getBlockState(neighborPos);
+                if (!neighborState.is(MystcraftBlocks.CRYSTAL)) {
+                    continue;
+                }
+
+                if (neighborState.getValue(BlockCrystal.COLOR) != requiredColor) {
+                    continue;
+                }
+
+                parentByPos.put(neighborPos, pos);
+                queue.add(neighborPos);
+            }
         }
 
-        if (state.is(MystcraftBlocks.LINK_PORTAL)) {
-            level.setBlock(
-                    pos,
-                    MystcraftBlocks.LINK_PORTAL.defaultBlockState()
-                            .setValue(BlockLinkPortal.COLOR, requiredColor)
-                            .setValue(BlockLinkPortal.ACTIVE, true)
-                            .setValue(BlockLinkPortal.SOURCE_DIRECTION, sourceDirection)
-                            .setValue(BlockLinkPortal.HAS_ROTATION, true)
-                            .setValue(BlockLinkPortal.RENDER_ROTATION, resolvePortalAxis(level, pos, requiredColor)),
-                    Block.UPDATE_ALL
-            );
-            portals.add(pos);
+        return visited;
+    }
+
+    /**
+     * Build portals in three full passes instead of choosing the first valid axis
+     * per block. This prevents intersecting frames from fighting each other.
+     *
+     * Axis order is shuffled from the current server game time, so every rebuild
+     * uses one deterministic X/Y/Z priority for that tick.
+     */
+    private static void fillPortalFrames(Level level, Set<BlockPos> activeCrystalNetwork, CrystalColor requiredColor) {
+        Direction.Axis[] axisOrder = getAxisBuildOrder(level);
+
+        Set<BlockPos> seenCandidates = new HashSet<>();
+        ArrayDeque<BlockPos> seedCandidates = new ArrayDeque<>();
+
+        for (BlockPos crystalPos : activeCrystalNetwork) {
+            for (Direction direction : Direction.values()) {
+                BlockPos neighborPos = crystalPos.relative(direction);
+                if (seenCandidates.add(neighborPos)) {
+                    seedCandidates.add(neighborPos);
+                }
+            }
+        }
+
+        for (Direction.Axis axis : axisOrder) {
+            ArrayDeque<BlockPos> candidates = new ArrayDeque<>(seedCandidates);
+            Set<BlockPos> localSeen = new HashSet<>(seenCandidates);
+
+            while (!candidates.isEmpty()) {
+                BlockPos pos = candidates.removeFirst();
+                BlockState state = level.getBlockState(pos);
+
+                if (!isPortalFillSpace(state)) {
+                    continue;
+                }
+
+                if (!isFramedAlongAxis(level, pos, axis, requiredColor)) {
+                    continue;
+                }
+
+                if (hasConflictingAdjacentPortalAxis(level, pos, requiredColor, axis)) {
+                    continue;
+                }
+
+                BlockPos sourcePos = findAdjacentActiveConductor(level, pos, requiredColor);
+                if (sourcePos == null) {
+                    continue;
+                }
+
+                Direction sourceDirection = directionFromTo(pos, sourcePos);
+
+                BlockState portalState = BlockLinkPortal.getDirectedState(
+                        MystcraftBlocks.LINK_PORTAL.defaultBlockState(),
+                        requiredColor,
+                        sourceDirection,
+                        axis,
+                        true
+                );
+
+                level.setBlock(pos, portalState, Block.UPDATE_ALL);
+
+                for (Direction direction : Direction.values()) {
+                    BlockPos neighborPos = pos.relative(direction);
+                    if (localSeen.add(neighborPos)) {
+                        candidates.add(neighborPos);
+                    }
+                    if (seenCandidates.add(neighborPos)) {
+                        seedCandidates.add(neighborPos);
+                    }
+                }
+            }
         }
     }
 
-    private static void repathNeighbors(Level level, BlockPos pos, CrystalColor requiredColor) {
-        BlockEntityBookReceptacle owner = getOwningReceptacle(level, pos);
-        ArrayDeque<BlockPos> queue = new ArrayDeque<>();
+    private static Direction.Axis[] getAxisBuildOrder(Level level) {
+        Direction.Axis[] axes = new Direction.Axis[]{
+                Direction.Axis.X,
+                Direction.Axis.Y,
+                Direction.Axis.Z
+        };
 
-        BlockState state = level.getBlockState(pos);
-        if (state.is(MystcraftBlocks.LINK_PORTAL)) {
-            level.setBlock(pos, BlockLinkPortal.getDisabledState(state), Block.UPDATE_ALL);
-        } else if (state.is(MystcraftBlocks.CRYSTAL)) {
-            level.setBlock(pos, BlockCrystal.getDisabledState(state), Block.UPDATE_ALL);
+        RandomSource random = RandomSource.create(level.getGameTime());
+
+        for (int i = axes.length - 1; i > 0; i--) {
+            int swapIndex = random.nextInt(i + 1);
+            Direction.Axis tmp = axes[i];
+            axes[i] = axes[swapIndex];
+            axes[swapIndex] = tmp;
         }
 
-        queue.add(pos);
-
-        while (!queue.isEmpty()) {
-            BlockPos current = queue.removeFirst();
-
-            redirectPortal(level, owner, current.east(), Direction.WEST, requiredColor, queue);
-            redirectPortal(level, owner, current.above(), Direction.DOWN, requiredColor, queue);
-            redirectPortal(level, owner, current.south(), Direction.NORTH, requiredColor, queue);
-            redirectPortal(level, owner, current.west(), Direction.EAST, requiredColor, queue);
-            redirectPortal(level, owner, current.below(), Direction.UP, requiredColor, queue);
-            redirectPortal(level, owner, current.north(), Direction.SOUTH, requiredColor, queue);
-        }
-    }
-
-    private static void redirectPortal(
-            Level level,
-            BlockEntityBookReceptacle owner,
-            BlockPos pos,
-            Direction newSourceDirection,
-            CrystalColor requiredColor,
-            ArrayDeque<BlockPos> queue
-    ) {
-        BlockState state = level.getBlockState(pos);
-        if (validLinkPortalScore(state, requiredColor) == 0) {
-            return;
-        }
-
-        if (!isBlockActive(state)) {
-            return;
-        }
-
-        BlockState redirected;
-        if (state.is(MystcraftBlocks.CRYSTAL)) {
-            redirected = BlockCrystal.getDirectedState(state, newSourceDirection);
-        } else if (state.is(MystcraftBlocks.LINK_PORTAL)) {
-            redirected = state
-                    .setValue(BlockLinkPortal.ACTIVE, true)
-                    .setValue(BlockLinkPortal.SOURCE_DIRECTION, newSourceDirection)
-                    .setValue(BlockLinkPortal.HAS_ROTATION, true)
-                    .setValue(BlockLinkPortal.RENDER_ROTATION, resolvePortalAxis(level, pos, requiredColor));
-        } else {
-            return;
-        }
-
-        level.setBlock(pos, redirected, Block.UPDATE_ALL);
-
-        BlockEntityBookReceptacle local = getOwningReceptacle(level, pos);
-        if (local == owner || (local != null && owner == null)) {
-            return;
-        }
-
-        if (state.is(MystcraftBlocks.LINK_PORTAL)) {
-            level.removeBlock(pos, false);
-        } else {
-            level.setBlock(pos, BlockCrystal.getDisabledState(state), Block.UPDATE_ALL);
-        }
-
-        queue.add(pos);
-    }
-
-    private static boolean isPortalBlockStable(Level level, BlockPos pos, CrystalColor requiredColor) {
-        if (!checkPortalTension(level, pos, requiredColor)) {
-            return false;
-        }
-        return getOwningReceptacle(level, pos) != null;
-    }
-
-    private static boolean checkPortalTension(Level level, BlockPos pos, CrystalColor requiredColor) {
-        int score = 0;
-
-        if (validLinkPortalScore(level.getBlockState(pos.east()), requiredColor) > 0
-                && validLinkPortalScore(level.getBlockState(pos.west()), requiredColor) > 0) {
-            ++score;
-        }
-        if (validLinkPortalScore(level.getBlockState(pos.above()), requiredColor) > 0
-                && validLinkPortalScore(level.getBlockState(pos.below()), requiredColor) > 0) {
-            ++score;
-        }
-        if (validLinkPortalScore(level.getBlockState(pos.south()), requiredColor) > 0
-                && validLinkPortalScore(level.getBlockState(pos.north()), requiredColor) > 0) {
-            ++score;
-        }
-
-        return score > 1;
-    }
-
-    private static int validLinkPortalScore(BlockState state, CrystalColor requiredColor) {
-        if (state.is(MystcraftBlocks.CRYSTAL) && state.getValue(BlockCrystal.COLOR) == requiredColor) {
-            return 1;
-        }
-        if (state.is(MystcraftBlocks.LINK_PORTAL) && state.getValue(BlockLinkPortal.COLOR) == requiredColor) {
-            return 1;
-        }
-        return 0;
-    }
-
-    private static boolean isBlockActive(BlockState state) {
-        if (state.is(MystcraftBlocks.CRYSTAL)) {
-            return state.getValue(BlockCrystal.ACTIVE);
-        }
-        if (state.is(MystcraftBlocks.LINK_PORTAL)) {
-            return state.getValue(BlockLinkPortal.ACTIVE);
-        }
-        return false;
+        return axes;
     }
 
     public static void depolarizeFrom(Level level, BlockPos startPos, CrystalColor requiredColor) {
@@ -466,14 +341,48 @@ public final class PortalUtils {
         }
     }
 
-    public static void validatePortal(Level level, BlockPos start) {
-        if (isMutating(level)) {
+    public static void validatePortal(Level level, BlockPos portalPos) {
+        BlockState state = level.getBlockState(portalPos);
+        if (!state.is(MystcraftBlocks.LINK_PORTAL)) {
             return;
         }
 
-        ArrayDeque<BlockPos> queue = new ArrayDeque<>();
+        CrystalColor requiredColor = state.getValue(BlockLinkPortal.COLOR);
+
+        Set<BlockPos> component = collectPortalComponent(level, portalPos, requiredColor);
+        if (component.isEmpty()) {
+            level.removeBlock(portalPos, false);
+            refreshNearbyReceptacles(level, portalPos, requiredColor);
+            return;
+        }
+
+        Direction.Axis requiredAxis = state.getValue(BlockLinkPortal.RENDER_ROTATION);
+
+        for (BlockPos pos : component) {
+            BlockState portalState = level.getBlockState(pos);
+            if (!portalState.is(MystcraftBlocks.LINK_PORTAL)) {
+                removePortalComponent(level, component);
+                refreshNearbyReceptacles(level, portalPos, requiredColor);
+                return;
+            }
+
+            if (!portalState.getValue(BlockLinkPortal.ACTIVE)
+                    || portalState.getValue(BlockLinkPortal.COLOR) != requiredColor
+                    || portalState.getValue(BlockLinkPortal.RENDER_ROTATION) != requiredAxis
+                    || hasConflictingAdjacentPortalAxis(level, pos, requiredColor, requiredAxis)
+                    || !portalBlockStillValid(level, pos, requiredColor, requiredAxis)) {
+                removePortalComponent(level, component);
+                refreshNearbyReceptacles(level, portalPos, requiredColor);
+                return;
+            }
+        }
+    }
+
+    private static Set<BlockPos> collectPortalComponent(Level level, BlockPos startPos, CrystalColor requiredColor) {
         Set<BlockPos> visited = new HashSet<>();
-        queue.add(start);
+        ArrayDeque<BlockPos> queue = new ArrayDeque<>();
+
+        queue.add(startPos);
 
         while (!queue.isEmpty()) {
             BlockPos pos = queue.removeFirst();
@@ -482,18 +391,57 @@ public final class PortalUtils {
             }
 
             BlockState state = level.getBlockState(pos);
-            if (!state.is(MystcraftBlocks.LINK_PORTAL)) {
+            if (!state.is(MystcraftBlocks.LINK_PORTAL)
+                    || !state.getValue(BlockLinkPortal.ACTIVE)
+                    || state.getValue(BlockLinkPortal.COLOR) != requiredColor) {
                 continue;
             }
 
-            CrystalColor requiredColor = state.getValue(BlockLinkPortal.COLOR);
-
-            if (!isPortalBlockStable(level, pos, requiredColor)) {
-                level.removeBlock(pos, false);
-                addSurrounding(queue, pos);
-                refreshNearbyReceptacles(level, pos, requiredColor);
+            for (Direction direction : Direction.values()) {
+                queue.add(pos.relative(direction));
             }
         }
+
+        return visited;
+    }
+
+    private static void removePortalComponent(Level level, Set<BlockPos> component) {
+        for (BlockPos pos : component) {
+            BlockState state = level.getBlockState(pos);
+            if (state.is(MystcraftBlocks.LINK_PORTAL)) {
+                level.removeBlock(pos, false);
+            }
+        }
+    }
+
+    private static boolean portalBlockStillValid(
+            Level level,
+            BlockPos portalPos,
+            CrystalColor requiredColor,
+            Direction.Axis axis
+    ) {
+        BlockState state = level.getBlockState(portalPos);
+        if (!state.is(MystcraftBlocks.LINK_PORTAL)) {
+            return false;
+        }
+
+        Direction sourceDirection = state.getValue(BlockLinkPortal.SOURCE_DIRECTION);
+        BlockPos sourcePos = portalPos.relative(sourceDirection);
+        BlockState sourceState = level.getBlockState(sourcePos);
+
+        boolean hasValidSource =
+                (sourceState.is(MystcraftBlocks.CRYSTAL)
+                        && sourceState.getValue(BlockCrystal.ACTIVE)
+                        && sourceState.getValue(BlockCrystal.COLOR) == requiredColor)
+                        || (sourceState.is(MystcraftBlocks.LINK_PORTAL)
+                        && sourceState.getValue(BlockLinkPortal.ACTIVE)
+                        && sourceState.getValue(BlockLinkPortal.COLOR) == requiredColor);
+
+        if (!hasValidSource) {
+            return false;
+        }
+
+        return isFramedAlongAxis(level, portalPos, axis, requiredColor);
     }
 
     public static void refreshNearbyReceptacles(Level level, BlockPos origin, CrystalColor requiredColor) {
@@ -638,6 +586,10 @@ public final class PortalUtils {
         return null;
     }
 
+    private static boolean isPortalFillSpace(BlockState state) {
+        return state.isAir();
+    }
+
     private static BlockPos findAdjacentActiveConductor(Level level, BlockPos pos, CrystalColor requiredColor) {
         for (Direction direction : Direction.values()) {
             BlockPos neighborPos = pos.relative(direction);
@@ -657,6 +609,87 @@ public final class PortalUtils {
         }
 
         return null;
+    }
+
+    private static boolean isFramedAlongAxis(Level level, BlockPos pos, Direction.Axis axis, CrystalColor requiredColor) {
+        Direction[] planeDirections = switch (axis) {
+            case X -> new Direction[]{Direction.UP, Direction.DOWN, Direction.NORTH, Direction.SOUTH};
+            case Y -> new Direction[]{Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST};
+            case Z -> new Direction[]{Direction.UP, Direction.DOWN, Direction.WEST, Direction.EAST};
+        };
+
+        for (Direction direction : planeDirections) {
+            if (!rayHitsFrameBoundary(level, pos, direction, requiredColor, axis)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private static boolean rayHitsFrameBoundary(
+            Level level,
+            BlockPos startPos,
+            Direction direction,
+            CrystalColor requiredColor,
+            Direction.Axis portalAxis
+    ) {
+        BlockPos.MutableBlockPos cursor = startPos.mutable();
+
+        for (int i = 0; i < MAX_FRAME_SCAN; i++) {
+            cursor.move(direction);
+            BlockState state = level.getBlockState(cursor);
+
+            if (state.is(MystcraftBlocks.CRYSTAL)) {
+                return state.getValue(BlockCrystal.ACTIVE)
+                        && state.getValue(BlockCrystal.COLOR) == requiredColor;
+            }
+
+            if (state.is(MystcraftBlocks.LINK_PORTAL)) {
+                if (state.getValue(BlockLinkPortal.ACTIVE)
+                        && state.getValue(BlockLinkPortal.COLOR) == requiredColor
+                        && state.getValue(BlockLinkPortal.RENDER_ROTATION) == portalAxis) {
+                    continue;
+                }
+                return false;
+            }
+
+            if (!state.isAir()) {
+                return false;
+            }
+        }
+
+        return false;
+    }
+
+    private static boolean hasConflictingAdjacentPortalAxis(
+            Level level,
+            BlockPos pos,
+            CrystalColor requiredColor,
+            Direction.Axis axis
+    ) {
+        for (Direction direction : Direction.values()) {
+            BlockPos neighborPos = pos.relative(direction);
+            BlockState neighborState = level.getBlockState(neighborPos);
+
+            if (!neighborState.is(MystcraftBlocks.LINK_PORTAL)) {
+                continue;
+            }
+
+            if (!neighborState.getValue(BlockLinkPortal.ACTIVE)) {
+                continue;
+            }
+
+            if (neighborState.getValue(BlockLinkPortal.COLOR) != requiredColor) {
+                continue;
+            }
+
+            if (neighborState.getValue(BlockLinkPortal.RENDER_ROTATION) != axis) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private static void addSameColorNeighbors(
@@ -687,50 +720,6 @@ public final class PortalUtils {
                 queue.add(neighborPos);
             }
         }
-    }
-
-    private static void addSurrounding(ArrayDeque<BlockPos> set, BlockPos pos) {
-        set.add(pos.east());
-        set.add(pos.west());
-        set.add(pos.above());
-        set.add(pos.below());
-        set.add(pos.south());
-        set.add(pos.north());
-
-        set.add(pos.east().above());
-        set.add(pos.west().above());
-        set.add(pos.east().below());
-        set.add(pos.west().below());
-        set.add(pos.south().above());
-        set.add(pos.north().above());
-        set.add(pos.south().below());
-        set.add(pos.north().below());
-        set.add(pos.east().south());
-        set.add(pos.west().south());
-        set.add(pos.east().north());
-        set.add(pos.west().north());
-    }
-
-    private static Direction.Axis resolvePortalAxis(Level level, BlockPos pos, CrystalColor requiredColor) {
-        boolean xPair = validLinkPortalScore(level.getBlockState(pos.east()), requiredColor) > 0
-                && validLinkPortalScore(level.getBlockState(pos.west()), requiredColor) > 0;
-        boolean yPair = validLinkPortalScore(level.getBlockState(pos.above()), requiredColor) > 0
-                && validLinkPortalScore(level.getBlockState(pos.below()), requiredColor) > 0;
-        boolean zPair = validLinkPortalScore(level.getBlockState(pos.south()), requiredColor) > 0
-                && validLinkPortalScore(level.getBlockState(pos.north()), requiredColor) > 0;
-
-        int score = (xPair ? 1 : 0) + (yPair ? 1 : 0) + (zPair ? 1 : 0);
-
-        if (score != 1) {
-            return Direction.Axis.X;
-        }
-        if (xPair) {
-            return Direction.Axis.X;
-        }
-        if (yPair) {
-            return Direction.Axis.Y;
-        }
-        return Direction.Axis.Z;
     }
 
     public static Direction directionFromTo(BlockPos from, BlockPos to) {
