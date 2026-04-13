@@ -51,7 +51,7 @@ public final class ObjMesh {
 
                 consumer.addVertex(pose, pos[0], pos[1], pos[2])
                         .setColor(255, 255, 255, 255)
-                        .setUv(uv[0], uv[1] * 0.5f)
+                        .setUv(uv[0], uv[1])
                         .setOverlay(OverlayTexture.NO_OVERLAY)
                         .setLight(packedLight)
                         .setNormal(pose, normal[0], normal[1], normal[2]);
