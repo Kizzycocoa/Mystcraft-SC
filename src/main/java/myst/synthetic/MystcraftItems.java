@@ -21,6 +21,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.equipment.ArmorType;
+import net.minecraft.core.component.DataComponents;
 
 public class MystcraftItems {
 
@@ -61,6 +62,22 @@ public class MystcraftItems {
     public static final Item VIAL = register("vial", ItemInkVial::new, new Item.Properties().stacksTo(16));
     public static final Item BAHRO_LEATHER = register("bahro_leather", Item::new, new Item.Properties());
 
+    public static final Item MYST_POETRY_BANNER_PATTERN = register(
+            "myst_poetry_banner_pattern",
+            Item::new,
+            new Item.Properties()
+                    .stacksTo(1)
+                    .component(DataComponents.PROVIDES_BANNER_PATTERNS, MystcraftBannerPatterns.MYST_POETRY_PATTERN_ITEM)
+    );
+
+    public static final Item MYST_NUMEROLOGY_BANNER_PATTERN = register(
+            "myst_numerology_banner_pattern",
+            Item::new,
+            new Item.Properties()
+                    .stacksTo(1)
+                    .component(DataComponents.PROVIDES_BANNER_PATTERNS, MystcraftBannerPatterns.MYST_NUMEROLOGY_PATTERN_ITEM)
+    );
+
     public static final Item GLASSES = register(
             "glasses",
             Item::new,
@@ -85,6 +102,8 @@ public class MystcraftItems {
             entries.accept(FOLDER);
             entries.accept(PAGE);
             entries.accept(VIAL);
+            entries.accept(MYST_POETRY_BANNER_PATTERN);
+            entries.accept(MYST_NUMEROLOGY_BANNER_PATTERN);
         });
 
         ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.COMBAT).register(entries -> {

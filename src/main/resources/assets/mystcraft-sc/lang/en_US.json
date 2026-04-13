@@ -353,6 +353,9 @@
     "mystcraft-sc.symbol.villages": "Villages",
     "mystcraft-sc.symbol.void": "Void World",
 
+    "item.mystcraft-sc.myst_poetry_banner_pattern": "Mystcraft Poetry Banner Pattern",
+    "item.mystcraft-sc.myst_numerology_banner_pattern": "Mystcraft Numerology Banner Pattern",
+
     "itemGroup.mystcraft-sc.banners": "Mystcraft Banners",
     "item.banner.mystcraft_balance.white": "Balance in White",
     "item.banner.mystcraft_balance.orange": "Balance in Orange",

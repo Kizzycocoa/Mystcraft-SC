@@ -32,6 +32,7 @@ public class MystcraftSyntheticCodex implements ModInitializer {
 		MystcraftEntities.initialize();
 		MystcraftBlockEntities.initialize();
 		MystcraftMenus.initialize();
+		MystcraftBannerPatterns.initialize();
 		MystcraftItems.initialize();
 		MystcraftItemGroups.initialize();
 		MystcraftRecipeSerializers.initialize();
