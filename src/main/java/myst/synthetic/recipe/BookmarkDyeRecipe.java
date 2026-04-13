@@ -77,7 +77,9 @@ public class BookmarkDyeRecipe extends CustomRecipe {
     }
 
     private static int mixBookmarkColor(ItemStack bookmark, List<DyeItem> dyes) {
-        Integer existingColor = BookmarkColorUtil.getStoredColor(bookmark);
+        Integer existingColor = BookmarkColorUtil.isDyed(bookmark)
+                ? BookmarkColorUtil.getStoredColor(bookmark)
+                : null;
 
         // Requirement: the first dye on an undyed bookmark should fully define the color.
         if (existingColor == null && dyes.size() == 1) {

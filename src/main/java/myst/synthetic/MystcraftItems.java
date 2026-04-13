@@ -23,6 +23,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.core.component.DataComponents;
 import myst.synthetic.item.ItemBookmark;
+import net.minecraft.world.item.component.DyedItemColor;
+import myst.synthetic.item.BookmarkColorUtil;
 
 public class MystcraftItems {
 
@@ -64,7 +66,9 @@ public class MystcraftItems {
     public static final Item BOOKMARK = register(
             "bookmark",
             ItemBookmark::new,
-            new Item.Properties().stacksTo(16)
+            new Item.Properties()
+                    .stacksTo(16)
+                    .component(DataComponents.DYED_COLOR, new DyedItemColor(BookmarkColorUtil.DEFAULT_COLOR))
     );
     public static final Item BAHRO_LEATHER = register("bahro_leather", Item::new, new Item.Properties());
 

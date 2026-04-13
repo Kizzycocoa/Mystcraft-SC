@@ -7,7 +7,7 @@ import org.jetbrains.annotations.Nullable;
 
 public final class BookmarkColorUtil {
 
-	public static final int DEFAULT_COLOR = 0xFFC9B28D;
+	public static final int DEFAULT_COLOR = 0xC9B28D;
 
 	private BookmarkColorUtil() {
 	}
@@ -18,7 +18,8 @@ public final class BookmarkColorUtil {
 	}
 
 	public static boolean isDyed(ItemStack stack) {
-		return stack.has(DataComponents.DYED_COLOR);
+		Integer stored = getStoredColor(stack);
+		return stored != null && stored != DEFAULT_COLOR;
 	}
 
 	public static void setColor(ItemStack stack, int color) {
@@ -26,7 +27,7 @@ public final class BookmarkColorUtil {
 	}
 
 	public static void clearColor(ItemStack stack) {
-		stack.remove(DataComponents.DYED_COLOR);
+		stack.set(DataComponents.DYED_COLOR, new DyedItemColor(DEFAULT_COLOR));
 	}
 
 	public static @Nullable Integer getStoredColor(ItemStack stack) {

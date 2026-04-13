@@ -34,7 +34,19 @@ public final class MystcraftCauldronInteractions {
 		}
 
 		if (!level.isClientSide()) {
-			BookmarkColorUtil.clearColor(stack);
+			ItemStack cleaned = stack.copyWithCount(1);
+			BookmarkColorUtil.clearColor(cleaned);
+
+			if (stack.getCount() == 1) {
+				player.setItemInHand(hand, cleaned);
+			} else {
+				stack.shrink(1);
+
+				if (!player.getInventory().add(cleaned)) {
+					player.drop(cleaned, false);
+				}
+			}
+
 			player.awardStat(Stats.CLEAN_ARMOR);
 			LayeredCauldronBlock.lowerFillLevel(state, level, pos);
 		}
