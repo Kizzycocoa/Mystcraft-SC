@@ -7,7 +7,7 @@ import org.jetbrains.annotations.Nullable;
 
 public final class BookmarkColorUtil {
 
-	public static final int DEFAULT_COLOR = 0xC9B28D;
+	public static final int DEFAULT_COLOR = 0xFFC9B28D;
 
 	private BookmarkColorUtil() {
 	}
