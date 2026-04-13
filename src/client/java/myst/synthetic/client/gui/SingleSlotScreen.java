@@ -43,10 +43,10 @@ public class SingleSlotScreen extends AbstractContainerScreen<DisplayContainerMe
     private static final int LINK_PANEL_W = 132;
     private static final int LINK_PANEL_H = 83;
 
-    private static final int BOOKMARK_X = 123;
-    private static final int BOOKMARK_Y = 9;
-    private static final int BOOKMARK_W = 32;
-    private static final int BOOKMARK_H = 128;
+    private static final int BOOKMARK_X = 100;
+    private static final int BOOKMARK_Y = 2;
+    private static final int BOOKMARK_W = 46;
+    private static final int BOOKMARK_H = 162;
 
     private final Inventory playerInventory;
     private final Component screenTitle;
