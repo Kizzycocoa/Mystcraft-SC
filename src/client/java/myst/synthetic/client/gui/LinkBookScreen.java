@@ -47,10 +47,10 @@ public class LinkBookScreen extends Screen {
     private static final int CONTAINER_SLOT_Y = 21;
 
     // Tuned for the ribbon art you attached.
-    private static final int BOOKMARK_X = 123;
-    private static final int BOOKMARK_Y = 9;
-    private static final int BOOKMARK_W = 32;
-    private static final int BOOKMARK_H = 128;
+    private static final int BOOKMARK_X = 100;
+    private static final int BOOKMARK_Y = 2;
+    private static final int BOOKMARK_W = 46;
+    private static final int BOOKMARK_H = 162;
 
     private final ItemStack bookStack;
     @Nullable
