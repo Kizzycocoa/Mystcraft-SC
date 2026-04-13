@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "P",
+    "P",
+    "G"
+  ],
+  "key": {
+    "P": "minecraft:paper",
+    "G": "minecraft:gold_nugget"
+  },
+  "result": {
+    "id": "mystcraft-sc:bookmark",
+    "count": 1
+  }
+}

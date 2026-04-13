@@ -14,6 +14,7 @@ import myst.synthetic.page.glyph.MystcraftGlyphComponents;
 import myst.synthetic.ink.InkFluidInteractions;
 import myst.synthetic.ink.InkStatusEffects;
 import myst.synthetic.page.symbol.source.MystcraftGeneratedPageSymbols;
+import myst.synthetic.item.MystcraftCauldronInteractions;
 
 public class MystcraftSyntheticCodex implements ModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger("mystcraft-sc");
@@ -36,6 +37,7 @@ public class MystcraftSyntheticCodex implements ModInitializer {
 		MystcraftItems.initialize();
 		MystcraftItemGroups.initialize();
 		MystcraftRecipeSerializers.initialize();
+		MystcraftCauldronInteractions.initialize();
 		MystcraftNetworking.initialize();
 		MystcraftPoiTypes.initialize();
 		MystcraftVillagerProfessions.initialize();
@@ -43,6 +45,7 @@ public class MystcraftSyntheticCodex implements ModInitializer {
 		MystcraftFluids.initialize();
 		InkFluidInteractions.initialize();
 		InkStatusEffects.initialize();
+
 
 		MystcraftGeneratedPageSymbols.initializeStatic();
 

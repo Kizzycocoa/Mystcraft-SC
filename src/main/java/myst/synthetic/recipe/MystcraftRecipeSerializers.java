@@ -17,6 +17,18 @@ public final class MystcraftRecipeSerializers {
             new CustomRecipe.Serializer<>(InkVialRecipe::new)
     );
 
+    public static final RecipeSerializer<BookmarkDyeRecipe> BOOKMARK_DYE = Registry.register(
+            BuiltInRegistries.RECIPE_SERIALIZER,
+            Identifier.fromNamespaceAndPath("mystcraft-sc", "bookmark_dye"),
+            new CustomRecipe.Serializer<>(BookmarkDyeRecipe::new)
+    );
+
+    public static final RecipeSerializer<BookmarkCloneRecipe> BOOKMARK_CLONE = Registry.register(
+            BuiltInRegistries.RECIPE_SERIALIZER,
+            Identifier.fromNamespaceAndPath("mystcraft-sc", "bookmark_clone"),
+            new CustomRecipe.Serializer<>(BookmarkCloneRecipe::new)
+    );
+
     public static void initialize() {
     }
 }

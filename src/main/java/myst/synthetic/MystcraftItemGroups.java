@@ -126,6 +126,7 @@ public class MystcraftItemGroups {
                         output.accept(MystcraftItems.AGEBOOK);
                         output.accept(MystcraftItems.LINKBOOK);
                         output.accept(MystcraftItems.UNLINKEDBOOK);
+                        output.accept(MystcraftItems.BOOKMARK);
                         output.accept(MystcraftItems.BOOSTER);
                         output.accept(MystcraftItems.FOLDER);
                         output.accept(MystcraftItems.PORTFOLIO);

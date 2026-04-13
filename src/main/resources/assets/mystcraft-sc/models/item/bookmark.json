@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "mystcraft-sc:item/bookmark",
+    "layer1": "mystcraft-sc:item/bookmark_overlay"
+  }
+}
