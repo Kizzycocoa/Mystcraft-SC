@@ -34,7 +34,7 @@ public final class BookstandRenderPipelines {
 
         return RenderType.create(
                 name,
-                RenderSetup.builder(RenderPipelines.ENTITY_CUTOUT_NO_CULL_Z_OFFSET)
+                RenderSetup.builder(RenderPipelines.CUTOUT_BLOCK)
                         .withTexture("Sampler0", getTexture(wood))
                         .useLightmap()
                         .createRenderSetup()
