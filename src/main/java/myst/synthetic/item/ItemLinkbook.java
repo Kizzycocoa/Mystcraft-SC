@@ -2,17 +2,21 @@ package myst.synthetic.item;
 
 import myst.synthetic.LinkBookClientBridge;
 import myst.synthetic.MystcraftEntities;
+import myst.synthetic.MystcraftItems;
 import myst.synthetic.entity.EntityLinkbook;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.ClickAction;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -32,6 +36,64 @@ public class ItemLinkbook extends Item {
 		}
 
 		return InteractionResult.SUCCESS;
+	}
+
+	@Override
+	public boolean overrideOtherStackedOnMe(
+			ItemStack bookStack,
+			ItemStack incomingStack,
+			Slot slot,
+			ClickAction clickAction,
+			Player player,
+			SlotAccess carriedAccess
+	) {
+		if (clickAction != ClickAction.SECONDARY) {
+			return false;
+		}
+
+		if (!bookStack.is(MystcraftItems.LINKBOOK)) {
+			return false;
+		}
+
+		if (!incomingStack.is(MystcraftItems.BOOKMARK)) {
+			return false;
+		}
+
+		ItemStack incomingSingle = incomingStack.copyWithCount(1);
+		ItemStack existingBookmark = BookBookmarkUtil.getBookmark(bookStack);
+
+		if (!existingBookmark.isEmpty() && BookBookmarkUtil.sameBookmark(existingBookmark, incomingSingle)) {
+			return true;
+		}
+
+		BookBookmarkUtil.setBookmark(bookStack, incomingSingle);
+		slot.setChanged();
+
+		if (existingBookmark.isEmpty()) {
+			if (incomingStack.getCount() == 1) {
+				carriedAccess.set(ItemStack.EMPTY);
+			} else {
+				ItemStack reduced = incomingStack.copy();
+				reduced.shrink(1);
+				carriedAccess.set(reduced);
+			}
+			return true;
+		}
+
+		if (incomingStack.getCount() == 1) {
+			carriedAccess.set(existingBookmark);
+			return true;
+		}
+
+		ItemStack reduced = incomingStack.copy();
+		reduced.shrink(1);
+		carriedAccess.set(reduced);
+
+		if (!player.getInventory().add(existingBookmark)) {
+			player.drop(existingBookmark, false);
+		}
+
+		return true;
 	}
 
 	@Override

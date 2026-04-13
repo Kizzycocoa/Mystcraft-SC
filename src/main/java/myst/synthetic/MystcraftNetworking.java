@@ -14,6 +14,8 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
+import myst.synthetic.item.BookBookmarkUtil;
+import myst.synthetic.network.LinkBookBookmarkExtractPayload;
 
 public final class MystcraftNetworking {
 
@@ -24,6 +26,7 @@ public final class MystcraftNetworking {
         PayloadTypeRegistry.playC2S().register(LinkBookUsePayload.ID, LinkBookUsePayload.CODEC);
         PayloadTypeRegistry.playC2S().register(DisplayContainerExtractPayload.ID, DisplayContainerExtractPayload.CODEC);
         PayloadTypeRegistry.playC2S().register(DisplayContainerInsertPayload.ID, DisplayContainerInsertPayload.CODEC);
+        PayloadTypeRegistry.playC2S().register(LinkBookBookmarkExtractPayload.ID, LinkBookBookmarkExtractPayload.CODEC);
 
         ServerPlayNetworking.registerGlobalReceiver(LinkBookUsePayload.ID, (payload, context) -> {
             var player = context.player();
@@ -56,6 +59,29 @@ public final class MystcraftNetworking {
                 }
 
                 LinkController.travelEntity(player.level(), player, info);
+            });
+        });
+        ServerPlayNetworking.registerGlobalReceiver(LinkBookBookmarkExtractPayload.ID, (payload, context) -> {
+            var player = context.player();
+
+            context.server().execute(() -> {
+                InteractionHand hand = payload.mainHand() ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
+                ItemStack stack = player.getItemInHand(hand);
+
+                if (!stack.is(MystcraftItems.LINKBOOK) && !stack.is(MystcraftItems.AGEBOOK)) {
+                    return;
+                }
+
+                ItemStack removed = BookBookmarkUtil.removeBookmark(stack);
+                if (removed.isEmpty()) {
+                    return;
+                }
+
+                if (!player.getInventory().add(removed)) {
+                    player.drop(removed, false);
+                }
+
+                player.inventoryMenu.broadcastChanges();
             });
         });
 

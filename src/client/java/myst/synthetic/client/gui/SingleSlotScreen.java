@@ -2,6 +2,8 @@ package myst.synthetic.client.gui;
 
 import myst.synthetic.MystcraftItems;
 import myst.synthetic.client.screen.DisplayLecternScreen;
+import myst.synthetic.item.BookBookmarkUtil;
+import myst.synthetic.item.BookmarkColorUtil;
 import myst.synthetic.menu.DisplayContainerMenu;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -9,19 +11,26 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
+import net.minecraft.network.chat.Component;
+import java.util.ArrayList;
+import java.util.List;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTextTooltip;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
+import net.minecraft.world.item.TooltipFlag;
 
 public class SingleSlotScreen extends AbstractContainerScreen<DisplayContainerMenu> {
 
     private static final Identifier SINGLE_SLOT_TEXTURE = Identifier.fromNamespaceAndPath("mystcraft-sc", "textures/gui/single_slot.png");
-
     private static final Identifier LINK_BOOK_COVER = Identifier.fromNamespaceAndPath("mystcraft-sc", "textures/gui/bookui_cover.png");
     private static final Identifier LINK_BOOK_PAGE_LEFT = Identifier.fromNamespaceAndPath("mystcraft-sc", "textures/gui/bookui_pagel.png");
     private static final Identifier LINK_BOOK_PAGE_RIGHT = Identifier.fromNamespaceAndPath("mystcraft-sc", "textures/gui/bookui_pager.png");
+    private static final Identifier BOOKMARK_TEXTURE = Identifier.fromNamespaceAndPath("mystcraft-sc", "textures/gui/bookui_bookmark.png");
+    private static final Identifier BOOKMARK_OVERLAY_TEXTURE = Identifier.fromNamespaceAndPath("mystcraft-sc", "textures/gui/bookui_bookmark_overlay.png");
 
     private static final int SINGLE_WIDTH = 176;
     private static final int SINGLE_HEIGHT = 166;
@@ -33,6 +42,11 @@ public class SingleSlotScreen extends AbstractContainerScreen<DisplayContainerMe
     private static final int LINK_PANEL_Y = 20;
     private static final int LINK_PANEL_W = 132;
     private static final int LINK_PANEL_H = 83;
+
+    private static final int BOOKMARK_X = 123;
+    private static final int BOOKMARK_Y = 9;
+    private static final int BOOKMARK_W = 32;
+    private static final int BOOKMARK_H = 128;
 
     private final Inventory playerInventory;
     private final Component screenTitle;
@@ -94,6 +108,21 @@ public class SingleSlotScreen extends AbstractContainerScreen<DisplayContainerMe
                 && mouseY < this.topPos + LINK_PANEL_Y + LINK_PANEL_H;
     }
 
+    private boolean isMouseOverBookmark(double mouseX, double mouseY) {
+        if (!isLinkBookMode() || this.menu.getCurrentPage() != 0) {
+            return false;
+        }
+
+        ItemStack bookmark = BookBookmarkUtil.getBookmark(this.menu.getDisplayStack());
+        if (bookmark.isEmpty()) {
+            return false;
+        }
+
+        int x = this.leftPos + BOOKMARK_X;
+        int y = this.topPos + BOOKMARK_Y;
+        return mouseX >= x && mouseX < x + BOOKMARK_W && mouseY >= y && mouseY < y + BOOKMARK_H;
+    }
+
     @Override
     protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
         if (isLinkBookMode()) {
@@ -123,13 +152,47 @@ public class SingleSlotScreen extends AbstractContainerScreen<DisplayContainerMe
         drawRegion(guiGraphics, LINK_BOOK_COVER, x + 137, y + 7, 45,  0,   4, 192, 256, 256);
         drawRegion(guiGraphics, LINK_BOOK_COVER, x + 141, y + 7, 0,   0, 186, 192, 256, 256);
 
-        drawRegion(guiGraphics, LINK_BOOK_PAGE_LEFT, x + 7, y + 0, 0, 0, 156, 195, 256, 256);
+        if (this.menu.getCurrentPage() > 0) {
+            drawBookmark(guiGraphics);
+            drawRegion(guiGraphics, LINK_BOOK_PAGE_LEFT, x + 7, y + 0, 0, 0, 156, 195, 256, 256);
+        } else {
+            drawBookmark(guiGraphics);
+        }
+
         drawRegion(guiGraphics, LINK_BOOK_PAGE_RIGHT, x + 163, y + 0, 0, 0, 156, 195, 256, 256);
 
         guiGraphics.fill(x + LINK_PANEL_X, y + LINK_PANEL_Y, x + LINK_PANEL_X + LINK_PANEL_W, y + LINK_PANEL_Y + LINK_PANEL_H, 0xFF101020);
         guiGraphics.fill(x + LINK_PANEL_X + 1, y + LINK_PANEL_Y + 1, x + LINK_PANEL_X + LINK_PANEL_W - 1, y + LINK_PANEL_Y + LINK_PANEL_H - 1, 0xFF1E2B38);
 
         drawLinkBookText(guiGraphics);
+    }
+
+    private void drawBookmark(GuiGraphics guiGraphics) {
+        ItemStack bookmark = BookBookmarkUtil.getBookmark(this.menu.getDisplayStack());
+        if (bookmark.isEmpty()) {
+            return;
+        }
+
+        int x = this.leftPos + BOOKMARK_X;
+        int y = this.topPos + BOOKMARK_Y;
+        int color = 0xFF000000 | BookmarkColorUtil.getColor(bookmark);
+
+        guiGraphics.blit(
+                RenderPipelines.GUI_TEXTURED,
+                BOOKMARK_TEXTURE,
+                x,
+                y,
+                0,
+                0.0F,
+                0,
+                BOOKMARK_W,
+                BOOKMARK_H,
+                64,
+                256,
+                color
+        );
+
+        drawRegion(guiGraphics, BOOKMARK_OVERLAY_TEXTURE, x, y, 0, 0, BOOKMARK_W, BOOKMARK_H, 64, 256);
     }
 
     private void drawRegion(
@@ -207,6 +270,16 @@ public class SingleSlotScreen extends AbstractContainerScreen<DisplayContainerMe
 
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+        if (isMouseOverBookmark(event.x(), event.y())) {
+            if (this.minecraft != null && this.minecraft.gameMode != null) {
+                this.minecraft.gameMode.handleInventoryButtonClick(
+                        this.menu.containerId,
+                        DisplayContainerMenu.BUTTON_EXTRACT_BOOKMARK
+                );
+                return true;
+            }
+        }
+
         if (this.minecraft != null && this.minecraft.gameMode != null) {
             if (isMouseOverLinkPanel(event.x(), event.y())) {
                 this.minecraft.gameMode.handleInventoryButtonClick(
@@ -228,6 +301,31 @@ public class SingleSlotScreen extends AbstractContainerScreen<DisplayContainerMe
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         this.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
         super.render(guiGraphics, mouseX, mouseY, partialTick);
-        this.renderTooltip(guiGraphics, mouseX, mouseY);
+
+        if (isMouseOverBookmark(mouseX, mouseY)) {
+            ItemStack bookmark = BookBookmarkUtil.getBookmark(this.menu.getDisplayStack());
+            if (!bookmark.isEmpty() && this.minecraft != null && this.minecraft.player != null) {
+                List<ClientTooltipComponent> tooltip = new ArrayList<>();
+
+                for (var line : bookmark.getTooltipLines(
+                        net.minecraft.world.item.Item.TooltipContext.EMPTY,
+                        this.minecraft.player,
+                        TooltipFlag.Default.NORMAL
+                )) {
+                    tooltip.add(new ClientTextTooltip(line.getVisualOrderText()));
+                }
+
+                guiGraphics.renderTooltip(
+                        this.font,
+                        tooltip,
+                        mouseX,
+                        mouseY,
+                        DefaultTooltipPositioner.INSTANCE,
+                        null
+                );
+            }
+        } else {
+            this.renderTooltip(guiGraphics, mouseX, mouseY);
+        }
     }
 }

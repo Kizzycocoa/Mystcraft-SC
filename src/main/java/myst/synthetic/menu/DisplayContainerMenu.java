@@ -21,6 +21,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.component.WritableBookContent;
 import net.minecraft.world.item.component.WrittenBookContent;
+import myst.synthetic.item.BookBookmarkUtil;
 
 public class DisplayContainerMenu extends AbstractContainerMenu {
 
@@ -28,6 +29,7 @@ public class DisplayContainerMenu extends AbstractContainerMenu {
     public static final int BUTTON_NEXT_PAGE = 2;
     public static final int BUTTON_TAKE_BOOK = 3;
     public static final int BUTTON_USE_LINKBOOK = 4;
+    public static final int BUTTON_EXTRACT_BOOKMARK = 5;
     public static final int BUTTON_PAGE_JUMP_RANGE_START = 100;
 
     private static final int DATA_CURRENT_PAGE = 0;
@@ -257,6 +259,33 @@ public class DisplayContainerMenu extends AbstractContainerMenu {
                 }
 
                 LinkController.travelEntity(player.level(), player, info);
+                return true;
+            }
+
+            case BUTTON_EXTRACT_BOOKMARK -> {
+                if (!this.isLinkBookMode()) {
+                    return false;
+                }
+
+                ItemStack stack = this.getDisplayStack();
+                if (stack.isEmpty()) {
+                    return false;
+                }
+
+                ItemStack removed = BookBookmarkUtil.removeBookmark(stack);
+                if (removed.isEmpty()) {
+                    return false;
+                }
+
+                this.container.setChanged();
+                this.broadcastChanges();
+
+                if (!player.getInventory().add(removed)) {
+                    player.drop(removed, false);
+                }
+
+                player.getInventory().setChanged();
+                player.inventoryMenu.broadcastChanges();
                 return true;
             }
 

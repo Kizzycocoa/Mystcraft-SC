@@ -1,6 +1,9 @@
 package myst.synthetic.client.gui;
 
+import myst.synthetic.item.BookBookmarkUtil;
+import myst.synthetic.item.BookmarkColorUtil;
 import myst.synthetic.network.DisplayContainerExtractPayload;
+import myst.synthetic.network.LinkBookBookmarkExtractPayload;
 import myst.synthetic.network.LinkBookUsePayload;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.Minecraft;
@@ -29,6 +32,8 @@ public class LinkBookScreen extends Screen {
     private static final Identifier BOOK_COVER = Identifier.fromNamespaceAndPath("mystcraft-sc", "textures/gui/bookui_cover.png");
     private static final Identifier BOOK_PAGE_LEFT = Identifier.fromNamespaceAndPath("mystcraft-sc", "textures/gui/bookui_pagel.png");
     private static final Identifier BOOK_PAGE_RIGHT = Identifier.fromNamespaceAndPath("mystcraft-sc", "textures/gui/bookui_pager.png");
+    private static final Identifier BOOKMARK_TEXTURE = Identifier.fromNamespaceAndPath("mystcraft-sc", "textures/gui/bookui_bookmark.png");
+    private static final Identifier BOOKMARK_OVERLAY_TEXTURE = Identifier.fromNamespaceAndPath("mystcraft-sc", "textures/gui/bookui_bookmark_overlay.png");
 
     private static final int GUI_WIDTH = 327;
     private static final int GUI_HEIGHT = 199;
@@ -38,9 +43,14 @@ public class LinkBookScreen extends Screen {
     private static final int PANEL_W = 132;
     private static final int PANEL_H = 83;
 
-    // Legacy lectern/container slot position
     private static final int CONTAINER_SLOT_X = 41;
     private static final int CONTAINER_SLOT_Y = 21;
+
+    // Tuned for the ribbon art you attached.
+    private static final int BOOKMARK_X = 123;
+    private static final int BOOKMARK_Y = 9;
+    private static final int BOOKMARK_W = 32;
+    private static final int BOOKMARK_H = 128;
 
     private final ItemStack bookStack;
     @Nullable
@@ -103,6 +113,7 @@ public class LinkBookScreen extends Screen {
         drawBookText(guiGraphics);
 
         boolean hoveringContainer = false;
+        boolean hoveringBookmark = drawBookmarkIfPresent(guiGraphics, mouseX, mouseY);
 
         if (this.containerPos != null) {
             hoveringContainer = drawContainerSlot(guiGraphics, mouseX, mouseY);
@@ -112,6 +123,11 @@ public class LinkBookScreen extends Screen {
 
         if (hoveringContainer && !this.bookStack.isEmpty()) {
             renderItemTooltip(guiGraphics, this.bookStack, mouseX, mouseY);
+        } else if (hoveringBookmark) {
+            ItemStack bookmark = BookBookmarkUtil.getBookmark(this.bookStack);
+            if (!bookmark.isEmpty()) {
+                renderItemTooltip(guiGraphics, bookmark, mouseX, mouseY);
+            }
         }
     }
 
@@ -152,7 +168,7 @@ public class LinkBookScreen extends Screen {
         drawRegion(guiGraphics, BOOK_COVER, x + 137, y + 7, 45,  0,   4, 192, 256, 256);
         drawRegion(guiGraphics, BOOK_COVER, x + 141, y + 7, 0,   0, 186, 192, 256, 256);
 
-        drawRegion(guiGraphics, BOOK_PAGE_LEFT, x + 7, y + 0, 0, 0, 156, 195, 256, 256);
+        //drawRegion(guiGraphics, BOOK_PAGE_LEFT, x + 7, y + 0, 0, 0, 156, 195, 256, 256);
         drawRegion(guiGraphics, BOOK_PAGE_RIGHT, x + 163, y + 0, 0, 0, 156, 195, 256, 256);
 
         guiGraphics.fill(x + PANEL_X, y + PANEL_Y, x + PANEL_X + PANEL_W, y + PANEL_Y + PANEL_H, 0xFF101020);
@@ -198,6 +214,36 @@ public class LinkBookScreen extends Screen {
         }
     }
 
+    private boolean drawBookmarkIfPresent(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        ItemStack bookmark = BookBookmarkUtil.getBookmark(this.bookStack);
+        if (bookmark.isEmpty()) {
+            return false;
+        }
+
+        int x = this.leftPos + BOOKMARK_X;
+        int y = this.topPos + BOOKMARK_Y;
+        int color = 0xFF000000 | BookmarkColorUtil.getColor(bookmark);
+
+        guiGraphics.blit(
+                RenderPipelines.GUI_TEXTURED,
+                BOOKMARK_TEXTURE,
+                x,
+                y,
+                0,
+                0.0F,
+                0,
+                BOOKMARK_W,
+                BOOKMARK_H,
+                64,
+                256,
+                color
+        );
+
+        drawRegion(guiGraphics, BOOKMARK_OVERLAY_TEXTURE, x, y, 0, 0, BOOKMARK_W, BOOKMARK_H, 64, 256);
+
+        return mouseX >= x && mouseX < x + BOOKMARK_W && mouseY >= y && mouseY < y + BOOKMARK_H;
+    }
+
     private boolean drawContainerSlot(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         int slotLeft = this.leftPos + CONTAINER_SLOT_X;
         int slotTop = this.topPos + CONTAINER_SLOT_Y;
@@ -224,6 +270,11 @@ public class LinkBookScreen extends Screen {
         double mouseX = mouseButtonEvent.x();
         double mouseY = mouseButtonEvent.y();
 
+        if (isMouseOverBookmark(mouseX, mouseY)) {
+            onBookmarkClicked();
+            return true;
+        }
+
         if (this.containerPos != null) {
             int slotLeft = this.leftPos + CONTAINER_SLOT_X;
             int slotTop = this.topPos + CONTAINER_SLOT_Y;
@@ -248,6 +299,27 @@ public class LinkBookScreen extends Screen {
         }
 
         return super.mouseClicked(mouseButtonEvent, bl);
+    }
+
+    private boolean isMouseOverBookmark(double mouseX, double mouseY) {
+        if (!BookBookmarkUtil.hasBookmark(this.bookStack)) {
+            return false;
+        }
+
+        int x = this.leftPos + BOOKMARK_X;
+        int y = this.topPos + BOOKMARK_Y;
+        return mouseX >= x && mouseX < x + BOOKMARK_W && mouseY >= y && mouseY < y + BOOKMARK_H;
+    }
+
+    private void onBookmarkClicked() {
+        Minecraft client = Minecraft.getInstance();
+        if (client.player == null) {
+            return;
+        }
+
+        boolean mainHand = client.player.getMainHandItem().is(this.bookStack.getItem());
+        ClientPlayNetworking.send(new LinkBookBookmarkExtractPayload(mainHand));
+        BookBookmarkUtil.removeBookmark(this.bookStack);
     }
 
     private void onLinkPanelClicked() {
