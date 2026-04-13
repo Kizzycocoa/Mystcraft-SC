@@ -57,10 +57,10 @@ public class MystcraftSyntheticCodexClient implements ClientModInitializer {
 		ColorProviderRegistry.BLOCK.register(
 				(state, view, pos, tintIndex) -> {
 					if (tintIndex != 0) {
-						return 0xFFFFFF;
+						return 0xFFFFFFFF;
 					}
 					if (view == null || pos == null) {
-						return 0xFFFFFF;
+						return 0xFFFFFFFF;
 					}
 
 					BlockEntity blockEntity = view.getBlockEntity(pos);
@@ -70,7 +70,7 @@ public class MystcraftSyntheticCodexClient implements ClientModInitializer {
 
 					BlockPos ownerPos = findPortalOwnerPos(view, pos);
 					if (ownerPos == null) {
-						return 0xFFFFFF;
+						return 0xFFFFFFFF;
 					}
 
 					BlockEntity ownerEntity = view.getBlockEntity(ownerPos);
@@ -78,7 +78,7 @@ public class MystcraftSyntheticCodexClient implements ClientModInitializer {
 						return receptacle.getPortalColor();
 					}
 
-					return 0xFFFFFF;
+					return 0xFFFFFFFF;
 				},
 				MystcraftBlocks.LINK_PORTAL
 		);
