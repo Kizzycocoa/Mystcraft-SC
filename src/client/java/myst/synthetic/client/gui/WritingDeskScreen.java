@@ -2,6 +2,7 @@ package myst.synthetic.client.gui;
 
 import myst.synthetic.MystcraftItems;
 import myst.synthetic.block.entity.BlockEntityDesk;
+import myst.synthetic.item.DeskItemBehaviors;
 import myst.synthetic.menu.WritingDeskMenu;
 import myst.synthetic.network.WritingDeskTitlePayload;
 import myst.synthetic.page.Page;
@@ -12,6 +13,7 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTextTooltip;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
+import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -27,43 +29,53 @@ import java.util.List;
 
 public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
 
-    private static final int SURFACE_OFFSET_X = 40;
+    private static final int FULL_GUI_WIDTH = 409;
+    private static final int FULL_GUI_HEIGHT = 185;
 
-    private static final int DESK_PANEL_X = 180;
-    private static final int DESK_PANEL_Y = 0;
-    private static final int DESK_PANEL_W = 208;
-    private static final int DESK_PANEL_H = 164;
+    private static final int LEFT_TABS_X = 0;
+    private static final int LEFT_TABS_Y = 20;
+    private static final int LEFT_TAB_W = 58;
+    private static final int LEFT_TAB_H = 40;
+    private static final int LEFT_TAB_STEP = 37;
+    private static final int TAB_COUNT = WritingDeskMenu.VISIBLE_TAB_COUNT;
 
-    private static final int DESK_TABS_X = DESK_PANEL_X + 163;
-    private static final int DESK_TABS_Y = 7;
+    private static final int LEFT_ARROWS_X = 0;
+    private static final int LEFT_ARROWS_Y = 168;
+    private static final int LEFT_ARROWS_W = 58;
+    private static final int LEFT_ARROWS_H = 17;
+
+    private static final int SURFACE_OFFSET_X = 58;
+
+    private static final int DESK_PANEL_X = 233;
+    private static final int DESK_PANEL_Y = 20;
+    private static final int DESK_PANEL_W = 176;
+    private static final int DESK_PANEL_H = 166;
 
     private static final int DESK_TEXTURE_W = 256;
     private static final int DESK_TEXTURE_H = 256;
 
-    private static final int TAB_STRIP_X = 0;
-    private static final int TAB_STRIP_Y = 18;
-    private static final int TAB_STRIP_W = 36;
-    private static final int TAB_STRIP_H = 44;
-    private static final int TAB_STRIP_SPACING = 47;
-    private static final int TAB_COUNT = WritingDeskMenu.VISIBLE_TAB_COUNT;
+    private static final int TITLE_BOX_X = DESK_PANEL_X + 28;
+    private static final int TITLE_BOX_Y = DESK_PANEL_Y + 61;
+    private static final int TITLE_BOX_W = 100;
+    private static final int TITLE_BOX_H = 14;
 
-    private static final int TITLE_BOX_X = DESK_PANEL_X + 41;
-    private static final int TITLE_BOX_Y = 57;
-    private static final int TITLE_BOX_W = 89;
-    private static final int TITLE_BOX_H = 12;
+    private static final int PREVIEW_X = DESK_PANEL_X + 27;
+    private static final int PREVIEW_Y = DESK_PANEL_Y + 6;
+    private static final int PREVIEW_W = 101;
+    private static final int PREVIEW_H = 50;
 
-    private static final int INK_METER_X = DESK_PANEL_X + 148;
-    private static final int INK_METER_Y = 22;
-    private static final int INK_METER_W = 12;
-    private static final int INK_METER_H = 40;
+    private static final int INK_METER_X = DESK_PANEL_X + 132;
+    private static final int INK_METER_Y = DESK_PANEL_Y + 7;
+    private static final int INK_METER_W = 16;
+    private static final int INK_METER_H = 70;
 
     private EditBox titleBox;
     private String lastSentTitle = "";
 
     public WritingDeskScreen(WritingDeskMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
-        this.imageWidth = DESK_PANEL_X + DESK_PANEL_W;
-        this.imageHeight = 166;
+        this.imageWidth = FULL_GUI_WIDTH;
+        this.imageHeight = FULL_GUI_HEIGHT;
         this.inventoryLabelX = 0;
         this.inventoryLabelY = 10000;
         this.titleLabelX = 0;
@@ -73,6 +85,27 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
     @Override
     protected void init() {
         super.init();
+
+        if (this.sortButton != null) {
+            this.sortButton.setX(this.leftPos + 58);
+            this.sortButton.setY(this.topPos);
+            this.sortButton.setWidth(18);
+            this.sortButton.setHeight(18);
+        }
+
+        if (this.allButton != null) {
+            this.allButton.setX(this.leftPos + 76);
+            this.allButton.setY(this.topPos);
+            this.allButton.setWidth(18);
+            this.allButton.setHeight(18);
+        }
+
+        if (this.searchBox != null) {
+            this.searchBox.setX(this.leftPos + 98);
+            this.searchBox.setY(this.topPos);
+            this.searchBox.setWidth(130);
+            this.searchBox.setHeight(18);
+        }
 
         this.titleBox = new EditBox(
                 this.font,
@@ -84,7 +117,7 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
         );
         this.titleBox.setCanLoseFocus(true);
         this.titleBox.setBordered(false);
-        this.titleBox.setTextColor(0xFFE0E0E0);
+        this.titleBox.setTextColor(0xFF202020);
         this.titleBox.setTextColorUneditable(0xFF707070);
         this.addRenderableWidget(this.titleBox);
 
@@ -100,7 +133,9 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
 
     @Override
     protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
-        this.drawLegacySearchBox(guiGraphics);
+        this.drawSearchFrame(guiGraphics);
+
+        this.drawLeftTabStrip(guiGraphics, mouseX, mouseY);
 
         PageSurfaceRenderer.drawSurfaceBackground(guiGraphics, this.leftPos + SURFACE_OFFSET_X, this.topPos);
         PageSurfaceRenderer.drawEntries(
@@ -134,13 +169,21 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
                 DESK_TEXTURE_H
         );
 
-        this.drawTabStrip(guiGraphics, mouseX, mouseY);
+        this.drawTitleFrame(guiGraphics);
+        this.drawTargetPreview(guiGraphics, mouseX, mouseY);
         this.drawInkMeter(guiGraphics);
-        this.drawDeskTabHighlights(guiGraphics);
     }
 
     @Override
     protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    }
+
+    @Override
+    protected boolean isMouseOverSearchBox(int mouseX, int mouseY) {
+        return mouseX >= this.leftPos + 98
+                && mouseX < this.leftPos + 228
+                && mouseY >= this.topPos
+                && mouseY < this.topPos + 18;
     }
 
     @Override
@@ -243,6 +286,7 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
         int trackBottom = trackTop + PageSurfaceRenderer.SCROLLBAR_HEIGHT - 15;
         int clampedMouse = Mth.clamp(mouseY - 7, trackTop, trackBottom);
         int knobTravel = trackBottom - trackTop;
+
         if (knobTravel <= 0) {
             this.scroll = 0;
             return;
@@ -327,11 +371,66 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
     }
 
     @Override
+    public boolean keyPressed(KeyEvent input) {
+        if (this.searchBox != null && this.searchBox.isFocused()) {
+            if (input.key() == 256) {
+                return super.keyPressed(input);
+            }
+
+            if (this.searchBox.keyPressed(input)) {
+                return true;
+            }
+
+            return true;
+        }
+
+        if (this.titleBox != null && this.titleBox.isFocused()) {
+            if (input.key() == 256) {
+                return super.keyPressed(input);
+            }
+
+            if (this.titleBox.keyPressed(input)) {
+                this.pushTitleIfChanged();
+                return true;
+            }
+
+            return true;
+        }
+
+        if (input.key() == 257 && this.minecraft != null && this.minecraft.gameMode != null && this.menu.canUseLink()) {
+            this.minecraft.gameMode.handleInventoryButtonClick(this.menu.containerId, WritingDeskMenu.BUTTON_USE_LINK);
+            return true;
+        }
+
+        return super.keyPressed(input);
+    }
+
+    @Override
+    public boolean charTyped(CharacterEvent input) {
+        if (this.searchBox != null && this.searchBox.isFocused()) {
+            if (this.searchBox.charTyped(input)) {
+                return true;
+            }
+            return true;
+        }
+
+        if (this.titleBox != null && this.titleBox.isFocused()) {
+            if (this.titleBox.charTyped(input)) {
+                this.pushTitleIfChanged();
+                return true;
+            }
+            return true;
+        }
+
+        return super.charTyped(input);
+    }
+
+    @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
         int ix = (int) mouseX;
         int iy = (int) mouseY;
 
-        if (this.isOverTabStrip(ix, iy)) {
+        if (this.isOverLeftArrowArea(ix, iy)) {
             if (scrollY > 0) {
                 this.shiftTabWindow(-1);
                 return true;
@@ -350,11 +449,51 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
         int mouseX = (int) event.x();
         int mouseY = (int) event.y();
 
+        if (this.searchBox != null && this.isMouseOverSearchBox(mouseX, mouseY)) {
+            this.setFocused(this.searchBox);
+            this.searchBox.setFocused(true);
+            if (this.titleBox != null) {
+                this.titleBox.setFocused(false);
+            }
+
+            if (event.button() == 1) {
+                this.searchBox.setValue("");
+                return true;
+            }
+
+            if (this.searchBox.mouseClicked(event, doubleClick)) {
+                return true;
+            }
+
+            return true;
+        }
+
+        if (this.titleBox != null && this.isOverTitleBox(mouseX, mouseY)) {
+            this.setFocused(this.titleBox);
+            this.titleBox.setFocused(true);
+            if (this.searchBox != null) {
+                this.searchBox.setFocused(false);
+            }
+            return this.titleBox.mouseClicked(event, doubleClick) || true;
+        } else if (this.titleBox != null) {
+            this.titleBox.setFocused(false);
+        }
+
+        if (this.handleArrowClick(mouseX, mouseY)) {
+            return true;
+        }
+
         if (this.handleTabClick(mouseX, mouseY, event)) {
             return true;
         }
 
         if (this.handleSurfaceInsertClick(mouseX, mouseY, event)) {
+            return true;
+        }
+
+        if (this.isOverScrollbar(mouseX, mouseY)) {
+            this.draggingScrollbar = true;
+            this.scrollToMouse(mouseY);
             return true;
         }
 
@@ -368,29 +507,180 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
     }
 
     @Override
-    public boolean keyPressed(KeyEvent input) {
-        boolean handled = super.keyPressed(input);
-        this.pushTitleIfChanged();
-
-        if (input.key() == 257 && this.minecraft != null && this.minecraft.gameMode != null && this.menu.canUseLink()) {
-            this.minecraft.gameMode.handleInventoryButtonClick(this.menu.containerId, WritingDeskMenu.BUTTON_USE_LINK);
-            return true;
-        }
-
-        return handled;
-    }
-
-    @Override
-    public boolean charTyped(net.minecraft.client.input.CharacterEvent input) {
-        boolean handled = super.charTyped(input);
-        this.pushTitleIfChanged();
-        return handled;
-    }
-
-    @Override
     public void removed() {
         this.pushTitleIfChanged();
         super.removed();
+    }
+
+    private void drawSearchFrame(GuiGraphics guiGraphics) {
+        guiGraphics.fill(
+                this.leftPos + 98,
+                this.topPos,
+                this.leftPos + 228,
+                this.topPos + 18,
+                0xFFA0A0A0
+        );
+        guiGraphics.fill(
+                this.leftPos + 99,
+                this.topPos + 1,
+                this.leftPos + 227,
+                this.topPos + 17,
+                0xFF000000
+        );
+    }
+
+    private void drawLeftTabStrip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        for (int i = 0; i < TAB_COUNT; i++) {
+            int absoluteTab = this.menu.getFirstVisibleTab() + i;
+            int x = this.leftPos + LEFT_TABS_X;
+            int y = this.topPos + LEFT_TABS_Y + i * LEFT_TAB_STEP;
+
+            guiGraphics.blit(
+                    RenderPipelines.GUI_TEXTURED,
+                    DESK_TEXTURE,
+                    x,
+                    y,
+                    0,
+                    166,
+                    LEFT_TAB_W,
+                    LEFT_TAB_H,
+                    DESK_TEXTURE_W,
+                    DESK_TEXTURE_H
+            );
+
+            if (absoluteTab == this.menu.getActiveTab()) {
+                guiGraphics.fill(x + 1, y + 1, x + LEFT_TAB_W - 1, y + LEFT_TAB_H - 1, 0x10FFFFFF);
+            }
+
+            ItemStack stack = this.menu.getVisibleTabStack(i);
+            if (!stack.isEmpty()) {
+                guiGraphics.renderItem(stack, x + 37, y + 14);
+                guiGraphics.renderItemDecorations(this.font, stack, x + 37, y + 14);
+
+                String name = stack.getHoverName().getString();
+                if (name.length() > 11) {
+                    name = name.substring(0, 11);
+                }
+
+                guiGraphics.drawString(
+                        this.font,
+                        name,
+                        x + 2,
+                        y + 28,
+                        0xFF202020,
+                        false
+                );
+            }
+
+            if (mouseX >= x && mouseX < x + LEFT_TAB_W && mouseY >= y && mouseY < y + LEFT_TAB_H && !stack.isEmpty() && this.minecraft != null && this.minecraft.player != null) {
+                List<ClientTooltipComponent> tooltip = new ArrayList<>();
+
+                for (var line : stack.getTooltipLines(
+                        net.minecraft.world.item.Item.TooltipContext.EMPTY,
+                        this.minecraft.player,
+                        TooltipFlag.Default.NORMAL
+                )) {
+                    tooltip.add(new ClientTextTooltip(line.getVisualOrderText()));
+                }
+
+                guiGraphics.renderTooltip(
+                        this.font,
+                        tooltip,
+                        mouseX,
+                        mouseY,
+                        DefaultTooltipPositioner.INSTANCE,
+                        null
+                );
+            }
+        }
+
+        guiGraphics.blit(
+                RenderPipelines.GUI_TEXTURED,
+                DESK_TEXTURE,
+                this.leftPos + LEFT_ARROWS_X,
+                this.topPos + LEFT_ARROWS_Y,
+                0,
+                205,
+                LEFT_ARROWS_W,
+                LEFT_ARROWS_H,
+                DESK_TEXTURE_W,
+                DESK_TEXTURE_H
+        );
+    }
+
+    private void drawTitleFrame(GuiGraphics guiGraphics) {
+        guiGraphics.fill(
+                this.leftPos + TITLE_BOX_X - 1,
+                this.topPos + TITLE_BOX_Y - 1,
+                this.leftPos + TITLE_BOX_X + TITLE_BOX_W + 1,
+                this.topPos + TITLE_BOX_Y + TITLE_BOX_H + 1,
+                0xFF9E6A1C
+        );
+        guiGraphics.fill(
+                this.leftPos + TITLE_BOX_X,
+                this.topPos + TITLE_BOX_Y,
+                this.leftPos + TITLE_BOX_X + TITLE_BOX_W,
+                this.topPos + TITLE_BOX_Y + TITLE_BOX_H,
+                0xFF000000
+        );
+    }
+
+    private void drawTargetPreview(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        if (this.minecraft == null || this.minecraft.player == null) {
+            return;
+        }
+
+        ItemStack target = this.menu.getTargetStack();
+        if (target.isEmpty()) {
+            return;
+        }
+
+        List<ItemStack> pages = DeskItemBehaviors.getPages(this.minecraft.player, target);
+        if (pages.isEmpty()) {
+            return;
+        }
+
+        int clipLeft = this.leftPos + PREVIEW_X;
+        int clipTop = this.topPos + PREVIEW_Y;
+        int clipRight = clipLeft + PREVIEW_W;
+        int clipBottom = clipTop + PREVIEW_H;
+
+        guiGraphics.enableScissor(clipLeft, clipTop, clipRight, clipBottom);
+
+        int drawX = clipLeft + 5;
+        int drawY = clipTop + 5;
+
+        int shown = Math.min(4, pages.size());
+        for (int i = 0; i < shown; i++) {
+            ItemStack page = pages.get(i);
+            if (page.isEmpty()) {
+                continue;
+            }
+
+            myst.synthetic.client.render.PageCardRenderer.drawPageCard(guiGraphics, drawX + i * 22, drawY, page, false, false);
+        }
+
+        guiGraphics.disableScissor();
+    }
+
+    private void drawInkMeter(GuiGraphics guiGraphics) {
+        guiGraphics.fill(
+                this.leftPos + INK_METER_X,
+                this.topPos + INK_METER_Y,
+                this.leftPos + INK_METER_X + INK_METER_W,
+                this.topPos + INK_METER_Y + INK_METER_H,
+                0xFF111111
+        );
+
+        if (this.menu.hasInk()) {
+            guiGraphics.fill(
+                    this.leftPos + INK_METER_X + 1,
+                    this.topPos + INK_METER_Y + 1,
+                    this.leftPos + INK_METER_X + INK_METER_W - 1,
+                    this.topPos + INK_METER_Y + INK_METER_H - 1,
+                    0xFF202020
+            );
+        }
     }
 
     private void pullTitleFromTarget() {
@@ -436,12 +726,36 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
         ClientPlayNetworking.send(new WritingDeskTitlePayload(this.menu.containerId, value));
     }
 
-    private boolean isOverTabStrip(int mouseX, int mouseY) {
-        int x1 = this.leftPos + TAB_STRIP_X;
-        int y1 = this.topPos + TAB_STRIP_Y;
-        int x2 = x1 + TAB_STRIP_W;
-        int y2 = y1 + TAB_COUNT * TAB_STRIP_SPACING;
-        return mouseX >= x1 && mouseX < x2 && mouseY >= y1 && mouseY < y2;
+    private boolean isOverTitleBox(int mouseX, int mouseY) {
+        return mouseX >= this.leftPos + TITLE_BOX_X
+                && mouseX < this.leftPos + TITLE_BOX_X + TITLE_BOX_W
+                && mouseY >= this.topPos + TITLE_BOX_Y
+                && mouseY < this.topPos + TITLE_BOX_Y + TITLE_BOX_H;
+    }
+
+    private boolean isOverLeftArrowArea(int mouseX, int mouseY) {
+        return mouseX >= this.leftPos + LEFT_ARROWS_X
+                && mouseX < this.leftPos + LEFT_ARROWS_X + LEFT_ARROWS_W
+                && mouseY >= this.topPos + LEFT_ARROWS_Y
+                && mouseY < this.topPos + LEFT_ARROWS_Y + LEFT_ARROWS_H;
+    }
+
+    private boolean handleArrowClick(int mouseX, int mouseY) {
+        if (this.minecraft == null || this.minecraft.gameMode == null) {
+            return false;
+        }
+
+        if (!this.isOverLeftArrowArea(mouseX, mouseY)) {
+            return false;
+        }
+
+        int localY = mouseY - (this.topPos + LEFT_ARROWS_Y);
+        if (localY < LEFT_ARROWS_H / 2) {
+            this.shiftTabWindow(-1);
+        } else {
+            this.shiftTabWindow(1);
+        }
+        return true;
     }
 
     private void shiftTabWindow(int delta) {
@@ -467,10 +781,10 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
 
         for (int i = 0; i < TAB_COUNT; i++) {
             int absoluteTab = this.menu.getFirstVisibleTab() + i;
-            int x = this.leftPos + TAB_STRIP_X;
-            int y = this.topPos + TAB_STRIP_Y + i * TAB_STRIP_SPACING;
+            int x = this.leftPos + LEFT_TABS_X;
+            int y = this.topPos + LEFT_TABS_Y + i * LEFT_TAB_STEP;
 
-            if (mouseX < x || mouseX >= x + TAB_STRIP_W || mouseY < y || mouseY >= y + TAB_STRIP_H) {
+            if (mouseX < x || mouseX >= x + LEFT_TAB_W || mouseY < y || mouseY >= y + LEFT_TAB_H) {
                 continue;
             }
 
@@ -515,101 +829,5 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
                 WritingDeskMenu.BUTTON_PLACE_CARRIED_AT_START + index
         );
         return true;
-    }
-
-    private void drawTabStrip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        for (int i = 0; i < TAB_COUNT; i++) {
-            int absoluteTab = this.menu.getFirstVisibleTab() + i;
-            ItemStack stack = this.menu.getVisibleTabStack(i);
-
-            int x = this.leftPos + TAB_STRIP_X;
-            int y = this.topPos + TAB_STRIP_Y + i * TAB_STRIP_SPACING;
-
-            int bg = absoluteTab == this.menu.getActiveTab() ? 0xE0E0E0E0 : 0xC8B8B8B8;
-            int border = absoluteTab == this.menu.getActiveTab() ? 0xFFFFFFFF : 0xFF808080;
-
-            guiGraphics.fill(x, y, x + TAB_STRIP_W, y + TAB_STRIP_H, border);
-            guiGraphics.fill(x + 1, y + 1, x + TAB_STRIP_W - 1, y + TAB_STRIP_H - 1, bg);
-
-            guiGraphics.fill(x + 7, y + 6, x + 25, y + 24, 0xFF6E6E6E);
-            guiGraphics.fill(x + 8, y + 7, x + 24, y + 23, 0xFF000000);
-
-            if (!stack.isEmpty()) {
-                guiGraphics.renderItem(stack, x + 8, y + 7);
-
-                String name = stack.getHoverName().getString();
-                if (name.length() > 12) {
-                    name = name.substring(0, 12);
-                }
-
-                guiGraphics.drawString(
-                        this.font,
-                        name,
-                        x + 2,
-                        y + 28,
-                        0xFF202020,
-                        false
-                );
-            }
-
-            if (mouseX >= x && mouseX < x + TAB_STRIP_W && mouseY >= y && mouseY < y + TAB_STRIP_H && !stack.isEmpty() && this.minecraft != null && this.minecraft.player != null) {
-                List<ClientTooltipComponent> tooltip = new ArrayList<>();
-
-                for (var line : stack.getTooltipLines(
-                        net.minecraft.world.item.Item.TooltipContext.EMPTY,
-                        this.minecraft.player,
-                        TooltipFlag.Default.NORMAL
-                )) {
-                    tooltip.add(new ClientTextTooltip(line.getVisualOrderText()));
-                }
-
-                guiGraphics.renderTooltip(
-                        this.font,
-                        tooltip,
-                        mouseX,
-                        mouseY,
-                        DefaultTooltipPositioner.INSTANCE,
-                        null
-                );
-            }
-        }
-    }
-
-    private void drawInkMeter(GuiGraphics guiGraphics) {
-        guiGraphics.fill(
-                this.leftPos + INK_METER_X,
-                this.topPos + INK_METER_Y,
-                this.leftPos + INK_METER_X + INK_METER_W,
-                this.topPos + INK_METER_Y + INK_METER_H,
-                0xFF111111
-        );
-
-        if (this.menu.hasInk()) {
-            guiGraphics.fill(
-                    this.leftPos + INK_METER_X + 1,
-                    this.topPos + INK_METER_Y + 1,
-                    this.leftPos + INK_METER_X + INK_METER_W - 1,
-                    this.topPos + INK_METER_Y + INK_METER_H - 1,
-                    0xFF202020
-            );
-        }
-    }
-
-    private void drawDeskTabHighlights(GuiGraphics guiGraphics) {
-        for (int i = 0; i < TAB_COUNT; i++) {
-            int absoluteTab = this.menu.getFirstVisibleTab() + i;
-            if (absoluteTab != this.menu.getActiveTab()) {
-                continue;
-            }
-
-            int y = this.topPos + DESK_TABS_Y + i * 38;
-            guiGraphics.fill(
-                    this.leftPos + DESK_TABS_X,
-                    y,
-                    this.leftPos + DESK_TABS_X + 14,
-                    y + 30,
-                    0x30FFFFFF
-            );
-        }
     }
 }

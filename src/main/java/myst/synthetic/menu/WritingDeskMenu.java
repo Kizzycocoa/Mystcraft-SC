@@ -56,7 +56,8 @@ public class WritingDeskMenu extends AbstractContainerMenu {
     private static final int HOTBAR_START = PLAYER_INV_END;
     private static final int HOTBAR_END = HOTBAR_START + 9;
 
-    private static final int RIGHT_PANEL_X = 180;
+    private static final int X_SHIFT = 233;
+    private static final int Y_SHIFT = 20;
 
     private final Container deskInventory;
     @Nullable
@@ -85,19 +86,19 @@ public class WritingDeskMenu extends AbstractContainerMenu {
             this.addSlot(new HiddenDeskSlot(this.deskInventory, i));
         }
 
-        this.addSlot(new TargetSlot(this.deskInventory, SLOT_TARGET, RIGHT_PANEL_X + 7, 55));
-        this.addSlot(new PaperSlot(this.deskInventory, SLOT_PAPER, RIGHT_PANEL_X + 7, 7));
-        this.addSlot(new InkInputSlot(this.deskInventory, SLOT_INK_INPUT, RIGHT_PANEL_X + 139, 7));
-        this.addSlot(new OutputSlot(this.deskInventory, SLOT_OUTPUT, RIGHT_PANEL_X + 139, 55));
+        this.addSlot(new TargetSlot(this.deskInventory, SLOT_TARGET, 8 + X_SHIFT, 60 + Y_SHIFT));
+        this.addSlot(new PaperSlot(this.deskInventory, SLOT_PAPER, 8 + X_SHIFT, 8 + Y_SHIFT));
+        this.addSlot(new InkInputSlot(this.deskInventory, SLOT_INK_INPUT, 152 + X_SHIFT, 8 + Y_SHIFT));
+        this.addSlot(new OutputSlot(this.deskInventory, SLOT_OUTPUT, 152 + X_SHIFT, 60 + Y_SHIFT));
 
         for (int row = 0; row < 3; row++) {
             for (int column = 0; column < 9; column++) {
-                this.addSlot(new Slot(playerInventory, column + row * 9 + 9, RIGHT_PANEL_X + 4 + column * 18, 84 + row * 18));
+                this.addSlot(new Slot(playerInventory, column + row * 9 + 9, 8 + column * 18 + X_SHIFT, 84 + row * 18 + Y_SHIFT));
             }
         }
 
         for (int hotbarSlot = 0; hotbarSlot < 9; hotbarSlot++) {
-            this.addSlot(new Slot(playerInventory, hotbarSlot, RIGHT_PANEL_X + 4 + hotbarSlot * 18, 142));
+            this.addSlot(new Slot(playerInventory, hotbarSlot, 8 + hotbarSlot * 18 + X_SHIFT, 142 + Y_SHIFT));
         }
 
         this.addDataSlots(this.data);
