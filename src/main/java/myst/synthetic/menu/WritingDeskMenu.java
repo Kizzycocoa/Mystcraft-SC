@@ -84,19 +84,19 @@ public class WritingDeskMenu extends AbstractContainerMenu {
             this.addSlot(new HiddenDeskSlot(this.deskInventory, i));
         }
 
-        this.addSlot(new TargetSlot(this.deskInventory, SLOT_TARGET, 188, 80));
-        this.addSlot(new PaperSlot(this.deskInventory, SLOT_PAPER, 188, 28));
-        this.addSlot(new InkInputSlot(this.deskInventory, SLOT_INK_INPUT, 332, 28));
-        this.addSlot(new OutputSlot(this.deskInventory, SLOT_OUTPUT, 332, 80));
+        this.addSlot(new TargetSlot(this.deskInventory, SLOT_TARGET, 8, 8));
+        this.addSlot(new PaperSlot(this.deskInventory, SLOT_PAPER, 8, 60));
+        this.addSlot(new InkInputSlot(this.deskInventory, SLOT_INK_INPUT, 44, 182));
+        this.addSlot(new OutputSlot(this.deskInventory, SLOT_OUTPUT, 138, 180));
 
         for (int row = 0; row < 3; row++) {
             for (int column = 0; column < 9; column++) {
-                this.addSlot(new Slot(playerInventory, column + row * 9 + 9, 188 + column * 18, 104 + row * 18));
+                this.addSlot(new Slot(playerInventory, column + row * 9 + 9, 8 + column * 18, 104 + row * 18));
             }
         }
 
         for (int hotbarSlot = 0; hotbarSlot < 9; hotbarSlot++) {
-            this.addSlot(new Slot(playerInventory, hotbarSlot, 188 + hotbarSlot * 18, 162));
+            this.addSlot(new Slot(playerInventory, hotbarSlot, 8 + hotbarSlot * 18, 162));
         }
 
         this.addDataSlots(this.data);

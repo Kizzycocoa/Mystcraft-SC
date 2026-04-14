@@ -24,8 +24,8 @@ import java.util.List;
 
 public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
 
-    private static final int FULL_WIDTH = 356;
-    private static final int TAB_ICON_X = 150;
+    private static final int FULL_WIDTH = 256;
+    private static final int TAB_ICON_X = 226;
     private static final int TAB_ICON_Y = 14;
     private static final int TAB_ICON_SPACING = 37;
     private static final int TAB_COUNT = WritingDeskMenu.VISIBLE_TAB_COUNT;
@@ -41,10 +41,10 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
     public WritingDeskScreen(WritingDeskMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
         this.imageWidth = FULL_WIDTH;
-        this.inventoryLabelX = 188;
-        this.inventoryLabelY = 92;
-        this.titleLabelX = 188;
-        this.titleLabelY = 92;
+        this.inventoryLabelX = 8;
+        this.inventoryLabelY = 140;
+        this.titleLabelX = 8;
+        this.titleLabelY = 140;
     }
 
     @Override
@@ -53,9 +53,9 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
 
         this.titleBox = new EditBox(
                 this.font,
-                this.leftPos + 210,
-                this.topPos + 7,
-                112,
+                this.leftPos + 8,
+                this.topPos + 178,
+                56,
                 12,
                 Component.translatable("container.mystcraft-sc.writing_desk.title")
         );
@@ -356,10 +356,33 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
     }
 
     private void drawDeskStatus(GuiGraphics guiGraphics) {
-        guiGraphics.drawString(this.font, Component.literal(this.menu.hasInk() ? "Ink: Full" : "Ink: Empty"), this.leftPos + 278, this.topPos + 61, 0xFFE0E0E0, false);
-        guiGraphics.drawString(this.font, Component.literal("Tab " + (this.menu.getActiveTab() + 1)), this.leftPos + 210, this.topPos + 61, 0xFFE0E0E0, false);
+        guiGraphics.drawString(
+                this.font,
+                Component.literal(this.menu.hasInk() ? "Ink: Full" : "Ink: Empty"),
+                this.leftPos + 8,
+                this.topPos + 194,
+                0xFFE0E0E0,
+                false
+        );
+
+        guiGraphics.drawString(
+                this.font,
+                Component.literal("Tab " + (this.menu.getActiveTab() + 1)),
+                this.leftPos + 182,
+                this.topPos + 92,
+                0xFFE0E0E0,
+                false
+        );
+
         if (this.menu.canUseLink()) {
-            guiGraphics.drawString(this.font, Component.literal("Enter: link"), this.leftPos + 266, this.topPos + 7, 0xFFB0E0FF, false);
+            guiGraphics.drawString(
+                    this.font,
+                    Component.literal("Enter"),
+                    this.leftPos + 132,
+                    this.topPos + 180,
+                    0xFFB0E0FF,
+                    false
+            );
         }
     }
 }
