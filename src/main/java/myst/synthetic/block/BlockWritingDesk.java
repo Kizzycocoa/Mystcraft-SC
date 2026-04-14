@@ -395,48 +395,56 @@ public class BlockWritingDesk extends BaseEntityBlock {
 			InteractionHand hand,
 			BlockHitResult hit
 	) {
-		if (!stack.is(MystcraftItems.WRITING_DESK_TOP)) {
-			return InteractionResult.PASS;
+		if (stack.is(MystcraftItems.WRITING_DESK_TOP)) {
+			if (isTop(state)) {
+				return InteractionResult.FAIL;
+			}
+
+			BlockPos anchor = getAnchorPos(state, pos);
+			BlockState anchorState = level.getBlockState(anchor);
+
+			if (!(anchorState.getBlock() instanceof BlockWritingDesk)) {
+				return InteractionResult.FAIL;
+			}
+
+			Direction facing = getDeskFacing(anchorState);
+			BlockPos footOffset = getFootOffset(facing);
+
+			BlockPos topHead = anchor.above();
+			BlockPos topFoot = topHead.offset(footOffset);
+
+			if (!level.getBlockState(topHead).isAir()) {
+				return InteractionResult.FAIL;
+			}
+			if (!level.getBlockState(topFoot).isAir()) {
+				return InteractionResult.FAIL;
+			}
+
+			WoodType topWood = getWoodTypeFromStack(stack);
+
+			BlockState topState = defaultBlockState()
+					.setValue(FACING, facing)
+					.setValue(IS_TOP, true)
+					.setValue(IS_FOOT, false)
+					.setValue(WOOD, topWood);
+
+			if (!level.isClientSide()) {
+				level.setBlock(topHead, topState, 3);
+				level.setBlock(topFoot, topState.setValue(IS_FOOT, true), 3);
+
+				if (!player.getAbilities().instabuild) {
+					stack.shrink(1);
+				}
+			}
+
+			return InteractionResult.SUCCESS;
 		}
-
-		if (isTop(state)) {
-			return InteractionResult.FAIL;
-		}
-
-		BlockPos anchor = getAnchorPos(state, pos);
-		BlockState anchorState = level.getBlockState(anchor);
-
-		if (!(anchorState.getBlock() instanceof BlockWritingDesk)) {
-			return InteractionResult.FAIL;
-		}
-
-		Direction facing = getDeskFacing(anchorState);
-		BlockPos footOffset = getFootOffset(facing);
-
-		BlockPos topHead = anchor.above();
-		BlockPos topFoot = topHead.offset(footOffset);
-
-		if (!level.getBlockState(topHead).isAir()) {
-			return InteractionResult.FAIL;
-		}
-		if (!level.getBlockState(topFoot).isAir()) {
-			return InteractionResult.FAIL;
-		}
-
-		WoodType topWood = getWoodTypeFromStack(stack);
-
-		BlockState topState = defaultBlockState()
-				.setValue(FACING, facing)
-				.setValue(IS_TOP, true)
-				.setValue(IS_FOOT, false)
-				.setValue(WOOD, topWood);
 
 		if (!level.isClientSide()) {
-			level.setBlock(topHead, topState, 3);
-			level.setBlock(topFoot, topState.setValue(IS_FOOT, true), 3);
-
-			if (!player.getAbilities().instabuild) {
-				stack.shrink(1);
+			BlockPos anchorPos = getAnchorPos(state, pos);
+			BlockEntity blockEntity = level.getBlockEntity(anchorPos);
+			if (blockEntity instanceof MenuProvider menuProvider) {
+				player.openMenu(menuProvider);
 			}
 		}
 
