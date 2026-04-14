@@ -17,6 +17,7 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -28,31 +29,41 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
 
     private static final int SURFACE_OFFSET_X = 40;
 
-    private static final int RIGHT_PANEL_X = 180;
-    private static final int RIGHT_PANEL_Y = 0;
-    private static final int RIGHT_PANEL_W = 233;
-    private static final int RIGHT_PANEL_H = 220;
+    private static final int DESK_PANEL_X = 180;
+    private static final int DESK_PANEL_Y = 0;
+    private static final int DESK_PANEL_W = 208;
+    private static final int DESK_PANEL_H = 164;
+
+    private static final int DESK_TABS_X = DESK_PANEL_X + 163;
+    private static final int DESK_TABS_Y = 7;
 
     private static final int DESK_TEXTURE_W = 256;
     private static final int DESK_TEXTURE_H = 256;
 
-    private static final int TAB_ICON_X = 10;
-    private static final int TAB_ICON_Y = 16;
-    private static final int TAB_ICON_SPACING = 49;
+    private static final int TAB_STRIP_X = 0;
+    private static final int TAB_STRIP_Y = 18;
+    private static final int TAB_STRIP_W = 36;
+    private static final int TAB_STRIP_H = 44;
+    private static final int TAB_STRIP_SPACING = 47;
     private static final int TAB_COUNT = WritingDeskMenu.VISIBLE_TAB_COUNT;
 
-    private static final int TITLE_BOX_X = RIGHT_PANEL_X + 44;
-    private static final int TITLE_BOX_Y = 56;
-    private static final int TITLE_BOX_W = 92;
+    private static final int TITLE_BOX_X = DESK_PANEL_X + 41;
+    private static final int TITLE_BOX_Y = 57;
+    private static final int TITLE_BOX_W = 89;
     private static final int TITLE_BOX_H = 12;
+
+    private static final int INK_METER_X = DESK_PANEL_X + 148;
+    private static final int INK_METER_Y = 22;
+    private static final int INK_METER_W = 12;
+    private static final int INK_METER_H = 40;
 
     private EditBox titleBox;
     private String lastSentTitle = "";
 
     public WritingDeskScreen(WritingDeskMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
-        this.imageWidth = RIGHT_PANEL_X + RIGHT_PANEL_W;
-        this.imageHeight = 220;
+        this.imageWidth = DESK_PANEL_X + DESK_PANEL_W;
+        this.imageHeight = 166;
         this.inventoryLabelX = 0;
         this.inventoryLabelY = 10000;
         this.titleLabelX = 0;
@@ -113,33 +124,19 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
         guiGraphics.blit(
                 RenderPipelines.GUI_TEXTURED,
                 DESK_TEXTURE,
-                this.leftPos + RIGHT_PANEL_X,
-                this.topPos + RIGHT_PANEL_Y,
+                this.leftPos + DESK_PANEL_X,
+                this.topPos + DESK_PANEL_Y,
                 0,
                 0,
-                RIGHT_PANEL_W,
-                RIGHT_PANEL_H,
+                DESK_PANEL_W,
+                DESK_PANEL_H,
                 DESK_TEXTURE_W,
                 DESK_TEXTURE_H
         );
 
-        guiGraphics.fill(
-                this.leftPos + TITLE_BOX_X - 1,
-                this.topPos + TITLE_BOX_Y - 1,
-                this.leftPos + TITLE_BOX_X + TITLE_BOX_W + 1,
-                this.topPos + TITLE_BOX_Y + TITLE_BOX_H + 1,
-                0xFFA0A0A0
-        );
-        guiGraphics.fill(
-                this.leftPos + TITLE_BOX_X,
-                this.topPos + TITLE_BOX_Y,
-                this.leftPos + TITLE_BOX_X + TITLE_BOX_W,
-                this.topPos + TITLE_BOX_Y + TITLE_BOX_H,
-                0xFF000000
-        );
-
         this.drawTabStrip(guiGraphics, mouseX, mouseY);
-        this.drawDeskStatus(guiGraphics);
+        this.drawInkMeter(guiGraphics);
+        this.drawDeskTabHighlights(guiGraphics);
     }
 
     @Override
@@ -243,15 +240,15 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
         }
 
         int trackTop = this.topPos + PageSurfaceRenderer.SCROLLBAR_Y;
-        int trackBottom = trackTop + PageSurfaceRenderer.SCROLLBAR_HEIGHT - 18;
-        int clampedMouse = Math.max(trackTop, Math.min(mouseY - 9, trackBottom));
-
+        int trackBottom = trackTop + PageSurfaceRenderer.SCROLLBAR_HEIGHT - 15;
+        int clampedMouse = Mth.clamp(mouseY - 7, trackTop, trackBottom);
         int knobTravel = trackBottom - trackTop;
         if (knobTravel <= 0) {
+            this.scroll = 0;
             return;
         }
 
-        this.scroll = ((clampedMouse - trackTop) * maxScroll) / knobTravel;
+        this.scroll = (int) (((clampedMouse - trackTop) / (float) knobTravel) * maxScroll);
     }
 
     @Override
@@ -440,10 +437,10 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
     }
 
     private boolean isOverTabStrip(int mouseX, int mouseY) {
-        int x1 = this.leftPos;
-        int y1 = this.topPos + 8;
-        int x2 = x1 + 36;
-        int y2 = y1 + 4 * TAB_ICON_SPACING + 18;
+        int x1 = this.leftPos + TAB_STRIP_X;
+        int y1 = this.topPos + TAB_STRIP_Y;
+        int x2 = x1 + TAB_STRIP_W;
+        int y2 = y1 + TAB_COUNT * TAB_STRIP_SPACING;
         return mouseX >= x1 && mouseX < x2 && mouseY >= y1 && mouseY < y2;
     }
 
@@ -470,10 +467,10 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
 
         for (int i = 0; i < TAB_COUNT; i++) {
             int absoluteTab = this.menu.getFirstVisibleTab() + i;
-            int x = this.leftPos + TAB_ICON_X;
-            int y = this.topPos + TAB_ICON_Y + i * TAB_ICON_SPACING;
+            int x = this.leftPos + TAB_STRIP_X;
+            int y = this.topPos + TAB_STRIP_Y + i * TAB_STRIP_SPACING;
 
-            if (mouseX < x || mouseX >= x + 18 || mouseY < y || mouseY >= y + 18) {
+            if (mouseX < x || mouseX >= x + TAB_STRIP_W || mouseY < y || mouseY >= y + TAB_STRIP_H) {
                 continue;
             }
 
@@ -524,17 +521,38 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
         for (int i = 0; i < TAB_COUNT; i++) {
             int absoluteTab = this.menu.getFirstVisibleTab() + i;
             ItemStack stack = this.menu.getVisibleTabStack(i);
-            int x = this.leftPos + TAB_ICON_X;
-            int y = this.topPos + TAB_ICON_Y + i * TAB_ICON_SPACING;
 
-            guiGraphics.fill(x - 4, y - 4, x + 24, y + 32, absoluteTab == this.menu.getActiveTab() ? 0x50FFFFFF : 0x30000000);
+            int x = this.leftPos + TAB_STRIP_X;
+            int y = this.topPos + TAB_STRIP_Y + i * TAB_STRIP_SPACING;
+
+            int bg = absoluteTab == this.menu.getActiveTab() ? 0xE0E0E0E0 : 0xC8B8B8B8;
+            int border = absoluteTab == this.menu.getActiveTab() ? 0xFFFFFFFF : 0xFF808080;
+
+            guiGraphics.fill(x, y, x + TAB_STRIP_W, y + TAB_STRIP_H, border);
+            guiGraphics.fill(x + 1, y + 1, x + TAB_STRIP_W - 1, y + TAB_STRIP_H - 1, bg);
+
+            guiGraphics.fill(x + 7, y + 6, x + 25, y + 24, 0xFF6E6E6E);
+            guiGraphics.fill(x + 8, y + 7, x + 24, y + 23, 0xFF000000);
 
             if (!stack.isEmpty()) {
-                guiGraphics.renderItem(stack, x, y);
-                guiGraphics.renderItemDecorations(this.font, stack, x, y);
+                guiGraphics.renderItem(stack, x + 8, y + 7);
+
+                String name = stack.getHoverName().getString();
+                if (name.length() > 12) {
+                    name = name.substring(0, 12);
+                }
+
+                guiGraphics.drawString(
+                        this.font,
+                        name,
+                        x + 2,
+                        y + 28,
+                        0xFF202020,
+                        false
+                );
             }
 
-            if (mouseX >= x && mouseX < x + 18 && mouseY >= y && mouseY < y + 18 && !stack.isEmpty() && this.minecraft != null && this.minecraft.player != null) {
+            if (mouseX >= x && mouseX < x + TAB_STRIP_W && mouseY >= y && mouseY < y + TAB_STRIP_H && !stack.isEmpty() && this.minecraft != null && this.minecraft.player != null) {
                 List<ClientTooltipComponent> tooltip = new ArrayList<>();
 
                 for (var line : stack.getTooltipLines(
@@ -557,24 +575,40 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
         }
     }
 
-    private void drawDeskStatus(GuiGraphics guiGraphics) {
-        guiGraphics.drawString(
-                this.font,
-                Component.literal(this.menu.hasInk() ? "Ink" : "No Ink"),
-                this.leftPos + RIGHT_PANEL_X + 154,
-                this.topPos + 33,
-                0xFFE0E0E0,
-                false
+    private void drawInkMeter(GuiGraphics guiGraphics) {
+        guiGraphics.fill(
+                this.leftPos + INK_METER_X,
+                this.topPos + INK_METER_Y,
+                this.leftPos + INK_METER_X + INK_METER_W,
+                this.topPos + INK_METER_Y + INK_METER_H,
+                0xFF111111
         );
 
-        if (this.menu.canUseLink()) {
-            guiGraphics.drawString(
-                    this.font,
-                    Component.literal("Enter"),
-                    this.leftPos + RIGHT_PANEL_X + 8,
-                    this.topPos + 30,
-                    0xFFB0E0FF,
-                    false
+        if (this.menu.hasInk()) {
+            guiGraphics.fill(
+                    this.leftPos + INK_METER_X + 1,
+                    this.topPos + INK_METER_Y + 1,
+                    this.leftPos + INK_METER_X + INK_METER_W - 1,
+                    this.topPos + INK_METER_Y + INK_METER_H - 1,
+                    0xFF202020
+            );
+        }
+    }
+
+    private void drawDeskTabHighlights(GuiGraphics guiGraphics) {
+        for (int i = 0; i < TAB_COUNT; i++) {
+            int absoluteTab = this.menu.getFirstVisibleTab() + i;
+            if (absoluteTab != this.menu.getActiveTab()) {
+                continue;
+            }
+
+            int y = this.topPos + DESK_TABS_Y + i * 38;
+            guiGraphics.fill(
+                    this.leftPos + DESK_TABS_X,
+                    y,
+                    this.leftPos + DESK_TABS_X + 14,
+                    y + 30,
+                    0x30FFFFFF
             );
         }
     }

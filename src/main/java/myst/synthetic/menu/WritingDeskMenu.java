@@ -85,19 +85,19 @@ public class WritingDeskMenu extends AbstractContainerMenu {
             this.addSlot(new HiddenDeskSlot(this.deskInventory, i));
         }
 
-        this.addSlot(new TargetSlot(this.deskInventory, SLOT_TARGET, RIGHT_PANEL_X + 8, 55));
-        this.addSlot(new PaperSlot(this.deskInventory, SLOT_PAPER, RIGHT_PANEL_X + 8, 8));
-        this.addSlot(new InkInputSlot(this.deskInventory, SLOT_INK_INPUT, RIGHT_PANEL_X + 152, 8));
-        this.addSlot(new OutputSlot(this.deskInventory, SLOT_OUTPUT, RIGHT_PANEL_X + 152, 55));
+        this.addSlot(new TargetSlot(this.deskInventory, SLOT_TARGET, RIGHT_PANEL_X + 7, 55));
+        this.addSlot(new PaperSlot(this.deskInventory, SLOT_PAPER, RIGHT_PANEL_X + 7, 7));
+        this.addSlot(new InkInputSlot(this.deskInventory, SLOT_INK_INPUT, RIGHT_PANEL_X + 139, 7));
+        this.addSlot(new OutputSlot(this.deskInventory, SLOT_OUTPUT, RIGHT_PANEL_X + 139, 55));
 
         for (int row = 0; row < 3; row++) {
             for (int column = 0; column < 9; column++) {
-                this.addSlot(new Slot(playerInventory, column + row * 9 + 9, RIGHT_PANEL_X + 22 + column * 18, 92 + row * 18));
+                this.addSlot(new Slot(playerInventory, column + row * 9 + 9, RIGHT_PANEL_X + 4 + column * 18, 84 + row * 18));
             }
         }
 
         for (int hotbarSlot = 0; hotbarSlot < 9; hotbarSlot++) {
-            this.addSlot(new Slot(playerInventory, hotbarSlot, RIGHT_PANEL_X + 22 + hotbarSlot * 18, 150));
+            this.addSlot(new Slot(playerInventory, hotbarSlot, RIGHT_PANEL_X + 4 + hotbarSlot * 18, 142));
         }
 
         this.addDataSlots(this.data);
