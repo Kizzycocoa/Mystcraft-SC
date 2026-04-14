@@ -26,32 +26,37 @@ import java.util.List;
 
 public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
 
-    /**
-     * The writing desk texture is a 256x256 atlas image,
-     * but the logical GUI is wider because the page-browser
-     * base class renders the left browser area and the desk
-     * screen adds the right-hand work area.
-     */
-    private static final int FULL_WIDTH = 356;
-    private static final int TEXTURE_WIDTH = 256;
-    private static final int TEXTURE_HEIGHT = 256;
+    private static final int SURFACE_OFFSET_X = 40;
 
-    private static final int TAB_ICON_X = 150;
-    private static final int TAB_ICON_Y = 14;
-    private static final int TAB_ICON_SPACING = 37;
+    private static final int RIGHT_PANEL_X = 180;
+    private static final int RIGHT_PANEL_Y = 0;
+    private static final int RIGHT_PANEL_W = 233;
+    private static final int RIGHT_PANEL_H = 220;
+
+    private static final int DESK_TEXTURE_W = 256;
+    private static final int DESK_TEXTURE_H = 256;
+
+    private static final int TAB_ICON_X = 10;
+    private static final int TAB_ICON_Y = 16;
+    private static final int TAB_ICON_SPACING = 49;
     private static final int TAB_COUNT = WritingDeskMenu.VISIBLE_TAB_COUNT;
+
+    private static final int TITLE_BOX_X = RIGHT_PANEL_X + 44;
+    private static final int TITLE_BOX_Y = 56;
+    private static final int TITLE_BOX_W = 92;
+    private static final int TITLE_BOX_H = 12;
 
     private EditBox titleBox;
     private String lastSentTitle = "";
 
     public WritingDeskScreen(WritingDeskMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
-        this.imageWidth = FULL_WIDTH;
-        this.imageHeight = 256;
-        this.inventoryLabelX = 188;
-        this.inventoryLabelY = 92;
-        this.titleLabelX = 188;
-        this.titleLabelY = 92;
+        this.imageWidth = RIGHT_PANEL_X + RIGHT_PANEL_W;
+        this.imageHeight = 220;
+        this.inventoryLabelX = 0;
+        this.inventoryLabelY = 10000;
+        this.titleLabelX = 0;
+        this.titleLabelY = 10000;
     }
 
     @Override
@@ -60,10 +65,10 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
 
         this.titleBox = new EditBox(
                 this.font,
-                this.leftPos + 210,
-                this.topPos + 7,
-                112,
-                12,
+                this.leftPos + TITLE_BOX_X,
+                this.topPos + TITLE_BOX_Y,
+                TITLE_BOX_W,
+                TITLE_BOX_H,
                 Component.translatable("container.mystcraft-sc.writing_desk.title")
         );
         this.titleBox.setCanLoseFocus(true);
@@ -84,29 +89,54 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
 
     @Override
     protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
-        /*
-         * Draw the whole desk texture once, using the actual atlas size.
-         * The old broken version used FULL_WIDTH here, which tried to sample
-         * 356 pixels from a 256-pixel-wide texture and garbled the result.
-         */
+        this.drawLegacySearchBox(guiGraphics);
+
+        PageSurfaceRenderer.drawSurfaceBackground(guiGraphics, this.leftPos + SURFACE_OFFSET_X, this.topPos);
+        PageSurfaceRenderer.drawEntries(
+                guiGraphics,
+                this.font,
+                this.leftPos + SURFACE_OFFSET_X,
+                this.topPos,
+                mouseX,
+                mouseY,
+                this.scroll,
+                this.toSurfaceEntries()
+        );
+        PageSurfaceRenderer.drawScrollbar(
+                guiGraphics,
+                this.leftPos + SURFACE_OFFSET_X,
+                this.topPos,
+                this.scroll,
+                this.getMaxScroll()
+        );
+
         guiGraphics.blit(
                 RenderPipelines.GUI_TEXTURED,
                 DESK_TEXTURE,
-                this.leftPos,
-                this.topPos,
+                this.leftPos + RIGHT_PANEL_X,
+                this.topPos + RIGHT_PANEL_Y,
                 0,
                 0,
-                TEXTURE_WIDTH,
-                this.imageHeight,
-                TEXTURE_WIDTH,
-                TEXTURE_HEIGHT
+                RIGHT_PANEL_W,
+                RIGHT_PANEL_H,
+                DESK_TEXTURE_W,
+                DESK_TEXTURE_H
         );
 
-        /*
-         * Let the page-browser base render its page entries/search overlay logic,
-         * but keep our own desk texture as the real background.
-         */
-        super.renderBg(guiGraphics, partialTick, mouseX, mouseY);
+        guiGraphics.fill(
+                this.leftPos + TITLE_BOX_X - 1,
+                this.topPos + TITLE_BOX_Y - 1,
+                this.leftPos + TITLE_BOX_X + TITLE_BOX_W + 1,
+                this.topPos + TITLE_BOX_Y + TITLE_BOX_H + 1,
+                0xFFA0A0A0
+        );
+        guiGraphics.fill(
+                this.leftPos + TITLE_BOX_X,
+                this.topPos + TITLE_BOX_Y,
+                this.leftPos + TITLE_BOX_X + TITLE_BOX_W,
+                this.topPos + TITLE_BOX_Y + TITLE_BOX_H,
+                0xFF000000
+        );
 
         this.drawTabStrip(guiGraphics, mouseX, mouseY);
         this.drawDeskStatus(guiGraphics);
@@ -193,6 +223,132 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
     }
 
     @Override
+    protected int getMaxScroll() {
+        int maxBottom = 0;
+        for (DisplayEntry entry : this.displayEntries) {
+            int bottom = Math.round(entry.y + PageSurfaceRenderer.PAGE_HEIGHT + 6);
+            if (bottom > maxBottom) {
+                maxBottom = bottom;
+            }
+        }
+        return Math.max(0, maxBottom - PageSurfaceRenderer.SURFACE_HEIGHT);
+    }
+
+    @Override
+    protected void scrollToMouse(int mouseY) {
+        int maxScroll = this.getMaxScroll();
+        if (maxScroll <= 0) {
+            this.scroll = 0;
+            return;
+        }
+
+        int trackTop = this.topPos + PageSurfaceRenderer.SCROLLBAR_Y;
+        int trackBottom = trackTop + PageSurfaceRenderer.SCROLLBAR_HEIGHT - 18;
+        int clampedMouse = Math.max(trackTop, Math.min(mouseY - 9, trackBottom));
+
+        int knobTravel = trackBottom - trackTop;
+        if (knobTravel <= 0) {
+            return;
+        }
+
+        this.scroll = ((clampedMouse - trackTop) * maxScroll) / knobTravel;
+    }
+
+    @Override
+    protected boolean isOverScrollbar(int mouseX, int mouseY) {
+        int x = this.leftPos + SURFACE_OFFSET_X + PageSurfaceRenderer.SCROLLBAR_X;
+        int y = this.topPos + PageSurfaceRenderer.SCROLLBAR_Y;
+        return mouseX >= x && mouseX < x + PageSurfaceRenderer.SCROLLBAR_WIDTH
+                && mouseY >= y && mouseY < y + PageSurfaceRenderer.SCROLLBAR_HEIGHT;
+    }
+
+    @Override
+    protected DisplayEntry getHoveredEntry(int mouseX, int mouseY) {
+        if (!PageSurfaceRenderer.isOverPageArea(this.leftPos + SURFACE_OFFSET_X, this.topPos, mouseX, mouseY)) {
+            return null;
+        }
+
+        int clipTop = this.topPos + PageSurfaceRenderer.SURFACE_Y;
+        int clipBottom = clipTop + PageSurfaceRenderer.SURFACE_HEIGHT;
+
+        for (DisplayEntry entry : this.displayEntries) {
+            int drawX = this.leftPos + SURFACE_OFFSET_X + PageSurfaceRenderer.SURFACE_X + Math.round(entry.x);
+            int drawY = this.topPos + PageSurfaceRenderer.SURFACE_Y + Math.round(entry.y) - this.scroll;
+
+            if (drawY + PageSurfaceRenderer.PAGE_HEIGHT <= clipTop || drawY >= clipBottom) {
+                continue;
+            }
+
+            if (mouseX >= drawX && mouseX < drawX + PageSurfaceRenderer.PAGE_WIDTH
+                    && mouseY >= drawY && mouseY < drawY + PageSurfaceRenderer.PAGE_HEIGHT) {
+                return entry;
+            }
+        }
+
+        return null;
+    }
+
+    @Override
+    protected void renderPageTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        if (!PageSurfaceRenderer.isOverPageArea(this.leftPos + SURFACE_OFFSET_X, this.topPos, mouseX, mouseY)) {
+            return;
+        }
+
+        DisplayEntry entry = this.getHoveredEntry(mouseX, mouseY);
+        if (entry == null || entry.stack.isEmpty() || this.minecraft == null || this.minecraft.player == null) {
+            return;
+        }
+
+        List<ClientTooltipComponent> tooltip = new ArrayList<>();
+
+        for (var line : entry.stack.getTooltipLines(
+                net.minecraft.world.item.Item.TooltipContext.EMPTY,
+                this.minecraft.player,
+                TooltipFlag.Default.NORMAL
+        )) {
+            tooltip.add(new ClientTextTooltip(line.getVisualOrderText()));
+        }
+
+        if (entry.count > 1) {
+            tooltip.add(new ClientTextTooltip(
+                    Component.translatable("screen.mystcraft-sc.page_browser.copies", entry.count).getVisualOrderText()
+            ));
+        } else if (entry.absoluteIndex < 0) {
+            tooltip.add(new ClientTextTooltip(
+                    Component.translatable("screen.mystcraft-sc.page_browser.preview_only").getVisualOrderText()
+            ));
+        }
+
+        guiGraphics.renderTooltip(
+                this.font,
+                tooltip,
+                mouseX,
+                mouseY,
+                DefaultTooltipPositioner.INSTANCE,
+                null
+        );
+    }
+
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+        int ix = (int) mouseX;
+        int iy = (int) mouseY;
+
+        if (this.isOverTabStrip(ix, iy)) {
+            if (scrollY > 0) {
+                this.shiftTabWindow(-1);
+                return true;
+            }
+            if (scrollY < 0) {
+                this.shiftTabWindow(1);
+                return true;
+            }
+        }
+
+        return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
+    }
+
+    @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
         int mouseX = (int) event.x();
         int mouseY = (int) event.y();
@@ -202,6 +358,12 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
         }
 
         if (this.handleSurfaceInsertClick(mouseX, mouseY, event)) {
+            return true;
+        }
+
+        if (PageSurfaceRenderer.isOverPageArea(this.leftPos + SURFACE_OFFSET_X, this.topPos, mouseX, mouseY)) {
+            DisplayEntry hovered = this.getHoveredEntry(mouseX, mouseY);
+            this.onSurfaceClicked(hovered, event);
             return true;
         }
 
@@ -277,6 +439,14 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
         ClientPlayNetworking.send(new WritingDeskTitlePayload(this.menu.containerId, value));
     }
 
+    private boolean isOverTabStrip(int mouseX, int mouseY) {
+        int x1 = this.leftPos;
+        int y1 = this.topPos + 8;
+        int x2 = x1 + 36;
+        int y2 = y1 + 4 * TAB_ICON_SPACING + 18;
+        return mouseX >= x1 && mouseX < x2 && mouseY >= y1 && mouseY < y2;
+    }
+
     private void shiftTabWindow(int delta) {
         if (this.minecraft == null || this.minecraft.gameMode == null) {
             return;
@@ -299,6 +469,7 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
         }
 
         for (int i = 0; i < TAB_COUNT; i++) {
+            int absoluteTab = this.menu.getFirstVisibleTab() + i;
             int x = this.leftPos + TAB_ICON_X;
             int y = this.topPos + TAB_ICON_Y + i * TAB_ICON_SPACING;
 
@@ -306,7 +477,6 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
                 continue;
             }
 
-            int absoluteTab = this.menu.getFirstVisibleTab() + i;
             if (!this.menu.getCarried().isEmpty() && this.menu.getCarried().is(MystcraftItems.PAGE)) {
                 this.minecraft.gameMode.handleInventoryButtonClick(
                         this.menu.containerId,
@@ -318,26 +488,6 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
                         WritingDeskMenu.BUTTON_SELECT_TAB_START + absoluteTab
                 );
             }
-            return true;
-        }
-
-        /*
-         * Scroll upper arrow
-         */
-        int upX = this.leftPos + TAB_ICON_X + 26;
-        int upY = this.topPos + 3;
-        if (mouseX >= upX && mouseX < upX + 12 && mouseY >= upY && mouseY < upY + 12) {
-            this.shiftTabWindow(-1);
-            return true;
-        }
-
-        /*
-         * Scroll lower arrow
-         */
-        int downX = this.leftPos + TAB_ICON_X + 26;
-        int downY = this.topPos + 157;
-        if (mouseX >= downX && mouseX < downX + 12 && mouseY >= downY && mouseY < downY + 12) {
-            this.shiftTabWindow(1);
             return true;
         }
 
@@ -353,7 +503,7 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
             return false;
         }
 
-        if (!PageSurfaceRenderer.isOverPageArea(this.leftPos, this.topPos, mouseX, mouseY)) {
+        if (!PageSurfaceRenderer.isOverPageArea(this.leftPos + SURFACE_OFFSET_X, this.topPos, mouseX, mouseY)) {
             return false;
         }
 
@@ -377,20 +527,14 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
             int x = this.leftPos + TAB_ICON_X;
             int y = this.topPos + TAB_ICON_Y + i * TAB_ICON_SPACING;
 
-            guiGraphics.fill(
-                    x - 1,
-                    y - 1,
-                    x + 17,
-                    y + 17,
-                    absoluteTab == this.menu.getActiveTab() ? 0x80FFFFFF : 0x40000000
-            );
+            guiGraphics.fill(x - 4, y - 4, x + 24, y + 32, absoluteTab == this.menu.getActiveTab() ? 0x50FFFFFF : 0x30000000);
 
             if (!stack.isEmpty()) {
                 guiGraphics.renderItem(stack, x, y);
                 guiGraphics.renderItemDecorations(this.font, stack, x, y);
             }
 
-            if (mouseX >= x && mouseX < x + 18 && mouseY >= y && mouseY < y + 18 && !stack.isEmpty()) {
+            if (mouseX >= x && mouseX < x + 18 && mouseY >= y && mouseY < y + 18 && !stack.isEmpty() && this.minecraft != null && this.minecraft.player != null) {
                 List<ClientTooltipComponent> tooltip = new ArrayList<>();
 
                 for (var line : stack.getTooltipLines(
@@ -416,18 +560,9 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
     private void drawDeskStatus(GuiGraphics guiGraphics) {
         guiGraphics.drawString(
                 this.font,
-                Component.literal(this.menu.hasInk() ? "Ink: Full" : "Ink: Empty"),
-                this.leftPos + 278,
-                this.topPos + 61,
-                0xFFE0E0E0,
-                false
-        );
-
-        guiGraphics.drawString(
-                this.font,
-                Component.literal("Tab " + (this.menu.getActiveTab() + 1)),
-                this.leftPos + 210,
-                this.topPos + 61,
+                Component.literal(this.menu.hasInk() ? "Ink" : "No Ink"),
+                this.leftPos + RIGHT_PANEL_X + 154,
+                this.topPos + 33,
                 0xFFE0E0E0,
                 false
         );
@@ -435,9 +570,9 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
         if (this.menu.canUseLink()) {
             guiGraphics.drawString(
                     this.font,
-                    Component.literal("Enter: link"),
-                    this.leftPos + 266,
-                    this.topPos + 7,
+                    Component.literal("Enter"),
+                    this.leftPos + RIGHT_PANEL_X + 8,
+                    this.topPos + 30,
                     0xFFB0E0FF,
                     false
             );
