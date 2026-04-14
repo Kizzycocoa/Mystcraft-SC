@@ -12,5 +12,7 @@
     "myst.symbol.colorskynat": "Natural Sky Colour",
     "myst.symbol.colorskynight": "Night Sky Colour",
     "myst.symbol.colorwater": "Water Colour",
-    "myst.symbol.colorwaternat": "Natural Water Colour"
+    "myst.symbol.colorwaternat": "Natural Water Colour",
+    "container.mystcraft-sc.writing_desk": "Writing Desk",
+    "container.mystcraft-sc.writing_desk.title": "Title"
 }

@@ -6,6 +6,7 @@ import myst.synthetic.linking.LinkOptions;
 import myst.synthetic.network.DisplayContainerExtractPayload;
 import myst.synthetic.network.DisplayContainerInsertPayload;
 import myst.synthetic.network.LinkBookUsePayload;
+import myst.synthetic.network.WritingDeskTitlePayload;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.component.DataComponents;
@@ -14,6 +15,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
+import myst.synthetic.menu.WritingDeskMenu;
 import myst.synthetic.item.BookBookmarkUtil;
 import myst.synthetic.network.LinkBookBookmarkExtractPayload;
 
@@ -27,6 +29,7 @@ public final class MystcraftNetworking {
         PayloadTypeRegistry.playC2S().register(DisplayContainerExtractPayload.ID, DisplayContainerExtractPayload.CODEC);
         PayloadTypeRegistry.playC2S().register(DisplayContainerInsertPayload.ID, DisplayContainerInsertPayload.CODEC);
         PayloadTypeRegistry.playC2S().register(LinkBookBookmarkExtractPayload.ID, LinkBookBookmarkExtractPayload.CODEC);
+        PayloadTypeRegistry.playC2S().register(WritingDeskTitlePayload.ID, WritingDeskTitlePayload.CODEC);
 
         ServerPlayNetworking.registerGlobalReceiver(LinkBookUsePayload.ID, (payload, context) -> {
             var player = context.player();
@@ -81,6 +84,30 @@ public final class MystcraftNetworking {
                     player.drop(removed, false);
                 }
 
+                player.inventoryMenu.broadcastChanges();
+            });
+        });
+
+
+        ServerPlayNetworking.registerGlobalReceiver(WritingDeskTitlePayload.ID, (payload, context) -> {
+            var player = context.player();
+
+            context.server().execute(() -> {
+                if (!(player.containerMenu instanceof WritingDeskMenu menu)) {
+                    return;
+                }
+
+                if (menu.containerId != payload.containerId()) {
+                    return;
+                }
+
+                var desk = menu.getDeskBlockEntity();
+                if (desk == null || !desk.stillValid(player)) {
+                    return;
+                }
+
+                desk.setTargetTitle(player, payload.title());
+                player.containerMenu.broadcastChanges();
                 player.inventoryMenu.broadcastChanges();
             });
         });

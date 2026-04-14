@@ -3,39 +3,31 @@
     "mystcraft-sc.profiling.running.message": "Mystcraft is baking a cake.",
     "mystcraft-sc.profiling.complete": "Ding!",
     "mystcraft-sc.profiling.complete.message": "Mystcraft Profiling Complete",
-
     "commands.mystcraft-sc.generic.player.notfound": "Could not get Player by name: %s",
-
     "commands.mystcraft-sc.tpx.usage": "/tpx [subject:player] <target:player | target:dim [x y z]>",
     "commands.mystcraft-sc.tpx.fail.nosubject": "Teleport subject invalid. No tp.",
     "commands.mystcraft-sc.tpx.fail.noworld": "Could not get world for dimension %d. No tp.",
-
     "commands.mystcraft-sc.time.usage": "/time <set|add> <value> [dim]",
     "commands.mystcraft-sc.time.fail.noworld": "Target Dimension is not Loaded",
     "commands.mystcraft-sc.time.set": "Set the time to %d in dimension %d",
     "commands.mystcraft-sc.time.set.all": "Set the time to %d in all dimensions",
     "commands.mystcraft-sc.time.added": "Added %d to the time in dimension %d",
     "commands.mystcraft-sc.time.added.all": "Added %d to the time in all dimensions",
-
     "commands.mystcraft-sc.toggledownfall.usage": "/toggledownfall [dim]",
     "commands.mystcraft-sc.downfall.success": "Toggled downfall in dimension %d",
     "commands.mystcraft-sc.downfall.fail.nodim": "No dimension set.",
-
     "commands.mystcraft-sc.agebook.usage": "/myst-agebook [dim]",
     "commands.mystcraft-sc.twi.usage": "/myst-twi [dim] [true|false]",
     "commands.mystcraft-sc.meteor.usage": "/myst-spawnmeteor",
     "commands.mystcraft-sc.permissions.usage": "/myst-permissions <player> <restrict|permit> <entry|depart> <all|dimid>",
     "commands.mystcraft-sc.chunkregen.usage": "/myst-regenchunk [range] [dimId] [chunkX] [chunkZ]",
-
     "container.mystcraft-sc.ink_mixer": "Ink Mixer",
     "screen.mystcraft-sc.ink_mixer.basin_full": "Ink Basin: Full",
     "screen.mystcraft-sc.ink_mixer.basin_empty": "Ink Basin: Empty",
     "screen.mystcraft-sc.ink_mixer.basin_tooltip": "Click with an ingredient to mix it into the ink",
-
     "entity.mystcraft-sc.book": "Book",
     "entity.mystcraft-sc.block": "Falling Block",
     "entity.mystcraft-sc.meteor": "Meteor",
-
     "item.mystcraft-sc.crystal": "Crystal Block",
     "item.mystcraft-sc.crystal.maroon": "Maroon Crystal Block",
     "item.mystcraft-sc.crystal.red": "Red Crystal Block",
@@ -59,7 +51,6 @@
     "item.mystcraft-sc.crystal.pink": "Pink Crystal Block",
     "item.mystcraft-sc.crystal.dark_grey": "Dark Grey Crystal Block",
     "item.mystcraft-sc.crystal.baby_blue": "Baby Blue Crystal Block",
-
     "item.mystcraft-sc.book_receptacle": "Book Receptacle",
     "item.mystcraft-sc.book_receptacle.maroon": "Maroon Book Receptacle",
     "item.mystcraft-sc.book_receptacle.red": "Red Book Receptacle",
@@ -96,13 +87,10 @@
     "block.mystcraft-sc.blockbookbinder": "Book Binder",
     "block.mystcraft-sc.linkportal": "Link Portal",
     "block.mystcraft-sc.blockstarfissure": "Star Fissure",
-
     "item.mystcraft-sc.ink_bucket": "Ink Bucket",
     "block.mystcraft-sc.black_ink_block": "Black Ink",
     "fluid.mystcraft-sc.black_ink": "Black Ink",
-
     "entity.mystcraft-sc.villager.archivist": "Archivist",
-
     "item.mystcraft-sc.agebook": "Descriptive Book",
     "item.mystcraft-sc.linkbook": "Linking Book",
     "item.mystcraft-sc.folder": "Collation Folder",
@@ -116,7 +104,6 @@
     "item.mystcraft-sc.vial": "Ink Vial",
     "item.mystcraft-sc.bahro_leather": "Bahro Leather",
     "item.mystcraft-sc.glasses": "XComp's Glasses",
-
     "tooltip.mystcraft-sc.page.kind.blank": "Blank Page",
     "tooltip.mystcraft-sc.page.kind.symbol": "Symbol Page",
     "tooltip.mystcraft-sc.page.kind.link_panel": "Link Panel Page",
@@ -131,7 +118,6 @@
     "screen.mystcraft-sc.page_browser.search": "Search",
     "screen.mystcraft-sc.page_browser.copies": "Copies: %s",
     "screen.mystcraft-sc.page_browser.preview_only": "Preview only",
-
     "symbol.mystcraft-sc.debug.test_symbol": "Test Symbol",
     "symbol.mystcraft-sc.celestial.suns_normal": "Normal Sun",
     "symbol.mystcraft-sc.celestial.stars_normal": "Normal Stars",
@@ -141,10 +127,8 @@
     "symbol.mystcraft-sc.terrain.dense_ores": "Dense Ores",
     "symbol.mystcraft-sc.debug.full_symbol": "Debug Full Symbol",
     "word.mystcraft-sc.debug": "DEBUG",
-
     "tooltip.mystcraft-sc.page.symbol_name": "Symbol: %s",
     "tooltip.mystcraft-sc.page.poem_words": "Poem Words",
-
     "item.mystcraft-sc.bookstand": "Bookstand",
     "item.mystcraft-sc.bookstand.oak": "Oak Bookstand",
     "item.mystcraft-sc.bookstand.spruce": "Spruce Bookstand",
@@ -158,7 +142,6 @@
     "item.mystcraft-sc.bookstand.crimson": "Crimson Bookstand",
     "item.mystcraft-sc.bookstand.warped": "Warped Bookstand",
     "item.mystcraft-sc.bookstand.pale_oak": "Pale Oak Bookstand",
-    
     "item.mystcraft-sc.slant_board": "Slant Board",
     "item.mystcraft-sc.slant_board.oak": "Oak Slant Board",
     "item.mystcraft-sc.slant_board.spruce": "Spruce Slant Board",
@@ -172,7 +155,6 @@
     "item.mystcraft-sc.slant_board.crimson": "Crimson Slant Board",
     "item.mystcraft-sc.slant_board.warped": "Warped Slant Board",
     "item.mystcraft-sc.slant_board.pale_oak": "Pale Oak Slant Board",
-
     "item.mystcraft-sc.writingdesk": "Writing Desk",
     "item.mystcraft-sc.writingdesk.oak": "Oak Writing Desk",
     "item.mystcraft-sc.writingdesk.spruce": "Spruce Writing Desk",
@@ -186,7 +168,6 @@
     "item.mystcraft-sc.writingdesk.crimson": "Crimson Writing Desk",
     "item.mystcraft-sc.writingdesk.warped": "Warped Writing Desk",
     "item.mystcraft-sc.writingdesk.pale_oak": "Pale Oak Writing Desk",
-
     "item.mystcraft-sc.writingdesk_top": "Writing Desk Backboard",
     "item.mystcraft-sc.writingdesk_top.oak": "Oak Writing Desk Backboard",
     "item.mystcraft-sc.writingdesk_top.spruce": "Spruce Writing Desk Backboard",
@@ -200,10 +181,8 @@
     "item.mystcraft-sc.writingdesk_top.crimson": "Crimson Writing Desk Backboard",
     "item.mystcraft-sc.writingdesk_top.warped": "Warped Writing Desk Backboard",
     "item.mystcraft-sc.writingdesk_top.pale_oak": "Pale Oak Writing Desk Backboard",
-    
     "itemGroup.mystcraft-sc.common": "Mystcraft",
     "itemGroup.mystcraft-sc.pages": "Mystcraft Pages",
-
     "mystcraft-sc.creative.notebook.wrapper": "Spawned (%s)",
     "mystcraft-sc.creative.notebook.all": "All Symbols",
     "mystcraft-sc.creative.notebook.biomedist": "Biome Distributions",
@@ -218,10 +197,8 @@
     "mystcraft-sc.creative.notebook.terrain": "World Landscapes",
     "mystcraft-sc.creative.notebook.visuals": "Visuals",
     "mystcraft-sc.creative.notebook.weather": "Weather",
-
     "advancements.mystcraft-sc.root.title": "Mystcraft",
     "advancements.mystcraft-sc.root.description": "",
-
     "advancements.mystcraft-sc.symbol.title": "Small Step of the Journey",
     "advancements.mystcraft-sc.symbol.description": "Find a Symbol",
     "advancements.mystcraft-sc.write.title": "The Art: A Primer",
@@ -234,25 +211,20 @@
     "advancements.mystcraft-sc.quinn.description": "Travel to a dimension without a linking book. Better hope there's a way out!",
     "advancements.mystcraft-sc.safe.title": "The Way Back",
     "advancements.mystcraft-sc.safe.description": "Travel to a dimension while carrying a linking book.",
-
     "linkeffect.disarm": "Disarm",
     "linkeffect.generateplatform": "Generate Platform",
     "linkeffect.intralinking": "Intra-Linking",
     "linkeffect.intralinkingonly": "Intra-Linking Only",
     "linkeffect.maintainmomentum": "Maintain Momentum",
     "linkeffect.relative": "Relative Link",
-
     "instability.bonus.death": "%s has been killed by %s, activating bonus stability!",
     "instability.bonus.death.partial": "%s has died.  Unlocking part of the bonus stability.  Kill them personally to unlock all of it!",
     "instability.bonus.death.alert": "%s has entered the age.  Kill them in order to unlock a temporary stability bonus in this age!",
-
     "instability.bonus.troll.death": "%s has been killed, resetting the instability penalty!",
     "instability.bonus.troll.alert": "%s has entered the age.  The age will slowly become less stable!  Kill them to reset this!",
     "instability.bonus.troll.left": "%s has left the age.  The stability penalty will slowly dissipate.",
-
     "mystcraft-sc.symbol.biome.wrapper": "%s Biome",
     "mystcraft-sc.symbol.block.wrapper": "%s Block",
-
     "mystcraft-sc.symbol.biocongrid": "Grid-form Biome Distribution",
     "mystcraft-sc.symbol.bioconhuge": "Huge Biome Distribution",
     "mystcraft-sc.symbol.bioconlarge": "Large Biome Distribution",
@@ -353,10 +325,8 @@
     "mystcraft-sc.symbol.weatherstorm": "Eternal Storm",
     "mystcraft-sc.symbol.villages": "Villages",
     "mystcraft-sc.symbol.void": "Void World",
-
     "item.mystcraft-sc.myst_poetry_banner_pattern": "Mystcraft Poetry Banner Pattern",
     "item.mystcraft-sc.myst_numerology_banner_pattern": "Mystcraft Numerology Banner Pattern",
-
     "itemGroup.mystcraft-sc.banners": "Mystcraft Banners",
     "item.banner.mystcraft_balance.white": "Balance in White",
     "item.banner.mystcraft_balance.orange": "Balance in Orange",
@@ -1813,5 +1783,7 @@
     "item.banner.mystcraft_25.brown": "25 in Brown",
     "item.banner.mystcraft_25.green": "25 in Green",
     "item.banner.mystcraft_25.red": "25 in Red",
-    "item.banner.mystcraft_25.black": "25 in Black"
+    "item.banner.mystcraft_25.black": "25 in Black",
+    "container.mystcraft-sc.writing_desk": "Writing Desk",
+    "container.mystcraft-sc.writing_desk.title": "Title"
 }

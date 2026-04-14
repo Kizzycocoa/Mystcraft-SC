@@ -6,6 +6,7 @@ import myst.synthetic.client.gui.InkMixerScreen;
 import myst.synthetic.client.gui.LinkBookScreen;
 import myst.synthetic.client.gui.PortfolioScreen;
 import myst.synthetic.client.gui.SingleSlotScreen;
+import myst.synthetic.client.gui.WritingDeskScreen;
 import myst.synthetic.client.page.PagePreviewExporter;
 import myst.synthetic.client.page.PageRenderCache;
 import myst.synthetic.client.render.BookReceptacleBlockEntityRenderer;
@@ -103,6 +104,7 @@ public class MystcraftSyntheticCodexClient implements ClientModInitializer {
 		MenuScreens.register(MystcraftMenus.DISPLAY_CONTAINER, SingleSlotScreen::new);
 		MenuScreens.register(MystcraftMenus.FOLDER, FolderScreen::new);
 		MenuScreens.register(MystcraftMenus.PORTFOLIO, PortfolioScreen::new);
+		MenuScreens.register(MystcraftMenus.WRITING_DESK, WritingDeskScreen::new);
 
 		BlockEntityRenderers.register(
 				MystcraftBlockEntities.BOOK_RECEPTACLE,

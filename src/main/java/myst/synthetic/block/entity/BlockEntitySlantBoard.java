@@ -21,7 +21,7 @@ public class BlockEntitySlantBoard extends BlockEntityDisplayContainer {
 	}
 
 	public static void tick(Level level, BlockPos pos, BlockState state, BlockEntitySlantBoard blockEntity) {
-		if (!blockEntity.needsInitialRefresh) {
+		if (!blockEntity.needsInitialRefresh || !level.isClientSide()) {
 			return;
 		}
 
@@ -29,8 +29,6 @@ public class BlockEntitySlantBoard extends BlockEntityDisplayContainer {
 
 		level.getLightEngine().checkBlock(pos);
 		level.sendBlockUpdated(pos, state, state, Block.UPDATE_ALL);
-
-		blockEntity.setChanged();
 	}
 
 	public ItemStack getPage() {

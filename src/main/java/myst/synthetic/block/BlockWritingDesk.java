@@ -2,6 +2,7 @@ package myst.synthetic.block;
 
 import com.mojang.serialization.MapCodec;
 import myst.synthetic.MystcraftItems;
+import myst.synthetic.MystcraftBlockEntities;
 import myst.synthetic.block.entity.BlockEntityDesk;
 import myst.synthetic.block.property.WoodType;
 import net.minecraft.core.BlockPos;
@@ -11,11 +12,14 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.MenuProvider;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -155,6 +159,16 @@ public class BlockWritingDesk extends BaseEntityBlock {
 		return isAnchor(state) ? new BlockEntityDesk(pos, state) : null;
 	}
 
+	@Nullable
+	@Override
+	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
+		if (level.isClientSide() || !isAnchor(state)) {
+			return null;
+		}
+
+		return createTickerHelper(blockEntityType, MystcraftBlockEntities.WRITING_DESK, BlockEntityDesk::serverTick);
+	}
+
 
 	private static final VoxelShape TOP_BACKBOARD_NORTH  = Block.box(0.0, 0.0, 0.0, 7.0, 12.0, 16.0);
 	private static final VoxelShape TOP_BACKBOARD_EAST = Block.box(0.0, 0.0, 0.0, 16.0, 12.0, 7.0);
@@ -189,6 +203,13 @@ public class BlockWritingDesk extends BaseEntityBlock {
 
 	@Override
 	public InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
+		if (!level.isClientSide()) {
+			BlockPos anchorPos = getAnchorPos(state, pos);
+			BlockEntity blockEntity = level.getBlockEntity(anchorPos);
+			if (blockEntity instanceof MenuProvider menuProvider) {
+				player.openMenu(menuProvider);
+			}
+		}
 		return InteractionResult.SUCCESS;
 	}
 

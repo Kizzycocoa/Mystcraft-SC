@@ -34,6 +34,9 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import myst.synthetic.MystcraftBlockEntities;
 
 import java.util.Collections;
 import java.util.List;
@@ -91,6 +94,20 @@ public class BlockSlantBoard extends BlockDisplayContainer {
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new BlockEntitySlantBoard(pos, state);
+    }
+
+    @Nullable
+    @Override
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(
+            Level level,
+            BlockState state,
+            BlockEntityType<T> blockEntityType
+    ) {
+        return createTickerHelper(
+                blockEntityType,
+                MystcraftBlockEntities.SLANT_BOARD,
+                BlockEntitySlantBoard::tick
+        );
     }
 
     @Override
