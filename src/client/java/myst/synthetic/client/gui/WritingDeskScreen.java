@@ -1,39 +1,45 @@
 package myst.synthetic.client.gui;
 
+import myst.synthetic.MystcraftItems;
+import myst.synthetic.block.entity.BlockEntityDesk;
 import myst.synthetic.menu.WritingDeskMenu;
 import myst.synthetic.network.WritingDeskTitlePayload;
-import myst.synthetic.block.entity.BlockEntityDesk;
 import myst.synthetic.page.Page;
+import myst.synthetic.page.symbol.PageSymbolRegistry;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.client.input.KeyEvent;
-import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTextTooltip;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 
 import java.util.ArrayList;
-
 import java.util.List;
 
 public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
 
-    private static final int FULL_WIDTH = 256;
-    private static final int TAB_ICON_X = 226;
+    /**
+     * The writing desk texture is a 256x256 atlas image,
+     * but the logical GUI is wider because the page-browser
+     * base class renders the left browser area and the desk
+     * screen adds the right-hand work area.
+     */
+    private static final int FULL_WIDTH = 356;
+    private static final int TEXTURE_WIDTH = 256;
+    private static final int TEXTURE_HEIGHT = 256;
+
+    private static final int TAB_ICON_X = 150;
     private static final int TAB_ICON_Y = 14;
     private static final int TAB_ICON_SPACING = 37;
     private static final int TAB_COUNT = WritingDeskMenu.VISIBLE_TAB_COUNT;
-
-    private static final int SURFACE_PLACEHOLDER_X = 182;
-    private static final int SURFACE_PLACEHOLDER_Y = 0;
-    private static final int SURFACE_PLACEHOLDER_W = 174;
-    private static final int SURFACE_PLACEHOLDER_H = 82;
 
     private EditBox titleBox;
     private String lastSentTitle = "";
@@ -41,10 +47,11 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
     public WritingDeskScreen(WritingDeskMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
         this.imageWidth = FULL_WIDTH;
-        this.inventoryLabelX = 8;
-        this.inventoryLabelY = 140;
-        this.titleLabelX = 8;
-        this.titleLabelY = 140;
+        this.imageHeight = 256;
+        this.inventoryLabelX = 188;
+        this.inventoryLabelY = 92;
+        this.titleLabelX = 188;
+        this.titleLabelY = 92;
     }
 
     @Override
@@ -53,9 +60,9 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
 
         this.titleBox = new EditBox(
                 this.font,
-                this.leftPos + 8,
-                this.topPos + 178,
-                56,
+                this.leftPos + 210,
+                this.topPos + 7,
+                112,
                 12,
                 Component.translatable("container.mystcraft-sc.writing_desk.title")
         );
@@ -64,6 +71,7 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
         this.titleBox.setTextColor(0xFFE0E0E0);
         this.titleBox.setTextColorUneditable(0xFF707070);
         this.addRenderableWidget(this.titleBox);
+
         this.pullTitleFromTarget();
         this.lastSentTitle = this.titleBox.getValue();
     }
@@ -76,6 +84,11 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
 
     @Override
     protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
+        /*
+         * Draw the whole desk texture once, using the actual atlas size.
+         * The old broken version used FULL_WIDTH here, which tried to sample
+         * 356 pixels from a 256-pixel-wide texture and garbled the result.
+         */
         guiGraphics.blit(
                 RenderPipelines.GUI_TEXTURED,
                 DESK_TEXTURE,
@@ -83,13 +96,18 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
                 this.topPos,
                 0,
                 0,
-                FULL_WIDTH,
-                174,
-                256,
-                256
+                TEXTURE_WIDTH,
+                this.imageHeight,
+                TEXTURE_WIDTH,
+                TEXTURE_HEIGHT
         );
 
+        /*
+         * Let the page-browser base render its page entries/search overlay logic,
+         * but keep our own desk texture as the real background.
+         */
         super.renderBg(guiGraphics, partialTick, mouseX, mouseY);
+
         this.drawTabStrip(guiGraphics, mouseX, mouseY);
         this.drawDeskStatus(guiGraphics);
     }
@@ -156,7 +174,7 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
 
         if (entry != null && entry.absoluteIndex < 0) {
             int symbolIndex = 0;
-            for (var symbol : myst.synthetic.page.symbol.PageSymbolRegistry.values()) {
+            for (var symbol : PageSymbolRegistry.values()) {
                 if (symbol.id().equals(Page.getSymbol(entry.stack))) {
                     this.minecraft.gameMode.handleInventoryButtonClick(
                             this.menu.containerId,
@@ -220,10 +238,12 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
         if (this.titleBox == null) {
             return;
         }
+
         ItemStack target = this.menu.getTargetStack();
-        String current = target.get(net.minecraft.core.component.DataComponents.CUSTOM_NAME) != null
-                ? target.get(net.minecraft.core.component.DataComponents.CUSTOM_NAME).getString()
+        String current = target.get(DataComponents.CUSTOM_NAME) != null
+                ? target.get(DataComponents.CUSTOM_NAME).getString()
                 : "";
+
         this.titleBox.setValue(current);
     }
 
@@ -233,8 +253,8 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
         }
 
         ItemStack target = this.menu.getTargetStack();
-        String current = target.get(net.minecraft.core.component.DataComponents.CUSTOM_NAME) != null
-                ? target.get(net.minecraft.core.component.DataComponents.CUSTOM_NAME).getString()
+        String current = target.get(DataComponents.CUSTOM_NAME) != null
+                ? target.get(DataComponents.CUSTOM_NAME).getString()
                 : "";
 
         if (!current.equals(this.titleBox.getValue())) {
@@ -247,10 +267,12 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
         if (this.titleBox == null) {
             return;
         }
+
         String value = this.titleBox.getValue();
         if (value.equals(this.lastSentTitle)) {
             return;
         }
+
         this.lastSentTitle = value;
         ClientPlayNetworking.send(new WritingDeskTitlePayload(this.menu.containerId, value));
     }
@@ -259,8 +281,16 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
         if (this.minecraft == null || this.minecraft.gameMode == null) {
             return;
         }
-        int first = Math.max(0, Math.min(BlockEntityDesk.TAB_SLOT_COUNT - TAB_COUNT, this.menu.getFirstVisibleTab() + delta));
-        this.minecraft.gameMode.handleInventoryButtonClick(this.menu.containerId, WritingDeskMenu.BUTTON_SET_FIRST_TAB_START + first);
+
+        int first = Math.max(
+                0,
+                Math.min(BlockEntityDesk.TAB_SLOT_COUNT - TAB_COUNT, this.menu.getFirstVisibleTab() + delta)
+        );
+
+        this.minecraft.gameMode.handleInventoryButtonClick(
+                this.menu.containerId,
+                WritingDeskMenu.BUTTON_SET_FIRST_TAB_START + first
+        );
     }
 
     private boolean handleTabClick(int mouseX, int mouseY, MouseButtonEvent event) {
@@ -271,12 +301,13 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
         for (int i = 0; i < TAB_COUNT; i++) {
             int x = this.leftPos + TAB_ICON_X;
             int y = this.topPos + TAB_ICON_Y + i * TAB_ICON_SPACING;
+
             if (mouseX < x || mouseX >= x + 18 || mouseY < y || mouseY >= y + 18) {
                 continue;
             }
 
             int absoluteTab = this.menu.getFirstVisibleTab() + i;
-            if (!this.menu.getCarried().isEmpty() && this.menu.getCarried().is(myst.synthetic.MystcraftItems.PAGE)) {
+            if (!this.menu.getCarried().isEmpty() && this.menu.getCarried().is(MystcraftItems.PAGE)) {
                 this.minecraft.gameMode.handleInventoryButtonClick(
                         this.menu.containerId,
                         WritingDeskMenu.BUTTON_ADD_CARRIED_TO_TAB_START + absoluteTab
@@ -290,6 +321,26 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
             return true;
         }
 
+        /*
+         * Scroll upper arrow
+         */
+        int upX = this.leftPos + TAB_ICON_X + 26;
+        int upY = this.topPos + 3;
+        if (mouseX >= upX && mouseX < upX + 12 && mouseY >= upY && mouseY < upY + 12) {
+            this.shiftTabWindow(-1);
+            return true;
+        }
+
+        /*
+         * Scroll lower arrow
+         */
+        int downX = this.leftPos + TAB_ICON_X + 26;
+        int downY = this.topPos + 157;
+        if (mouseX >= downX && mouseX < downX + 12 && mouseY >= downY && mouseY < downY + 12) {
+            this.shiftTabWindow(1);
+            return true;
+        }
+
         return false;
     }
 
@@ -298,7 +349,7 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
             return false;
         }
 
-        if (this.menu.getCarried().isEmpty() || !this.menu.getCarried().is(myst.synthetic.MystcraftItems.PAGE)) {
+        if (this.menu.getCarried().isEmpty() || !this.menu.getCarried().is(MystcraftItems.PAGE)) {
             return false;
         }
 
@@ -326,7 +377,14 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
             int x = this.leftPos + TAB_ICON_X;
             int y = this.topPos + TAB_ICON_Y + i * TAB_ICON_SPACING;
 
-            guiGraphics.fill(x - 1, y - 1, x + 17, y + 17, absoluteTab == this.menu.getActiveTab() ? 0x80FFFFFF : 0x40000000);
+            guiGraphics.fill(
+                    x - 1,
+                    y - 1,
+                    x + 17,
+                    y + 17,
+                    absoluteTab == this.menu.getActiveTab() ? 0x80FFFFFF : 0x40000000
+            );
+
             if (!stack.isEmpty()) {
                 guiGraphics.renderItem(stack, x, y);
                 guiGraphics.renderItemDecorations(this.font, stack, x, y);
@@ -359,8 +417,8 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
         guiGraphics.drawString(
                 this.font,
                 Component.literal(this.menu.hasInk() ? "Ink: Full" : "Ink: Empty"),
-                this.leftPos + 8,
-                this.topPos + 194,
+                this.leftPos + 278,
+                this.topPos + 61,
                 0xFFE0E0E0,
                 false
         );
@@ -368,8 +426,8 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
         guiGraphics.drawString(
                 this.font,
                 Component.literal("Tab " + (this.menu.getActiveTab() + 1)),
-                this.leftPos + 182,
-                this.topPos + 92,
+                this.leftPos + 210,
+                this.topPos + 61,
                 0xFFE0E0E0,
                 false
         );
@@ -377,9 +435,9 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
         if (this.menu.canUseLink()) {
             guiGraphics.drawString(
                     this.font,
-                    Component.literal("Enter"),
-                    this.leftPos + 132,
-                    this.topPos + 180,
+                    Component.literal("Enter: link"),
+                    this.leftPos + 266,
+                    this.topPos + 7,
                     0xFFB0E0FF,
                     false
             );
