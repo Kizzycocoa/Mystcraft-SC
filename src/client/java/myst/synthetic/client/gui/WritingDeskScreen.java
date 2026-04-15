@@ -102,6 +102,10 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
     private EditBox titleBox;
     private String lastSentTitle = "";
 
+    private List<ClientTooltipComponent> pendingTabTooltip;
+    private int pendingTabTooltipX;
+    private int pendingTabTooltipY;
+
     public WritingDeskScreen(WritingDeskMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
         this.imageWidth = FULL_GUI_WIDTH;
@@ -110,6 +114,24 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
         this.inventoryLabelY = 10000;
         this.titleLabelX = 0;
         this.titleLabelY = 10000;
+    }
+
+    @Override
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        this.pendingTabTooltip = null;
+
+        super.render(guiGraphics, mouseX, mouseY, partialTick);
+
+        if (this.pendingTabTooltip != null) {
+            guiGraphics.renderTooltip(
+                    this.font,
+                    this.pendingTabTooltip,
+                    this.pendingTabTooltipX,
+                    this.pendingTabTooltipY,
+                    DefaultTooltipPositioner.INSTANCE,
+                    null
+            );
+        }
     }
 
     @Override
@@ -625,11 +647,18 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
         int u = (index % atlasColumns) * tileSize;
         int v = (index / atlasColumns) * tileSize;
 
+        // Legacy draws these at 19px, but the sheet tiles are 16x16.
+        float scale = 19.0F / 16.0F;
+
+        guiGraphics.pose().pushMatrix();
+        guiGraphics.pose().translate(x, y);
+        guiGraphics.pose().scale(scale, scale);
+
         guiGraphics.blit(
                 RenderPipelines.GUI_TEXTURED,
                 Identifier.fromNamespaceAndPath("mystcraft-sc", "textures/page/symbolcomponents.png"),
-                x,
-                y,
+                0,
+                0,
                 u,
                 v,
                 16,
@@ -637,6 +666,8 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
                 atlasColumns * tileSize,
                 atlasColumns * tileSize
         );
+
+        guiGraphics.pose().popMatrix();
     }
 
     private void drawLeftTabStrip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
@@ -766,14 +797,9 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
                     tooltip.add(new ClientTextTooltip(line.getVisualOrderText()));
                 }
 
-                guiGraphics.renderTooltip(
-                        this.font,
-                        tooltip,
-                        mouseX,
-                        mouseY,
-                        DefaultTooltipPositioner.INSTANCE,
-                        null
-                );
+                this.pendingTabTooltip = tooltip;
+                this.pendingTabTooltipX = mouseX;
+                this.pendingTabTooltipY = mouseY;
             }
         }
 
