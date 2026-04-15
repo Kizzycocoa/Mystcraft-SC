@@ -183,17 +183,47 @@ public class WritingDeskMenu extends AbstractContainerMenu {
             int tab = id - BUTTON_PICKUP_TAB_STACK_START;
             int slot = SLOT_TAB_START + tab;
 
-            if (!this.getCarried().isEmpty()) {
+            if (tab < 0 || tab >= BlockEntityDesk.TAB_SLOT_COUNT) {
                 return false;
             }
 
-            ItemStack stack = this.deskInventory.getItem(slot);
-            if (stack.isEmpty()) {
-                return false;
+            ItemStack carried = this.getCarried();
+            ItemStack slotStack = this.deskInventory.getItem(slot);
+
+            if (carried.isEmpty()) {
+                if (slotStack.isEmpty()) {
+                    return false;
+                }
+
+                this.deskInventory.setItem(slot, ItemStack.EMPTY);
+                this.setCarried(slotStack);
+            } else {
+                if (!DeskItemBehaviors.canBeDeskTabStorage(carried)) {
+                    return false;
+                }
+
+                this.deskInventory.setItem(slot, carried.copyWithCount(1));
+
+                if (slotStack.isEmpty()) {
+                    carried.shrink(1);
+                    this.setCarried(carried.isEmpty() ? ItemStack.EMPTY : carried);
+                } else {
+                    ItemStack old = slotStack.copy();
+                    carried.shrink(1);
+
+                    if (carried.isEmpty()) {
+                        this.setCarried(old);
+                    } else if (ItemStack.isSameItemSameComponents(carried, old) && carried.getCount() < carried.getMaxStackSize()) {
+                        carried.grow(1);
+                        this.setCarried(carried);
+                        player.getInventory().placeItemBackInInventory(old.copyWithCount(old.getCount() - 1));
+                    } else {
+                        player.getInventory().placeItemBackInInventory(old);
+                        this.setCarried(carried.isEmpty() ? ItemStack.EMPTY : carried);
+                    }
+                }
             }
 
-            this.deskInventory.setItem(slot, ItemStack.EMPTY);
-            this.setCarried(stack);
             if (this.deskBlockEntity != null) {
                 this.deskBlockEntity.setChanged();
             }
@@ -205,19 +235,30 @@ public class WritingDeskMenu extends AbstractContainerMenu {
             int tab = id - BUTTON_PLACE_TAB_STACK_START;
             int slot = SLOT_TAB_START + tab;
 
+            if (tab < 0 || tab >= BlockEntityDesk.TAB_SLOT_COUNT) {
+                return false;
+            }
+
             ItemStack carried = this.getCarried();
             if (carried.isEmpty() || !DeskItemBehaviors.canBeDeskTabStorage(carried)) {
                 return false;
             }
 
-            if (!this.deskInventory.getItem(slot).isEmpty()) {
-                return false;
-            }
-
+            ItemStack slotStack = this.deskInventory.getItem(slot);
             ItemStack placed = carried.copyWithCount(1);
             this.deskInventory.setItem(slot, placed);
+
             carried.shrink(1);
-            this.setCarried(carried.isEmpty() ? ItemStack.EMPTY : carried);
+            if (slotStack.isEmpty()) {
+                this.setCarried(carried.isEmpty() ? ItemStack.EMPTY : carried);
+            } else {
+                if (carried.isEmpty()) {
+                    this.setCarried(slotStack);
+                } else {
+                    player.getInventory().placeItemBackInInventory(slotStack);
+                    this.setCarried(carried);
+                }
+            }
 
             if (this.deskBlockEntity != null) {
                 this.deskBlockEntity.setChanged();

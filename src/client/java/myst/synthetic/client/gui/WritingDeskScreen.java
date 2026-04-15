@@ -43,34 +43,32 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
     private static final int LEFT_TAB_STEP = 37;
     private static final int TAB_COUNT = WritingDeskMenu.VISIBLE_TAB_COUNT;
 
-    private static final int LEFT_TAB_SLOT_X = 38;
-    private static final int LEFT_TAB_SLOT_Y = 8;
+    private static final int LEFT_TAB_SLOT_X = 37;
+    private static final int LEFT_TAB_SLOT_Y = 14;
     private static final int LEFT_TAB_SLOT_W = 16;
     private static final int LEFT_TAB_SLOT_H = 16;
 
     private static final int LEFT_ARROW_TOP_X = 0;
-    private static final int LEFT_ARROW_TOP_Y = 10;
+    private static final int LEFT_ARROW_TOP_Y = 11;
     private static final int LEFT_ARROW_W = 58;
     private static final int LEFT_ARROW_H = 9;
 
     private static final int LEFT_ARROW_BOTTOM_X = 0;
-    private static final int LEFT_ARROW_BOTTOM_Y = 168;
+    private static final int LEFT_ARROW_BOTTOM_Y = 176;
 
     private static final int SURFACE_OFFSET_X = 58;
     private static final int SURFACE_X = 0;
     private static final int SURFACE_Y = 19;
     private static final int SURFACE_PAGE_WIDTH = 156;
-    private static final int SURFACE_HEIGHT = 147;
+    private static final int SURFACE_HEIGHT = 167;
 
     private static final int SCROLLBAR_X = 156;
     private static final int SCROLLBAR_Y = 19;
     private static final int SCROLLBAR_WIDTH = 20;
-    private static final int SCROLLBAR_HEIGHT = 147;
+    private static final int SCROLLBAR_HEIGHT = 167;
 
     private static final int PAGE_WIDTH = 30;
     private static final int PAGE_HEIGHT = 40;
-    private static final int PAGE_X_STEP = 31;
-    private static final int PAGE_Y_STEP = 41;
 
     private static final int DESK_PANEL_X = 233;
     private static final int DESK_PANEL_Y = 20;
@@ -133,18 +131,34 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
         }
 
         if (this.searchBox != null) {
-            this.searchBox.setX(this.leftPos + SEARCH_BOX_X + 4);
-            this.searchBox.setY(this.topPos + SEARCH_BOX_Y + 4);
-            this.searchBox.setWidth(SEARCH_BOX_W - 8);
-            this.searchBox.setHeight(12);
-            this.searchBox.setTextColor(0xFFE0E0E0);
-            this.searchBox.setTextColorUneditable(0xFF707070);
+            this.searchBox.setX(-1000);
+            this.searchBox.setY(-1000);
+            this.searchBox.setWidth(0);
         }
+
+        this.searchBox = new EditBox(
+                this.font,
+                this.leftPos + SEARCH_BOX_X + 4,
+                this.topPos + SEARCH_BOX_Y + 4,
+                SEARCH_BOX_W - 8,
+                10,
+                Component.translatable("screen.mystcraft-sc.page_browser.search")
+        );
+        this.searchBox.setBordered(false);
+        this.searchBox.setMaxLength(64);
+        this.searchBox.setTextColor(0xFFE0E0E0);
+        this.searchBox.setTextColorUneditable(0xFF707070);
+        this.searchBox.setResponder(text -> {
+            this.scroll = 0;
+            this.rebuildDisplayEntries();
+        });
+        this.searchBox.setCanLoseFocus(true);
+        this.addRenderableWidget(this.searchBox);
 
         this.titleBox = new EditBox(
                 this.font,
                 this.leftPos + TITLE_BOX_X + 4,
-                this.topPos + TITLE_BOX_Y + 3,
+                this.topPos + TITLE_BOX_Y + 2,
                 TITLE_BOX_W - 8,
                 10,
                 Component.translatable("container.mystcraft-sc.writing_desk.title")
@@ -330,7 +344,7 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
         int clipBottom = clipTop + SURFACE_HEIGHT;
 
         for (DisplayEntry entry : this.displayEntries) {
-            int drawX = this.leftPos + SURFACE_OFFSET_X + SURFACE_X + Math.round(entry.x);
+            int drawX = this.leftPos + SURFACE_OFFSET_X + Math.round(entry.x);
             int drawY = this.topPos + SURFACE_Y + Math.round(entry.y) - this.scroll;
 
             if (drawY + PAGE_HEIGHT <= clipTop || drawY >= clipBottom) {
@@ -580,39 +594,28 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
                 guiGraphics.fill(x + 1, y + 1, x + LEFT_TAB_W - 1, y + LEFT_TAB_H - 1, 0x100000FF);
             }
 
-            guiGraphics.fill(
-                    x + LEFT_TAB_SLOT_X,
-                    y + LEFT_TAB_SLOT_Y,
-                    x + LEFT_TAB_SLOT_X + LEFT_TAB_SLOT_W,
-                    y + LEFT_TAB_SLOT_Y + LEFT_TAB_SLOT_H,
-                    0xFF7F7F7F
-            );
-            guiGraphics.fill(
-                    x + LEFT_TAB_SLOT_X + 1,
-                    y + LEFT_TAB_SLOT_Y + 1,
-                    x + LEFT_TAB_SLOT_X + LEFT_TAB_SLOT_W - 1,
-                    y + LEFT_TAB_SLOT_Y + LEFT_TAB_SLOT_H - 1,
-                    0xFF000000
-            );
-
             ItemStack stack = this.menu.getVisibleTabStack(i);
             if (!stack.isEmpty()) {
                 guiGraphics.renderItem(stack, x + LEFT_TAB_SLOT_X, y + LEFT_TAB_SLOT_Y);
                 guiGraphics.renderItemDecorations(this.font, stack, x + LEFT_TAB_SLOT_X, y + LEFT_TAB_SLOT_Y);
 
                 String name = stack.getHoverName().getString();
-                if (name.length() > 11) {
-                    name = name.substring(0, 11);
-                }
+                int maxWidth = 50;
+                int nameWidth = this.font.width(name);
+                float scale = nameWidth > maxWidth ? maxWidth / (float) nameWidth : 1.0F;
 
+                guiGraphics.pose().pushMatrix();
+                guiGraphics.pose().translate(x + 2, y + 28);
+                guiGraphics.pose().scale(scale, scale);
                 guiGraphics.drawString(
                         this.font,
                         name,
-                        x + 2,
-                        y + 28,
+                        0,
+                        0,
                         0xFF202020,
                         false
                 );
+                guiGraphics.pose().popMatrix();
             }
 
             if (mouseX >= x && mouseX < x + LEFT_TAB_W && mouseY >= y && mouseY < y + LEFT_TAB_H && !stack.isEmpty() && this.minecraft != null && this.minecraft.player != null) {
@@ -652,13 +655,13 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
     }
 
     private void drawSurfaceBackground(GuiGraphics guiGraphics) {
-        int x = this.leftPos + SURFACE_OFFSET_X + SURFACE_X;
+        int x = this.leftPos + SURFACE_OFFSET_X;
         int y = this.topPos + SURFACE_Y;
         guiGraphics.fill(x, y, x + SURFACE_PAGE_WIDTH, y + SURFACE_HEIGHT, 0xFF000000);
     }
 
     private void drawSurfaceEntries(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        int clipLeft = this.leftPos + SURFACE_OFFSET_X + SURFACE_X;
+        int clipLeft = this.leftPos + SURFACE_OFFSET_X;
         int clipTop = this.topPos + SURFACE_Y;
         int clipRight = clipLeft + SURFACE_PAGE_WIDTH;
         int clipBottom = clipTop + SURFACE_HEIGHT;
@@ -666,7 +669,7 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
         guiGraphics.enableScissor(clipLeft, clipTop, clipRight, clipBottom);
 
         for (PageSurfaceRenderer.SurfaceEntry entry : this.toSurfaceEntries()) {
-            int drawX = this.leftPos + SURFACE_OFFSET_X + SURFACE_X + entry.x();
+            int drawX = this.leftPos + SURFACE_OFFSET_X + entry.x();
             int drawY = this.topPos + SURFACE_Y + entry.y() - this.scroll;
 
             if (drawY + PAGE_HEIGHT < clipTop || drawY > clipBottom) {
@@ -918,7 +921,7 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
     }
 
     private boolean isOverPageArea(int mouseX, int mouseY) {
-        int relX = mouseX - (this.leftPos + SURFACE_OFFSET_X + SURFACE_X);
+        int relX = mouseX - (this.leftPos + SURFACE_OFFSET_X);
         int relY = mouseY - (this.topPos + SURFACE_Y);
 
         return relX >= 0
