@@ -45,7 +45,7 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
     private static final int LEFT_ARROW_TOP_X = 0;
     private static final int LEFT_ARROW_TOP_Y = SURFACE_Y;
     private static final int LEFT_ARROW_W = 58;
-    private static final int LEFT_ARROW_H = 8;
+    private static final int LEFT_ARROW_H = 9;
 
     private static final int LEFT_TABS_X = 0;
     private static final int LEFT_TABS_Y = LEFT_ARROW_TOP_Y + LEFT_ARROW_H;
@@ -60,7 +60,7 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
     private static final int LEFT_TAB_SLOT_H = 16;
 
     private static final int LEFT_ARROW_BOTTOM_X = 0;
-    private static final int LEFT_ARROW_BOTTOM_Y = SURFACE_Y + SURFACE_HEIGHT - 8;
+    private static final int LEFT_ARROW_BOTTOM_Y = SURFACE_Y + SURFACE_HEIGHT - 9;
 
     private static final int SCROLLBAR_X = 156;
     private static final int SCROLLBAR_Y = 20;
@@ -560,22 +560,118 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
         );
     }
 
+    private void drawTabNumber(GuiGraphics guiGraphics, int number, int x, int y) {
+        int[] components = getDniNumberComponents(number);
+
+        for (int component : components) {
+            this.drawTabNumberComponent(guiGraphics, component, x, y);
+        }
+    }
+
+    private int[] getDniNumberComponents(int num) {
+        if (num == 0) {
+            return new int[] { 1 };
+        }
+        if (num >= 25) {
+            return new int[] { 2 };
+        }
+
+        int first = 0;
+        if (num >= 20) {
+            first = 63;
+        } else if (num >= 15) {
+            first = 62;
+        } else if (num >= 10) {
+            first = 61;
+        } else if (num >= 5) {
+            first = 60;
+        }
+
+        int second = 0;
+        if (num % 5 > 0) {
+            second = num % 5 + 55;
+        }
+
+        if (first > 0) {
+            if (second > 0) {
+                return new int[] { first, second };
+            }
+            return new int[] { first };
+        }
+
+        return new int[] { second };
+    }
+
+    private void drawTabNumberComponent(GuiGraphics guiGraphics, int componentIndex, int x, int y) {
+        // Same symbol sheet family as page poem components.
+        // Legacy uses indices 55-63 for the D'ni numerals.
+        // If your atlas layout differs, only these three constants need changing.
+        final int tileSize = 16;
+        final int atlasColumns = 8;
+
+        int index = componentIndex - 1;
+        int u = (index % atlasColumns) * tileSize;
+        int v = (index / atlasColumns) * tileSize;
+
+        guiGraphics.blit(
+                RenderPipelines.GUI_TEXTURED,
+                Identifier.fromNamespaceAndPath("mystcraft-sc", "textures/page/symbolcomponents.png"),
+                x,
+                y,
+                u,
+                v,
+                19,
+                19,
+                atlasColumns * tileSize,
+                atlasColumns * tileSize
+        );
+    }
+
     private void drawLeftTabStrip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        int topSlot = this.menu.getFirstVisibleTab();
+        int activeSlot = this.menu.getActiveTab();
+
+        boolean canScrollUp = topSlot > 0;
+        boolean canScrollDown = topSlot + TAB_COUNT < BlockEntityDesk.TAB_SLOT_COUNT;
+        boolean activeAbove = activeSlot < topSlot;
+        boolean activeBelow = activeSlot >= topSlot + TAB_COUNT;
+
+        // Top arrow
         guiGraphics.blit(
                 RenderPipelines.GUI_TEXTURED,
                 DESK_TEXTURE,
                 this.leftPos + LEFT_ARROW_TOP_X,
                 this.topPos + LEFT_ARROW_TOP_Y,
                 0,
-                205,
+                203,
                 LEFT_ARROW_W,
-                8,
+                LEFT_ARROW_H,
                 DESK_TEXTURE_W,
                 DESK_TEXTURE_H
         );
 
+        // Legacy-style tinting:
+        // greyed when unavailable, blue when active tab is above current window
+        if (!canScrollUp) {
+            guiGraphics.fill(
+                    this.leftPos + LEFT_ARROW_TOP_X,
+                    this.topPos + LEFT_ARROW_TOP_Y,
+                    this.leftPos + LEFT_ARROW_TOP_X + LEFT_ARROW_W,
+                    this.topPos + LEFT_ARROW_TOP_Y + LEFT_ARROW_H,
+                    0xA0000000
+            );
+        } else if (activeAbove) {
+            guiGraphics.fill(
+                    this.leftPos + LEFT_ARROW_TOP_X,
+                    this.topPos + LEFT_ARROW_TOP_Y,
+                    this.leftPos + LEFT_ARROW_TOP_X + LEFT_ARROW_W,
+                    this.topPos + LEFT_ARROW_TOP_Y + LEFT_ARROW_H,
+                    0x606080FF
+            );
+        }
+
         for (int i = 0; i < TAB_COUNT; i++) {
-            int absoluteTab = this.menu.getFirstVisibleTab() + i;
+            int absoluteTab = topSlot + i;
             int x = this.leftPos + LEFT_TABS_X;
             int y = this.topPos + LEFT_TABS_Y + i * LEFT_TAB_STEP;
 
@@ -592,8 +688,14 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
                     DESK_TEXTURE_H
             );
 
-            if (absoluteTab == this.menu.getActiveTab()) {
-                guiGraphics.fill(x + 1, y + 1, x + LEFT_TAB_W - 1, y + LEFT_TAB_H - 1, 0x100000FF);
+            if (absoluteTab == activeSlot) {
+                guiGraphics.fill(
+                        x,
+                        y,
+                        x + LEFT_TAB_W,
+                        y + LEFT_TAB_H,
+                        0x604060FF
+                );
             }
 
             ItemStack stack = this.menu.getVisibleTabStack(i);
@@ -613,24 +715,29 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
                 );
             }
 
+            // Legacy D'ni-style tab number position
+            this.drawTabNumber(guiGraphics, absoluteTab, x + 8, y + 3);
+
             if (!stack.isEmpty()) {
                 guiGraphics.renderItem(stack, slotX, slotY);
                 guiGraphics.renderItemDecorations(this.font, stack, slotX, slotY);
 
                 String name = stack.getHoverName().getString();
-                int maxWidth = 50;
-                int nameWidth = this.font.width(name);
-                float scale = nameWidth > maxWidth ? maxWidth / (float) nameWidth : 1.0F;
+                float scale = 1.0F;
+                int width = this.font.width(name) + 16;
+                if (width > LEFT_TAB_W) {
+                    scale = (float) LEFT_TAB_W / (float) width;
+                }
 
                 guiGraphics.pose().pushMatrix();
-                guiGraphics.pose().translate(x + 2, y + 28);
+                guiGraphics.pose().translate(x + 4, y + 25);
                 guiGraphics.pose().scale(scale, scale);
                 guiGraphics.drawString(
                         this.font,
                         name,
                         0,
                         0,
-                        0xFF202020,
+                        0xFF404040,
                         false
                 );
                 guiGraphics.pose().popMatrix();
@@ -658,18 +765,37 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
             }
         }
 
+        // Bottom arrow
         guiGraphics.blit(
                 RenderPipelines.GUI_TEXTURED,
                 DESK_TEXTURE,
                 this.leftPos + LEFT_ARROW_BOTTOM_X,
                 this.topPos + LEFT_ARROW_BOTTOM_Y,
                 0,
-                213,
+                212,
                 LEFT_ARROW_W,
-                8,
+                LEFT_ARROW_H,
                 DESK_TEXTURE_W,
                 DESK_TEXTURE_H
         );
+
+        if (!canScrollDown) {
+            guiGraphics.fill(
+                    this.leftPos + LEFT_ARROW_BOTTOM_X,
+                    this.topPos + LEFT_ARROW_BOTTOM_Y,
+                    this.leftPos + LEFT_ARROW_BOTTOM_X + LEFT_ARROW_W,
+                    this.topPos + LEFT_ARROW_BOTTOM_Y + LEFT_ARROW_H,
+                    0xA0000000
+            );
+        } else if (activeBelow) {
+            guiGraphics.fill(
+                    this.leftPos + LEFT_ARROW_BOTTOM_X,
+                    this.topPos + LEFT_ARROW_BOTTOM_Y,
+                    this.leftPos + LEFT_ARROW_BOTTOM_X + LEFT_ARROW_W,
+                    this.topPos + LEFT_ARROW_BOTTOM_Y + LEFT_ARROW_H,
+                    0x606080FF
+            );
+        }
     }
 
     private void drawSurfaceBackground(GuiGraphics guiGraphics) {
