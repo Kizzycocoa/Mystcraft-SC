@@ -42,10 +42,15 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
     private static final int SURFACE_PAGE_WIDTH = 156;
     private static final int SURFACE_HEIGHT = 166;
 
+    private static final int LEFT_ARROW_TOP_X = 0;
+    private static final int LEFT_ARROW_TOP_Y = SURFACE_Y;
+    private static final int LEFT_ARROW_W = 58;
+    private static final int LEFT_ARROW_H = 8;
+
     private static final int LEFT_TABS_X = 0;
-    private static final int LEFT_TABS_Y = 20;
+    private static final int LEFT_TABS_Y = LEFT_ARROW_TOP_Y + LEFT_ARROW_H + 6;
     private static final int LEFT_TAB_W = 58;
-    private static final int LEFT_TAB_H = 40;
+    private static final int LEFT_TAB_H = 37;
     private static final int LEFT_TAB_STEP = 37;
     private static final int TAB_COUNT = WritingDeskMenu.VISIBLE_TAB_COUNT;
 
@@ -53,11 +58,6 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
     private static final int LEFT_TAB_SLOT_Y = 14;
     private static final int LEFT_TAB_SLOT_W = 16;
     private static final int LEFT_TAB_SLOT_H = 16;
-
-    private static final int LEFT_ARROW_TOP_X = 0;
-    private static final int LEFT_ARROW_TOP_Y = SURFACE_Y;
-    private static final int LEFT_ARROW_W = 58;
-    private static final int LEFT_ARROW_H = 8;
 
     private static final int LEFT_ARROW_BOTTOM_X = 0;
     private static final int LEFT_ARROW_BOTTOM_Y = SURFACE_Y + SURFACE_HEIGHT - 8;
