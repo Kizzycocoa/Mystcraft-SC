@@ -31,6 +31,8 @@ public class WritingDeskMenu extends AbstractContainerMenu {
     public static final int BUTTON_SELECT_TAB_START = 0;
     public static final int BUTTON_SET_FIRST_TAB_START = 100;
     public static final int BUTTON_ADD_CARRIED_TO_TAB_START = 200;
+    public static final int BUTTON_PICKUP_TAB_STACK_START = 300;
+    public static final int BUTTON_PLACE_TAB_STACK_START = 400;
     public static final int BUTTON_REMOVE_ACTIVE_PAGE_START = 1000;
     public static final int BUTTON_REMOVE_ACTIVE_TO_INVENTORY_START = 2000;
     public static final int BUTTON_PLACE_CARRIED_AT_START = 3000;
@@ -157,7 +159,7 @@ public class WritingDeskMenu extends AbstractContainerMenu {
             return true;
         }
 
-        if (id >= BUTTON_ADD_CARRIED_TO_TAB_START && id < BUTTON_REMOVE_ACTIVE_PAGE_START) {
+        if (id >= BUTTON_ADD_CARRIED_TO_TAB_START && id < BUTTON_PICKUP_TAB_STACK_START) {
             int tab = id - BUTTON_ADD_CARRIED_TO_TAB_START;
             ItemStack carried = this.getCarried();
             if (carried.isEmpty() || !carried.is(myst.synthetic.MystcraftItems.PAGE) || this.deskBlockEntity == null) {
@@ -173,6 +175,53 @@ public class WritingDeskMenu extends AbstractContainerMenu {
 
             carried.shrink(1);
             this.setCarried(carried.isEmpty() ? ItemStack.EMPTY : carried);
+            this.broadcastChanges();
+            return true;
+        }
+
+        if (id >= BUTTON_PICKUP_TAB_STACK_START && id < BUTTON_PLACE_TAB_STACK_START) {
+            int tab = id - BUTTON_PICKUP_TAB_STACK_START;
+            int slot = SLOT_TAB_START + tab;
+
+            if (!this.getCarried().isEmpty()) {
+                return false;
+            }
+
+            ItemStack stack = this.deskInventory.getItem(slot);
+            if (stack.isEmpty()) {
+                return false;
+            }
+
+            this.deskInventory.setItem(slot, ItemStack.EMPTY);
+            this.setCarried(stack);
+            if (this.deskBlockEntity != null) {
+                this.deskBlockEntity.setChanged();
+            }
+            this.broadcastChanges();
+            return true;
+        }
+
+        if (id >= BUTTON_PLACE_TAB_STACK_START && id < BUTTON_REMOVE_ACTIVE_PAGE_START) {
+            int tab = id - BUTTON_PLACE_TAB_STACK_START;
+            int slot = SLOT_TAB_START + tab;
+
+            ItemStack carried = this.getCarried();
+            if (carried.isEmpty() || !DeskItemBehaviors.canBeDeskTabStorage(carried)) {
+                return false;
+            }
+
+            if (!this.deskInventory.getItem(slot).isEmpty()) {
+                return false;
+            }
+
+            ItemStack placed = carried.copyWithCount(1);
+            this.deskInventory.setItem(slot, placed);
+            carried.shrink(1);
+            this.setCarried(carried.isEmpty() ? ItemStack.EMPTY : carried);
+
+            if (this.deskBlockEntity != null) {
+                this.deskBlockEntity.setChanged();
+            }
             this.broadcastChanges();
             return true;
         }
@@ -362,6 +411,11 @@ public class WritingDeskMenu extends AbstractContainerMenu {
         @Override
         public boolean mayPlace(ItemStack stack) {
             return DeskItemBehaviors.canBeDeskTabStorage(stack);
+        }
+
+        @Override
+        public int getMaxStackSize() {
+            return 1;
         }
     }
 
