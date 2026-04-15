@@ -131,29 +131,15 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
         }
 
         if (this.searchBox != null) {
-            this.searchBox.setX(-1000);
-            this.searchBox.setY(-1000);
-            this.searchBox.setWidth(0);
+            this.searchBox.setX(this.leftPos + SEARCH_BOX_X + 4);
+            this.searchBox.setY(this.topPos + SEARCH_BOX_Y + 4);
+            this.searchBox.setWidth(SEARCH_BOX_W - 8);
+            this.searchBox.setHeight(10);
+            this.searchBox.setBordered(false);
+            this.searchBox.setTextColor(0xFFE0E0E0);
+            this.searchBox.setTextColorUneditable(0xFF707070);
+            this.searchBox.setCanLoseFocus(true);
         }
-
-        this.searchBox = new EditBox(
-                this.font,
-                this.leftPos + SEARCH_BOX_X + 4,
-                this.topPos + SEARCH_BOX_Y + 4,
-                SEARCH_BOX_W - 8,
-                10,
-                Component.translatable("screen.mystcraft-sc.page_browser.search")
-        );
-        this.searchBox.setBordered(false);
-        this.searchBox.setMaxLength(64);
-        this.searchBox.setTextColor(0xFFE0E0E0);
-        this.searchBox.setTextColorUneditable(0xFF707070);
-        this.searchBox.setResponder(text -> {
-            this.scroll = 0;
-            this.rebuildDisplayEntries();
-        });
-        this.searchBox.setCanLoseFocus(true);
-        this.addRenderableWidget(this.searchBox);
 
         this.titleBox = new EditBox(
                 this.font,
