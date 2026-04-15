@@ -59,6 +59,9 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
     private static final int LEFT_TAB_SLOT_W = 16;
     private static final int LEFT_TAB_SLOT_H = 16;
 
+    private static final int TAB_STATE_U_OFFSET = 58;
+    private static final int ARROW_STATE_U_OFFSET = 58;
+
     private static final int LEFT_ARROW_BOTTOM_X = 0;
     private static final int LEFT_ARROW_BOTTOM_Y = SURFACE_Y + SURFACE_HEIGHT - 9;
 
@@ -565,6 +568,40 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
         super.removed();
     }
 
+    private enum TabVisualState {
+        NORMAL,
+        HOVERED,
+        INACTIVE
+    }
+
+    private int getStateU(int baseU, int width, TabVisualState state) {
+        return switch (state) {
+            case NORMAL -> baseU;
+            case HOVERED -> baseU + width;
+            case INACTIVE -> baseU + width * 2;
+        };
+    }
+
+    private TabVisualState getArrowState(boolean canScroll, boolean hovered) {
+        if (!canScroll) {
+            return TabVisualState.INACTIVE;
+        }
+        if (hovered) {
+            return TabVisualState.HOVERED;
+        }
+        return TabVisualState.NORMAL;
+    }
+
+    private TabVisualState getTabState(boolean active, boolean hovered) {
+        if (active) {
+            return TabVisualState.HOVERED;
+        }
+        if (hovered) {
+            return TabVisualState.HOVERED;
+        }
+        return TabVisualState.NORMAL;
+    }
+
     private void drawSearchFrame(GuiGraphics guiGraphics) {
         guiGraphics.fill(
                 this.leftPos + SEARCH_BOX_X,
@@ -676,40 +713,26 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
 
         boolean canScrollUp = topSlot > 0;
         boolean canScrollDown = topSlot + TAB_COUNT < BlockEntityDesk.TAB_SLOT_COUNT;
-        boolean activeAbove = activeSlot < topSlot;
-        boolean activeBelow = activeSlot >= topSlot + TAB_COUNT;
+
+        boolean hoverTopArrow = this.isOverLeftArrowTop(mouseX, mouseY);
+        boolean hoverBottomArrow = this.isOverLeftArrowBottom(mouseX, mouseY);
 
         // Top arrow
-        guiGraphics.blit(
-                RenderPipelines.GUI_TEXTURED,
-                DESK_TEXTURE,
-                this.leftPos + LEFT_ARROW_TOP_X,
-                this.topPos + LEFT_ARROW_TOP_Y,
-                0,
-                203,
-                LEFT_ARROW_W,
-                LEFT_ARROW_H,
-                DESK_TEXTURE_W,
-                DESK_TEXTURE_H
-        );
+        {
+            TabVisualState state = getArrowState(canScrollUp, hoverTopArrow);
+            int u = getStateU(0, LEFT_ARROW_W, state);
 
-        // Legacy-style tinting:
-        // greyed when unavailable, blue when active tab is above current window
-        if (!canScrollUp) {
-            guiGraphics.fill(
+            guiGraphics.blit(
+                    RenderPipelines.GUI_TEXTURED,
+                    DESK_TEXTURE,
                     this.leftPos + LEFT_ARROW_TOP_X,
                     this.topPos + LEFT_ARROW_TOP_Y,
-                    this.leftPos + LEFT_ARROW_TOP_X + LEFT_ARROW_W,
-                    this.topPos + LEFT_ARROW_TOP_Y + LEFT_ARROW_H,
-                    0xA0000000
-            );
-        } else if (activeAbove) {
-            guiGraphics.fill(
-                    this.leftPos + LEFT_ARROW_TOP_X,
-                    this.topPos + LEFT_ARROW_TOP_Y,
-                    this.leftPos + LEFT_ARROW_TOP_X + LEFT_ARROW_W,
-                    this.topPos + LEFT_ARROW_TOP_Y + LEFT_ARROW_H,
-                    0x606080FF
+                    u,
+                    203,
+                    LEFT_ARROW_W,
+                    LEFT_ARROW_H,
+                    DESK_TEXTURE_W,
+                    DESK_TEXTURE_H
             );
         }
 
@@ -718,12 +741,28 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
             int x = this.leftPos + LEFT_TABS_X;
             int y = this.topPos + LEFT_TABS_Y + i * LEFT_TAB_STEP;
 
+            int slotX = x + LEFT_TAB_SLOT_X;
+            int slotY = y + LEFT_TAB_SLOT_Y;
+
+            boolean hoveringTab =
+                    mouseX >= x && mouseX < x + LEFT_TAB_W
+                            && mouseY >= y && mouseY < y + LEFT_TAB_H;
+
+            boolean hoveringSlot =
+                    mouseX >= slotX && mouseX < slotX + LEFT_TAB_SLOT_W
+                            && mouseY >= slotY && mouseY < slotY + LEFT_TAB_SLOT_H;
+
+            boolean active = absoluteTab == activeSlot;
+
+            TabVisualState tabState = getTabState(active, hoveringTab);
+            int tabU = getStateU(0, LEFT_TAB_W, tabState);
+
             guiGraphics.blit(
                     RenderPipelines.GUI_TEXTURED,
                     DESK_TEXTURE,
                     x,
                     y,
-                    0,
+                    tabU,
                     166,
                     LEFT_TAB_W,
                     LEFT_TAB_H,
@@ -731,46 +770,16 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
                     DESK_TEXTURE_H
             );
 
-            if (absoluteTab == activeSlot) {
-                guiGraphics.fill(
-                        x,
-                        y,
-                        x + LEFT_TAB_W,
-                        y + LEFT_TAB_H,
-                        0x604060FF
-                );
-            }
-
             ItemStack stack = this.menu.getVisibleTabStack(i);
-            int slotX = x + LEFT_TAB_SLOT_X;
-            int slotY = y + LEFT_TAB_SLOT_Y;
-            boolean hoveringSlot =
-                    mouseX >= slotX && mouseX < slotX + LEFT_TAB_SLOT_W
-                            && mouseY >= slotY && mouseY < slotY + LEFT_TAB_SLOT_H;
-
-            if (hoveringSlot) {
-                guiGraphics.fill(
-                        slotX,
-                        slotY,
-                        slotX + LEFT_TAB_SLOT_W,
-                        slotY + LEFT_TAB_SLOT_H,
-                        0x60FFFFFF
-                );
-            }
-
-            // Legacy D'ni-style tab number position
-            this.drawTabNumber(guiGraphics, absoluteTab, x + 8, y + 3);
 
             if (!stack.isEmpty()) {
                 guiGraphics.renderItem(stack, slotX, slotY);
                 guiGraphics.renderItemDecorations(this.font, stack, slotX, slotY);
 
                 String name = stack.getHoverName().getString();
-                float scale = 1.0F;
-                int width = this.font.width(name) + 16;
-                if (width > LEFT_TAB_W) {
-                    scale = (float) LEFT_TAB_W / (float) width;
-                }
+                int maxWidth = 50;
+                int nameWidth = this.font.width(name);
+                float scale = nameWidth > maxWidth ? maxWidth / (float) nameWidth : 1.0F;
 
                 guiGraphics.pose().pushMatrix();
                 guiGraphics.pose().translate(x + 4, y + 25);
@@ -786,7 +795,9 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
                 guiGraphics.pose().popMatrix();
             }
 
-            if (mouseX >= x && mouseX < x + LEFT_TAB_W && mouseY >= y && mouseY < y + LEFT_TAB_H && !stack.isEmpty() && this.minecraft != null && this.minecraft.player != null) {
+            this.drawTabNumber(guiGraphics, absoluteTab, x + 8, y + 3);
+
+            if (hoveringTab && !stack.isEmpty() && this.minecraft != null && this.minecraft.player != null) {
                 List<ClientTooltipComponent> tooltip = new ArrayList<>();
 
                 for (var line : stack.getTooltipLines(
@@ -804,34 +815,21 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
         }
 
         // Bottom arrow
-        guiGraphics.blit(
-                RenderPipelines.GUI_TEXTURED,
-                DESK_TEXTURE,
-                this.leftPos + LEFT_ARROW_BOTTOM_X,
-                this.topPos + LEFT_ARROW_BOTTOM_Y,
-                0,
-                212,
-                LEFT_ARROW_W,
-                LEFT_ARROW_H,
-                DESK_TEXTURE_W,
-                DESK_TEXTURE_H
-        );
+        {
+            TabVisualState state = getArrowState(canScrollDown, hoverBottomArrow);
+            int u = getStateU(0, LEFT_ARROW_W, state);
 
-        if (!canScrollDown) {
-            guiGraphics.fill(
+            guiGraphics.blit(
+                    RenderPipelines.GUI_TEXTURED,
+                    DESK_TEXTURE,
                     this.leftPos + LEFT_ARROW_BOTTOM_X,
                     this.topPos + LEFT_ARROW_BOTTOM_Y,
-                    this.leftPos + LEFT_ARROW_BOTTOM_X + LEFT_ARROW_W,
-                    this.topPos + LEFT_ARROW_BOTTOM_Y + LEFT_ARROW_H,
-                    0xA0000000
-            );
-        } else if (activeBelow) {
-            guiGraphics.fill(
-                    this.leftPos + LEFT_ARROW_BOTTOM_X,
-                    this.topPos + LEFT_ARROW_BOTTOM_Y,
-                    this.leftPos + LEFT_ARROW_BOTTOM_X + LEFT_ARROW_W,
-                    this.topPos + LEFT_ARROW_BOTTOM_Y + LEFT_ARROW_H,
-                    0x606080FF
+                    u,
+                    212,
+                    LEFT_ARROW_W,
+                    LEFT_ARROW_H,
+                    DESK_TEXTURE_W,
+                    DESK_TEXTURE_H
             );
         }
     }
