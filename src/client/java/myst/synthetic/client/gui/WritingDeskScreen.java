@@ -569,43 +569,55 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
     }
 
     private int[] getDniNumberComponents(int num) {
-        if (num == 0) {
-            return new int[] { 1 };
-        }
-        if (num >= 25) {
+        // Exact sheet ids from your mapping:
+        // 2 = 0
+        // 3 = 25
+        // 57 = 1
+        // 58 = 2
+        // 59 = 3
+        // 60 = 4
+        // 61 = 5
+        // 62 = 10
+        // 63 = 15
+        // 64 = 20
+
+        if (num <= 0) {
             return new int[] { 2 };
         }
 
-        int first = 0;
+        if (num >= 25) {
+            return new int[] { 3 };
+        }
+
+        int major = 0;
         if (num >= 20) {
-            first = 63;
+            major = 64;
         } else if (num >= 15) {
-            first = 62;
+            major = 63;
         } else if (num >= 10) {
-            first = 61;
+            major = 62;
         } else if (num >= 5) {
-            first = 60;
+            major = 61;
         }
 
-        int second = 0;
-        if (num % 5 > 0) {
-            second = num % 5 + 55;
+        int remainder = num % 5;
+        int minor = 0;
+        if (remainder > 0) {
+            minor = 56 + remainder; // 1->57, 2->58, 3->59, 4->60
         }
 
-        if (first > 0) {
-            if (second > 0) {
-                return new int[] { first, second };
-            }
-            return new int[] { first };
+        if (major != 0 && minor != 0) {
+            return new int[] { major, minor };
         }
 
-        return new int[] { second };
+        if (major != 0) {
+            return new int[] { major };
+        }
+
+        return new int[] { minor };
     }
 
     private void drawTabNumberComponent(GuiGraphics guiGraphics, int componentIndex, int x, int y) {
-        // Same symbol sheet family as page poem components.
-        // Legacy uses indices 55-63 for the D'ni numerals.
-        // If your atlas layout differs, only these three constants need changing.
         final int tileSize = 16;
         final int atlasColumns = 8;
 
@@ -620,8 +632,8 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
                 y,
                 u,
                 v,
-                19,
-                19,
+                16,
+                16,
                 atlasColumns * tileSize,
                 atlasColumns * tileSize
         );
