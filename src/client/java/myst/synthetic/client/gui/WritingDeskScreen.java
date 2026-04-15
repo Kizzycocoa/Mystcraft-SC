@@ -37,24 +37,24 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
     private static final int FULL_GUI_HEIGHT = 186;
 
     private static final int LEFT_TABS_X = 0;
-    private static final int LEFT_TABS_Y = 22;
+    private static final int LEFT_TABS_Y = 20;
     private static final int LEFT_TAB_W = 58;
     private static final int LEFT_TAB_H = 40;
     private static final int LEFT_TAB_STEP = 37;
     private static final int TAB_COUNT = WritingDeskMenu.VISIBLE_TAB_COUNT;
 
-    private static final int LEFT_TAB_SLOT_X = 39;
-    private static final int LEFT_TAB_SLOT_Y = 10;
+    private static final int LEFT_TAB_SLOT_X = 37;
+    private static final int LEFT_TAB_SLOT_Y = 14;
     private static final int LEFT_TAB_SLOT_W = 16;
     private static final int LEFT_TAB_SLOT_H = 16;
 
     private static final int LEFT_ARROW_TOP_X = 0;
-    private static final int LEFT_ARROW_TOP_Y = 6;
+    private static final int LEFT_ARROW_TOP_Y = 11;
     private static final int LEFT_ARROW_W = 58;
     private static final int LEFT_ARROW_H = 9;
 
     private static final int LEFT_ARROW_BOTTOM_X = 0;
-    private static final int LEFT_ARROW_BOTTOM_Y = 177;
+    private static final int LEFT_ARROW_BOTTOM_Y = 176;
 
     private static final int SURFACE_OFFSET_X = 58;
     private static final int SURFACE_X = 0;
@@ -102,10 +102,6 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
     private EditBox titleBox;
     private String lastSentTitle = "";
 
-    private List<ClientTooltipComponent> pendingTabTooltip;
-    private int pendingTabTooltipX;
-    private int pendingTabTooltipY;
-
     public WritingDeskScreen(WritingDeskMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
         this.imageWidth = FULL_GUI_WIDTH;
@@ -135,28 +131,42 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
         }
 
         if (this.searchBox != null) {
-            this.searchBox.setX(this.leftPos + SEARCH_BOX_X + 3);
-            this.searchBox.setY(this.topPos + SEARCH_BOX_Y + 3);
-            this.searchBox.setWidth(SEARCH_BOX_W - 6);
-            this.searchBox.setHeight(10);
-            this.searchBox.setBordered(false);
-            this.searchBox.setTextColor(0xFFE0E0E0);
-            this.searchBox.setTextColorUneditable(0xFF707070);
-            this.searchBox.setCanLoseFocus(true);
+            this.searchBox.setX(-1000);
+            this.searchBox.setY(-1000);
+            this.searchBox.setWidth(0);
         }
+
+        this.searchBox = new EditBox(
+                this.font,
+                this.leftPos + SEARCH_BOX_X + 4,
+                this.topPos + SEARCH_BOX_Y + 4,
+                SEARCH_BOX_W - 8,
+                10,
+                Component.translatable("screen.mystcraft-sc.page_browser.search")
+        );
+        this.searchBox.setBordered(false);
+        this.searchBox.setMaxLength(64);
+        this.searchBox.setTextColor(0xFFE0E0E0);
+        this.searchBox.setTextColorUneditable(0xFF707070);
+        this.searchBox.setResponder(text -> {
+            this.scroll = 0;
+            this.rebuildDisplayEntries();
+        });
+        this.searchBox.setCanLoseFocus(true);
+        this.addRenderableWidget(this.searchBox);
 
         this.titleBox = new EditBox(
                 this.font,
-                this.leftPos + TITLE_BOX_X + 4,
-                this.topPos + TITLE_BOX_Y + 2,
-                TITLE_BOX_W - 8,
+                this.leftPos + TITLE_BOX_X + 5,
+                this.topPos + TITLE_BOX_Y + 3,
+                TITLE_BOX_W - 10,
                 10,
                 Component.translatable("container.mystcraft-sc.writing_desk.title")
         );
         this.titleBox.setCanLoseFocus(true);
         this.titleBox.setBordered(false);
         this.titleBox.setTextColor(0xFFFFFFFF);
-        this.titleBox.setTextColorUneditable(0xFF909090);
+        this.titleBox.setTextColorUneditable(0xFFC0C0C0);
         this.addRenderableWidget(this.titleBox);
 
         this.pullTitleFromTarget();
@@ -167,23 +177,6 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
     public void containerTick() {
         super.containerTick();
         this.pullTitleFromTargetIfNeeded();
-    }
-
-    @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        this.pendingTabTooltip = null;
-        super.render(guiGraphics, mouseX, mouseY, partialTick);
-
-        if (this.pendingTabTooltip != null) {
-            guiGraphics.renderTooltip(
-                    this.font,
-                    this.pendingTabTooltip,
-                    this.pendingTabTooltipX,
-                    this.pendingTabTooltipY,
-                    DefaultTooltipPositioner.INSTANCE,
-                    null
-            );
-        }
     }
 
     @Override
@@ -207,6 +200,7 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
                 DESK_TEXTURE_H
         );
 
+        this.drawTitleFrame(guiGraphics);
         this.drawTargetPreview(guiGraphics);
         this.drawInkMeter(guiGraphics);
     }
@@ -635,9 +629,14 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
                     tooltip.add(new ClientTextTooltip(line.getVisualOrderText()));
                 }
 
-                this.pendingTabTooltip = tooltip;
-                this.pendingTabTooltipX = mouseX;
-                this.pendingTabTooltipY = mouseY;
+                guiGraphics.renderTooltip(
+                        this.font,
+                        tooltip,
+                        mouseX,
+                        mouseY,
+                        DefaultTooltipPositioner.INSTANCE,
+                        null
+                );
             }
         }
 
@@ -773,6 +772,22 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
                 32,
                 32
         );
+    }
+
+    private void drawTitleFrame(GuiGraphics guiGraphics) {
+        int x1 = this.leftPos + TITLE_BOX_X;
+        int y1 = this.topPos + TITLE_BOX_Y;
+        int x2 = x1 + TITLE_BOX_W;
+        int y2 = y1 + TITLE_BOX_H;
+
+        // Outer light frame
+        guiGraphics.fill(x1 - 1, y1 - 1, x2 + 1, y2 + 1, 0xFFE6E6E6);
+
+        // Inner dark bevel
+        guiGraphics.fill(x1, y1, x2, y2, 0xFF5A5A5A);
+
+        // Black text field
+        guiGraphics.fill(x1 + 1, y1 + 1, x2 - 1, y2 - 1, 0xFF000000);
     }
 
     private void drawTargetPreview(GuiGraphics guiGraphics) {
