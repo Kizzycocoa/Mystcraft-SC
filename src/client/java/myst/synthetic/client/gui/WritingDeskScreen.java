@@ -597,9 +597,25 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
             }
 
             ItemStack stack = this.menu.getVisibleTabStack(i);
+            int slotX = x + LEFT_TAB_SLOT_X;
+            int slotY = y + LEFT_TAB_SLOT_Y;
+            boolean hoveringSlot =
+                    mouseX >= slotX && mouseX < slotX + LEFT_TAB_SLOT_W
+                            && mouseY >= slotY && mouseY < slotY + LEFT_TAB_SLOT_H;
+
+            if (hoveringSlot) {
+                guiGraphics.fill(
+                        slotX,
+                        slotY,
+                        slotX + LEFT_TAB_SLOT_W,
+                        slotY + LEFT_TAB_SLOT_H,
+                        0x60FFFFFF
+                );
+            }
+
             if (!stack.isEmpty()) {
-                guiGraphics.renderItem(stack, x + LEFT_TAB_SLOT_X, y + LEFT_TAB_SLOT_Y);
-                guiGraphics.renderItemDecorations(this.font, stack, x + LEFT_TAB_SLOT_X, y + LEFT_TAB_SLOT_Y);
+                guiGraphics.renderItem(stack, slotX, slotY);
+                guiGraphics.renderItemDecorations(this.font, stack, slotX, slotY);
 
                 String name = stack.getHoverName().getString();
                 int maxWidth = 50;
