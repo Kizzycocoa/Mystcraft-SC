@@ -570,21 +570,21 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
 
     private int[] getDniNumberComponents(int num) {
         if (num == 0) {
-            return new int[] { 1 };
+            return new int[] { 2 };
         }
         if (num >= 25) {
-            return new int[] { 2 };
+            return new int[] { 3 };
         }
 
         int first = 0;
         if (num >= 20) {
-            first = 63;
+            first = 64;
         } else if (num >= 15) {
-            first = 62;
+            first = 63;
         } else if (num >= 10) {
-            first = 61;
+            first = 62;
         } else if (num >= 5) {
-            first = 60;
+            first = 61;
         }
 
         int second = 0;
