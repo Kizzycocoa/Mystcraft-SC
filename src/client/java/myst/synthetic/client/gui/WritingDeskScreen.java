@@ -587,7 +587,7 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
             first = 61;
         }
 
-        int second = 0;
+        int second = 61;
         if (num % 5 > 0) {
             second = num % 5 + 55;
         }
