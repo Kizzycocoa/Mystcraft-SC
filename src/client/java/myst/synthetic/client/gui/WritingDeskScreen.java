@@ -570,36 +570,30 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
 
     private enum TabVisualState {
         NORMAL,
-        HOVERED,
+        ACTIVE,
         INACTIVE
     }
 
     private int getStateU(int baseU, int width, TabVisualState state) {
         return switch (state) {
             case NORMAL -> baseU;
-            case HOVERED -> baseU + width;
+            case ACTIVE -> baseU + width;
             case INACTIVE -> baseU + width * 2;
         };
     }
 
-    private TabVisualState getArrowState(boolean canScroll, boolean hovered) {
+    private TabVisualState getArrowState(boolean canScroll, boolean pointsToActiveTabOffscreen) {
         if (!canScroll) {
             return TabVisualState.INACTIVE;
         }
-        if (hovered) {
-            return TabVisualState.HOVERED;
+        if (pointsToActiveTabOffscreen) {
+            return TabVisualState.ACTIVE;
         }
         return TabVisualState.NORMAL;
     }
 
-    private TabVisualState getTabState(boolean active, boolean hovered) {
-        if (active) {
-            return TabVisualState.HOVERED;
-        }
-        if (hovered) {
-            return TabVisualState.HOVERED;
-        }
-        return TabVisualState.NORMAL;
+    private TabVisualState getTabState(boolean active) {
+        return active ? TabVisualState.ACTIVE : TabVisualState.NORMAL;
     }
 
     private void drawSearchFrame(GuiGraphics guiGraphics) {
@@ -714,12 +708,12 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
         boolean canScrollUp = topSlot > 0;
         boolean canScrollDown = topSlot + TAB_COUNT < BlockEntityDesk.TAB_SLOT_COUNT;
 
-        boolean hoverTopArrow = this.isOverLeftArrowTop(mouseX, mouseY);
-        boolean hoverBottomArrow = this.isOverLeftArrowBottom(mouseX, mouseY);
+        boolean activeAbove = activeSlot < topSlot;
+        boolean activeBelow = activeSlot >= topSlot + TAB_COUNT;
 
         // Top arrow
         {
-            TabVisualState state = getArrowState(canScrollUp, hoverTopArrow);
+            TabVisualState state = getArrowState(canScrollUp, activeAbove);
             int u = getStateU(0, LEFT_ARROW_W, state);
 
             guiGraphics.blit(
@@ -748,13 +742,9 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
                     mouseX >= x && mouseX < x + LEFT_TAB_W
                             && mouseY >= y && mouseY < y + LEFT_TAB_H;
 
-            boolean hoveringSlot =
-                    mouseX >= slotX && mouseX < slotX + LEFT_TAB_SLOT_W
-                            && mouseY >= slotY && mouseY < slotY + LEFT_TAB_SLOT_H;
-
             boolean active = absoluteTab == activeSlot;
 
-            TabVisualState tabState = getTabState(active, hoveringTab);
+            TabVisualState tabState = getTabState(active);
             int tabU = getStateU(0, LEFT_TAB_W, tabState);
 
             guiGraphics.blit(
@@ -777,9 +767,8 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
                 guiGraphics.renderItemDecorations(this.font, stack, slotX, slotY);
 
                 String name = stack.getHoverName().getString();
-                int maxWidth = 50;
-                int nameWidth = this.font.width(name);
-                float scale = nameWidth > maxWidth ? maxWidth / (float) nameWidth : 1.0F;
+                int width = this.font.width(name) + 16;
+                float scale = width > LEFT_TAB_W ? (float) LEFT_TAB_W / (float) width : 1.0F;
 
                 guiGraphics.pose().pushMatrix();
                 guiGraphics.pose().translate(x + 4, y + 25);
@@ -816,7 +805,7 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
 
         // Bottom arrow
         {
-            TabVisualState state = getArrowState(canScrollDown, hoverBottomArrow);
+            TabVisualState state = getArrowState(canScrollDown, activeBelow);
             int u = getStateU(0, LEFT_ARROW_W, state);
 
             guiGraphics.blit(
