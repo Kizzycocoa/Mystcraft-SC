@@ -39,6 +39,11 @@ public class WritingDeskMenu extends AbstractContainerMenu {
     public static final int BUTTON_WRITE_SYMBOL_START = 10000;
     public static final int BUTTON_USE_LINK = 20000;
 
+    public static final int BUTTON_PREVIEW_SCROLL_LEFT = 21000;
+    public static final int BUTTON_PREVIEW_SCROLL_RIGHT = 21001;
+    public static final int BUTTON_PREVIEW_REMOVE_PAGE_START = 22000;
+    public static final int BUTTON_PREVIEW_INSERT_PAGE_START = 23000;
+
     private static final int DESK_TAB_MENU_START = 0;
     private static final int DESK_TAB_MENU_END = BlockEntityDesk.TAB_SLOT_COUNT;
     private static final int TARGET_MENU_SLOT = DESK_TAB_MENU_END;
@@ -60,6 +65,8 @@ public class WritingDeskMenu extends AbstractContainerMenu {
 
     private static final int X_SHIFT = 233;
     private static final int Y_SHIFT = 20;
+
+    private int previewScroll = 0;
 
     private final Container deskInventory;
     @Nullable
@@ -139,6 +146,18 @@ public class WritingDeskMenu extends AbstractContainerMenu {
 
     public boolean canUseLink() {
         return this.getTargetStack().is(myst.synthetic.MystcraftItems.LINKBOOK);
+    }
+
+    public int getPreviewScroll() {
+        return this.previewScroll;
+    }
+
+    public void setPreviewScroll(int previewScroll) {
+        this.previewScroll = Math.max(0, previewScroll);
+    }
+
+    public List<ItemStack> getTargetPages(Player player) {
+        return DeskItemBehaviors.getPages(player, this.getTargetStack());
     }
 
     public @Nullable BlockEntityDesk getDeskBlockEntity() {
@@ -345,6 +364,77 @@ public class WritingDeskMenu extends AbstractContainerMenu {
                 this.broadcastChanges();
             }
             return changed;
+        }
+
+        if (id == BUTTON_PREVIEW_SCROLL_LEFT) {
+            if (this.previewScroll > 0) {
+                this.previewScroll--;
+                this.broadcastChanges();
+            }
+            return true;
+        }
+
+        if (id == BUTTON_PREVIEW_SCROLL_RIGHT) {
+            if (player != null) {
+                int size = this.getTargetPages(player).size();
+                int max = Math.max(0, size - 4);
+                if (this.previewScroll < max) {
+                    this.previewScroll++;
+                    this.broadcastChanges();
+                }
+            }
+            return true;
+        }
+
+        if (id >= BUTTON_PREVIEW_REMOVE_PAGE_START && id < BUTTON_PREVIEW_INSERT_PAGE_START) {
+            if (this.deskBlockEntity == null) {
+                return false;
+            }
+
+            int index = id - BUTTON_PREVIEW_REMOVE_PAGE_START;
+            if (!this.getCarried().isEmpty()) {
+                return false;
+            }
+
+            ItemStack removed = DeskItemBehaviors.removePage(player, this.deskInventory.getItem(SLOT_TARGET), index);
+            if (removed.isEmpty()) {
+                return false;
+            }
+
+            this.setCarried(removed);
+            this.broadcastChanges();
+            return true;
+        }
+
+        if (id >= BUTTON_PREVIEW_INSERT_PAGE_START && id < BUTTON_WRITE_SYMBOL_START) {
+            ItemStack carried = this.getCarried();
+            if (carried.isEmpty() || !carried.is(myst.synthetic.MystcraftItems.PAGE)) {
+                return false;
+            }
+
+            int index = id - BUTTON_PREVIEW_INSERT_PAGE_START;
+            ItemStack single = carried.copyWithCount(1);
+
+            ItemStack returned = DeskItemBehaviors.insertPage(player, this.deskInventory.getItem(SLOT_TARGET), single, index);
+            if (!returned.isEmpty() && ItemStack.isSameItemSameComponents(returned, single)) {
+                return false;
+            }
+
+            carried.shrink(1);
+            if (!returned.isEmpty()) {
+                if (carried.isEmpty()) {
+                    carried = returned;
+                } else if (ItemStack.isSameItemSameComponents(carried, returned)
+                        && carried.getCount() + returned.getCount() <= carried.getMaxStackSize()) {
+                    carried.grow(returned.getCount());
+                } else {
+                    player.getInventory().placeItemBackInInventory(returned);
+                }
+            }
+
+            this.setCarried(carried.isEmpty() ? ItemStack.EMPTY : carried);
+            this.broadcastChanges();
+            return true;
         }
 
         if (id == BUTTON_USE_LINK) {
