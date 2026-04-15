@@ -49,12 +49,12 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
     private static final int LEFT_TAB_SLOT_H = 16;
 
     private static final int LEFT_ARROW_TOP_X = 0;
-    private static final int LEFT_ARROW_TOP_Y = 11;
+    private static final int LEFT_ARROW_TOP_Y = 7;
     private static final int LEFT_ARROW_W = 58;
-    private static final int LEFT_ARROW_H = 9;
+    private static final int LEFT_ARROW_H = 8;
 
     private static final int LEFT_ARROW_BOTTOM_X = 0;
-    private static final int LEFT_ARROW_BOTTOM_Y = 176;
+    private static final int LEFT_ARROW_BOTTOM_Y = 174;
 
     private static final int SURFACE_OFFSET_X = 58;
     private static final int SURFACE_X = 0;
@@ -567,7 +567,7 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
                 0,
                 205,
                 LEFT_ARROW_W,
-                LEFT_ARROW_H,
+                8,
                 DESK_TEXTURE_W,
                 DESK_TEXTURE_H
         );
@@ -646,9 +646,9 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
                 this.leftPos + LEFT_ARROW_BOTTOM_X,
                 this.topPos + LEFT_ARROW_BOTTOM_Y,
                 0,
-                214,
+                213,
                 LEFT_ARROW_W,
-                LEFT_ARROW_H,
+                8,
                 DESK_TEXTURE_W,
                 DESK_TEXTURE_H
         );
@@ -780,14 +780,11 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
         int x2 = x1 + TITLE_BOX_W;
         int y2 = y1 + TITLE_BOX_H;
 
-        // Outer light frame
-        guiGraphics.fill(x1 - 1, y1 - 1, x2 + 1, y2 + 1, 0xFFE6E6E6);
-
-        // Inner dark bevel
-        guiGraphics.fill(x1, y1, x2, y2, 0xFF5A5A5A);
+        // Outer dark bevel
+        guiGraphics.fill(x1 - 1, y1 - 1, x2 + 1, y2 + 1, 0xFF5A5A5A);
 
         // Black text field
-        guiGraphics.fill(x1 + 1, y1 + 1, x2 - 1, y2 - 1, 0xFF000000);
+        guiGraphics.fill(x1, y1, x2, y2, 0xFF000000);
     }
 
     private void drawTargetPreview(GuiGraphics guiGraphics) {
