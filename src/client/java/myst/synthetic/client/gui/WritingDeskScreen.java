@@ -58,14 +58,14 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
 
     private static final int SURFACE_OFFSET_X = 58;
     private static final int SURFACE_X = 0;
-    private static final int SURFACE_Y = 19;
+    private static final int SURFACE_Y = 20;
     private static final int SURFACE_PAGE_WIDTH = 156;
-    private static final int SURFACE_HEIGHT = 167;
+    private static final int SURFACE_HEIGHT = 166;
 
     private static final int SCROLLBAR_X = 156;
-    private static final int SCROLLBAR_Y = 19;
+    private static final int SCROLLBAR_Y = 20;
     private static final int SCROLLBAR_WIDTH = 20;
-    private static final int SCROLLBAR_HEIGHT = 167;
+    private static final int SCROLLBAR_HEIGHT = 166;
 
     private static final int PAGE_WIDTH = 30;
     private static final int PAGE_HEIGHT = 40;
@@ -81,7 +81,7 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
     private static final int SEARCH_BUTTON_X = 58;
     private static final int SEARCH_BOX_X = 95;
     private static final int SEARCH_BOX_Y = 1;
-    private static final int SEARCH_BOX_W = 130;
+    private static final int SEARCH_BOX_W = 139;
     private static final int SEARCH_BOX_H = 16;
 
     private static final int TITLE_BOX_X = DESK_PANEL_X + 28;
