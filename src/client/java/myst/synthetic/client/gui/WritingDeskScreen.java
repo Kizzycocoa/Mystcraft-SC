@@ -160,6 +160,22 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
     }
 
     @Override
+    protected void renderSearchGhostText(GuiGraphics guiGraphics) {
+        if (this.searchBox == null || !this.searchBox.getValue().isEmpty()) {
+            return;
+        }
+
+        guiGraphics.drawString(
+                this.font,
+                "Search...",
+                this.leftPos + SEARCH_BOX_X + 4,
+                this.topPos + SEARCH_BOX_Y + 4,
+                0xFF707070,
+                false
+        );
+    }
+
+    @Override
     public void containerTick() {
         super.containerTick();
         this.pullTitleFromTargetIfNeeded();
