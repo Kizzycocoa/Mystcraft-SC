@@ -13,4 +13,4 @@ if %errorlevel%==0 (
 )
 
 git commit -m "Auto snapshot %d% %t%"
-git push
+git push --force
