@@ -11,18 +11,18 @@ public final class MystcraftPageSymbols {
 
 // COLOUR MODIFIERS
 
-    public static final PageSymbol RECOLOR_CLOUD = register("recolor_cloud", "symbol.mystcraft-sc.recolor_cloud", "Mystcraft", "color/cloud", 1, "Image","Entropy","Believe","Weave",0);
-    public static final PageSymbol RECOLOR_CLOUD_NAT = register("recolor_cloud_nat", "symbol.mystcraft-sc.recolor_cloud_nat", "Mystcraft", "color/cloud", 1, "Image","Entropy","Believe","Nature",0);
-    public static final PageSymbol RECOLOR_FOG = register("recolor_fog", "symbol.mystcraft-sc.recolor_fog", "Mystcraft", "color/fog", 1, "Image","Entropy","Explore","Weave",0);
-    public static final PageSymbol RECOLOR_FOG_NAT = register("recolor_fog_nat", "symbol.mystcraft-sc.recolor_fog_nat", "Mystcraft", "color/fog", 1, "Image","Entropy","Explore","Nature",0);
-    public static final PageSymbol RECOLOR_FOLIAGE = register("recolor_foliage", "symbol.mystcraft-sc.recolor_foliage", "Mystcraft", "color/foliage", 1, "Image","Growth","Elevate","Weave",0);
-    public static final PageSymbol RECOLOR_FOLIAGE_NAT = register("recolor_foliage_nat", "symbol.mystcraft-sc.recolor_foliage_nat", "Mystcraft", "color/foliage", 1, "Image","Growth","Elevate","Nature",0);
-    public static final PageSymbol RECOLOR_GRASS = register("recolor_grass", "symbol.mystcraft-sc.recolor_grass", "Mystcraft", "color/grass", 1, "Image","Growth","Resilience","Weave",0);
-    public static final PageSymbol RECOLOR_GRASS_NAT = register("recolor_grass_nat", "symbol.mystcraft-sc.recolor_grass_nat", "Mystcraft", "color/grass", 1, "Image","Growth","Resilience","Nature",0);
-    public static final PageSymbol RECOLOR_SKY = register("recolor_sky", "symbol.mystcraft-sc.recolor_sky", "Mystcraft", "color/sky", 1, "Image","Celestial","Harmony","Weave",0);
-    public static final PageSymbol RECOLOR_SKY_NAT = register("recolor_sky_nat", "symbol.mystcraft-sc.recolor_sky_nat", "Mystcraft", "color/sky", 1, "Image","Celestial","Harmony","Nature",0);
-    public static final PageSymbol RECOLOR_NIGHT_SKY = register("recolor_night_sky", "symbol.mystcraft-sc.recolor_night_sky", "Mystcraft", "color/sky", 1, "Image","Celestial","Contradict","Weave",0);
-    public static final PageSymbol RECOLOR_NIGHT_SKY_NAT = register("recolor_night_sky_nat", "symbol.mystcraft-sc.recolor_night_sky_nat", "Mystcraft:SC", "color/sky", 1, "Image","Celestial","Contradict","Nature",0);
+    public static final PageSymbol RECOLOR_CLOUD = register("recolor_cloud", "symbol.mystcraft-sc.recolor_cloud", "Mystcraft", "recolor", 1, "Image","Entropy","Believe","Weave",0);
+    public static final PageSymbol RECOLOR_CLOUD_NAT = register("recolor_cloud_nat", "symbol.mystcraft-sc.recolor_cloud_nat", "Mystcraft", "recolor", 1, "Image","Entropy","Believe","Nature",0);
+    public static final PageSymbol RECOLOR_FOG = register("recolor_fog", "symbol.mystcraft-sc.recolor_fog", "Mystcraft", "recolor", 1, "Image","Entropy","Explore","Weave",0);
+    public static final PageSymbol RECOLOR_FOG_NAT = register("recolor_fog_nat", "symbol.mystcraft-sc.recolor_fog_nat", "Mystcraft", "recolor", 1, "Image","Entropy","Explore","Nature",0);
+    public static final PageSymbol RECOLOR_FOLIAGE = register("recolor_foliage", "symbol.mystcraft-sc.recolor_foliage", "Mystcraft", "recolor", 1, "Image","Growth","Elevate","Weave",0);
+    public static final PageSymbol RECOLOR_FOLIAGE_NAT = register("recolor_foliage_nat", "symbol.mystcraft-sc.recolor_foliage_nat", "Mystcraft", "recolor", 1, "Image","Growth","Elevate","Nature",0);
+    public static final PageSymbol RECOLOR_GRASS = register("recolor_grass", "symbol.mystcraft-sc.recolor_grass", "Mystcraft", "recolor", 1, "Image","Growth","Resilience","Weave",0);
+    public static final PageSymbol RECOLOR_GRASS_NAT = register("recolor_grass_nat", "symbol.mystcraft-sc.recolor_grass_nat", "Mystcraft", "recolor", 1, "Image","Growth","Resilience","Nature",0);
+    public static final PageSymbol RECOLOR_SKY = register("recolor_sky", "symbol.mystcraft-sc.recolor_sky", "Mystcraft", "recolor", 1, "Image","Celestial","Harmony","Weave",0);
+    public static final PageSymbol RECOLOR_SKY_NAT = register("recolor_sky_nat", "symbol.mystcraft-sc.recolor_sky_nat", "Mystcraft", "recolor", 1, "Image","Celestial","Harmony","Nature",0);
+    public static final PageSymbol RECOLOR_NIGHT_SKY = register("recolor_night_sky", "symbol.mystcraft-sc.recolor_night_sky", "Mystcraft", "recolor", 1, "Image","Celestial","Contradict","Weave",0);
+    public static final PageSymbol RECOLOR_NIGHT_SKY_NAT = register("recolor_night_sky_nat", "symbol.mystcraft-sc.recolor_night_sky_nat", "Mystcraft:SC", "recolor", 1, "Image","Celestial","Contradict","Nature",0);
     public static final PageSymbol RECOLOR_WATER = register("recolor_water", "symbol.mystcraft-sc.recolor_water", "Mystcraft", "recolor", 1, "Image","Flow","Constraint","Weave",0);
     public static final PageSymbol RECOLOR_WATER_NAT = register("recolor_water_nat", "symbol.mystcraft-sc.recolor_water_nat", "Mystcraft", "recolor", 1, "Image","Flow","Constraint","Nature",0);
 
@@ -69,24 +69,24 @@ public final class MystcraftPageSymbols {
 //CLOUD CONTROLLERS
 
     public static final PageSymbol CLOUD_DOUBLE = register("cloud_double", "symbol.mystcraft-sc.cloud_double", "More Mystcraft", "biocontrol", 2, "Transform","Motion","Double Cloud Height","Double Cloud Height",0);
-    public static final PageSymbol CLOUD_FULL = register("cloud_full", "symbol.mystcraft-sc.cloud_full", "More Mystcraft", "biocontrol", 2, "Transform","Motion","Full Cloud Height","Full Cloud Height",0);
-    public static final PageSymbol CLOUD_HALF = register("cloud_half", "symbol.mystcraft-sc.cloud_half", "More Mystcraft", "biocontrol", 2, "Transform","Motion","Half Cloud Height","Half Cloud Height",0);
-    public static final PageSymbol CLOUD_ZERO = register("cloud_zero", "symbol.mystcraft-sc.cloud_zero", "More Mystcraft", "biocontrol", 2, "Transform","Motion","Zero Cloud Height","Zero Cloud Height",0);
-    public static final PageSymbol CLOUD_DEEP = register("cloud_deep", "symbol.mystcraft-sc.cloud_deep", "More Mystcraft", "biocontrol", 2, "Transform","Motion","Deep Cloud Height","Deep Cloud Height",0);
+    public static final PageSymbol CLOUD_FULL = register("cloud_full", "symbol.mystcraft-sc.cloud_full", "More Mystcraft", "cloud", 2, "Transform","Motion","Full Cloud Height","Full Cloud Height",0);
+    public static final PageSymbol CLOUD_HALF = register("cloud_half", "symbol.mystcraft-sc.cloud_half", "More Mystcraft", "cloud", 2, "Transform","Motion","Half Cloud Height","Half Cloud Height",0);
+    public static final PageSymbol CLOUD_ZERO = register("cloud_zero", "symbol.mystcraft-sc.cloud_zero", "More Mystcraft", "cloud", 2, "Transform","Motion","Zero Cloud Height","Zero Cloud Height",0);
+    public static final PageSymbol CLOUD_DEEP = register("cloud_deep", "symbol.mystcraft-sc.cloud_deep", "Mystcraft:SC", "cloud", 2, "Transform","Motion","Deep Cloud Height","Deep Cloud Height",0);
 
 // TILTS
 
-    public static final PageSymbol TILT_FULL = register("tilt_full", "symbol.mystcraft-sc.tilt_full", "More Mystcraft", "biocontrol", 2, "Transform","Motion","Full Tilt","Full Tilt",0);
-    public static final PageSymbol TILT_HALF = register("tilt_half", "symbol.mystcraft-sc.tilt_half", "More Mystcraft", "biocontrol", 2, "Transform","Motion","Half Tilt","Half Tilt",0);
-    public static final PageSymbol TILT_Zero = register("tilt_zero", "symbol.mystcraft-sc.tilt_zero", "More Mystcraft", "biocontrol", 2, "Transform","Motion","Zero Tilt","Zero Tilt",0);
+    public static final PageSymbol TILT_FULL = register("tilt_full", "symbol.mystcraft-sc.tilt_full", "More Mystcraft", "modifier/tilt", 2, "Transform","Motion","Full Tilt","Full Tilt",0);
+    public static final PageSymbol TILT_HALF = register("tilt_half", "symbol.mystcraft-sc.tilt_half", "More Mystcraft", "modifier/tilt", 2, "Transform","Motion","Half Tilt","Half Tilt",0);
+    public static final PageSymbol TILT_Zero = register("tilt_zero", "symbol.mystcraft-sc.tilt_zero", "More Mystcraft", "modifier/tilt", 2, "Transform","Motion","Zero Tilt","Zero Tilt",0);
 
 // SIZES
 
-    public static final PageSymbol SIZE_HUGE = register("size_huge", "symbol.mystcraft-sc.size_huge", "More Mystcraft", "biocontrol", 2, "Control","Form","Huge Size","Huge Size",0);
-    public static final PageSymbol SIZE_LARGE = register("size_large", "symbol.mystcraft-sc.size_large", "More Mystcraft", "biocontrol", 2, "Control","Form","Large Size","Large Size",0);
-    public static final PageSymbol SIZE_MEDIUM = register("size_medium", "symbol.mystcraft-sc.size_medium", "More Mystcraft", "biocontrol", 2, "Control","Form","Medium Size","Medium Size",0);
-    public static final PageSymbol SIZE_SMALL = register("size_small", "symbol.mystcraft-sc.size_small", "More Mystcraft", "biocontrol", 2, "Control","Form","Small Size","Small Size",0);
-    public static final PageSymbol SIZE_TINY = register("size_tiny", "symbol.mystcraft-sc.size_tiny", "More Mystcraft", "biocontrol", 2, "Control","Form","Tiny Size","Tiny Size",0);
+    public static final PageSymbol SIZE_HUGE = register("size_huge", "symbol.mystcraft-sc.size_huge", "More Mystcraft", "modifier/size", 2, "Control","Form","Huge Size","Huge Size",0);
+    public static final PageSymbol SIZE_LARGE = register("size_large", "symbol.mystcraft-sc.size_large", "More Mystcraft", "modifier/size", 2, "Control","Form","Large Size","Large Size",0);
+    public static final PageSymbol SIZE_MEDIUM = register("size_medium", "symbol.mystcraft-sc.size_medium", "More Mystcraft", "modifier/size", 2, "Control","Form","Medium Size","Medium Size",0);
+    public static final PageSymbol SIZE_SMALL = register("size_small", "symbol.mystcraft-sc.size_small", "More Mystcraft", "modifier/size", 2, "Control","Form","Small Size","Small Size",0);
+    public static final PageSymbol SIZE_TINY = register("size_tiny", "symbol.mystcraft-sc.size_tiny", "More Mystcraft", "modifier/size", 2, "Control","Form","Tiny Size","Tiny Size",0);
 
 // BIOME CONTROLLERS
 
@@ -302,6 +302,7 @@ public final class MystcraftPageSymbols {
         return PageSymbolRegistry.register(new PageSymbol(
                 Identifier.fromNamespaceAndPath("mystcraft-sc", path),
                 translationKey,
+                category,
                 cardRank == null ? 0 : cardRank,
                 List.of(word1, word2, word3, word4),
                 tested == null ? 0 : tested

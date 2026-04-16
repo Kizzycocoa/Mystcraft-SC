@@ -8,27 +8,49 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
-import myst.synthetic.block.DecayType;
-import myst.synthetic.block.BlockDecay;
-import myst.synthetic.block.property.WoodType;
-import net.minecraft.core.component.DataComponents;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.item.component.CustomData;
 import myst.synthetic.api.hook.LinkPropertyAPI;
+import myst.synthetic.block.BlockBookReceptacle;
+import myst.synthetic.block.BlockCrystal;
+import myst.synthetic.block.BlockDecay;
+import myst.synthetic.block.DecayType;
+import myst.synthetic.block.property.CrystalColor;
+import myst.synthetic.block.property.WoodType;
+import myst.synthetic.component.PortfolioDataComponent;
+import myst.synthetic.item.ItemPortfolio;
 import myst.synthetic.page.Page;
 import myst.synthetic.page.symbol.PageSymbol;
 import myst.synthetic.page.symbol.PageSymbolRegistry;
-import myst.synthetic.block.BlockCrystal;
-import myst.synthetic.block.BlockBookReceptacle;
-import myst.synthetic.block.property.CrystalColor;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.component.BlockItemStateProperties;
+import net.minecraft.world.item.component.CustomData;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 
 public class MystcraftItemGroups {
 
-    private static ItemStack createWoodVariant(ItemStack stack, WoodType wood, boolean top) {
+    private static final List<String> CATEGORY_ORDER = List.of(
+            "color",
+            "recolor",
+            "celestial",
+            "modifier",
+            "terrain",
+            "biome",
+            "weather",
+            "block",
+            "material",
+            "feature",
+            "structure",
+            "population",
+            "effect",
+            "lighting",
+            "option"
+    );
 
+    private static ItemStack createWoodVariant(ItemStack stack, WoodType wood, boolean top) {
         CompoundTag tag = new CompoundTag();
         tag.putString("wood", wood.getSerializedName());
 
@@ -61,6 +83,7 @@ public class MystcraftItemGroups {
                 true
         );
     }
+
     public static ItemStack createSlantBoardVariant(WoodType wood) {
         ItemStack stack = new ItemStack(MystcraftBlocks.SLANT_BOARD_BLOCK);
 
@@ -70,7 +93,6 @@ public class MystcraftItemGroups {
 
         return stack;
     }
-
 
     public static ItemStack createBookstandVariant(WoodType wood) {
         ItemStack stack = new ItemStack(MystcraftBlocks.BOOKSTAND_BLOCK);
@@ -112,6 +134,103 @@ public class MystcraftItemGroups {
         return switch (wood) {
             default -> wood.getSerializedName();
         };
+    }
+
+    private static ItemStack createPortfolio(String name, List<PageSymbol> symbols) {
+        ItemStack stack = new ItemStack(MystcraftItems.PORTFOLIO);
+
+        List<ItemStack> pages = new ArrayList<>();
+        for (PageSymbol symbol : symbols) {
+            pages.add(Page.createSymbolPage(symbol.id()));
+        }
+
+        ItemPortfolio.setData(stack, new PortfolioDataComponent(pages));
+        stack.set(DataComponents.ITEM_NAME, Component.literal(name));
+        return stack;
+    }
+
+    private static String pluralLabelForCategory(String rootCategory) {
+        return switch (rootCategory) {
+            case "color" -> "Colors";
+            case "recolor" -> "Recolors";
+            case "celestial" -> "Celestials";
+            case "modifier" -> "Modifiers";
+            case "terrain" -> "Terrains";
+            case "biome" -> "Biomes";
+            case "weather" -> "Weathers";
+            case "block" -> "Blocks";
+            case "material" -> "Materials";
+            case "feature" -> "Features";
+            case "structure" -> "Structures";
+            case "population" -> "Populations";
+            case "effect" -> "Effects";
+            case "lighting" -> "Lightings";
+            case "option" -> "Options";
+            default -> toTitleCase(rootCategory) + "s";
+        };
+    }
+
+    private static String toTitleCase(String text) {
+        if (text == null || text.isBlank()) {
+            return "";
+        }
+
+        String[] parts = text.replace('_', ' ').replace('-', ' ').split("\\s+");
+        StringBuilder builder = new StringBuilder();
+
+        for (String part : parts) {
+            if (part.isBlank()) {
+                continue;
+            }
+
+            if (!builder.isEmpty()) {
+                builder.append(' ');
+            }
+
+            String lower = part.toLowerCase(Locale.ROOT);
+            builder.append(Character.toUpperCase(lower.charAt(0)));
+            if (lower.length() > 1) {
+                builder.append(lower.substring(1));
+            }
+        }
+
+        return builder.toString();
+    }
+
+    private static List<PageSymbol> getNonDebugSymbolsSorted() {
+        List<PageSymbol> symbols = new ArrayList<>();
+
+        for (PageSymbol symbol : PageSymbolRegistry.values()) {
+            String rootCategory = symbol.rootCategory();
+            if (rootCategory.isBlank() || rootCategory.equals("debug")) {
+                continue;
+            }
+            symbols.add(symbol);
+        }
+
+        symbols.sort(Comparator.comparing(
+                symbol -> symbol.displayName().getString(),
+                String.CASE_INSENSITIVE_ORDER
+        ));
+
+        return symbols;
+    }
+
+    private static List<PageSymbol> getSymbolsForRootCategory(String rootCategory) {
+        List<PageSymbol> symbols = new ArrayList<>();
+
+        for (PageSymbol symbol : PageSymbolRegistry.values()) {
+            if (rootCategory.equals(symbol.rootCategory())) {
+                symbols.add(symbol);
+            }
+        }
+
+        symbols.sort(Comparator.comparing(
+                symbol -> symbol.displayName().getString(),
+                String.CASE_INSENSITIVE_ORDER
+        ));
+
+        return symbols;
     }
 
     public static final CreativeModeTab MYSTCRAFT_COMMON = Registry.register(
@@ -158,34 +277,33 @@ public class MystcraftItemGroups {
                         for (CrystalColor color : CrystalColor.values()) {
                             output.accept(createCrystalVariant(color));
                         }
+
                         for (CrystalColor color : CrystalColor.values()) {
                             output.accept(createBookReceptacleVariant(color));
                         }
 
                         for (DecayType type : DecayType.values()) {
-
                             ItemStack stack = new ItemStack(MystcraftBlocks.BLOCKDECAY);
 
                             stack.set(
-                                    net.minecraft.core.component.DataComponents.BLOCK_STATE,
-                                    net.minecraft.world.item.component.BlockItemStateProperties.EMPTY
-                                            .with(BlockDecay.DECAY, type)
+                                    DataComponents.BLOCK_STATE,
+                                    BlockItemStateProperties.EMPTY.with(BlockDecay.DECAY, type)
                             );
 
                             output.accept(stack);
                         }
+
                         output.accept(MystcraftBlocks.STARFISSURE);
                     })
                     .build()
     );
-
 
     public static final CreativeModeTab MYSTCRAFT_PAGES = Registry.register(
             BuiltInRegistries.CREATIVE_MODE_TAB,
             Identifier.fromNamespaceAndPath("mystcraft-sc", "pages"),
             FabricItemGroup.builder()
                     .title(Component.translatable("itemGroup.mystcraft-sc.pages"))
-                    .icon(() -> new ItemStack(MystcraftItems.AGEBOOK)) // swap to AGEBOOK later if desired
+                    .icon(() -> new ItemStack(MystcraftItems.AGEBOOK))
                     .displayItems((parameters, output) -> {
                         output.accept(Page.createPage());
                         output.accept(Page.createLinkPage());
@@ -194,6 +312,38 @@ public class MystcraftItemGroups {
                         output.accept(Page.createLinkPage(LinkPropertyAPI.FLAG_INTRA_LINKING));
                         output.accept(Page.createLinkPage(LinkPropertyAPI.FLAG_INTRA_LINKING_ONLY));
                         output.accept(Page.createLinkPage(LinkPropertyAPI.FLAG_MAINTAIN_MOMENTUM));
+
+                        List<PageSymbol> allSymbols = getNonDebugSymbolsSorted();
+                        if (!allSymbols.isEmpty()) {
+                            output.accept(createPortfolio("All Symbols", allSymbols));
+                        }
+
+                        for (String rootCategory : CATEGORY_ORDER) {
+                            List<PageSymbol> symbols = getSymbolsForRootCategory(rootCategory);
+                            if (!symbols.isEmpty()) {
+                                output.accept(createPortfolio("All " + pluralLabelForCategory(rootCategory), symbols));
+                            }
+                        }
+
+                        List<String> unorderedCategories = new ArrayList<>();
+                        for (PageSymbol symbol : PageSymbolRegistry.values()) {
+                            String rootCategory = symbol.rootCategory();
+                            if (rootCategory.isBlank() || rootCategory.equals("debug")) {
+                                continue;
+                            }
+                            if (!CATEGORY_ORDER.contains(rootCategory) && !unorderedCategories.contains(rootCategory)) {
+                                unorderedCategories.add(rootCategory);
+                            }
+                        }
+
+                        unorderedCategories.sort(String.CASE_INSENSITIVE_ORDER);
+
+                        for (String rootCategory : unorderedCategories) {
+                            List<PageSymbol> symbols = getSymbolsForRootCategory(rootCategory);
+                            if (!symbols.isEmpty()) {
+                                output.accept(createPortfolio("All " + pluralLabelForCategory(rootCategory), symbols));
+                            }
+                        }
 
                         for (PageSymbol symbol : PageSymbolRegistry.values()) {
                             output.accept(Page.createSymbolPage(symbol.id()));

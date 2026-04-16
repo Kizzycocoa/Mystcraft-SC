@@ -1,5 +1,6 @@
 package myst.synthetic;
 
+import myst.synthetic.menu.BookBinderMenu;
 import myst.synthetic.menu.DisplayContainerMenu;
 import myst.synthetic.menu.FolderMenu;
 import myst.synthetic.menu.InkMixerMenu;
@@ -41,6 +42,12 @@ public final class MystcraftMenus {
             BuiltInRegistries.MENU,
             Identifier.fromNamespaceAndPath("mystcraft-sc", "writing_desk"),
             new MenuType<>(WritingDeskMenu::new, FeatureFlags.DEFAULT_FLAGS)
+    );
+
+    public static final MenuType<BookBinderMenu> BOOK_BINDER = Registry.register(
+            BuiltInRegistries.MENU,
+            Identifier.fromNamespaceAndPath("mystcraft-sc", "book_binder"),
+            new MenuType<>(BookBinderMenu::new, FeatureFlags.DEFAULT_FLAGS)
     );
 
     private MystcraftMenus() {

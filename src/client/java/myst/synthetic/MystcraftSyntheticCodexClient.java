@@ -1,6 +1,7 @@
 package myst.synthetic;
 
 import myst.synthetic.block.entity.BlockEntityBookReceptacle;
+import myst.synthetic.client.gui.BookBinderScreen;
 import myst.synthetic.client.gui.FolderScreen;
 import myst.synthetic.client.gui.InkMixerScreen;
 import myst.synthetic.client.gui.LinkBookScreen;
@@ -42,6 +43,7 @@ public class MystcraftSyntheticCodexClient implements ClientModInitializer {
 		ComponentTooltipAppenderRegistry.addAfter(DataComponents.DAMAGE, MystcraftDataComponents.PAGE_DATA);
 		ComponentTooltipAppenderRegistry.addAfter(DataComponents.CUSTOM_NAME, MystcraftDataComponents.FOLDER_DATA);
 		ComponentTooltipAppenderRegistry.addAfter(DataComponents.CUSTOM_NAME, MystcraftDataComponents.PORTFOLIO_DATA);
+		ComponentTooltipAppenderRegistry.addAfter(DataComponents.CUSTOM_NAME, MystcraftDataComponents.AGEBOOK_DATA);
 
 		BlockEntityRenderers.register(MystcraftBlockEntities.STAR_FISSURE, StarFissureBlockEntityRenderer::new);
 		BlockEntityRenderers.register(MystcraftBlockEntities.SLANT_BOARD, SlantBoardBlockEntityRenderer::new);
@@ -105,6 +107,7 @@ public class MystcraftSyntheticCodexClient implements ClientModInitializer {
 		MenuScreens.register(MystcraftMenus.FOLDER, FolderScreen::new);
 		MenuScreens.register(MystcraftMenus.PORTFOLIO, PortfolioScreen::new);
 		MenuScreens.register(MystcraftMenus.WRITING_DESK, WritingDeskScreen::new);
+		MenuScreens.register(MystcraftMenus.BOOK_BINDER, BookBinderScreen::new);
 
 		BlockEntityRenderers.register(
 				MystcraftBlockEntities.BOOK_RECEPTACLE,

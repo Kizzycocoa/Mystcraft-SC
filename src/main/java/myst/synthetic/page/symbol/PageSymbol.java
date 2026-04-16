@@ -9,6 +9,7 @@ import java.util.List;
 public record PageSymbol(
         Identifier id,
         @Nullable String translationKey,
+        String category,
         int cardRank,
         List<String> poemWords,
         int tested
@@ -16,6 +17,12 @@ public record PageSymbol(
 
     public PageSymbol {
         poemWords = List.copyOf(poemWords);
+        category = category == null ? "" : category;
+    }
+
+    public String rootCategory() {
+        int slash = category.indexOf('/');
+        return slash >= 0 ? category.substring(0, slash) : category;
     }
 
     public boolean hasPoem() {

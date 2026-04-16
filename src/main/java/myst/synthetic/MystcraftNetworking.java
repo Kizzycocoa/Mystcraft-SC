@@ -3,8 +3,12 @@ package myst.synthetic;
 import myst.synthetic.block.entity.BlockEntityDisplayContainer;
 import myst.synthetic.linking.LinkController;
 import myst.synthetic.linking.LinkOptions;
+import myst.synthetic.menu.BookBinderMenu;
+import myst.synthetic.menu.WritingDeskMenu;
+import myst.synthetic.network.BookBinderTitlePayload;
 import myst.synthetic.network.DisplayContainerExtractPayload;
 import myst.synthetic.network.DisplayContainerInsertPayload;
+import myst.synthetic.network.LinkBookBookmarkExtractPayload;
 import myst.synthetic.network.LinkBookUsePayload;
 import myst.synthetic.network.WritingDeskTitlePayload;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
@@ -15,9 +19,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
-import myst.synthetic.menu.WritingDeskMenu;
 import myst.synthetic.item.BookBookmarkUtil;
-import myst.synthetic.network.LinkBookBookmarkExtractPayload;
 
 public final class MystcraftNetworking {
 
@@ -30,6 +32,7 @@ public final class MystcraftNetworking {
         PayloadTypeRegistry.playC2S().register(DisplayContainerInsertPayload.ID, DisplayContainerInsertPayload.CODEC);
         PayloadTypeRegistry.playC2S().register(LinkBookBookmarkExtractPayload.ID, LinkBookBookmarkExtractPayload.CODEC);
         PayloadTypeRegistry.playC2S().register(WritingDeskTitlePayload.ID, WritingDeskTitlePayload.CODEC);
+        PayloadTypeRegistry.playC2S().register(BookBinderTitlePayload.ID, BookBinderTitlePayload.CODEC);
 
         ServerPlayNetworking.registerGlobalReceiver(LinkBookUsePayload.ID, (payload, context) -> {
             var player = context.player();
@@ -64,6 +67,7 @@ public final class MystcraftNetworking {
                 LinkController.travelEntity(player.level(), player, info);
             });
         });
+
         ServerPlayNetworking.registerGlobalReceiver(LinkBookBookmarkExtractPayload.ID, (payload, context) -> {
             var player = context.player();
 
@@ -88,7 +92,6 @@ public final class MystcraftNetworking {
             });
         });
 
-
         ServerPlayNetworking.registerGlobalReceiver(WritingDeskTitlePayload.ID, (payload, context) -> {
             var player = context.player();
 
@@ -107,6 +110,30 @@ public final class MystcraftNetworking {
                 }
 
                 desk.setTargetTitle(player, payload.title());
+                player.containerMenu.broadcastChanges();
+                player.inventoryMenu.broadcastChanges();
+            });
+        });
+
+        ServerPlayNetworking.registerGlobalReceiver(BookBinderTitlePayload.ID, (payload, context) -> {
+            var player = context.player();
+
+            context.server().execute(() -> {
+                if (!(player.containerMenu instanceof BookBinderMenu menu)) {
+                    return;
+                }
+
+                if (menu.containerId != payload.containerId()) {
+                    return;
+                }
+
+                var binder = menu.getBinderBlockEntity();
+                if (binder == null || !binder.stillValid(player)) {
+                    return;
+                }
+
+                binder.setBookTitle(payload.title());
+                menu.updateCraftResult();
                 player.containerMenu.broadcastChanges();
                 player.inventoryMenu.broadcastChanges();
             });
