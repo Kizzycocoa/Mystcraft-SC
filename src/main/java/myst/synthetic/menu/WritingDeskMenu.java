@@ -149,11 +149,10 @@ public class WritingDeskMenu extends AbstractContainerMenu {
     }
 
     public int getPreviewScroll() {
-        return this.previewScroll;
+        return 0;
     }
 
     public void setPreviewScroll(int previewScroll) {
-        this.previewScroll = Math.max(0, previewScroll);
     }
 
     public List<ItemStack> getTargetPages(Player player) {

@@ -107,6 +107,8 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
     private static final int PREVIEW_RIGHT_ARROW_X = PREVIEW_X + PREVIEW_W - PREVIEW_ARROW_W;
     private static final int PREVIEW_ARROW_Y = PREVIEW_Y;
 
+    private int previewScroll = 0;
+
     private static final int INK_METER_X = DESK_PANEL_X + 132;
     private static final int INK_METER_Y = DESK_PANEL_Y + 7;
     private static final int INK_METER_W = 16;
@@ -571,12 +573,17 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
 
         if (this.minecraft != null && this.minecraft.gameMode != null) {
             if (this.isOverPreviewLeftArrow(mouseX, mouseY)) {
-                this.minecraft.gameMode.handleInventoryButtonClick(this.menu.containerId, WritingDeskMenu.BUTTON_PREVIEW_SCROLL_LEFT);
+                if (this.previewScroll > 0) {
+                    this.previewScroll--;
+                }
                 return true;
             }
 
             if (this.isOverPreviewRightArrow(mouseX, mouseY)) {
-                this.minecraft.gameMode.handleInventoryButtonClick(this.menu.containerId, WritingDeskMenu.BUTTON_PREVIEW_SCROLL_RIGHT);
+                int max = this.getPreviewMaxScroll();
+                if (this.previewScroll < max) {
+                    this.previewScroll++;
+                }
                 return true;
             }
 
@@ -634,7 +641,7 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
             return false;
         }
 
-        return !this.menu.getTargetPages(this.minecraft.player).isEmpty();
+        return !this.getPreviewEntries().isEmpty();
     }
 
     private boolean targetHasSinglePagePreview() {
@@ -642,10 +649,7 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
     }
 
     private int getPreviewPageCount() {
-        if (this.minecraft == null || this.minecraft.player == null) {
-            return 0;
-        }
-        return this.menu.getTargetPages(this.minecraft.player).size();
+        return this.getPreviewEntries().size();
     }
 
     private boolean isOverPreviewLeftArrow(int mouseX, int mouseY) {
@@ -663,10 +667,6 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
     }
 
     private int getHoveredPreviewIndex(int mouseX, int mouseY) {
-        if (this.minecraft == null || this.minecraft.player == null) {
-            return -1;
-        }
-
         if (!this.targetHasScrollablePreview()) {
             return -1;
         }
@@ -680,9 +680,9 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
             return -1;
         }
 
-        int start = this.menu.getPreviewScroll();
-        int count = this.getPreviewPageCount();
-        int shown = Math.min(PREVIEW_VISIBLE_COUNT, Math.max(0, count - start));
+        List<ItemStack> entries = this.getPreviewEntries();
+        int start = this.previewScroll;
+        int shown = Math.min(this.getPreviewVisibleCount(), Math.max(0, entries.size() - start));
 
         int drawX = clipLeft + 1;
         int drawY = clipTop + 4;
@@ -702,6 +702,49 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
         NORMAL,
         ACTIVE,
         INACTIVE
+    }
+
+    private boolean targetHasFolderPreview() {
+        ItemStack target = this.menu.getTargetStack();
+        return !target.isEmpty() && target.is(myst.synthetic.MystcraftItems.FOLDER);
+    }
+
+    private List<ItemStack> getPreviewEntries() {
+        if (this.minecraft == null || this.minecraft.player == null) {
+            return List.of();
+        }
+
+        ItemStack target = this.menu.getTargetStack();
+        if (target.isEmpty()) {
+            return List.of();
+        }
+
+        if (target.is(myst.synthetic.MystcraftItems.FOLDER)) {
+            List<ItemStack> entries = new ArrayList<>();
+            var slots = myst.synthetic.item.ItemFolder.createInventory(target);
+            for (ItemStack slot : slots) {
+                entries.add(slot.copy());
+            }
+            return entries;
+        }
+
+        return this.menu.getTargetPages(this.minecraft.player);
+    }
+
+    private int getPreviewVisibleCount() {
+        if (this.targetHasFolderPreview()) {
+            return 3;
+        }
+        return PREVIEW_VISIBLE_COUNT;
+    }
+
+    private int getPreviewMaxScroll() {
+        int size = this.getPreviewEntries().size();
+        return Math.max(0, size - this.getPreviewVisibleCount());
+    }
+
+    private void clampPreviewScroll() {
+        this.previewScroll = Mth.clamp(this.previewScroll, 0, this.getPreviewMaxScroll());
     }
 
     private int getStateU(int baseU, int width, TabVisualState state) {
@@ -1096,6 +1139,8 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
             return;
         }
 
+        this.clampPreviewScroll();
+
         int clipLeft = this.leftPos + PREVIEW_X;
         int clipTop = this.topPos + PREVIEW_Y;
         int clipRight = clipLeft + PREVIEW_W;
@@ -1118,9 +1163,9 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
 
         // Scrollable strip mode
         if (this.targetHasScrollablePreview()) {
-            List<ItemStack> pages = this.menu.getTargetPages(this.minecraft.player);
-            int start = this.menu.getPreviewScroll();
-            int shown = Math.min(PREVIEW_VISIBLE_COUNT, Math.max(0, pages.size() - start));
+            List<ItemStack> entries = this.getPreviewEntries();
+            int start = this.previewScroll;
+            int shown = Math.min(this.getPreviewVisibleCount(), Math.max(0, entries.size() - start));
 
             int contentLeft = clipLeft + PREVIEW_ARROW_W;
             int contentRight = clipRight - PREVIEW_ARROW_W;
@@ -1130,16 +1175,13 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
             guiGraphics.enableScissor(contentLeft, clipTop, contentRight, clipBottom);
 
             for (int i = 0; i < shown; i++) {
-                ItemStack page = pages.get(start + i);
-                if (page.isEmpty()) {
-                    continue;
-                }
+                ItemStack entry = entries.get(start + i);
 
                 myst.synthetic.client.render.PageCardRenderer.drawPageCard(
                         guiGraphics,
                         drawX + i * PREVIEW_PAGE_SPACING,
                         drawY,
-                        page,
+                        entry,
                         false,
                         false
                 );
@@ -1147,8 +1189,8 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
 
             guiGraphics.disableScissor();
 
-            boolean canLeft = this.menu.getPreviewScroll() > 0;
-            boolean canRight = this.menu.getPreviewScroll() + PREVIEW_VISIBLE_COUNT < pages.size();
+            boolean canLeft = this.previewScroll > 0;
+            boolean canRight = this.previewScroll + this.getPreviewVisibleCount() < entries.size();
 
             int leftX = this.leftPos + PREVIEW_LEFT_ARROW_X;
             int rightX = this.leftPos + PREVIEW_RIGHT_ARROW_X;
