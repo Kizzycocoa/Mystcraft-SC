@@ -262,6 +262,32 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
             return;
         }
 
+        ItemStack activeStorage = this.menu.getTabStack(this.menu.getActiveTab());
+
+        // Folder: preserve real ordered slots, including empties
+        if (activeStorage.is(myst.synthetic.MystcraftItems.FOLDER)) {
+            var slots = myst.synthetic.item.ItemFolder.createInventory(activeStorage);
+
+            for (int i = 0; i < slots.size(); i++) {
+                ItemStack stack = slots.get(i);
+
+                if (stack.isEmpty()) {
+                    built.add(new DisplayEntry(ItemStack.EMPTY, i, 1, "__folder_empty__"));
+                    continue;
+                }
+
+                String searchName = this.getSearchName(stack);
+                if (!normalizedSearch.isEmpty() && !normalize(searchName).contains(normalizedSearch)) {
+                    continue;
+                }
+
+                built.add(new DisplayEntry(stack.copy(), i, 1, searchName));
+            }
+
+            return;
+        }
+
+        // Default behavior for non-folder tab items
         List<ItemStack> pages = this.menu.getActiveTabPages(this.minecraft.player);
         for (int i = 0; i < pages.size(); i++) {
             ItemStack stack = pages.get(i);
@@ -288,6 +314,27 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
                 built.add(new DisplayEntry(stack.copy(), i, 1, searchName));
             }
         }
+    }
+
+    @Override
+    protected List<PageSurfaceRenderer.SurfaceEntry> toSurfaceEntries() {
+        List<PageSurfaceRenderer.SurfaceEntry> entries = new ArrayList<>(this.displayEntries.size());
+
+        for (DisplayEntry entry : this.displayEntries) {
+            boolean placeholder = entry.absoluteIndex < 0 || "__folder_empty__".equals(entry.searchName);
+
+            entries.add(new PageSurfaceRenderer.SurfaceEntry(
+                    entry.absoluteIndex,
+                    entry.stack.copy(),
+                    placeholder,
+                    entry.count,
+                    entry.searchName,
+                    Math.round(entry.x),
+                    Math.round(entry.y)
+            ));
+        }
+
+        return entries;
     }
 
     @Override
@@ -720,11 +767,24 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
         }
 
         if (target.is(myst.synthetic.MystcraftItems.FOLDER)) {
-            List<ItemStack> entries = new ArrayList<>();
             var slots = myst.synthetic.item.ItemFolder.createInventory(target);
-            for (ItemStack slot : slots) {
-                entries.add(slot.copy());
+            List<ItemStack> entries = new ArrayList<>();
+
+            int lastNonEmpty = -1;
+            for (int i = 0; i < slots.size(); i++) {
+                if (!slots.get(i).isEmpty()) {
+                    lastNonEmpty = i;
+                }
             }
+
+            // Legacy-like behavior: expose ordered slots through the last used slot,
+            // plus one extra blank slot for insertion/preview.
+            int visibleSize = Math.min(slots.size(), Math.max(1, lastNonEmpty + 2));
+
+            for (int i = 0; i < visibleSize; i++) {
+                entries.add(slots.get(i).copy());
+            }
+
             return entries;
         }
 
@@ -1176,13 +1236,14 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
 
             for (int i = 0; i < shown; i++) {
                 ItemStack entry = entries.get(start + i);
+                boolean placeholder = entry.isEmpty();
 
                 myst.synthetic.client.render.PageCardRenderer.drawPageCard(
                         guiGraphics,
                         drawX + i * PREVIEW_PAGE_SPACING,
                         drawY,
                         entry,
-                        false,
+                        placeholder,
                         false
                 );
             }
