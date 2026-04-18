@@ -103,7 +103,7 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
     private static final int PREVIEW_PAGE_HEIGHT = 44;
     private static final int PREVIEW_PAGE_X = 2;
     private static final int PREVIEW_PAGE_Y = 3;
-    private static final int PREVIEW_PAGE_SPACING = 35;
+    private static final int PREVIEW_PAGE_SPACING = 33;
     private static final int PREVIEW_VISIBLE_COUNT = 3;
 
     private static final int PREVIEW_ARROW_W = 10;
@@ -862,6 +862,21 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
         return !target.isEmpty() && target.is(myst.synthetic.MystcraftItems.FOLDER);
     }
 
+    private int getFolderPreviewLastFilledIndex(ItemStack folder) {
+        if (folder.isEmpty() || !folder.is(myst.synthetic.MystcraftItems.FOLDER)) {
+            return -1;
+        }
+
+        var slots = myst.synthetic.item.ItemFolder.createInventory(folder);
+        int lastFilled = -1;
+        for (int i = 0; i < slots.size(); i++) {
+            if (!slots.get(i).isEmpty()) {
+                lastFilled = i;
+            }
+        }
+        return lastFilled;
+    }
+
     private List<ItemStack> getPreviewEntries() {
         if (this.minecraft == null || this.minecraft.player == null) {
             return List.of();
@@ -874,20 +889,9 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
 
         if (target.is(myst.synthetic.MystcraftItems.FOLDER)) {
             var slots = myst.synthetic.item.ItemFolder.createInventory(target);
-            List<ItemStack> entries = new ArrayList<>();
+            List<ItemStack> entries = new ArrayList<>(slots.size());
 
-            int lastNonEmpty = -1;
             for (int i = 0; i < slots.size(); i++) {
-                if (!slots.get(i).isEmpty()) {
-                    lastNonEmpty = i;
-                }
-            }
-
-            // Legacy-like behavior: expose ordered slots through the last used slot,
-            // plus one extra blank slot for insertion/preview.
-            int visibleSize = Math.min(slots.size(), Math.max(1, lastNonEmpty + 2));
-
-            for (int i = 0; i < visibleSize; i++) {
                 entries.add(slots.get(i).copy());
             }
 
@@ -905,6 +909,18 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
     }
 
     private int getPreviewMaxScroll() {
+        ItemStack target = this.menu.getTargetStack();
+
+        if (target.is(myst.synthetic.MystcraftItems.FOLDER)) {
+            int lastFilled = this.getFolderPreviewLastFilledIndex(target);
+            int hardMax = Math.max(0, myst.synthetic.component.FolderDataComponent.MAX_SLOTS - PREVIEW_VISIBLE_COUNT);
+
+            // Legacy-like behavior:
+            // allow scrolling until the last filled page is in the first visible slot,
+            // giving up to 2 blank slots after it in the 3-page preview.
+            return Math.max(0, Math.min(hardMax, lastFilled));
+        }
+
         int size = this.getPreviewEntries().size();
         return Math.max(0, size - this.getPreviewVisibleCount());
     }
@@ -1358,11 +1374,22 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
             int start = this.previewScroll;
             int shown = Math.min(PREVIEW_VISIBLE_COUNT, Math.max(0, entries.size() - start));
 
+            ItemStack targetStack = this.menu.getTargetStack();
+            boolean folderPreview = targetStack.is(myst.synthetic.MystcraftItems.FOLDER);
+            int lastFilled = folderPreview ? this.getFolderPreviewLastFilledIndex(targetStack) : -1;
+
             guiGraphics.enableScissor(left + 1, top, right - 1, bottom);
 
             for (int i = 0; i < shown; i++) {
-                ItemStack entry = entries.get(start + i);
-                boolean placeholder = entry.isEmpty();
+                int absolute = start + i;
+                ItemStack entry = entries.get(absolute);
+
+                boolean placeholder = false;
+                if (folderPreview && entry.isEmpty()) {
+                    // Real empty slots before/within the used region are dark.
+                    // Trailing insertion spaces after the last filled page are blank.
+                    placeholder = absolute <= lastFilled;
+                }
 
                 this.drawPreviewPage(
                         guiGraphics,
@@ -1377,12 +1404,11 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
             guiGraphics.disableScissor();
 
             boolean canLeft = this.previewScroll > 0;
-            boolean canRight = this.previewScroll + PREVIEW_VISIBLE_COUNT < entries.size();
+            boolean canRight = this.previewScroll < this.getPreviewMaxScroll();
 
             int leftColor = canLeft ? 0xAA000000 : 0x33000000;
             int rightColor = canRight ? 0xAA000000 : 0x33000000;
 
-            // Legacy-style translucent side overlays, full preview height
             guiGraphics.fill(
                     left + PREVIEW_LEFT_ARROW_X - PREVIEW_X,
                     top,
