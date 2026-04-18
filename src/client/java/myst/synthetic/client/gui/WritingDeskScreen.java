@@ -99,10 +99,14 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
     private static final int PREVIEW_W = 101;
     private static final int PREVIEW_H = 50;
 
-    private static final int PREVIEW_PAGE_SPACING = 30;
+    private static final int PREVIEW_PAGE_WIDTH = 33;
+    private static final int PREVIEW_PAGE_HEIGHT = 44;
+    private static final int PREVIEW_PAGE_X = 2;
+    private static final int PREVIEW_PAGE_Y = 3;
+    private static final int PREVIEW_PAGE_SPACING = 35;
     private static final int PREVIEW_VISIBLE_COUNT = 3;
 
-    private static final int PREVIEW_ARROW_W = 9;
+    private static final int PREVIEW_ARROW_W = 10;
     private static final int PREVIEW_ARROW_H = PREVIEW_H;
 
     private static final int PREVIEW_LEFT_ARROW_X = PREVIEW_X;
@@ -813,26 +817,33 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
             return -1;
         }
 
-        int clipLeft = this.leftPos + PREVIEW_X + PREVIEW_ARROW_W;
+        int clipLeft = this.leftPos + PREVIEW_X;
         int clipTop = this.topPos + PREVIEW_Y;
-        int clipRight = this.leftPos + PREVIEW_X + PREVIEW_W - PREVIEW_ARROW_W;
+        int clipRight = clipLeft + PREVIEW_W;
         int clipBottom = clipTop + PREVIEW_H;
 
         if (mouseX < clipLeft || mouseX >= clipRight || mouseY < clipTop || mouseY >= clipBottom) {
             return -1;
         }
 
+        int relX = mouseX - clipLeft;
+        int relY = mouseY - clipTop;
+
+        // Legacy behavior: side overlays take precedence over page interaction.
+        if (relX < PREVIEW_ARROW_W || relX >= PREVIEW_W - PREVIEW_ARROW_W) {
+            return -1;
+        }
+
         List<ItemStack> entries = this.getPreviewEntries();
         int start = this.previewScroll;
-        int shown = Math.min(this.getPreviewVisibleCount(), Math.max(0, entries.size() - start));
-
-        int drawX = clipLeft + 1;
-        int drawY = clipTop + 4;
+        int shown = Math.min(PREVIEW_VISIBLE_COUNT, Math.max(0, entries.size() - start));
 
         for (int i = 0; i < shown; i++) {
-            int x = drawX + i * PREVIEW_PAGE_SPACING;
+            int x = PREVIEW_PAGE_X + i * PREVIEW_PAGE_SPACING;
             int absolute = start + i;
-            if (mouseX >= x && mouseX < x + 30 && mouseY >= drawY && mouseY < drawY + 40) {
+
+            if (relX >= x && relX < x + PREVIEW_PAGE_WIDTH
+                    && relY >= PREVIEW_PAGE_Y && relY < PREVIEW_PAGE_Y + PREVIEW_PAGE_HEIGHT) {
                 return absolute;
             }
         }
@@ -1284,6 +1295,26 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
         guiGraphics.fill(x1, y1, x2, y2, 0xFF000000);
     }
 
+    private void drawPreviewPage(GuiGraphics guiGraphics, int x, int y, ItemStack stack, boolean placeholder, boolean hovered) {
+        float scaleX = PREVIEW_PAGE_WIDTH / (float) myst.synthetic.client.render.PageCardRenderer.CARD_WIDTH;
+        float scaleY = PREVIEW_PAGE_HEIGHT / (float) myst.synthetic.client.render.PageCardRenderer.CARD_HEIGHT;
+
+        guiGraphics.pose().pushMatrix();
+        guiGraphics.pose().translate(x, y);
+        guiGraphics.pose().scale(scaleX, scaleY);
+
+        myst.synthetic.client.render.PageCardRenderer.drawPageCard(
+                guiGraphics,
+                0,
+                0,
+                stack,
+                placeholder,
+                hovered
+        );
+
+        guiGraphics.pose().popMatrix();
+    }
+
     private void drawTargetPreview(GuiGraphics guiGraphics) {
         if (this.minecraft == null || this.minecraft.player == null) {
             return;
@@ -1296,22 +1327,27 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
 
         this.clampPreviewScroll();
 
-        int clipLeft = this.leftPos + PREVIEW_X;
-        int clipTop = this.topPos + PREVIEW_Y;
-        int clipRight = clipLeft + PREVIEW_W;
-        int clipBottom = clipTop + PREVIEW_H;
+        int left = this.leftPos + PREVIEW_X;
+        int top = this.topPos + PREVIEW_Y;
+        int right = left + PREVIEW_W;
+        int bottom = top + PREVIEW_H;
+
+        // Legacy background
+        guiGraphics.fill(left, top, right, bottom, 0xAA000000);
 
         // Single-page mode
         if (this.targetHasSinglePagePreview()) {
-            guiGraphics.enableScissor(clipLeft, clipTop, clipRight, clipBottom);
-            myst.synthetic.client.render.PageCardRenderer.drawPageCard(
+            guiGraphics.enableScissor(left + 1, top, right - 1, bottom);
+
+            this.drawPreviewPage(
                     guiGraphics,
-                    clipLeft + 35,
-                    clipTop + 4,
+                    left + 34,
+                    top + PREVIEW_PAGE_Y,
                     target,
                     false,
                     false
             );
+
             guiGraphics.disableScissor();
             return;
         }
@@ -1320,23 +1356,18 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
         if (this.targetHasScrollablePreview()) {
             List<ItemStack> entries = this.getPreviewEntries();
             int start = this.previewScroll;
-            int shown = Math.min(this.getPreviewVisibleCount(), Math.max(0, entries.size() - start));
+            int shown = Math.min(PREVIEW_VISIBLE_COUNT, Math.max(0, entries.size() - start));
 
-            int contentLeft = clipLeft + PREVIEW_ARROW_W;
-            int contentRight = clipRight - PREVIEW_ARROW_W;
-            int drawX = contentLeft + 1;
-            int drawY = clipTop + 4;
-
-            guiGraphics.enableScissor(contentLeft, clipTop, contentRight, clipBottom);
+            guiGraphics.enableScissor(left + 1, top, right - 1, bottom);
 
             for (int i = 0; i < shown; i++) {
                 ItemStack entry = entries.get(start + i);
                 boolean placeholder = entry.isEmpty();
 
-                myst.synthetic.client.render.PageCardRenderer.drawPageCard(
+                this.drawPreviewPage(
                         guiGraphics,
-                        drawX + i * PREVIEW_PAGE_SPACING,
-                        drawY,
+                        left + PREVIEW_PAGE_X + i * PREVIEW_PAGE_SPACING,
+                        top + PREVIEW_PAGE_Y,
                         entry,
                         placeholder,
                         false
@@ -1346,14 +1377,27 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
             guiGraphics.disableScissor();
 
             boolean canLeft = this.previewScroll > 0;
-            boolean canRight = this.previewScroll + this.getPreviewVisibleCount() < entries.size();
+            boolean canRight = this.previewScroll + PREVIEW_VISIBLE_COUNT < entries.size();
 
-            int leftX = this.leftPos + PREVIEW_LEFT_ARROW_X;
-            int rightX = this.leftPos + PREVIEW_RIGHT_ARROW_X;
-            int y = this.topPos + PREVIEW_ARROW_Y;
+            int leftColor = canLeft ? 0xAA000000 : 0x33000000;
+            int rightColor = canRight ? 0xAA000000 : 0x33000000;
 
-            guiGraphics.fill(leftX, y, leftX + PREVIEW_ARROW_W, y + PREVIEW_ARROW_H, canLeft ? 0x40FFFFFF : 0x20000000);
-            guiGraphics.fill(rightX, y, rightX + PREVIEW_ARROW_W, y + PREVIEW_ARROW_H, canRight ? 0x40FFFFFF : 0x20000000);
+            // Legacy-style translucent side overlays, full preview height
+            guiGraphics.fill(
+                    left + PREVIEW_LEFT_ARROW_X - PREVIEW_X,
+                    top,
+                    left + PREVIEW_LEFT_ARROW_X - PREVIEW_X + PREVIEW_ARROW_W,
+                    top + PREVIEW_ARROW_H,
+                    leftColor
+            );
+
+            guiGraphics.fill(
+                    left + PREVIEW_RIGHT_ARROW_X - PREVIEW_X,
+                    top,
+                    left + PREVIEW_RIGHT_ARROW_X - PREVIEW_X + PREVIEW_ARROW_W,
+                    top + PREVIEW_ARROW_H,
+                    rightColor
+            );
         }
     }
 
