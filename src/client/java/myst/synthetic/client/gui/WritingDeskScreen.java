@@ -101,9 +101,9 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
 
     private static final int PREVIEW_PAGE_WIDTH = 33;
     private static final int PREVIEW_PAGE_HEIGHT = 44;
-    private static final int PREVIEW_PAGE_X = 2;
+    private static final int PREVIEW_PAGE_X = 0;
     private static final int PREVIEW_PAGE_Y = 3;
-    private static final int PREVIEW_PAGE_SPACING = 33;
+    private static final int PREVIEW_PAGE_SPACING = 34;
     private static final int PREVIEW_VISIBLE_COUNT = 3;
 
     private static final int PREVIEW_ARROW_W = 10;
