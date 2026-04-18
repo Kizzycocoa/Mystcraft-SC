@@ -30,6 +30,8 @@ import java.util.List;
 
 public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
 
+    private static final Identifier FLUID_TEXTURE =
+            Identifier.fromNamespaceAndPath("mystcraft-sc", "textures/block/fluid.png");
     private static final Identifier SCROLLBAR_TEXTURE =
             Identifier.fromNamespaceAndPath("mystcraft-sc", "textures/gui/scrollbar.png");
 
@@ -166,6 +168,22 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
                     this.pendingTabTooltip,
                     this.pendingTabTooltipX,
                     this.pendingTabTooltipY,
+                    DefaultTooltipPositioner.INSTANCE,
+                    null
+            );
+        }
+
+        if (this.isMouseOverInkMeter(mouseX, mouseY)) {
+            List<ClientTooltipComponent> tooltip = new ArrayList<>();
+            tooltip.add(new ClientTextTooltip(
+                    Component.literal(this.menu.getInkAmount() + "ml / " + BlockEntityDesk.INK_TANK_CAPACITY + "ml").getVisualOrderText()
+            ));
+
+            guiGraphics.renderTooltip(
+                    this.font,
+                    tooltip,
+                    mouseX,
+                    mouseY,
                     DefaultTooltipPositioner.INSTANCE,
                     null
             );
@@ -1345,20 +1363,65 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
         int x2 = x1 + INK_METER_W;
         int y2 = y1 + INK_METER_H;
 
+        // Outer frame
         guiGraphics.fill(x1, y1, x2, y2, 0xFF111111);
+
+        // Inner cavity
+        guiGraphics.fill(x1 + 1, y1 + 1, x2 - 1, y2 - 1, 0xFF000000);
 
         int innerHeight = INK_METER_H - 2;
         int fill = this.menu.getInkFillScaled(innerHeight);
 
-        if (fill > 0) {
-            guiGraphics.fill(
-                    x1 + 1,
-                    y2 - 1 - fill,
-                    x2 - 1,
-                    y2 - 1,
-                    0xFF202020
-            );
+        if (fill <= 0) {
+            return;
         }
+
+        int fillTop = y2 - 1 - fill;
+        int fillBottom = y2 - 1;
+
+        // Clip to the current liquid height.
+        guiGraphics.enableScissor(x1 + 1, fillTop, x2 - 1, fillBottom);
+
+        // Animated fluid texture, reusing the ink mixer style.
+        renderInkFluidTexture(guiGraphics, x1 + 1, fillTop, INK_METER_W - 2, fill);
+
+        // Legacy-faithful darkening over the animated fluid.
+        guiGraphics.fill(x1 + 1, fillTop, x2 - 1, fillBottom, 0x80191919);
+        guiGraphics.fill(x1 + 1, fillTop, x2 - 1, fillBottom, 0x50191919);
+
+        guiGraphics.disableScissor();
+    }
+
+    private void renderInkFluidTexture(GuiGraphics guiGraphics, int x, int y, int width, int height) {
+        int frame = (int) ((System.currentTimeMillis() / 120L) % 32L);
+        int v = frame * 16;
+
+        for (int drawX = 0; drawX < width; drawX += 16) {
+            for (int drawY = 0; drawY < height; drawY += 16) {
+                int w = Math.min(16, width - drawX);
+                int h = Math.min(16, height - drawY);
+
+                guiGraphics.blit(
+                        RenderPipelines.GUI_TEXTURED,
+                        FLUID_TEXTURE,
+                        x + drawX,
+                        y + drawY,
+                        0,
+                        v,
+                        w,
+                        h,
+                        16,
+                        512
+                );
+            }
+        }
+    }
+
+    private boolean isMouseOverInkMeter(int mouseX, int mouseY) {
+        return mouseX >= this.leftPos + INK_METER_X
+                && mouseX < this.leftPos + INK_METER_X + INK_METER_W
+                && mouseY >= this.topPos + INK_METER_Y
+                && mouseY < this.topPos + INK_METER_Y + INK_METER_H;
     }
 
     private void pullTitleFromTarget() {
