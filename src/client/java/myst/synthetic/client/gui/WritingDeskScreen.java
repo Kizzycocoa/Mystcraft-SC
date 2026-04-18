@@ -136,6 +136,8 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         this.pendingTabTooltip = null;
+
+        int previousHovered = this.hoveredFolderOrderedSlot;
         this.hoveredFolderOrderedSlot = -1;
 
         ItemStack activeTabStack = this.menu.getTabStack(this.menu.getActiveTab());
@@ -146,16 +148,14 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
                         && this.searchBox.getValue().isEmpty();
 
         if (folderMode) {
-            int hovered = PageSurfaceRenderer.getHoveredOrderedSlot(
-                    this.leftPos + SURFACE_OFFSET_X,
-                    this.topPos,
-                    mouseX,
-                    mouseY,
-                    this.scroll
-            );
+            int hovered = this.getHoveredOrderedFolderSlot(mouseX, mouseY);
             if (hovered >= 0) {
                 this.hoveredFolderOrderedSlot = hovered;
             }
+        }
+
+        if (previousHovered != this.hoveredFolderOrderedSlot) {
+            this.rebuildDisplayEntries();
         }
 
         super.render(guiGraphics, mouseX, mouseY, partialTick);
@@ -445,6 +445,19 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
 
     @Override
     protected int getMaxScroll() {
+        ItemStack tabStack = this.menu.getTabStack(this.menu.getActiveTab());
+
+        if (tabStack.is(myst.synthetic.MystcraftItems.FOLDER)
+                && !this.sortAlphabetically
+                && this.searchBox != null
+                && this.searchBox.getValue().isEmpty()) {
+
+            int totalSlots = myst.synthetic.item.ItemFolder.createInventory(tabStack).size();
+            int rows = (totalSlots + PageSurfaceRenderer.COLUMNS - 1) / PageSurfaceRenderer.COLUMNS;
+            int maxBottom = rows * PageSurfaceRenderer.PAGE_Y_STEP;
+            return Math.max(0, maxBottom - SURFACE_HEIGHT);
+        }
+
         int maxBottom = 0;
         for (DisplayEntry entry : this.displayEntries) {
             int bottom = Math.round(entry.y + PAGE_HEIGHT + 6);
@@ -1412,6 +1425,33 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
                 && mouseY < this.topPos + LEFT_ARROW_BOTTOM_Y + LEFT_ARROW_H;
     }
 
+    private int getHoveredOrderedFolderSlot(int mouseX, int mouseY) {
+        int relX = mouseX - (this.leftPos + SURFACE_OFFSET_X);
+        int relY = mouseY - (this.topPos + SURFACE_Y);
+
+        if (relX < 0 || relY < 0 || relX >= SURFACE_PAGE_WIDTH || relY >= SURFACE_HEIGHT) {
+            return -1;
+        }
+
+        relY += this.scroll;
+
+        int col = relX / PageSurfaceRenderer.PAGE_X_STEP;
+        int row = relY / PageSurfaceRenderer.PAGE_Y_STEP;
+
+        if (col < 0 || col >= PageSurfaceRenderer.COLUMNS || row < 0) {
+            return -1;
+        }
+
+        int localX = relX % PageSurfaceRenderer.PAGE_X_STEP;
+        int localY = relY % PageSurfaceRenderer.PAGE_Y_STEP;
+
+        if (localX >= PAGE_WIDTH || localY >= PAGE_HEIGHT) {
+            return -1;
+        }
+
+        return row * PageSurfaceRenderer.COLUMNS + col;
+    }
+
     private boolean isOverPageArea(int mouseX, int mouseY) {
         int relX = mouseX - (this.leftPos + SURFACE_OFFSET_X);
         int relY = mouseY - (this.topPos + SURFACE_Y);
@@ -1517,6 +1557,41 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
         }
 
         if (!this.isOverPageArea(mouseX, mouseY)) {
+            return false;
+        }
+
+        ItemStack activeStorage = this.menu.getTabStack(this.menu.getActiveTab());
+
+        if (activeStorage.is(myst.synthetic.MystcraftItems.FOLDER)) {
+            DisplayEntry hovered = this.getHoveredEntry(mouseX, mouseY);
+
+            // A-Z/search mode:
+            // clicking a shown page replaces that exact folder slot,
+            // clicking empty area adds to the first free folder slot.
+            if (this.sortAlphabetically || (this.searchBox != null && !this.searchBox.getValue().isEmpty())) {
+                if (hovered != null && hovered.absoluteIndex >= 0) {
+                    this.minecraft.gameMode.handleInventoryButtonClick(
+                            this.menu.containerId,
+                            WritingDeskMenu.BUTTON_PLACE_CARRIED_AT_START + hovered.absoluteIndex
+                    );
+                } else {
+                    this.minecraft.gameMode.handleInventoryButtonClick(
+                            this.menu.containerId,
+                            WritingDeskMenu.BUTTON_ADD_CARRIED_TO_TAB_START + this.menu.getActiveTab()
+                    );
+                }
+                return true;
+            }
+
+            int orderedSlot = this.getHoveredOrderedFolderSlot(mouseX, mouseY);
+            if (orderedSlot >= 0) {
+                this.minecraft.gameMode.handleInventoryButtonClick(
+                        this.menu.containerId,
+                        WritingDeskMenu.BUTTON_PLACE_CARRIED_AT_START + orderedSlot
+                );
+                return true;
+            }
+
             return false;
         }
 

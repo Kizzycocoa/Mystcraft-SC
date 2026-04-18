@@ -246,15 +246,14 @@ public final class DeskItemBehaviors {
             return false;
         }
 
+        // Direct write only applies to a literal page already in the target slot.
         if (target.is(MystcraftItems.PAGE)) {
             Page.setSymbol(target, symbol);
             return true;
         }
 
-        if (target.is(MystcraftItems.FOLDER) || target.is(MystcraftItems.PORTFOLIO)) {
-            return addPage(player, target, Page.createSymbolPage(symbol)).isEmpty();
-        }
-
+        // Folder/portfolio/book acceptor cases must be handled by the desk block entity,
+        // because that path is what consumes paper + ink correctly.
         return false;
     }
 
