@@ -20,6 +20,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.util.Mth;
 
 public class BlockEntityDesk extends BlockEntity implements Container, MenuProvider {
 
@@ -30,10 +31,12 @@ public class BlockEntityDesk extends BlockEntity implements Container, MenuProvi
     public static final int SLOT_TAB_START = 4;
     public static final int TAB_SLOT_COUNT = 25;
     public static final int TOTAL_SLOTS = SLOT_TAB_START + TAB_SLOT_COUNT;
+    public static final int INK_TANK_CAPACITY = 1000;
+    public static final int INK_COST_PER_WRITE = 50;
 
     private NonNullList<ItemStack> items = NonNullList.withSize(TOTAL_SLOTS, ItemStack.EMPTY);
 
-    private boolean hasInk = false;
+    private int inkAmount = 0;
     private int activeTab = 0;
     private int firstVisibleTab = 0;
 
@@ -41,7 +44,7 @@ public class BlockEntityDesk extends BlockEntity implements Container, MenuProvi
         @Override
         public int get(int index) {
             return switch (index) {
-                case WritingDeskMenu.DATA_HAS_INK -> hasInk ? 1 : 0;
+                case WritingDeskMenu.DATA_INK_AMOUNT -> inkAmount;
                 case WritingDeskMenu.DATA_ACTIVE_TAB -> activeTab;
                 case WritingDeskMenu.DATA_FIRST_TAB -> firstVisibleTab;
                 default -> 0;
@@ -51,7 +54,7 @@ public class BlockEntityDesk extends BlockEntity implements Container, MenuProvi
         @Override
         public void set(int index, int value) {
             switch (index) {
-                case WritingDeskMenu.DATA_HAS_INK -> hasInk = value != 0;
+                case WritingDeskMenu.DATA_INK_AMOUNT -> inkAmount = Mth.clamp(value, 0, INK_TANK_CAPACITY);
                 case WritingDeskMenu.DATA_ACTIVE_TAB -> activeTab = clampTab(value);
                 case WritingDeskMenu.DATA_FIRST_TAB -> firstVisibleTab = clampFirstTab(value);
             }
@@ -80,7 +83,15 @@ public class BlockEntityDesk extends BlockEntity implements Container, MenuProvi
     }
 
     public boolean hasInk() {
-        return this.hasInk;
+        return this.inkAmount > 0;
+    }
+
+    public boolean hasEnoughInk() {
+        return this.inkAmount >= INK_COST_PER_WRITE;
+    }
+
+    public int getInkAmount() {
+        return this.inkAmount;
     }
 
     public int getActiveTab() {
@@ -118,6 +129,8 @@ public class BlockEntityDesk extends BlockEntity implements Container, MenuProvi
 
     public boolean writeSymbol(Player player, net.minecraft.resources.Identifier symbol) {
         ItemStack target = this.getTargetStack();
+
+        // If the desk target slot is empty, use one paper to create a blank page there.
         if (target.isEmpty()) {
             ItemStack paper = this.items.get(SLOT_PAPER);
             if (!paper.isEmpty() && paper.is(net.minecraft.world.item.Items.PAPER)) {
@@ -131,18 +144,38 @@ public class BlockEntityDesk extends BlockEntity implements Container, MenuProvi
             }
         }
 
-        if (target.isEmpty() || !this.hasInk) {
+        if (target.isEmpty() || !this.hasEnoughInk()) {
             return false;
         }
 
+        // Writable target path: page already exists and can be written directly.
         boolean changed = DeskItemBehaviors.writeSymbol(player, target, symbol);
-        if (!changed) {
-            return false;
+        if (changed) {
+            this.inkAmount = Math.max(0, this.inkAmount - INK_COST_PER_WRITE);
+            this.setChangedAndSync();
+            return true;
         }
 
-        this.hasInk = false;
-        this.setChangedAndSync();
-        return true;
+        // Acceptor path: create a fresh page from paper and insert it into folder/portfolio/etc.
+        ItemStack paper = this.items.get(SLOT_PAPER);
+        if (!paper.isEmpty() && paper.is(net.minecraft.world.item.Items.PAPER) && DeskItemBehaviors.canAcceptPaper(target)) {
+            ItemStack newPage = myst.synthetic.page.Page.createPage();
+            myst.synthetic.page.Page.setSymbol(newPage, symbol);
+
+            ItemStack returned = DeskItemBehaviors.addPage(player, target, newPage);
+            if (returned.isEmpty()) {
+                paper.shrink(1);
+                if (paper.isEmpty()) {
+                    this.items.set(SLOT_PAPER, ItemStack.EMPTY);
+                }
+
+                this.inkAmount = Math.max(0, this.inkAmount - INK_COST_PER_WRITE);
+                this.setChangedAndSync();
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public ItemStack removePageFromActiveTab(Player player, int index) {
@@ -203,7 +236,8 @@ public class BlockEntityDesk extends BlockEntity implements Container, MenuProvi
     }
 
     private void tryConsumeInkContainer() {
-        if (this.hasInk) {
+        // Legacy behavior: only refill when empty.
+        if (this.inkAmount > 0) {
             return;
         }
 
@@ -223,7 +257,7 @@ public class BlockEntityDesk extends BlockEntity implements Container, MenuProvi
         }
 
         this.putOutput(remaining);
-        this.hasInk = true;
+        this.inkAmount = INK_TANK_CAPACITY;
         this.setChangedAndSync();
     }
 
@@ -279,7 +313,7 @@ public class BlockEntityDesk extends BlockEntity implements Container, MenuProvi
         super.loadAdditional(input);
         this.items = NonNullList.withSize(TOTAL_SLOTS, ItemStack.EMPTY);
         ContainerHelper.loadAllItems(input, this.items);
-        this.hasInk = input.getBooleanOr("HasInk", false);
+        this.inkAmount = input.getIntOr("InkAmount", 0);
         this.activeTab = clampTab(input.getInt("ActiveTab").orElse(0));
         this.firstVisibleTab = clampFirstTab(input.getInt("FirstVisibleTab").orElse(0));
     }
@@ -288,7 +322,7 @@ public class BlockEntityDesk extends BlockEntity implements Container, MenuProvi
     public void saveAdditional(ValueOutput output) {
         super.saveAdditional(output);
         ContainerHelper.saveAllItems(output, this.items);
-        output.putBoolean("HasInk", this.hasInk);
+        output.putInt("InkAmount", this.inkAmount);
         output.putInt("ActiveTab", this.activeTab);
         output.putInt("FirstVisibleTab", this.firstVisibleTab);
     }

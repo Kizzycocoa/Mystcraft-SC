@@ -21,7 +21,7 @@ import java.util.List;
 
 public class WritingDeskMenu extends AbstractContainerMenu {
 
-    public static final int DATA_HAS_INK = 0;
+    public static final int DATA_INK_AMOUNT = 0;
     public static final int DATA_ACTIVE_TAB = 1;
     public static final int DATA_FIRST_TAB = 2;
     public static final int DATA_COUNT = 3;
@@ -114,7 +114,15 @@ public class WritingDeskMenu extends AbstractContainerMenu {
     }
 
     public boolean hasInk() {
-        return this.data.get(DATA_HAS_INK) != 0;
+        return this.getInkAmount() > 0;
+    }
+
+    public int getInkAmount() {
+        return this.data.get(DATA_INK_AMOUNT);
+    }
+
+    public int getInkFillScaled(int pixels) {
+        return Math.max(0, Math.min(pixels, (this.getInkAmount() * pixels) / myst.synthetic.block.entity.BlockEntityDesk.INK_TANK_CAPACITY));
     }
 
     public int getActiveTab() {

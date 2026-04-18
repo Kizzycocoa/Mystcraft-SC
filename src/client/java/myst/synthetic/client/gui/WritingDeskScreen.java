@@ -114,6 +114,8 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
     private static final int INK_METER_W = 16;
     private static final int INK_METER_H = 70;
 
+    private int hoveredFolderOrderedSlot = -1;
+
     private EditBox titleBox;
     private String lastSentTitle = "";
 
@@ -134,6 +136,27 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         this.pendingTabTooltip = null;
+        this.hoveredFolderOrderedSlot = -1;
+
+        ItemStack activeTabStack = this.menu.getTabStack(this.menu.getActiveTab());
+        boolean folderMode =
+                activeTabStack.is(myst.synthetic.MystcraftItems.FOLDER)
+                        && !this.sortAlphabetically
+                        && this.searchBox != null
+                        && this.searchBox.getValue().isEmpty();
+
+        if (folderMode) {
+            int hovered = PageSurfaceRenderer.getHoveredOrderedSlot(
+                    this.leftPos + SURFACE_OFFSET_X,
+                    this.topPos,
+                    mouseX,
+                    mouseY,
+                    this.scroll
+            );
+            if (hovered >= 0) {
+                this.hoveredFolderOrderedSlot = hovered;
+            }
+        }
 
         super.render(guiGraphics, mouseX, mouseY, partialTick);
 
@@ -264,7 +287,7 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
 
         ItemStack tabStack = this.menu.getTabStack(this.menu.getActiveTab());
 
-        // Legacy-like folder view: preserve exact slot order and empties
+        // Folder: preserve exact slot order and only show blanks when appropriate.
         if (tabStack.is(myst.synthetic.MystcraftItems.FOLDER)) {
             var slots = myst.synthetic.item.ItemFolder.createInventory(tabStack);
 
@@ -275,13 +298,22 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
                 }
             }
 
-            int visibleSize = Math.min(slots.size(), Math.max(1, lastFilled + 2));
+            boolean showBlankSlots = !this.sortAlphabetically && normalizedSearch.isEmpty();
+
+            // Base visible size: only through the last real entry.
+            int visibleSize = Math.max(0, lastFilled + 1);
+
+            // Legacy-like hover expansion:
+            // when hovering beyond the last filled slot, reveal blanks up to hovered slot.
+            if (showBlankSlots && this.hoveredFolderOrderedSlot >= visibleSize) {
+                visibleSize = Math.min(slots.size(), this.hoveredFolderOrderedSlot + 1);
+            }
 
             for (int i = 0; i < visibleSize; i++) {
                 ItemStack stack = slots.get(i);
 
                 if (stack.isEmpty()) {
-                    if (normalizedSearch.isEmpty()) {
+                    if (showBlankSlots) {
                         built.add(new DisplayEntry(ItemStack.EMPTY, i, 1, "__folder_empty__"));
                     }
                     continue;
@@ -1295,20 +1327,22 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
     }
 
     private void drawInkMeter(GuiGraphics guiGraphics) {
-        guiGraphics.fill(
-                this.leftPos + INK_METER_X,
-                this.topPos + INK_METER_Y,
-                this.leftPos + INK_METER_X + INK_METER_W,
-                this.topPos + INK_METER_Y + INK_METER_H,
-                0xFF111111
-        );
+        int x1 = this.leftPos + INK_METER_X;
+        int y1 = this.topPos + INK_METER_Y;
+        int x2 = x1 + INK_METER_W;
+        int y2 = y1 + INK_METER_H;
 
-        if (this.menu.hasInk()) {
+        guiGraphics.fill(x1, y1, x2, y2, 0xFF111111);
+
+        int innerHeight = INK_METER_H - 2;
+        int fill = this.menu.getInkFillScaled(innerHeight);
+
+        if (fill > 0) {
             guiGraphics.fill(
-                    this.leftPos + INK_METER_X + 1,
-                    this.topPos + INK_METER_Y + 1,
-                    this.leftPos + INK_METER_X + INK_METER_W - 1,
-                    this.topPos + INK_METER_Y + INK_METER_H - 1,
+                    x1 + 1,
+                    y2 - 1 - fill,
+                    x2 - 1,
+                    y2 - 1,
                     0xFF202020
             );
         }
