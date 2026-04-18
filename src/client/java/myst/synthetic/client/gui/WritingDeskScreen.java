@@ -176,7 +176,7 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
         if (this.isMouseOverInkMeter(mouseX, mouseY)) {
             List<ClientTooltipComponent> tooltip = new ArrayList<>();
             tooltip.add(new ClientTextTooltip(
-                    Component.literal(this.menu.getInkAmount() + "ml / " + BlockEntityDesk.INK_TANK_CAPACITY + "ml").getVisualOrderText()
+                    Component.literal("Black Ink: " + this.menu.getInkAmount() + "ml / " + BlockEntityDesk.INK_TANK_CAPACITY + "ml").getVisualOrderText()
             ));
 
             guiGraphics.renderTooltip(
@@ -1363,31 +1363,41 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
         int x2 = x1 + INK_METER_W;
         int y2 = y1 + INK_METER_H;
 
-        // Outer frame
-        guiGraphics.fill(x1, y1, x2, y2, 0xFF111111);
+        // Legacy outer tank border/background
+        guiGraphics.fill(x1, y1, x2, y2, 0x99000000);
 
-        // Inner cavity
-        guiGraphics.fill(x1 + 1, y1 + 1, x2 - 1, y2 - 1, 0xFF000000);
+        // Legacy inner tank gradient
+        guiGraphics.fillGradient(
+                x1 + 1,
+                y1 + 1,
+                x2 - 1,
+                y2 - 1,
+                0xFFCCCCEE,
+                0xFF666699
+        );
 
-        int innerHeight = INK_METER_H - 2;
+        int innerX1 = x1 + 1;
+        int innerY1 = y1 + 1;
+        int innerX2 = x2 - 1;
+        int innerY2 = y2 - 1;
+
+        int innerHeight = innerY2 - innerY1;
         int fill = this.menu.getInkFillScaled(innerHeight);
 
         if (fill <= 0) {
             return;
         }
 
-        int fillTop = y2 - 1 - fill;
-        int fillBottom = y2 - 1;
+        int fillTop = innerY2 - fill;
+        int fillBottom = innerY2;
 
-        // Clip to the current liquid height.
-        guiGraphics.enableScissor(x1 + 1, fillTop, x2 - 1, fillBottom);
+        guiGraphics.enableScissor(innerX1, fillTop, innerX2, fillBottom);
 
-        // Animated fluid texture, reusing the ink mixer style.
-        renderInkFluidTexture(guiGraphics, x1 + 1, fillTop, INK_METER_W - 2, fill);
+        // Animated fluid body
+        renderInkFluidTexture(guiGraphics, innerX1, fillTop, innerX2 - innerX1, fillBottom - fillTop);
 
-        // Legacy-faithful darkening over the animated fluid.
-        guiGraphics.fill(x1 + 1, fillTop, x2 - 1, fillBottom, 0x80191919);
-        guiGraphics.fill(x1 + 1, fillTop, x2 - 1, fillBottom, 0x50191919);
+        // Tint to the real modern black ink colour
+        guiGraphics.fill(innerX1, fillTop, innerX2, fillBottom, 0xCC191919);
 
         guiGraphics.disableScissor();
     }
