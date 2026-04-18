@@ -164,7 +164,7 @@ public final class MystcraftPageSymbols {
     public static final PageSymbol FEATURE_SMALL_BURIED_TREASURE = register("feature_small_buried_treasure", "symbol.mystcraft-sc.feature_small_buried_treasure", "Mystcraft:SC", "feature/small", 1, "Nature","Flow","Static","Explore",0);
 
     public static final PageSymbol FEATURE_MEDIUM_DUNGEONS = register("feature_medium_dungeons", "symbol.mystcraft-sc.feature_medium_dungeons", "Mystcraft", "feature/medium", 1, "Civilization","Constraint","Chain","Resurrect",0);
-    public static final PageSymbol FEATURE_MEDIUM_RAVINES = register("feature_medium_ravines", "symbol.mystcraft-sc.feature_medium_ravines", "Mystcraft", "terrain/medium", 1, "Terrain","Transform","Void","Weave",0);
+    public static final PageSymbol FEATURE_MEDIUM_RAVINES = register("feature_medium_ravines", "symbol.mystcraft-sc.feature_medium_ravines", "Mystcraft", "feature/medium", 1, "Terrain","Transform","Void","Weave",0);
     public static final PageSymbol FEATURE_MEDIUM_STRONGHOLDS = register("feature_medium_strongholds", "symbol.mystcraft-sc.feature_medium_strongholds", "Mystcraft", "feature/medium", 1, "Civilization","Wisdom","Future","Honor",0);
     public static final PageSymbol FEATURE_MEDIUM_VILLAGES = register("feature_medium_villages", "symbol.mystcraft-sc.feature_medium_villages", "Mystcraft", "feature/medium", 1, "Civilization","Society","Harmony","Nurture",0);
     public static final PageSymbol FEATURE_MEDIUM_SPIKES = register("feature_medium_spikes", "symbol.mystcraft-sc.feature_medium_spikes", "Mystcraft", "feature/medium", 1, "Nature","Encourage","Entropy","Static",0);

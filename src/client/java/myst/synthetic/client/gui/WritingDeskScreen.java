@@ -262,17 +262,28 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
             return;
         }
 
-        ItemStack activeStorage = this.menu.getTabStack(this.menu.getActiveTab());
+        ItemStack tabStack = this.menu.getTabStack(this.menu.getActiveTab());
 
-        // Folder: preserve real ordered slots, including empties
-        if (activeStorage.is(myst.synthetic.MystcraftItems.FOLDER)) {
-            var slots = myst.synthetic.item.ItemFolder.createInventory(activeStorage);
+        // Legacy-like folder view: preserve exact slot order and empties
+        if (tabStack.is(myst.synthetic.MystcraftItems.FOLDER)) {
+            var slots = myst.synthetic.item.ItemFolder.createInventory(tabStack);
 
+            int lastFilled = -1;
             for (int i = 0; i < slots.size(); i++) {
+                if (!slots.get(i).isEmpty()) {
+                    lastFilled = i;
+                }
+            }
+
+            int visibleSize = Math.min(slots.size(), Math.max(1, lastFilled + 2));
+
+            for (int i = 0; i < visibleSize; i++) {
                 ItemStack stack = slots.get(i);
 
                 if (stack.isEmpty()) {
-                    built.add(new DisplayEntry(ItemStack.EMPTY, i, 1, "__folder_empty__"));
+                    if (normalizedSearch.isEmpty()) {
+                        built.add(new DisplayEntry(ItemStack.EMPTY, i, 1, "__folder_empty__"));
+                    }
                     continue;
                 }
 
@@ -287,7 +298,6 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
             return;
         }
 
-        // Default behavior for non-folder tab items
         List<ItemStack> pages = this.menu.getActiveTabPages(this.minecraft.player);
         for (int i = 0; i < pages.size(); i++) {
             ItemStack stack = pages.get(i);
@@ -315,7 +325,6 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
             }
         }
     }
-
     @Override
     protected List<PageSurfaceRenderer.SurfaceEntry> toSurfaceEntries() {
         List<PageSurfaceRenderer.SurfaceEntry> entries = new ArrayList<>(this.displayEntries.size());
@@ -343,7 +352,30 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
             return;
         }
 
-        if (entry != null && entry.absoluteIndex >= 0) {
+        if (entry == null) {
+            return;
+        }
+
+        // Legacy-like copy behavior:
+        // right click on a real page copies its symbol into the target via WriteSymbol.
+        if (event.button() == 1 && entry.absoluteIndex >= 0 && !entry.stack.isEmpty() && this.menu.getCarried().isEmpty()) {
+            Identifier symbolId = Page.getSymbol(entry.stack);
+            if (symbolId != null) {
+                int symbolIndex = 0;
+                for (var symbol : PageSymbolRegistry.values()) {
+                    if (symbol.id().equals(symbolId)) {
+                        this.minecraft.gameMode.handleInventoryButtonClick(
+                                this.menu.containerId,
+                                WritingDeskMenu.BUTTON_WRITE_SYMBOL_START + symbolIndex
+                        );
+                        return;
+                    }
+                    symbolIndex++;
+                }
+            }
+        }
+
+        if (entry.absoluteIndex >= 0) {
             if (event.hasShiftDown()) {
                 this.minecraft.gameMode.handleInventoryButtonClick(
                         this.menu.containerId,
@@ -359,7 +391,7 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
             return;
         }
 
-        if (entry != null && entry.absoluteIndex < 0) {
+        if (entry.absoluteIndex < 0) {
             int symbolIndex = 0;
             for (var symbol : PageSymbolRegistry.values()) {
                 if (symbol.id().equals(Page.getSymbol(entry.stack))) {

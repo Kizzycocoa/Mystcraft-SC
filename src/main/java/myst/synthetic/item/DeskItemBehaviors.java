@@ -199,20 +199,18 @@ public final class DeskItemBehaviors {
 
         if (storage.is(MystcraftItems.FOLDER)) {
             NonNullList<ItemStack> slots = ItemFolder.createInventory(storage);
-            int pageSeen = 0;
-            for (int i = 0; i < slots.size(); i++) {
-                ItemStack entry = slots.get(i);
-                if (entry.isEmpty() || !entry.is(MystcraftItems.PAGE)) {
-                    continue;
-                }
-                if (pageSeen == index) {
-                    slots.set(i, ItemStack.EMPTY);
-                    ItemFolder.saveInventory(storage, slots);
-                    return entry;
-                }
-                pageSeen++;
+            if (index < 0 || index >= slots.size()) {
+                return ItemStack.EMPTY;
             }
-            return ItemStack.EMPTY;
+
+            ItemStack entry = slots.get(index);
+            if (entry.isEmpty()) {
+                return ItemStack.EMPTY;
+            }
+
+            slots.set(index, ItemStack.EMPTY);
+            ItemFolder.saveInventory(storage, slots);
+            return entry;
         }
 
         if (storage.is(MystcraftItems.PORTFOLIO)) {
