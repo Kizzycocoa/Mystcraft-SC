@@ -813,42 +813,19 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
     }
 
     private int getHoveredPreviewIndex(int mouseX, int mouseY) {
-        if (!this.targetHasScrollablePreview()) {
+        int slot = this.getPreviewSlotIndexFromMouse(mouseX, mouseY);
+        if (slot < 0) {
             return -1;
         }
 
-        int clipLeft = this.leftPos + PREVIEW_X;
-        int clipTop = this.topPos + PREVIEW_Y;
-        int clipRight = clipLeft + PREVIEW_W;
-        int clipBottom = clipTop + PREVIEW_H;
-
-        if (mouseX < clipLeft || mouseX >= clipRight || mouseY < clipTop || mouseY >= clipBottom) {
-            return -1;
-        }
-
-        int relX = mouseX - clipLeft;
-        int relY = mouseY - clipTop;
-
-        // Legacy behavior: side overlays take precedence over page interaction.
-        if (relX < PREVIEW_ARROW_W || relX >= PREVIEW_W - PREVIEW_ARROW_W) {
-            return -1;
-        }
-
+        int absolute = this.previewScroll + slot;
         List<ItemStack> entries = this.getPreviewEntries();
-        int start = this.previewScroll;
-        int shown = Math.min(PREVIEW_VISIBLE_COUNT, Math.max(0, entries.size() - start));
 
-        for (int i = 0; i < shown; i++) {
-            int x = PREVIEW_PAGE_X + i * PREVIEW_PAGE_SPACING;
-            int absolute = start + i;
-
-            if (relX >= x && relX < x + PREVIEW_PAGE_WIDTH
-                    && relY >= PREVIEW_PAGE_Y && relY < PREVIEW_PAGE_Y + PREVIEW_PAGE_HEIGHT) {
-                return absolute;
-            }
+        if (absolute < 0 || absolute >= entries.size()) {
+            return -1;
         }
 
-        return -1;
+        return absolute;
     }
 
     private enum TabVisualState {
@@ -906,6 +883,40 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
             return 3;
         }
         return PREVIEW_VISIBLE_COUNT;
+    }
+
+    private int getPreviewSlotIndexFromMouse(int mouseX, int mouseY) {
+        if (!this.targetHasScrollablePreview()) {
+            return -1;
+        }
+
+        int clipLeft = this.leftPos + PREVIEW_X;
+        int clipTop = this.topPos + PREVIEW_Y;
+        int clipRight = clipLeft + PREVIEW_W;
+        int clipBottom = clipTop + PREVIEW_H;
+
+        if (mouseX < clipLeft || mouseX >= clipRight || mouseY < clipTop || mouseY >= clipBottom) {
+            return -1;
+        }
+
+        int relX = mouseX - clipLeft;
+        int relY = mouseY - clipTop;
+
+        // Arrow overlays still take precedence.
+        if (relX < PREVIEW_ARROW_W || relX >= PREVIEW_W - PREVIEW_ARROW_W) {
+            return -1;
+        }
+
+        for (int i = 0; i < PREVIEW_VISIBLE_COUNT; i++) {
+            int x = PREVIEW_PAGE_X + i * PREVIEW_PAGE_SPACING;
+
+            if (relX >= x && relX < x + PREVIEW_PAGE_WIDTH
+                    && relY >= PREVIEW_PAGE_Y && relY < PREVIEW_PAGE_Y + PREVIEW_PAGE_HEIGHT) {
+                return i;
+            }
+        }
+
+        return -1;
     }
 
     private int getPreviewMaxScroll() {
@@ -1380,23 +1391,39 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
 
             guiGraphics.enableScissor(left + 1, top, right - 1, bottom);
 
-            for (int i = 0; i < shown; i++) {
+            for (int i = 0; i < PREVIEW_VISIBLE_COUNT; i++) {
                 int absolute = start + i;
-                ItemStack entry = entries.get(absolute);
+                if (absolute < 0 || absolute >= entries.size()) {
+                    continue;
+                }
 
-                boolean placeholder = false;
+                ItemStack entry = entries.get(absolute);
+                int drawX = left + PREVIEW_PAGE_X + i * PREVIEW_PAGE_SPACING;
+                int drawY = top + PREVIEW_PAGE_Y;
+
                 if (folderPreview && entry.isEmpty()) {
-                    // Real empty slots before/within the used region are dark.
-                    // Trailing insertion spaces after the last filled page are blank.
-                    placeholder = absolute <= lastFilled;
+                    if (absolute <= lastFilled) {
+                        // Empty slot within the used folder range: dark placeholder page.
+                        this.drawPreviewPage(
+                                guiGraphics,
+                                drawX,
+                                drawY,
+                                entry,
+                                true,
+                                false
+                        );
+                    }
+                    // Trailing empty slots after the last filled page:
+                    // draw nothing at all, but keep them logically clickable.
+                    continue;
                 }
 
                 this.drawPreviewPage(
                         guiGraphics,
-                        left + PREVIEW_PAGE_X + i * PREVIEW_PAGE_SPACING,
-                        top + PREVIEW_PAGE_Y,
+                        drawX,
+                        drawY,
                         entry,
-                        placeholder,
+                        false,
                         false
                 );
             }
