@@ -1,9 +1,5 @@
 {
   "model": {
-    "type": "minecraft:special",
-    "base": "mystcraft-sc:item/page",
-    "model": {
-      "type": "mystcraft-sc:page"
-    }
+    "type": "mystcraft-sc:item/page"
   }
 }

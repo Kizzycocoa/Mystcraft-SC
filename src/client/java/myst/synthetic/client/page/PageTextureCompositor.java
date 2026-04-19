@@ -247,25 +247,26 @@ public final class PageTextureCompositor {
         };
     }
 
+
     private static BufferedImage buildWorkingBackground() {
         BufferedImage base = loadImage(PAGE_BACKGROUND_PATH);
-        BufferedImage scaled = scaleImage(base, 5.0);
+        BufferedImage scaled = scaleImageNearest(base, 5.0);
         ColorModel colorModel = scaled.getColorModel();
         return new BufferedImage(colorModel, scaled.copyData(null), colorModel.isAlphaPremultiplied(), null);
+    }
+
+    private static BufferedImage scaleFinalPageToContent(BufferedImage finalSized) {
+        double scale = (double) CONTENT_SIZE / (double) FINAL_PAGE_SIZE;
+        return scaleImageNearest(finalSized, scale);
+    }
+
+    private static BufferedImage downscaleToFinal(BufferedImage source) {
+        return scaleImageBilinear(source, 0.8);
     }
 
     private static BufferedImage createTransparentWorkingCanvas() {
         BufferedImage reference = buildWorkingBackground();
         return new BufferedImage(reference.getWidth(), reference.getHeight(), BufferedImage.TYPE_INT_ARGB);
-    }
-
-    private static BufferedImage scaleFinalPageToContent(BufferedImage finalSized) {
-        double scale = (double) CONTENT_SIZE / (double) FINAL_PAGE_SIZE;
-        return scaleImage(finalSized, scale);
-    }
-
-    private static BufferedImage downscaleToFinal(BufferedImage source) {
-        return scaleImage(source, 0.8);
     }
 
     private static BufferedImage scaleImage(BufferedImage source, double scale) {
@@ -298,5 +299,34 @@ public final class PageTextureCompositor {
         } catch (IOException e) {
             throw new RuntimeException("Failed to load page render resource: " + path, e);
         }
+    }
+    private static BufferedImage scaleImageNearest(BufferedImage source, double scale) {
+        int width = Math.max(1, (int) Math.round(source.getWidth() * scale));
+        int height = Math.max(1, (int) Math.round(source.getHeight() * scale));
+
+        BufferedImage output = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        java.awt.geom.AffineTransform transform = java.awt.geom.AffineTransform.getScaleInstance(scale, scale);
+        AffineTransformOp op = new AffineTransformOp(
+                transform,
+                AffineTransformOp.TYPE_NEAREST_NEIGHBOR
+        );
+
+        op.filter(source, output);
+        return output;
+    }
+
+    private static BufferedImage scaleImageBilinear(BufferedImage source, double scale) {
+        int width = Math.max(1, (int) Math.round(source.getWidth() * scale));
+        int height = Math.max(1, (int) Math.round(source.getHeight() * scale));
+
+        BufferedImage output = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        java.awt.geom.AffineTransform transform = java.awt.geom.AffineTransform.getScaleInstance(scale, scale);
+        AffineTransformOp op = new AffineTransformOp(
+                transform,
+                AffineTransformOp.TYPE_BILINEAR
+        );
+
+        op.filter(source, output);
+        return output;
     }
 }

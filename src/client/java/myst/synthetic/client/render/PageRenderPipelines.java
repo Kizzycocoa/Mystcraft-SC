@@ -89,55 +89,97 @@ public final class PageRenderPipelines {
             BufferedImage image,
             int tintArgb
     ) {
-        emitFront(pose, consumer, light, overlay, tintArgb);
-        emitBack(pose, consumer, light, overlay, tintArgb);
+        emitFrontFaces(pose, consumer, light, overlay, image, tintArgb);
+        emitBackFaces(pose, consumer, light, overlay, image, tintArgb);
         emitExtrudedEdges(pose, consumer, light, overlay, image, tintArgb);
     }
 
-    private static void emitBack(
+    private static void emitFrontFaces(
             PoseStack.Pose pose,
             VertexConsumer consumer,
             int light,
             int overlay,
+            BufferedImage image,
             int tintArgb
     ) {
-        float z = -HALF_THICKNESS;
-
-        emitQuad(
-                pose, consumer, light, overlay, tintArgb,
-                -HALF_WIDTH,  HALF_HEIGHT,  z,
-                HALF_WIDTH,  HALF_HEIGHT,  z,
-                HALF_WIDTH, -HALF_HEIGHT,  z,
-                -HALF_WIDTH, -HALF_HEIGHT,  z,
-                0.0F, 0.0F, 1.0F,
-                0.0F, 0.0F,
-                1.0F, 0.0F,
-                1.0F, 1.0F,
-                0.0F, 1.0F
-        );
-    }
-
-    private static void emitFront(
-            PoseStack.Pose pose,
-            VertexConsumer consumer,
-            int light,
-            int overlay,
-            int tintArgb
-    ) {
+        int width = image.getWidth();
+        int height = image.getHeight();
         float z = HALF_THICKNESS;
 
-        emitQuad(
-                pose, consumer, light, overlay, tintArgb,
-                -HALF_WIDTH, -HALF_HEIGHT, z,
-                HALF_WIDTH, -HALF_HEIGHT, z,
-                HALF_WIDTH,  HALF_HEIGHT, z,
-                -HALF_WIDTH,  HALF_HEIGHT, z,
-                0.0F, 0.0F, -1.0F,
-                0.0F, 1.0F,
-                1.0F, 1.0F,
-                1.0F, 0.0F,
-                0.0F, 0.0F
-        );
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                if (!isOpaque(image, x, y)) {
+                    continue;
+                }
+
+                float x0 = pixelX(x, width);
+                float x1 = pixelX(x + 1, width);
+                float y0 = pixelY(y, height);
+                float y1 = pixelY(y + 1, height);
+
+                float u0 = (float) x / (float) width;
+                float u1 = (float) (x + 1) / (float) width;
+                float v0 = (float) y / (float) height;
+                float v1 = (float) (y + 1) / (float) height;
+
+                emitQuad(
+                        pose, consumer, light, overlay, tintArgb,
+                        x0, y1, z,
+                        x1, y1, z,
+                        x1, y0, z,
+                        x0, y0, z,
+                        0.0F, 0.0F, -1.0F,
+                        u0, v1,
+                        u1, v1,
+                        u1, v0,
+                        u0, v0
+                );
+            }
+        }
+    }
+
+    private static void emitBackFaces(
+            PoseStack.Pose pose,
+            VertexConsumer consumer,
+            int light,
+            int overlay,
+            BufferedImage image,
+            int tintArgb
+    ) {
+        int width = image.getWidth();
+        int height = image.getHeight();
+        float z = -HALF_THICKNESS;
+
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                if (!isOpaque(image, x, y)) {
+                    continue;
+                }
+
+                float x0 = pixelX(x, width);
+                float x1 = pixelX(x + 1, width);
+                float y0 = pixelY(y, height);
+                float y1 = pixelY(y + 1, height);
+
+                float u0 = (float) x / (float) width;
+                float u1 = (float) (x + 1) / (float) width;
+                float v0 = (float) y / (float) height;
+                float v1 = (float) (y + 1) / (float) height;
+
+                emitQuad(
+                        pose, consumer, light, overlay, tintArgb,
+                        x0, y0, z,
+                        x1, y0, z,
+                        x1, y1, z,
+                        x0, y1, z,
+                        0.0F, 0.0F, 1.0F,
+                        u0, v0,
+                        u1, v0,
+                        u1, v1,
+                        u0, v1
+                );
+            }
+        }
     }
 
     private static void emitExtrudedEdges(
