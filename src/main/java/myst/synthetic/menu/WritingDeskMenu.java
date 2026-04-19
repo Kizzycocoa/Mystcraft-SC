@@ -413,7 +413,8 @@ public class WritingDeskMenu extends AbstractContainerMenu {
             return true;
         }
 
-        if (id >= BUTTON_PREVIEW_INSERT_PAGE_START && id < BUTTON_WRITE_SYMBOL_START) {
+        if (id >= BUTTON_PREVIEW_INSERT_PAGE_START
+                && id < BUTTON_PREVIEW_INSERT_PAGE_START + myst.synthetic.component.FolderDataComponent.MAX_SLOTS) {
             ItemStack carried = this.getCarried();
             if (carried.isEmpty() || !carried.is(myst.synthetic.MystcraftItems.PAGE)) {
                 return false;
