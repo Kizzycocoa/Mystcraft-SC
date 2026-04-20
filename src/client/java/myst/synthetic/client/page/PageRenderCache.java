@@ -59,8 +59,6 @@ public final class PageRenderCache {
                 toNativeImage(image)
         );
 
-        dynamicTexture.setFilter(false, false);
-
         Minecraft.getInstance().getTextureManager().register(textureId, dynamicTexture);
         return new PageRenderAsset(textureId, image);
     }
