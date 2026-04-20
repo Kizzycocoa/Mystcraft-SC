@@ -3,6 +3,8 @@ package myst.synthetic.page;
 import myst.synthetic.MystcraftItems;
 import myst.synthetic.component.MystcraftDataComponents;
 import myst.synthetic.component.PageDataComponent;
+import myst.synthetic.page.symbol.PageSymbol;
+import myst.synthetic.page.symbol.PageSymbolRegistry;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
@@ -65,7 +67,16 @@ public final class Page {
     }
 
     public static void setSymbol(ItemStack page, @Nullable Identifier symbol) {
-        setPageData(page, getPageData(page).withSymbol(symbol));
+        PageDataComponent data = getPageData(page).withSymbol(symbol);
+
+        if (symbol == null) {
+            data = data.withoutValue();
+        } else {
+            PageSymbol pageSymbol = PageSymbolRegistry.get(symbol);
+            data = data.withValue(pageSymbol == null ? null : pageSymbol.value());
+        }
+
+        setPageData(page, data);
     }
 
     @Nullable
@@ -74,7 +85,7 @@ public final class Page {
     }
 
     public static void clearSymbol(ItemStack page) {
-        setPageData(page, getPageData(page).withoutSymbol());
+        setPageData(page, getPageData(page).withoutSymbol().withoutValue());
     }
 
     public static void setQuality(ItemStack page, String trait, int quality) {
@@ -92,6 +103,30 @@ public final class Page {
 
     public static int getTotalQuality(ItemStack page) {
         return getPageData(page).getTotalQuality();
+    }
+
+    public static void setValue(ItemStack page, @Nullable Float value) {
+        setPageData(page, getPageData(page).withValue(value));
+    }
+
+    @Nullable
+    public static Float getValue(ItemStack page) {
+        PageDataComponent data = getPageData(page);
+        if (data.value() != null) {
+            return data.value();
+        }
+
+        Identifier symbolId = data.getSymbolIdentifier();
+        if (symbolId == null) {
+            return null;
+        }
+
+        PageSymbol symbol = PageSymbolRegistry.get(symbolId);
+        return symbol == null ? null : symbol.value();
+    }
+
+    public static void clearValue(ItemStack page) {
+        setPageData(page, getPageData(page).withoutValue());
     }
 
     public static ItemStack createPage() {

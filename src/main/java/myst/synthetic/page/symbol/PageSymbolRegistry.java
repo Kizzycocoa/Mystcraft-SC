@@ -22,6 +22,15 @@ public final class PageSymbolRegistry {
         return symbol;
     }
 
+    public static PageSymbol registerOrReplace(PageSymbol symbol) {
+        SYMBOLS.put(symbol.id(), symbol);
+        return symbol;
+    }
+
+    public static void unregister(Identifier id) {
+        SYMBOLS.remove(id);
+    }
+
     @Nullable
     public static PageSymbol get(Identifier id) {
         return SYMBOLS.get(id);

@@ -116,17 +116,6 @@ public final class MystcraftPageSymbols {
     public static final PageSymbol LIGHT_DARK = register("light_dark", "symbol.mystcraft-sc.light_dark", "Mystcraft", "lighting", 1, "Ethereal","Void","Constraint","Inhibit",0);
     public static final PageSymbol LIGHT_NAT = register("light_nat", "symbol.mystcraft-sc.light_nat", "Mystcraft", "lighting", 1, "Ethereal","Dynamic","Cycle","Balance",0);
 
-// DIRECTIONS
-
-    public static final PageSymbol DIR_NORTH = register("dir_north", "symbol.mystcraft-sc.dir_north", "Mystcraft", "modifier/direction", 1, "Transform","Flow","Motion","Control",0);
-    public static final PageSymbol DIR_EAST = register("dir_east", "symbol.mystcraft-sc.dir_east", "Mystcraft", "modifier/direction", 1, "Transform","Flow","Motion","Tradition",0);
-    public static final PageSymbol DIR_SOUTH = register("dir_south", "symbol.mystcraft-sc.dir_south", "Mystcraft", "modifier/direction", 1, "Transform","Flow","Motion","Chaos",0);
-    public static final PageSymbol DIR_WEST = register("dir_west", "symbol.mystcraft-sc.dir_west", "Mystcraft", "modifier/direction", 1, "Transform","Flow","Motion","Change",0) ;
-    public static final PageSymbol DIR_NORTHEAST = register("dir_northeast", "symbol.mystcraft-sc.dir_northeast", "Myst Library", "modifier/direction", 1, "Transform","Motion","Northeast Direction","Northeast Direction",0) ;
-    public static final PageSymbol DIR_NORTHWEST = register("dir_northwest", "symbol.mystcraft-sc.dir_northwest", "Myst Library", "modifier/direction", 1, "Transform","Motion","Northwest Direction","Northwest Direction",0) ;
-    public static final PageSymbol DIR_SOUTHEAST = register("dir_southeast", "symbol.mystcraft-sc.dir_southeast", "Myst Library", "modifier/direction", 1, "Transform","Motion","Southeast Direction","Southeast Direction",0) ;
-    public static final PageSymbol DIR_SOUTHWEST = register("dir_southwest", "symbol.mystcraft-sc.dir_southwest", "Myst Library", "modifier/direction", 1, "Transform","Motion","Southwest Direction","Southwest Direction",0) ;
-
 // CELESTIAL LENGTH
 
     public static final PageSymbol LENGTH_ZERO = register("length_zero", "symbol.mystcraft-sc.length_zero", "Mystcraft", "modifier/length", 1, "Transform","Time","System","Inhibit",0);

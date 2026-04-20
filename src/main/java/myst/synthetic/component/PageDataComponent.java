@@ -22,16 +22,16 @@ import myst.synthetic.page.emblem.ResolvedPageEmblem;
 import myst.synthetic.page.emblem.ResolvedPageWord;
 import myst.synthetic.page.symbol.PageSymbol;
 import myst.synthetic.page.symbol.PageSymbolRegistry;
-import myst.synthetic.page.emblem.ResolvedGlyphComponent;
 
 public record PageDataComponent(
         boolean linkPanel,
         @Nullable String symbolId,
         List<String> linkProperties,
-        Map<String, Integer> quality
+        Map<String, Integer> quality,
+        @Nullable Float value
 ) implements TooltipProvider {
 
-    public static final PageDataComponent EMPTY = new PageDataComponent(false, null, List.of(), Map.of());
+    public static final PageDataComponent EMPTY = new PageDataComponent(false, null, List.of(), Map.of(), null);
 
     public static final Codec<PageDataComponent> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.BOOL.optionalFieldOf("link_panel", false).forGetter(PageDataComponent::linkPanel),
@@ -39,23 +39,35 @@ public record PageDataComponent(
                     component.symbolId() == null ? "" : component.symbolId()
             ),
             Codec.STRING.listOf().optionalFieldOf("link_properties", List.of()).forGetter(PageDataComponent::linkProperties),
-            Codec.unboundedMap(Codec.STRING, Codec.INT).optionalFieldOf("quality", Map.of()).forGetter(PageDataComponent::quality)
-    ).apply(instance, (linkPanel, symbolId, linkProperties, quality) -> {
+            Codec.unboundedMap(Codec.STRING, Codec.INT).optionalFieldOf("quality", Map.of()).forGetter(PageDataComponent::quality),
+            Codec.FLOAT.optionalFieldOf("value").forGetter(component -> java.util.Optional.ofNullable(component.value()))
+    ).apply(instance, (linkPanel, symbolId, linkProperties, quality, value) -> {
         String normalizedSymbol = (symbolId == null || symbolId.isBlank()) ? null : symbolId;
         List<String> cleanedProperties = sanitizeProperties(linkProperties);
         Map<String, Integer> cleanedQuality = sanitizeQuality(quality);
+        Float cleanedValue = sanitizeValue(value.orElse(null));
 
         if (normalizedSymbol != null) {
-            return new PageDataComponent(false, normalizedSymbol, List.of(), cleanedQuality);
+            return new PageDataComponent(false, normalizedSymbol, List.of(), cleanedQuality, cleanedValue);
         }
 
         boolean isLinkPanel = linkPanel || !cleanedProperties.isEmpty();
-        return new PageDataComponent(isLinkPanel, null, cleanedProperties, cleanedQuality);
+        return new PageDataComponent(isLinkPanel, null, cleanedProperties, cleanedQuality, cleanedValue);
     }));
+
+    public PageDataComponent(
+            boolean linkPanel,
+            @Nullable String symbolId,
+            List<String> linkProperties,
+            Map<String, Integer> quality
+    ) {
+        this(linkPanel, symbolId, linkProperties, quality, null);
+    }
 
     public PageDataComponent {
         linkProperties = sanitizeProperties(linkProperties);
         quality = sanitizeQuality(quality);
+        value = sanitizeValue(value);
 
         if (symbolId != null && symbolId.isBlank()) {
             symbolId = null;
@@ -92,26 +104,26 @@ public record PageDataComponent(
 
     public PageDataComponent withSymbol(@Nullable Identifier symbol) {
         if (symbol == null) {
-            return new PageDataComponent(this.linkPanel, null, this.linkProperties, this.quality);
+            return new PageDataComponent(this.linkPanel, null, this.linkProperties, this.quality, this.value);
         }
 
-        return new PageDataComponent(false, symbol.toString(), List.of(), this.quality);
+        return new PageDataComponent(false, symbol.toString(), List.of(), this.quality, this.value);
     }
 
     public PageDataComponent withoutSymbol() {
-        return new PageDataComponent(this.linkPanel, null, this.linkProperties, this.quality);
+        return new PageDataComponent(this.linkPanel, null, this.linkProperties, this.quality, null);
     }
 
     public PageDataComponent asLinkPanel() {
-        return new PageDataComponent(true, null, this.linkProperties, this.quality);
+        return new PageDataComponent(true, null, this.linkProperties, this.quality, this.value);
     }
 
     public PageDataComponent clearLinkPanel() {
-        return new PageDataComponent(false, this.symbolId, List.of(), this.quality);
+        return new PageDataComponent(false, this.symbolId, List.of(), this.quality, this.value);
     }
 
     public PageDataComponent withLinkProperties(List<String> properties) {
-        return new PageDataComponent(true, null, properties, this.quality);
+        return new PageDataComponent(true, null, properties, this.quality, this.value);
     }
 
     public PageDataComponent addLinkProperty(String property) {
@@ -124,11 +136,11 @@ public record PageDataComponent(
             newProperties.add(property);
         }
 
-        return new PageDataComponent(true, null, newProperties, this.quality);
+        return new PageDataComponent(true, null, newProperties, this.quality, this.value);
     }
 
     public PageDataComponent clearLinkProperties() {
-        return new PageDataComponent(this.linkPanel, this.symbolId, List.of(), this.quality);
+        return new PageDataComponent(this.linkPanel, this.symbolId, List.of(), this.quality, this.value);
     }
 
     public PageDataComponent withQuality(String trait, int value) {
@@ -138,7 +150,15 @@ public record PageDataComponent(
 
         LinkedHashMap<String, Integer> map = new LinkedHashMap<>(this.quality);
         map.put(trait, value);
-        return new PageDataComponent(this.linkPanel, this.symbolId, this.linkProperties, map);
+        return new PageDataComponent(this.linkPanel, this.symbolId, this.linkProperties, map, this.value);
+    }
+
+    public PageDataComponent withValue(@Nullable Float value) {
+        return new PageDataComponent(this.linkPanel, this.symbolId, this.linkProperties, this.quality, value);
+    }
+
+    public PageDataComponent withoutValue() {
+        return new PageDataComponent(this.linkPanel, this.symbolId, this.linkProperties, this.quality, null);
     }
 
     @Nullable
@@ -151,8 +171,8 @@ public record PageDataComponent(
 
     public int getTotalQuality() {
         int sum = 0;
-        for (int value : this.quality.values()) {
-            sum += value;
+        for (int entryValue : this.quality.values()) {
+            sum += entryValue;
         }
         return sum;
     }
@@ -216,6 +236,11 @@ public record PageDataComponent(
                     .withStyle(ChatFormatting.GRAY));
         }
 
+        if (this.value != null) {
+            textConsumer.accept(Component.literal("Value: " + this.value)
+                    .withStyle(ChatFormatting.DARK_AQUA));
+        }
+
         int totalQuality = getTotalQuality();
         if (totalQuality != 0) {
             textConsumer.accept(Component.translatable("tooltip.mystcraft-sc.page.quality_total", totalQuality)
@@ -246,13 +271,21 @@ public record PageDataComponent(
         LinkedHashMap<String, Integer> cleaned = new LinkedHashMap<>();
         for (Map.Entry<String, Integer> entry : quality.entrySet()) {
             String key = entry.getKey();
-            Integer value = entry.getValue();
+            Integer entryValue = entry.getValue();
 
-            if (key != null && !key.isBlank() && value != null) {
-                cleaned.put(key, value);
+            if (key != null && !key.isBlank() && entryValue != null) {
+                cleaned.put(key, entryValue);
             }
         }
 
         return Map.copyOf(cleaned);
+    }
+
+    @Nullable
+    private static Float sanitizeValue(@Nullable Float value) {
+        if (value == null || !Float.isFinite(value)) {
+            return null;
+        }
+        return value;
     }
 }

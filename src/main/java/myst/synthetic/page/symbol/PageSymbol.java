@@ -12,12 +12,28 @@ public record PageSymbol(
         String category,
         int cardRank,
         List<String> poemWords,
-        int tested
+        int tested,
+        @Nullable Float value
 ) {
+
+    public PageSymbol(
+            Identifier id,
+            @Nullable String translationKey,
+            String category,
+            int cardRank,
+            List<String> poemWords,
+            int tested
+    ) {
+        this(id, translationKey, category, cardRank, poemWords, tested, null);
+    }
 
     public PageSymbol {
         poemWords = List.copyOf(poemWords);
         category = category == null ? "" : category;
+
+        if (value != null && !Float.isFinite(value)) {
+            value = null;
+        }
     }
 
     public String rootCategory() {
@@ -31,6 +47,10 @@ public record PageSymbol(
 
     public boolean isUntested() {
         return tested == 0;
+    }
+
+    public boolean hasValue() {
+        return value != null;
     }
 
     public Component displayName() {
