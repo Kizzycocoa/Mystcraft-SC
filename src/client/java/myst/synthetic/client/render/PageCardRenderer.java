@@ -79,10 +79,10 @@ public final class PageCardRenderer {
 
         if (isUntested(stack)) {
             guiGraphics.fill(
-                    x + INNER_X,
-                    y + INNER_Y,
-                    x + INNER_X + INNER_W,
-                    y + INNER_Y + INNER_H,
+                    x,
+                    y,
+                    x + CARD_WIDTH,
+                    y + CARD_HEIGHT,
                     UNTESTED_OVERLAY
             );
         }
