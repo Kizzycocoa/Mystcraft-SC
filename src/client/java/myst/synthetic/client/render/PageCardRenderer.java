@@ -3,6 +3,8 @@ package myst.synthetic.client.render;
 import myst.synthetic.client.page.PageRenderCache;
 import myst.synthetic.client.page.PageTextureCompositor;
 import myst.synthetic.page.Page;
+import myst.synthetic.page.symbol.PageSymbol;
+import myst.synthetic.page.symbol.PageSymbolRegistry;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
@@ -22,6 +24,8 @@ public final class PageCardRenderer {
     private static final int INNER_H = 30;
 
     private static final int CONTENT_TEXTURE_SIZE = PageTextureCompositor.CONTENT_SIZE;
+
+    private static final int UNTESTED_OVERLAY = 0x884A78FF;
 
     private PageCardRenderer() {
     }
@@ -72,6 +76,16 @@ public final class PageCardRenderer {
                 CONTENT_TEXTURE_SIZE,
                 CONTENT_TEXTURE_SIZE
         );
+
+        if (isUntested(stack)) {
+            guiGraphics.fill(
+                    x + INNER_X,
+                    y + INNER_Y,
+                    x + INNER_X + INNER_W,
+                    y + INNER_Y + INNER_H,
+                    UNTESTED_OVERLAY
+            );
+        }
     }
 
     private static Identifier getContentTexture(ItemStack stack) {
@@ -85,5 +99,15 @@ public final class PageCardRenderer {
         }
 
         return PageRenderCache.getTexture(new PageRenderKey(PageRenderKey.Kind.BLANK_CONTENT, null));
+    }
+
+    private static boolean isUntested(ItemStack stack) {
+        Identifier symbolId = Page.getSymbol(stack);
+        if (symbolId == null) {
+            return false;
+        }
+
+        PageSymbol symbol = PageSymbolRegistry.get(symbolId);
+        return symbol != null && symbol.isUntested();
     }
 }
