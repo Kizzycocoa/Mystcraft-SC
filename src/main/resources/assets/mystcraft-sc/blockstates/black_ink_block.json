@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "level=0":  { "model": "mystcraft-sc:block/blockmodel_nothing" },
+    "level=1":  { "model": "mystcraft-sc:block/blockmodel_nothing" },
+    "level=2":  { "model": "mystcraft-sc:block/blockmodel_nothing" },
+    "level=3":  { "model": "mystcraft-sc:block/blockmodel_nothing" },
+    "level=4":  { "model": "mystcraft-sc:block/blockmodel_nothing" },
+    "level=5":  { "model": "mystcraft-sc:block/blockmodel_nothing" },
+    "level=6":  { "model": "mystcraft-sc:block/blockmodel_nothing" },
+    "level=7":  { "model": "mystcraft-sc:block/blockmodel_nothing" },
+    "level=8":  { "model": "mystcraft-sc:block/blockmodel_nothing" },
+    "level=9":  { "model": "mystcraft-sc:block/blockmodel_nothing" },
+    "level=10": { "model": "mystcraft-sc:block/blockmodel_nothing" },
+    "level=11": { "model": "mystcraft-sc:block/blockmodel_nothing" },
+    "level=12": { "model": "mystcraft-sc:block/blockmodel_nothing" },
+    "level=13": { "model": "mystcraft-sc:block/blockmodel_nothing" },
+    "level=14": { "model": "mystcraft-sc:block/blockmodel_nothing" },
+    "level=15": { "model": "mystcraft-sc:block/blockmodel_nothing" }
+  }
+}

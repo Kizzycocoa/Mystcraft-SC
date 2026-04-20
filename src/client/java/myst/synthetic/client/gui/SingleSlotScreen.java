@@ -28,7 +28,6 @@ public class SingleSlotScreen extends AbstractContainerScreen<DisplayContainerMe
     private static final Identifier SINGLE_SLOT_TEXTURE = Identifier.fromNamespaceAndPath("mystcraft-sc", "textures/gui/single_slot.png");
     private static final Identifier LINK_BOOK_COVER = Identifier.fromNamespaceAndPath("mystcraft-sc", "textures/gui/bookui_cover.png");
     private static final Identifier LINK_BOOK_PAGE_LEFT = Identifier.fromNamespaceAndPath("mystcraft-sc", "textures/gui/bookui_pagel.png");
-    private static final Identifier LINK_BOOK_PAGE_RIGHT = Identifier.fromNamespaceAndPath("mystcraft-sc", "textures/gui/bookui_pager.png");
     private static final Identifier BOOKMARK_TEXTURE = Identifier.fromNamespaceAndPath("mystcraft-sc", "textures/gui/bookui_bookmark.png");
     private static final Identifier BOOKMARK_OVERLAY_TEXTURE = Identifier.fromNamespaceAndPath("mystcraft-sc", "textures/gui/bookui_bookmark_overlay.png");
 
@@ -37,11 +36,6 @@ public class SingleSlotScreen extends AbstractContainerScreen<DisplayContainerMe
 
     private static final int LINK_BOOK_WIDTH = 327;
     private static final int LINK_BOOK_HEIGHT = 199;
-
-    private static final int LINK_PANEL_X = 173;
-    private static final int LINK_PANEL_Y = 20;
-    private static final int LINK_PANEL_W = 132;
-    private static final int LINK_PANEL_H = 83;
 
     private static final int BOOKMARK_X = 100;
     private static final int BOOKMARK_Y = 2;
@@ -102,10 +96,11 @@ public class SingleSlotScreen extends AbstractContainerScreen<DisplayContainerMe
 
     private boolean isMouseOverLinkPanel(double mouseX, double mouseY) {
         return isLinkBookMode()
-                && mouseX >= this.leftPos + LINK_PANEL_X
-                && mouseX < this.leftPos + LINK_PANEL_X + LINK_PANEL_W
-                && mouseY >= this.topPos + LINK_PANEL_Y
-                && mouseY < this.topPos + LINK_PANEL_Y + LINK_PANEL_H;
+                && this.menu.getCurrentPage() == 0
+                && mouseX >= this.leftPos + LinkPanelGuiRenderer.PANEL_X
+                && mouseX < this.leftPos + LinkPanelGuiRenderer.PANEL_X + LinkPanelGuiRenderer.PANEL_W
+                && mouseY >= this.topPos + LinkPanelGuiRenderer.PANEL_Y
+                && mouseY < this.topPos + LinkPanelGuiRenderer.PANEL_Y + LinkPanelGuiRenderer.PANEL_H;
     }
 
     private boolean isMouseOverBookmark(double mouseX, double mouseY) {
@@ -159,12 +154,12 @@ public class SingleSlotScreen extends AbstractContainerScreen<DisplayContainerMe
             drawBookmark(guiGraphics);
         }
 
-        drawRegion(guiGraphics, LINK_BOOK_PAGE_RIGHT, x + 163, y + 0, 0, 0, 156, 195, 256, 256);
-
-        guiGraphics.fill(x + LINK_PANEL_X, y + LINK_PANEL_Y, x + LINK_PANEL_X + LINK_PANEL_W, y + LINK_PANEL_Y + LINK_PANEL_H, 0xFF101020);
-        guiGraphics.fill(x + LINK_PANEL_X + 1, y + LINK_PANEL_Y + 1, x + LINK_PANEL_X + LINK_PANEL_W - 1, y + LINK_PANEL_Y + LINK_PANEL_H - 1, 0xFF1E2B38);
-
-        drawLinkBookText(guiGraphics);
+        if (this.menu.getCurrentPage() == 0) {
+            LinkPanelGuiRenderer.drawCutoutPanelPage(guiGraphics, x, y, getBookTag());
+            drawLinkBookText(guiGraphics);
+        } else {
+            LinkPanelGuiRenderer.drawSolidRightPage(guiGraphics, x, y);
+        }
     }
 
     private void drawBookmark(GuiGraphics guiGraphics) {
@@ -247,14 +242,14 @@ public class SingleSlotScreen extends AbstractContainerScreen<DisplayContainerMe
         guiGraphics.pose().popMatrix();
 
         if (!ageName.isEmpty()) {
-            int panelCenterX = x + LINK_PANEL_X + (LINK_PANEL_W / 2);
+            int panelCenterX = x + LinkPanelGuiRenderer.PANEL_X + (LinkPanelGuiRenderer.PANEL_W / 2);
             int width = this.font.width(ageName);
 
             guiGraphics.drawString(
                     this.font,
                     ageName,
                     panelCenterX - (width / 2),
-                    y + LINK_PANEL_Y + LINK_PANEL_H + 6,
+                    y + LinkPanelGuiRenderer.PANEL_Y + LinkPanelGuiRenderer.PANEL_H + 6,
                     0xFF3F2A17,
                     false
             );

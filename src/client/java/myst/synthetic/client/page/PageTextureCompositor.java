@@ -37,32 +37,37 @@ public final class PageTextureCompositor {
     }
 
     public static BufferedImage composeBlankPage() {
-        return downscaleToFinal(buildWorkingBackground());
+        return buildFinalBackground();
     }
 
     public static BufferedImage composeLinkPanelPage() {
-        BufferedImage page = buildWorkingBackground();
+        BufferedImage finalPage = buildFinalBackground();
 
-        int width = 110;
-        int height = 45;
-        int startX = 25;
-        int startY = 30;
+        int width = 44;
+        int height = 18;
+        int startX = 10;
+        int startY = 12;
 
         for (int x = startX; x <= startX + width; x++) {
             for (int y = startY; y <= startY + height; y++) {
-                page.setRGB(x, y, 0xFF000000);
+                finalPage.setRGB(x, y, 0xFF000000);
             }
         }
 
-        return downscaleToFinal(page);
+        return finalPage;
     }
 
     public static BufferedImage composeSymbolPage(ResolvedPageEmblem emblem) {
-        BufferedImage page = buildWorkingBackground();
+        BufferedImage finalPage = buildFinalBackground();
         BufferedImage source = loadImage(SYMBOL_COMPONENTS_PATH);
 
-        stitchEmblem(page, emblem, source);
-        return downscaleToFinal(page);
+        BufferedImage workingSymbols = createTransparentWorkingCanvas();
+        stitchEmblem(workingSymbols, emblem, source);
+
+        BufferedImage finalSymbols = downscaleSymbolsToFinal(workingSymbols);
+        blendImageOnto(finalPage, finalSymbols);
+
+        return finalPage;
     }
 
     public static BufferedImage composeBlankContent() {
@@ -83,7 +88,7 @@ public final class PageTextureCompositor {
             }
         }
 
-        BufferedImage finalSized = downscaleToFinal(working);
+        BufferedImage finalSized = scaleImageNearest(working, 0.8);
         return scaleFinalPageToContent(finalSized);
     }
 
@@ -93,7 +98,7 @@ public final class PageTextureCompositor {
 
         stitchEmblem(working, emblem, source);
 
-        BufferedImage finalSized = downscaleToFinal(working);
+        BufferedImage finalSized = downscaleSymbolsToFinal(working);
         return scaleFinalPageToContent(finalSized);
     }
 
@@ -247,7 +252,6 @@ public final class PageTextureCompositor {
         };
     }
 
-
     private static BufferedImage buildWorkingBackground() {
         BufferedImage base = loadImage(PAGE_BACKGROUND_PATH);
         BufferedImage scaled = scaleImageNearest(base, 5.0);
@@ -255,13 +259,17 @@ public final class PageTextureCompositor {
         return new BufferedImage(colorModel, scaled.copyData(null), colorModel.isAlphaPremultiplied(), null);
     }
 
+    private static BufferedImage buildFinalBackground() {
+        return scaleImageNearest(buildWorkingBackground(), 0.8);
+    }
+
     private static BufferedImage scaleFinalPageToContent(BufferedImage finalSized) {
         double scale = (double) CONTENT_SIZE / (double) FINAL_PAGE_SIZE;
         return scaleImageNearest(finalSized, scale);
     }
 
-    private static BufferedImage downscaleToFinal(BufferedImage source) {
-        return scaleImageNearest(source, 0.8);
+    private static BufferedImage downscaleSymbolsToFinal(BufferedImage source) {
+        return scaleImageBilinear(source, 0.8);
     }
 
     private static BufferedImage createTransparentWorkingCanvas() {
@@ -269,19 +277,50 @@ public final class PageTextureCompositor {
         return new BufferedImage(reference.getWidth(), reference.getHeight(), BufferedImage.TYPE_INT_ARGB);
     }
 
-    private static BufferedImage scaleImage(BufferedImage source, double scale) {
-        int width = Math.max(1, (int) Math.round(source.getWidth() * scale));
-        int height = Math.max(1, (int) Math.round(source.getHeight() * scale));
+    private static void blendImageOnto(BufferedImage target, BufferedImage overlay) {
+        int width = Math.min(target.getWidth(), overlay.getWidth());
+        int height = Math.min(target.getHeight(), overlay.getHeight());
 
-        BufferedImage output = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-        java.awt.geom.AffineTransform transform = java.awt.geom.AffineTransform.getScaleInstance(scale, scale);
-        AffineTransformOp op = new AffineTransformOp(
-                transform,
-                AffineTransformOp.TYPE_BILINEAR
-        );
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                int overlayArgb = overlay.getRGB(x, y);
+                int alpha = (overlayArgb >>> 24) & 0xFF;
+                if (alpha == 0) {
+                    continue;
+                }
 
-        op.filter(source, output);
-        return output;
+                int targetArgb = target.getRGB(x, y);
+                target.setRGB(x, y, alphaComposite(overlayArgb, targetArgb));
+            }
+        }
+    }
+
+    private static int alphaComposite(int src, int dst) {
+        float srcA = ((src >>> 24) & 0xFF) / 255.0F;
+        float srcR = ((src >>> 16) & 0xFF) / 255.0F;
+        float srcG = ((src >>> 8) & 0xFF) / 255.0F;
+        float srcB = (src & 0xFF) / 255.0F;
+
+        float dstA = ((dst >>> 24) & 0xFF) / 255.0F;
+        float dstR = ((dst >>> 16) & 0xFF) / 255.0F;
+        float dstG = ((dst >>> 8) & 0xFF) / 255.0F;
+        float dstB = (dst & 0xFF) / 255.0F;
+
+        float outA = srcA + dstA * (1.0F - srcA);
+        if (outA <= 0.0F) {
+            return 0;
+        }
+
+        float outR = (srcR * srcA + dstR * dstA * (1.0F - srcA)) / outA;
+        float outG = (srcG * srcA + dstG * dstA * (1.0F - srcA)) / outA;
+        float outB = (srcB * srcA + dstB * dstA * (1.0F - srcA)) / outA;
+
+        int a = clamp255(outA * 255.0F);
+        int r = clamp255(outR * 255.0F);
+        int g = clamp255(outG * 255.0F);
+        int b = clamp255(outB * 255.0F);
+
+        return (a << 24) | (r << 16) | (g << 8) | b;
     }
 
     private static BufferedImage loadImage(String path) {
@@ -300,6 +339,7 @@ public final class PageTextureCompositor {
             throw new RuntimeException("Failed to load page render resource: " + path, e);
         }
     }
+
     private static BufferedImage scaleImageNearest(BufferedImage source, double scale) {
         int width = Math.max(1, (int) Math.round(source.getWidth() * scale));
         int height = Math.max(1, (int) Math.round(source.getHeight() * scale));

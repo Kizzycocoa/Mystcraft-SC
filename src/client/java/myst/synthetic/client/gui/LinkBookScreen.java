@@ -31,17 +31,11 @@ public class LinkBookScreen extends Screen {
 
     private static final Identifier BOOK_COVER = Identifier.fromNamespaceAndPath("mystcraft-sc", "textures/gui/bookui_cover.png");
     private static final Identifier BOOK_PAGE_LEFT = Identifier.fromNamespaceAndPath("mystcraft-sc", "textures/gui/bookui_pagel.png");
-    private static final Identifier BOOK_PAGE_RIGHT = Identifier.fromNamespaceAndPath("mystcraft-sc", "textures/gui/bookui_pager.png");
     private static final Identifier BOOKMARK_TEXTURE = Identifier.fromNamespaceAndPath("mystcraft-sc", "textures/gui/bookui_bookmark.png");
     private static final Identifier BOOKMARK_OVERLAY_TEXTURE = Identifier.fromNamespaceAndPath("mystcraft-sc", "textures/gui/bookui_bookmark_overlay.png");
 
     private static final int GUI_WIDTH = 327;
     private static final int GUI_HEIGHT = 199;
-
-    private static final int PANEL_X = 173;
-    private static final int PANEL_Y = 20;
-    private static final int PANEL_W = 132;
-    private static final int PANEL_H = 83;
 
     private static final int CONTAINER_SLOT_X = 41;
     private static final int CONTAINER_SLOT_Y = 21;
@@ -169,10 +163,7 @@ public class LinkBookScreen extends Screen {
         drawRegion(guiGraphics, BOOK_COVER, x + 141, y + 7, 0,   0, 186, 192, 256, 256);
 
         //drawRegion(guiGraphics, BOOK_PAGE_LEFT, x + 7, y + 0, 0, 0, 156, 195, 256, 256);
-        drawRegion(guiGraphics, BOOK_PAGE_RIGHT, x + 163, y + 0, 0, 0, 156, 195, 256, 256);
-
-        guiGraphics.fill(x + PANEL_X, y + PANEL_Y, x + PANEL_X + PANEL_W, y + PANEL_Y + PANEL_H, 0xFF101020);
-        guiGraphics.fill(x + PANEL_X + 1, y + PANEL_Y + 1, x + PANEL_X + PANEL_W - 1, y + PANEL_Y + PANEL_H - 1, 0xFF1E2B38);
+        LinkPanelGuiRenderer.drawCutoutPanelPage(guiGraphics, x, y, getBookTag());
     }
 
     private void drawBookText(GuiGraphics guiGraphics) {
@@ -200,14 +191,14 @@ public class LinkBookScreen extends Screen {
         guiGraphics.pose().popMatrix();
 
         if (!ageName.isEmpty()) {
-            int panelCenterX = x + PANEL_X + (PANEL_W / 2);
+            int panelCenterX = x + LinkPanelGuiRenderer.PANEL_X + (LinkPanelGuiRenderer.PANEL_W / 2);
             int width = this.font.width(ageName);
 
             guiGraphics.drawString(
                     this.font,
                     ageName,
                     panelCenterX - (width / 2),
-                    y + PANEL_Y + PANEL_H + 6,
+                    y + LinkPanelGuiRenderer.PANEL_Y + LinkPanelGuiRenderer.PANEL_H + 6,
                     0xFF3F2A17,
                     false
             );
@@ -287,10 +278,10 @@ public class LinkBookScreen extends Screen {
             }
         }
 
-        int panelLeft = this.leftPos + PANEL_X;
-        int panelTop = this.topPos + PANEL_Y;
-        int panelRight = panelLeft + PANEL_W;
-        int panelBottom = panelTop + PANEL_H;
+        int panelLeft = this.leftPos + LinkPanelGuiRenderer.PANEL_X;
+        int panelTop = this.topPos + LinkPanelGuiRenderer.PANEL_Y;
+        int panelRight = panelLeft + LinkPanelGuiRenderer.PANEL_W;
+        int panelBottom = panelTop + LinkPanelGuiRenderer.PANEL_H;
 
         if (mouseX >= panelLeft && mouseX <= panelRight && mouseY >= panelTop && mouseY <= panelBottom) {
             onLinkPanelClicked();
