@@ -25,9 +25,9 @@ public abstract class SpecialModelRenderersMixin {
 				BookstandItemSpecialRendererUnbaked.MAP_CODEC
 		);
 
-		//SpecialModelRenderers.ID_MAPPER.put(
-		//		Identifier.fromNamespaceAndPath("mystcraft-sc", "page"),
-		//		PageItemSpecialRendererUnbaked.MAP_CODEC
-		//);
+		SpecialModelRenderers.ID_MAPPER.put(
+				Identifier.fromNamespaceAndPath("mystcraft-sc", "page"),
+				PageItemSpecialRendererUnbaked.MAP_CODEC
+		);
 	}
 }

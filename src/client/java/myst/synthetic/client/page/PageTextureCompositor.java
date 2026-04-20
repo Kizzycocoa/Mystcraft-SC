@@ -261,7 +261,7 @@ public final class PageTextureCompositor {
     }
 
     private static BufferedImage downscaleToFinal(BufferedImage source) {
-        return scaleImageBilinear(source, 0.8);
+        return scaleImageNearest(source, 0.8);
     }
 
     private static BufferedImage createTransparentWorkingCanvas() {

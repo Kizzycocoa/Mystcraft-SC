@@ -3,7 +3,9 @@ package myst.synthetic.client.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import myst.synthetic.client.page.PageRenderAsset;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -16,9 +18,8 @@ public final class PageRenderPipelines {
 
     private static final Map<Identifier, RenderType> WORLD_RENDER_TYPES = new HashMap<>();
     private static final Map<Identifier, RenderType> GUI_RENDER_TYPES = new HashMap<>();
+    private static final Map<Identifier, PageMesh> MESH_CACHE = new HashMap<>();
 
-    private static final float HALF_WIDTH = 0.5F;
-    private static final float HALF_HEIGHT = 0.5F;
     private static final float HALF_THICKNESS = 0.015F;
 
     private PageRenderPipelines() {
@@ -51,6 +52,10 @@ public final class PageRenderPipelines {
         );
     }
 
+    private static PageMesh getMesh(PageRenderAsset asset) {
+        return MESH_CACHE.computeIfAbsent(asset.textureId(), ignored -> PageMesh.fromImage(asset.image()));
+    }
+
     public static void submitWorld(
             SubmitNodeCollector queue,
             PoseStack poseStack,
@@ -59,10 +64,11 @@ public final class PageRenderPipelines {
             int overlay,
             int tintArgb
     ) {
+        PageMesh mesh = getMesh(asset);
         queue.submitCustomGeometry(
                 poseStack,
                 getWorldRenderType(asset.textureId()),
-                (pose, consumer) -> emitPageGeometry(pose, consumer, light, overlay, asset.image(), tintArgb)
+                (pose, consumer) -> emitPageGeometry(pose, consumer, light, overlay, mesh, tintArgb)
         );
     }
 
@@ -74,10 +80,11 @@ public final class PageRenderPipelines {
             int overlay,
             int tintArgb
     ) {
+        PageMesh mesh = getMesh(asset);
         queue.submitCustomGeometry(
                 poseStack,
                 getGuiRenderType(asset.textureId()),
-                (pose, consumer) -> emitPageGeometry(pose, consumer, light, overlay, asset.image(), tintArgb)
+                (pose, consumer) -> emitPageGeometry(pose, consumer, light, overlay, mesh, tintArgb)
         );
     }
 
@@ -86,190 +93,197 @@ public final class PageRenderPipelines {
             VertexConsumer consumer,
             int light,
             int overlay,
-            BufferedImage image,
+            PageMesh mesh,
             int tintArgb
     ) {
-        emitFrontFaces(pose, consumer, light, overlay, image, tintArgb);
-        emitBackFaces(pose, consumer, light, overlay, image, tintArgb);
-        emitExtrudedEdges(pose, consumer, light, overlay, image, tintArgb);
+        emitFrontFace(pose, consumer, light, overlay, tintArgb);
+        emitBackFace(pose, consumer, light, overlay, tintArgb);
+        emitTopEdges(pose, consumer, light, overlay, mesh, tintArgb);
+        emitBottomEdges(pose, consumer, light, overlay, mesh, tintArgb);
+        emitLeftEdges(pose, consumer, light, overlay, mesh, tintArgb);
+        emitRightEdges(pose, consumer, light, overlay, mesh, tintArgb);
     }
 
-    private static void emitFrontFaces(
+    private static void emitFrontFace(
             PoseStack.Pose pose,
             VertexConsumer consumer,
             int light,
             int overlay,
-            BufferedImage image,
             int tintArgb
     ) {
-        int width = image.getWidth();
-        int height = image.getHeight();
-        float z = HALF_THICKNESS;
-
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) {
-                if (!isOpaque(image, x, y)) {
-                    continue;
-                }
-
-                float x0 = pixelX(x, width);
-                float x1 = pixelX(x + 1, width);
-                float y0 = pixelY(y, height);
-                float y1 = pixelY(y + 1, height);
-
-                float u0 = (float) x / (float) width;
-                float u1 = (float) (x + 1) / (float) width;
-                float v0 = (float) y / (float) height;
-                float v1 = (float) (y + 1) / (float) height;
-
-                emitQuad(
-                        pose, consumer, light, overlay, tintArgb,
-                        x0, y1, z,
-                        x1, y1, z,
-                        x1, y0, z,
-                        x0, y0, z,
-                        0.0F, 0.0F, -1.0F,
-                        u0, v1,
-                        u1, v1,
-                        u1, v0,
-                        u0, v0
-                );
-            }
-        }
+        emitQuad(
+                pose, consumer, light, overlay, tintArgb,
+                -0.5F, -0.5F, HALF_THICKNESS,
+                0.5F, -0.5F, HALF_THICKNESS,
+                0.5F,  0.5F, HALF_THICKNESS,
+                -0.5F,  0.5F, HALF_THICKNESS,
+                0.0F, 0.0F, -1.0F,
+                0.0F, 1.0F,
+                1.0F, 1.0F,
+                1.0F, 0.0F,
+                0.0F, 0.0F
+        );
     }
 
-    private static void emitBackFaces(
+    private static void emitBackFace(
             PoseStack.Pose pose,
             VertexConsumer consumer,
             int light,
             int overlay,
-            BufferedImage image,
             int tintArgb
     ) {
-        int width = image.getWidth();
-        int height = image.getHeight();
-        float z = -HALF_THICKNESS;
-
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) {
-                if (!isOpaque(image, x, y)) {
-                    continue;
-                }
-
-                float x0 = pixelX(x, width);
-                float x1 = pixelX(x + 1, width);
-                float y0 = pixelY(y, height);
-                float y1 = pixelY(y + 1, height);
-
-                float u0 = (float) x / (float) width;
-                float u1 = (float) (x + 1) / (float) width;
-                float v0 = (float) y / (float) height;
-                float v1 = (float) (y + 1) / (float) height;
-
-                emitQuad(
-                        pose, consumer, light, overlay, tintArgb,
-                        x0, y0, z,
-                        x1, y0, z,
-                        x1, y1, z,
-                        x0, y1, z,
-                        0.0F, 0.0F, 1.0F,
-                        u0, v0,
-                        u1, v0,
-                        u1, v1,
-                        u0, v1
-                );
-            }
-        }
+        emitQuad(
+                pose, consumer, light, overlay, tintArgb,
+                -0.5F,  0.5F, -HALF_THICKNESS,
+                0.5F,  0.5F, -HALF_THICKNESS,
+                0.5F, -0.5F, -HALF_THICKNESS,
+                -0.5F, -0.5F, -HALF_THICKNESS,
+                0.0F, 0.0F, 1.0F,
+                0.0F, 0.0F,
+                1.0F, 0.0F,
+                1.0F, 1.0F,
+                0.0F, 1.0F
+        );
     }
 
-    private static void emitExtrudedEdges(
+    private static void emitTopEdges(
             PoseStack.Pose pose,
             VertexConsumer consumer,
             int light,
             int overlay,
-            BufferedImage image,
+            PageMesh mesh,
             int tintArgb
     ) {
-        int width = image.getWidth();
-        int height = image.getHeight();
+        for (HorizontalSpan span : mesh.topSpans) {
+            float x0 = pixelX(span.start, mesh.width);
+            float x1 = pixelX(span.endExclusive, mesh.width);
+            float y = pixelY(span.row, mesh.height);
 
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) {
-                if (!isOpaque(image, x, y)) {
-                    continue;
-                }
+            float u0 = (float) span.start / (float) mesh.width;
+            float u1 = (float) span.endExclusive / (float) mesh.width;
+            float v0 = (float) span.row / (float) mesh.height;
+            float v1 = (float) (span.row + 1) / (float) mesh.height;
 
-                float x0 = pixelX(x, width);
-                float x1 = pixelX(x + 1, width);
-                float y0 = pixelY(y, height);
-                float y1 = pixelY(y + 1, height);
-
-                float u0 = (float) x / (float) width;
-                float u1 = (float) (x + 1) / (float) width;
-                float v0 = (float) y / (float) height;
-                float v1 = (float) (y + 1) / (float) height;
-
-                if (!isOpaque(image, x, y - 1)) {
-                    emitQuad(
-                            pose, consumer, light, overlay, tintArgb,
-                            x0, y0,  HALF_THICKNESS,
-                            x1, y0,  HALF_THICKNESS,
-                            x1, y0, -HALF_THICKNESS,
-                            x0, y0, -HALF_THICKNESS,
-                            0.0F, 1.0F, 0.0F,
-                            u0, v0,
-                            u1, v0,
-                            u1, v1,
-                            u0, v1
-                    );
-                }
-
-                if (!isOpaque(image, x, y + 1)) {
-                    emitQuad(
-                            pose, consumer, light, overlay, tintArgb,
-                            x0, y1, -HALF_THICKNESS,
-                            x1, y1, -HALF_THICKNESS,
-                            x1, y1,  HALF_THICKNESS,
-                            x0, y1,  HALF_THICKNESS,
-                            0.0F, -1.0F, 0.0F,
-                            u0, v0,
-                            u1, v0,
-                            u1, v1,
-                            u0, v1
-                    );
-                }
-
-                if (!isOpaque(image, x - 1, y)) {
-                    emitQuad(
-                            pose, consumer, light, overlay, tintArgb,
-                            x0, y1,  HALF_THICKNESS,
-                            x0, y0,  HALF_THICKNESS,
-                            x0, y0, -HALF_THICKNESS,
-                            x0, y1, -HALF_THICKNESS,
-                            -1.0F, 0.0F, 0.0F,
-                            u0, v1,
-                            u0, v0,
-                            u1, v0,
-                            u1, v1
-                    );
-                }
-
-                if (!isOpaque(image, x + 1, y)) {
-                    emitQuad(
-                            pose, consumer, light, overlay, tintArgb,
-                            x1, y1, -HALF_THICKNESS,
-                            x1, y0, -HALF_THICKNESS,
-                            x1, y0,  HALF_THICKNESS,
-                            x1, y1,  HALF_THICKNESS,
-                            1.0F, 0.0F, 0.0F,
-                            u0, v1,
-                            u0, v0,
-                            u1, v0,
-                            u1, v1
-                    );
-                }
-            }
+            emitQuad(
+                    pose, consumer, light, overlay, tintArgb,
+                    x0, y,  HALF_THICKNESS,
+                    x1, y,  HALF_THICKNESS,
+                    x1, y, -HALF_THICKNESS,
+                    x0, y, -HALF_THICKNESS,
+                    0.0F, 1.0F, 0.0F,
+                    u0, v0,
+                    u1, v0,
+                    u1, v1,
+                    u0, v1
+            );
         }
+    }
+
+    private static void emitBottomEdges(
+            PoseStack.Pose pose,
+            VertexConsumer consumer,
+            int light,
+            int overlay,
+            PageMesh mesh,
+            int tintArgb
+    ) {
+        for (HorizontalSpan span : mesh.bottomSpans) {
+            float x0 = pixelX(span.start, mesh.width);
+            float x1 = pixelX(span.endExclusive, mesh.width);
+            float y = pixelY(span.row + 1, mesh.height);
+
+            float u0 = (float) span.start / (float) mesh.width;
+            float u1 = (float) span.endExclusive / (float) mesh.width;
+            float v0 = (float) span.row / (float) mesh.height;
+            float v1 = (float) (span.row + 1) / (float) mesh.height;
+
+            emitQuad(
+                    pose, consumer, light, overlay, tintArgb,
+                    x0, y, -HALF_THICKNESS,
+                    x1, y, -HALF_THICKNESS,
+                    x1, y,  HALF_THICKNESS,
+                    x0, y,  HALF_THICKNESS,
+                    0.0F, -1.0F, 0.0F,
+                    u0, v0,
+                    u1, v0,
+                    u1, v1,
+                    u0, v1
+            );
+        }
+    }
+
+    private static void emitLeftEdges(
+            PoseStack.Pose pose,
+            VertexConsumer consumer,
+            int light,
+            int overlay,
+            PageMesh mesh,
+            int tintArgb
+    ) {
+        for (VerticalSpan span : mesh.leftSpans) {
+            float x = pixelX(span.column, mesh.width);
+            float y0 = pixelY(span.start, mesh.height);
+            float y1 = pixelY(span.endExclusive, mesh.height);
+
+            float u0 = (float) span.column / (float) mesh.width;
+            float u1 = (float) (span.column + 1) / (float) mesh.width;
+            float v0 = (float) span.start / (float) mesh.height;
+            float v1 = (float) span.endExclusive / (float) mesh.height;
+
+            emitQuad(
+                    pose, consumer, light, overlay, tintArgb,
+                    x, y1,  HALF_THICKNESS,
+                    x, y0,  HALF_THICKNESS,
+                    x, y0, -HALF_THICKNESS,
+                    x, y1, -HALF_THICKNESS,
+                    -1.0F, 0.0F, 0.0F,
+                    u0, v1,
+                    u0, v0,
+                    u1, v0,
+                    u1, v1
+            );
+        }
+    }
+
+    private static void emitRightEdges(
+            PoseStack.Pose pose,
+            VertexConsumer consumer,
+            int light,
+            int overlay,
+            PageMesh mesh,
+            int tintArgb
+    ) {
+        for (VerticalSpan span : mesh.rightSpans) {
+            float x = pixelX(span.column + 1, mesh.width);
+            float y0 = pixelY(span.start, mesh.height);
+            float y1 = pixelY(span.endExclusive, mesh.height);
+
+            float u0 = (float) span.column / (float) mesh.width;
+            float u1 = (float) (span.column + 1) / (float) mesh.width;
+            float v0 = (float) span.start / (float) mesh.height;
+            float v1 = (float) span.endExclusive / (float) mesh.height;
+
+            emitQuad(
+                    pose, consumer, light, overlay, tintArgb,
+                    x, y1, -HALF_THICKNESS,
+                    x, y0, -HALF_THICKNESS,
+                    x, y0,  HALF_THICKNESS,
+                    x, y1,  HALF_THICKNESS,
+                    1.0F, 0.0F, 0.0F,
+                    u0, v1,
+                    u0, v0,
+                    u1, v0,
+                    u1, v1
+            );
+        }
+    }
+
+    private static float pixelX(int pixel, int width) {
+        return ((float) pixel / (float) width) - 0.5F;
+    }
+
+    private static float pixelY(int pixel, int height) {
+        return 0.5F - ((float) pixel / (float) height);
     }
 
     private static boolean isOpaque(BufferedImage image, int x, int y) {
@@ -280,14 +294,6 @@ public final class PageRenderPipelines {
         int argb = image.getRGB(x, y);
         int alpha = (argb >>> 24) & 0xFF;
         return alpha > 0;
-    }
-
-    private static float pixelX(int pixel, int width) {
-        return ((float) pixel / (float) width) - 0.5F;
-    }
-
-    private static float pixelY(int pixel, int height) {
-        return 0.5F - ((float) pixel / (float) height);
     }
 
     private static void emitQuad(
@@ -338,5 +344,165 @@ public final class PageRenderPipelines {
                 .setOverlay(overlay)
                 .setLight(light)
                 .setNormal(pose, nx, ny, nz);
+    }
+
+    private record PageMesh(
+            int width,
+            int height,
+            List<HorizontalSpan> topSpans,
+            List<HorizontalSpan> bottomSpans,
+            List<VerticalSpan> leftSpans,
+            List<VerticalSpan> rightSpans
+    ) {
+        private static PageMesh fromImage(BufferedImage image) {
+            int width = image.getWidth();
+            int height = image.getHeight();
+
+            boolean[][] opaque = new boolean[height][width];
+            for (int y = 0; y < height; y++) {
+                for (int x = 0; x < width; x++) {
+                    opaque[y][x] = isOpaque(image, x, y);
+                }
+            }
+
+            return new PageMesh(
+                    width,
+                    height,
+                    buildTopSpans(opaque, width, height),
+                    buildBottomSpans(opaque, width, height),
+                    buildLeftSpans(opaque, width, height),
+                    buildRightSpans(opaque, width, height)
+            );
+        }
+
+        private static List<HorizontalSpan> buildTopSpans(boolean[][] opaque, int width, int height) {
+            List<HorizontalSpan> spans = new ArrayList<>();
+
+            for (int y = 0; y < height; y++) {
+                int x = 0;
+                while (x < width) {
+                    if (!hasTopEdge(opaque, width, height, x, y)) {
+                        x++;
+                        continue;
+                    }
+
+                    int start = x;
+                    x++;
+                    while (x < width && hasTopEdge(opaque, width, height, x, y)) {
+                        x++;
+                    }
+
+                    spans.add(new HorizontalSpan(y, start, x));
+                }
+            }
+
+            return spans;
+        }
+
+        private static List<HorizontalSpan> buildBottomSpans(boolean[][] opaque, int width, int height) {
+            List<HorizontalSpan> spans = new ArrayList<>();
+
+            for (int y = 0; y < height; y++) {
+                int x = 0;
+                while (x < width) {
+                    if (!hasBottomEdge(opaque, width, height, x, y)) {
+                        x++;
+                        continue;
+                    }
+
+                    int start = x;
+                    x++;
+                    while (x < width && hasBottomEdge(opaque, width, height, x, y)) {
+                        x++;
+                    }
+
+                    spans.add(new HorizontalSpan(y, start, x));
+                }
+            }
+
+            return spans;
+        }
+
+        private static List<VerticalSpan> buildLeftSpans(boolean[][] opaque, int width, int height) {
+            List<VerticalSpan> spans = new ArrayList<>();
+
+            for (int x = 0; x < width; x++) {
+                int y = 0;
+                while (y < height) {
+                    if (!hasLeftEdge(opaque, width, height, x, y)) {
+                        y++;
+                        continue;
+                    }
+
+                    int start = y;
+                    y++;
+                    while (y < height && hasLeftEdge(opaque, width, height, x, y)) {
+                        y++;
+                    }
+
+                    spans.add(new VerticalSpan(x, start, y));
+                }
+            }
+
+            return spans;
+        }
+
+        private static List<VerticalSpan> buildRightSpans(boolean[][] opaque, int width, int height) {
+            List<VerticalSpan> spans = new ArrayList<>();
+
+            for (int x = 0; x < width; x++) {
+                int y = 0;
+                while (y < height) {
+                    if (!hasRightEdge(opaque, width, height, x, y)) {
+                        y++;
+                        continue;
+                    }
+
+                    int start = y;
+                    y++;
+                    while (y < height && hasRightEdge(opaque, width, height, x, y)) {
+                        y++;
+                    }
+
+                    spans.add(new VerticalSpan(x, start, y));
+                }
+            }
+
+            return spans;
+        }
+
+        private static boolean hasTopEdge(boolean[][] opaque, int width, int height, int x, int y) {
+            if (!opaque[y][x]) {
+                return false;
+            }
+            return y == 0 || !opaque[y - 1][x];
+        }
+
+        private static boolean hasBottomEdge(boolean[][] opaque, int width, int height, int x, int y) {
+            if (!opaque[y][x]) {
+                return false;
+            }
+            return y == height - 1 || !opaque[y + 1][x];
+        }
+
+        private static boolean hasLeftEdge(boolean[][] opaque, int width, int height, int x, int y) {
+            if (!opaque[y][x]) {
+                return false;
+            }
+            return x == 0 || !opaque[y][x - 1];
+        }
+
+        private static boolean hasRightEdge(boolean[][] opaque, int width, int height, int x, int y) {
+            if (!opaque[y][x]) {
+                return false;
+            }
+            return x == width - 1 || !opaque[y][x + 1];
+        }
+    }
+
+    private record HorizontalSpan(int row, int start, int endExclusive) {
+    }
+
+    private record VerticalSpan(int column, int start, int endExclusive) {
     }
 }
