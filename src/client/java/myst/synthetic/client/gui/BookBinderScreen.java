@@ -84,9 +84,10 @@ public class BookBinderScreen extends AbstractContainerScreen<BookBinderMenu> {
                 TITLE_H - 6,
                 Component.literal("Book Title")
         );
+        this.titleBox.setCanLoseFocus(true);
         this.titleBox.setBordered(false);
-        this.titleBox.setTextColor(0xFFFFFF);
-        this.titleBox.setTextColorUneditable(0xFFFFFF);
+        this.titleBox.setTextColor(0xFFFFFFFF);
+        this.titleBox.setTextColorUneditable(0xFFC0C0C0);
         this.titleBox.setMaxLength(21);
         this.titleBox.setValue(this.menu.getSyncedTitle());
         this.lastSentTitle = this.titleBox.getValue();
@@ -196,6 +197,13 @@ public class BookBinderScreen extends AbstractContainerScreen<BookBinderMenu> {
         }
     }
 
+    private boolean isMouseOverTitleBox(int mouseX, int mouseY) {
+        return mouseX >= this.leftPos + TITLE_X
+                && mouseX < this.leftPos + TITLE_X + TITLE_W
+                && mouseY >= this.topPos + TITLE_Y
+                && mouseY < this.topPos + TITLE_Y + TITLE_H;
+    }
+
     private void drawPageStrip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         int stripLeft = this.leftPos + STRIP_X;
         int stripTop = this.topPos + STRIP_Y;
@@ -267,8 +275,12 @@ public class BookBinderScreen extends AbstractContainerScreen<BookBinderMenu> {
         float alpha = getMissingPanelPulseAlpha();
         if (alpha > 0.0F) {
             int overlayAlpha = Math.max(0, Math.min(255, (int) (alpha * 255.0F)));
-            int overlay = (overlayAlpha << 24) | (0xFF << 16) | (0x80 << 8) | 0x80;
-            guiGraphics.fill(x, y, x + MISSING_ICON_W, y + MISSING_ICON_H, overlay);
+            int tintOverlay = (overlayAlpha << 24) | (0xFF << 16) | (0x80 << 8) | 0x80;
+            guiGraphics.fill(x, y, x + MISSING_ICON_W, y + MISSING_ICON_H, tintOverlay);
+
+            int hideAlpha = Math.max(0, Math.min(255, (int) ((1.0F - alpha) * 255.0F)));
+            int binderBackground = (hideAlpha << 24) | 0xFFC0C0C0;
+            guiGraphics.fill(x, y, x + MISSING_ICON_W, y + MISSING_ICON_H, binderBackground);
         }
 
         if (mouseX >= x && mouseX < x + MISSING_ICON_W && mouseY >= y && mouseY < y + MISSING_ICON_H) {
@@ -292,7 +304,8 @@ public class BookBinderScreen extends AbstractContainerScreen<BookBinderMenu> {
         if (alpha > 1.0F) {
             alpha = 2.0F - alpha;
         }
-        return alpha * 0.7F;
+        alpha += 0.3F;
+        return Math.min(alpha, 1.0F);
     }
 
     @Override
@@ -355,8 +368,20 @@ public class BookBinderScreen extends AbstractContainerScreen<BookBinderMenu> {
         int mouseX = (int) event.x();
         int mouseY = (int) event.y();
 
-        if (this.titleBox != null && this.titleBox.mouseClicked(event, doubleClick)) {
-            return true;
+        if (this.titleBox != null) {
+            if (this.titleBox.mouseClicked(event, doubleClick)) {
+                this.setFocused(this.titleBox);
+                this.titleBox.setFocused(true);
+                return true;
+            }
+
+            if (isMouseOverTitleBox(mouseX, mouseY)) {
+                this.setFocused(this.titleBox);
+                this.titleBox.setFocused(true);
+                return true;
+            } else {
+                this.titleBox.setFocused(false);
+            }
         }
 
         int stripLeft = this.leftPos + STRIP_X;
