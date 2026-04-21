@@ -76,7 +76,7 @@
       "origin": "Mystcraft",
       "category": "terrain",
       "card_rank": 1,
-      "poem_words": ["Terrain", "Transform", "Void", "Elevate"],
+      "poem_words": ["Terrain", "Form", "Void", "Elevate"],
       "tested": 0,
       "value": "skylands"
     },
@@ -96,9 +96,19 @@
       "origin": "Mystcraft:SC",
       "category": "terrain",
       "card_rank": 1,
-      "poem_words": ["Terrain", "Form", "Infinite", "Maze"],
+      "poem_words": ["Terrain", "Form", "Infinite", "Entropy"],
       "tested": 0,
       "value": "backrooms"
+    },
+    {
+      "id": "terrain_underworld",
+      "translation_key": "symbol.mystcraft-sc.terrain_underworld",
+      "origin": "Mystcraft:SC",
+      "category": "terrain",
+      "card_rank": 1,
+      "poem_words": ["Terrain", "Form", "Constraint", "Spur"],
+      "tested": 0,
+      "value": "underworld"
     }
   ]
 }
