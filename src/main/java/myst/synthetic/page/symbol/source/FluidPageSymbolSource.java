@@ -31,6 +31,7 @@ public final class FluidPageSymbolSource implements PageSymbolSource {
                             "generated/fluid/" + fluidId.getNamespace() + "/" + fluidId.getPath()
                     ),
                     null,
+                    "Minecraft",
                     "fluid",
                     1,
                     GeneratedPageSymbolUtil.fluidWords(fluidId),
