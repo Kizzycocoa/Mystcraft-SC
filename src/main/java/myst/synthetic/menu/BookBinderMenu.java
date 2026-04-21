@@ -15,6 +15,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
+
 public class BookBinderMenu extends AbstractContainerMenu {
 
     public static final int DATA_CAN_CRAFT = 0;
@@ -27,7 +29,8 @@ public class BookBinderMenu extends AbstractContainerMenu {
     public static final int BUTTON_REMOVE_AT_START = 3000;
 
     private static final int SLOT_COVER = 0;
-    private static final int SLOT_RESULT = 28;
+    private static final int SLOT_RESULT = 1;
+    private static final int PLAYER_SLOT_START = 2;
 
     private final Container binderInventory;
     @Nullable
@@ -60,11 +63,6 @@ public class BookBinderMenu extends AbstractContainerMenu {
         this.data = data;
 
         this.addSlot(new CoverSlot(this.binderInventory, SLOT_COVER, 8, 27));
-
-        for (int i = 0; i < BlockEntityBookBinder.PAGE_SLOT_COUNT; i++) {
-            this.addSlot(new HiddenPageSlot(this.binderInventory, BlockEntityBookBinder.SLOT_PAGE_START + i));
-        }
-
         this.addSlot(new ResultSlot(playerInventory.player, this.resultContainer, 0, 152, 27));
 
         for (int row = 0; row < 3; row++) {
@@ -110,23 +108,20 @@ public class BookBinderMenu extends AbstractContainerMenu {
     }
 
     public int getPageCount() {
-        int count = 0;
-
-        for (int i = 0; i < BlockEntityBookBinder.PAGE_SLOT_COUNT; i++) {
-            ItemStack stack = this.binderInventory.getItem(BlockEntityBookBinder.SLOT_PAGE_START + i);
-            if (!stack.isEmpty()) {
-                count++;
-            }
-        }
-
-        return count;
+        return this.binderBlockEntity == null ? 0 : this.binderBlockEntity.getPageList().size();
     }
 
     public ItemStack getPageAt(int index) {
-        if (index < 0 || index >= BlockEntityBookBinder.PAGE_SLOT_COUNT) {
+        if (this.binderBlockEntity == null) {
             return ItemStack.EMPTY;
         }
-        return this.binderInventory.getItem(BlockEntityBookBinder.SLOT_PAGE_START + index);
+
+        List<ItemStack> pages = this.binderBlockEntity.getPageList();
+        if (index < 0 || index >= pages.size()) {
+            return ItemStack.EMPTY;
+        }
+
+        return pages.get(index);
     }
 
     @Nullable
@@ -140,7 +135,9 @@ public class BookBinderMenu extends AbstractContainerMenu {
             return false;
         }
 
-        if (id >= BUTTON_REMOVE_AT_START && id < BUTTON_REMOVE_AT_START + BlockEntityBookBinder.PAGE_SLOT_COUNT) {
+        int pageCount = this.binderBlockEntity.getPageList().size();
+
+        if (id >= BUTTON_REMOVE_AT_START && id < BUTTON_REMOVE_AT_START + pageCount) {
             int index = id - BUTTON_REMOVE_AT_START;
             if (!this.getCarried().isEmpty()) {
                 return false;
@@ -156,12 +153,12 @@ public class BookBinderMenu extends AbstractContainerMenu {
             return true;
         }
 
-        if (id >= BUTTON_INSERT_SINGLE_AT_START && id < BUTTON_INSERT_SINGLE_AT_START + (BlockEntityBookBinder.PAGE_SLOT_COUNT + 1)) {
+        if (id >= BUTTON_INSERT_SINGLE_AT_START && id < BUTTON_INSERT_SINGLE_AT_START + (pageCount + 1)) {
             int index = id - BUTTON_INSERT_SINGLE_AT_START;
             return this.tryInsertCarried(player, index, true);
         }
 
-        if (id >= BUTTON_INSERT_AT_START && id < BUTTON_INSERT_AT_START + (BlockEntityBookBinder.PAGE_SLOT_COUNT + 1)) {
+        if (id >= BUTTON_INSERT_AT_START && id < BUTTON_INSERT_AT_START + (pageCount + 1)) {
             int index = id - BUTTON_INSERT_AT_START;
             return this.tryInsertCarried(player, index, false);
         }
@@ -193,12 +190,7 @@ public class BookBinderMenu extends AbstractContainerMenu {
             }
 
             carried.shrink(1);
-            if (carried.isEmpty()) {
-                this.setCarried(ItemStack.EMPTY);
-            } else {
-                this.setCarried(carried);
-            }
-
+            this.setCarried(carried.isEmpty() ? ItemStack.EMPTY : carried);
             this.updateCraftResult();
             return true;
         }
@@ -225,7 +217,7 @@ public class BookBinderMenu extends AbstractContainerMenu {
         ItemStack copy = source.copy();
 
         if (index == SLOT_RESULT) {
-            if (!this.moveItemStackTo(source, 29, this.slots.size(), true)) {
+            if (!this.moveItemStackTo(source, PLAYER_SLOT_START, this.slots.size(), true)) {
                 return ItemStack.EMPTY;
             }
             slot.onQuickCraft(source, copy);
@@ -233,7 +225,7 @@ public class BookBinderMenu extends AbstractContainerMenu {
         }
 
         if (index == SLOT_COVER) {
-            if (!this.moveItemStackTo(source, 29, this.slots.size(), false)) {
+            if (!this.moveItemStackTo(source, PLAYER_SLOT_START, this.slots.size(), false)) {
                 return ItemStack.EMPTY;
             }
             slot.setChanged();
@@ -241,35 +233,33 @@ public class BookBinderMenu extends AbstractContainerMenu {
             return copy;
         }
 
-        if (index >= 29) {
-            if (this.binderBlockEntity != null) {
-                if (this.binderBlockEntity.isValidCover(source)) {
-                    if (!this.slots.get(SLOT_COVER).hasItem()) {
-                        ItemStack one = source.copyWithCount(1);
-                        this.slots.get(SLOT_COVER).set(one);
-                        source.shrink(1);
-                    }
-                } else if (source.is(MystcraftItems.PAGE) || source.is(Items.PAPER) || source.is(MystcraftItems.FOLDER)) {
-                    ItemStack fail = source.is(MystcraftItems.FOLDER)
-                            ? this.binderBlockEntity.insertFromFolder(source, this.binderBlockEntity.getPageList().size())
-                            : this.binderBlockEntity.insertPage(source.copy(), this.binderBlockEntity.getPageList().size());
-
-                    if (!(fail.getCount() == source.getCount() && ItemStack.isSameItemSameComponents(fail, source))) {
-                        slot.set(fail);
-                    }
-                } else {
-                    return ItemStack.EMPTY;
+        if (index >= PLAYER_SLOT_START && this.binderBlockEntity != null) {
+            if (this.binderBlockEntity.isValidCover(source)) {
+                if (!this.slots.get(SLOT_COVER).hasItem()) {
+                    ItemStack one = source.copyWithCount(1);
+                    this.slots.get(SLOT_COVER).set(one);
+                    source.shrink(1);
                 }
+            } else if (source.is(MystcraftItems.PAGE) || source.is(Items.PAPER) || source.is(MystcraftItems.FOLDER)) {
+                ItemStack fail = source.is(MystcraftItems.FOLDER)
+                        ? this.binderBlockEntity.insertFromFolder(source, this.binderBlockEntity.getPageList().size())
+                        : this.binderBlockEntity.insertPage(source.copy(), this.binderBlockEntity.getPageList().size());
 
-                if (source.isEmpty()) {
-                    slot.set(ItemStack.EMPTY);
-                } else {
-                    slot.setChanged();
+                if (!(fail.getCount() == source.getCount() && ItemStack.isSameItemSameComponents(fail, source))) {
+                    slot.set(fail);
                 }
-
-                this.updateCraftResult();
-                return copy;
+            } else {
+                return ItemStack.EMPTY;
             }
+
+            if (source.isEmpty()) {
+                slot.set(ItemStack.EMPTY);
+            } else {
+                slot.setChanged();
+            }
+
+            this.updateCraftResult();
+            return copy;
         }
 
         return ItemStack.EMPTY;
@@ -302,23 +292,9 @@ public class BookBinderMenu extends AbstractContainerMenu {
         }
     }
 
-    private final class HiddenPageSlot extends Slot {
-        private HiddenPageSlot(Container container, int slot) {
-            super(container, slot, -10000, -10000);
-        }
-
-        @Override
-        public boolean mayPlace(ItemStack stack) {
-            return false;
-        }
-    }
-
     private final class ResultSlot extends Slot {
-        private final Player player;
-
         private ResultSlot(Player player, Container container, int slot, int x, int y) {
             super(container, slot, x, y);
-            this.player = player;
         }
 
         @Override
@@ -338,12 +314,7 @@ public class BookBinderMenu extends AbstractContainerMenu {
             }
 
             ItemStack crafted = binderBlockEntity.buildBook(player);
-            if (!crafted.isEmpty()) {
-                this.set(crafted.copy());
-            } else {
-                this.set(ItemStack.EMPTY);
-            }
-
+            this.set(crafted.isEmpty() ? ItemStack.EMPTY : crafted.copy());
             updateCraftResult();
             super.onTake(player, stack);
         }

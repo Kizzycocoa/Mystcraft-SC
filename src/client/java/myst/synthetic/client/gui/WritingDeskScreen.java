@@ -191,6 +191,8 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
                     DefaultTooltipPositioner.INSTANCE,
                     null
             );
+        } else {
+            this.renderPreviewTooltip(guiGraphics, mouseX, mouseY);
         }
     }
 
@@ -574,6 +576,57 @@ public class WritingDeskScreen extends PageBrowserScreen<WritingDeskMenu> {
             tooltip.add(new ClientTextTooltip(
                     Component.translatable("screen.mystcraft-sc.page_browser.preview_only").getVisualOrderText()
             ));
+        }
+
+        guiGraphics.renderTooltip(
+                this.font,
+                tooltip,
+                mouseX,
+                mouseY,
+                DefaultTooltipPositioner.INSTANCE,
+                null
+        );
+    }
+
+    private void renderPreviewTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        if (this.minecraft == null || this.minecraft.player == null) {
+            return;
+        }
+
+        ItemStack hovered = ItemStack.EMPTY;
+
+        if (this.targetHasSinglePagePreview()) {
+            int left = this.leftPos + PREVIEW_X;
+            int top = this.topPos + PREVIEW_Y;
+            int drawX = left + 34;
+            int drawY = top + PREVIEW_PAGE_Y;
+
+            if (mouseX >= drawX && mouseX < drawX + PREVIEW_PAGE_WIDTH
+                    && mouseY >= drawY && mouseY < drawY + PREVIEW_PAGE_HEIGHT) {
+                hovered = this.menu.getTargetStack();
+            }
+        } else if (this.targetHasScrollablePreview()) {
+            int hoveredIndex = this.getHoveredPreviewIndex(mouseX, mouseY);
+            if (hoveredIndex >= 0) {
+                List<ItemStack> entries = this.getPreviewEntries();
+                if (hoveredIndex < entries.size()) {
+                    hovered = entries.get(hoveredIndex);
+                }
+            }
+        }
+
+        if (hovered.isEmpty()) {
+            return;
+        }
+
+        List<ClientTooltipComponent> tooltip = new ArrayList<>();
+
+        for (var line : hovered.getTooltipLines(
+                net.minecraft.world.item.Item.TooltipContext.EMPTY,
+                this.minecraft.player,
+                TooltipFlag.Default.NORMAL
+        )) {
+            tooltip.add(new ClientTextTooltip(line.getVisualOrderText()));
         }
 
         guiGraphics.renderTooltip(

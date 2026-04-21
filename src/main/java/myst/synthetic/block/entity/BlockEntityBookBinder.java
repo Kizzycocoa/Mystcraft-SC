@@ -29,12 +29,11 @@ import java.util.List;
 public class BlockEntityBookBinder extends BlockEntity implements Container, MenuProvider {
 
 	public static final int SLOT_COVER = 0;
-	public static final int SLOT_PAGE_START = 1;
-	public static final int PAGE_SLOT_COUNT = 27;
-	public static final int TOTAL_SLOTS = SLOT_PAGE_START + PAGE_SLOT_COUNT;
+	public static final int TOTAL_SLOTS = 1;
 	public static final int MAX_TITLE_LENGTH = 21;
 
 	private NonNullList<ItemStack> items = NonNullList.withSize(TOTAL_SLOTS, ItemStack.EMPTY);
+	private final List<ItemStack> pages = new ArrayList<>();
 	private String pendingTitle = "";
 
 	private final ContainerData dataAccess = new ContainerData() {
@@ -99,27 +98,21 @@ public class BlockEntityBookBinder extends BlockEntity implements Container, Men
 	}
 
 	public List<ItemStack> getPageList() {
-		List<ItemStack> pages = new ArrayList<>();
-
-		for (int i = 0; i < PAGE_SLOT_COUNT; i++) {
-			ItemStack stack = this.items.get(SLOT_PAGE_START + i);
+		List<ItemStack> copy = new ArrayList<>(this.pages.size());
+		for (ItemStack stack : this.pages) {
 			if (!stack.isEmpty() && stack.is(MystcraftItems.PAGE)) {
-				pages.add(stack.copyWithCount(1));
+				copy.add(stack.copyWithCount(1));
 			}
 		}
-
-		return pages;
+		return copy;
 	}
 
-	private void setPageList(List<ItemStack> pages) {
-		for (int i = 0; i < PAGE_SLOT_COUNT; i++) {
-			this.items.set(SLOT_PAGE_START + i, ItemStack.EMPTY);
-		}
+	private void setPageList(List<ItemStack> newPages) {
+		this.pages.clear();
 
-		for (int i = 0; i < Math.min(PAGE_SLOT_COUNT, pages.size()); i++) {
-			ItemStack page = pages.get(i);
+		for (ItemStack page : newPages) {
 			if (!page.isEmpty() && page.is(MystcraftItems.PAGE)) {
-				this.items.set(SLOT_PAGE_START + i, page.copyWithCount(1));
+				this.pages.add(page.copyWithCount(1));
 			}
 		}
 
@@ -151,14 +144,9 @@ public class BlockEntityBookBinder extends BlockEntity implements Container, Men
 			return stack;
 		}
 
-		List<ItemStack> pages = this.getPageList();
-		if (pages.size() >= PAGE_SLOT_COUNT) {
-			return stack;
-		}
-
-		int insertAt = Math.max(0, Math.min(index, pages.size()));
-		pages.add(insertAt, stack.copyWithCount(1));
-		this.setPageList(pages);
+		int insertAt = Math.max(0, Math.min(index, this.pages.size()));
+		this.pages.add(insertAt, stack.copyWithCount(1));
+		this.setChangedAndSync();
 		return ItemStack.EMPTY;
 	}
 
@@ -178,9 +166,8 @@ public class BlockEntityBookBinder extends BlockEntity implements Container, Men
 		}
 
 		if (!folderHasContent) {
-			List<ItemStack> pages = this.getPageList();
-			for (int i = 0; i < pages.size() && i < slots.size(); i++) {
-				slots.set(i, pages.get(i).copyWithCount(1));
+			for (int i = 0; i < this.pages.size() && i < slots.size(); i++) {
+				slots.set(i, this.pages.get(i).copyWithCount(1));
 			}
 			ItemFolder.saveInventory(folder, slots);
 			this.setPageList(List.of());
@@ -206,29 +193,27 @@ public class BlockEntityBookBinder extends BlockEntity implements Container, Men
 	}
 
 	public ItemStack removePage(int index) {
-		List<ItemStack> pages = this.getPageList();
-		if (index < 0 || index >= pages.size()) {
+		if (index < 0 || index >= this.pages.size()) {
 			return ItemStack.EMPTY;
 		}
 
-		ItemStack removed = pages.remove(index);
-		this.setPageList(pages);
+		ItemStack removed = this.pages.remove(index);
+		this.setChangedAndSync();
 		return removed;
 	}
 
 	public boolean canBuildItem() {
 		ItemStack cover = this.items.get(SLOT_COVER);
-		List<ItemStack> pages = this.getPageList();
 
 		if (cover.isEmpty() || !isValidCover(cover)) {
 			return false;
 		}
 
-		if (pages.isEmpty()) {
+		if (this.pages.isEmpty()) {
 			return false;
 		}
 
-		if (!Page.isLinkPanel(pages.get(0))) {
+		if (!Page.isLinkPanel(this.pages.get(0))) {
 			return false;
 		}
 
@@ -236,8 +221,8 @@ public class BlockEntityBookBinder extends BlockEntity implements Container, Men
 			return false;
 		}
 
-		for (int i = 1; i < pages.size(); i++) {
-			if (Page.isLinkPanel(pages.get(i))) {
+		for (int i = 1; i < this.pages.size(); i++) {
+			if (Page.isLinkPanel(this.pages.get(i))) {
 				return false;
 			}
 		}
@@ -288,15 +273,36 @@ public class BlockEntityBookBinder extends BlockEntity implements Container, Men
 	@Override
 	public void loadAdditional(ValueInput input) {
 		super.loadAdditional(input);
+
 		this.items = NonNullList.withSize(TOTAL_SLOTS, ItemStack.EMPTY);
 		ContainerHelper.loadAllItems(input, this.items);
+
+		this.pages.clear();
+		int pageCount = input.getInt("PageCount").orElse(0);
+		for (int i = 0; i < pageCount; i++) {
+			ItemStack stack = input.read("Page" + i, ItemStack.CODEC).orElse(ItemStack.EMPTY);
+			if (!stack.isEmpty() && stack.is(MystcraftItems.PAGE)) {
+				this.pages.add(stack.copyWithCount(1));
+			}
+		}
+
 		this.pendingTitle = input.getString("PendingTitle").orElse("");
 	}
 
 	@Override
 	public void saveAdditional(ValueOutput output) {
 		super.saveAdditional(output);
+
 		ContainerHelper.saveAllItems(output, this.items);
+
+		output.putInt("PageCount", this.pages.size());
+		for (int i = 0; i < this.pages.size(); i++) {
+			ItemStack stack = this.pages.get(i);
+			if (!stack.isEmpty()) {
+				output.store("Page" + i, ItemStack.CODEC, stack);
+			}
+		}
+
 		output.putString("PendingTitle", this.getPendingTitle());
 	}
 
@@ -317,21 +323,23 @@ public class BlockEntityBookBinder extends BlockEntity implements Container, Men
 
 	@Override
 	public boolean isEmpty() {
-		for (ItemStack stack : this.items) {
-			if (!stack.isEmpty()) {
-				return false;
-			}
+		if (!this.items.get(SLOT_COVER).isEmpty()) {
+			return false;
 		}
-		return true;
+		return this.pages.isEmpty();
 	}
 
 	@Override
 	public ItemStack getItem(int slot) {
-		return this.items.get(slot);
+		return slot == SLOT_COVER ? this.items.get(SLOT_COVER) : ItemStack.EMPTY;
 	}
 
 	@Override
 	public ItemStack removeItem(int slot, int amount) {
+		if (slot != SLOT_COVER) {
+			return ItemStack.EMPTY;
+		}
+
 		ItemStack stack = ContainerHelper.removeItem(this.items, slot, amount);
 		if (!stack.isEmpty()) {
 			this.setChangedAndSync();
@@ -341,11 +349,15 @@ public class BlockEntityBookBinder extends BlockEntity implements Container, Men
 
 	@Override
 	public ItemStack removeItemNoUpdate(int slot) {
-		return ContainerHelper.takeItem(this.items, slot);
+		return slot == SLOT_COVER ? ContainerHelper.takeItem(this.items, slot) : ItemStack.EMPTY;
 	}
 
 	@Override
 	public void setItem(int slot, ItemStack stack) {
+		if (slot != SLOT_COVER) {
+			return;
+		}
+
 		this.items.set(slot, stack);
 
 		if (!stack.isEmpty() && stack.getCount() > this.getMaxStackSize(stack)) {
@@ -374,20 +386,13 @@ public class BlockEntityBookBinder extends BlockEntity implements Container, Men
 
 	@Override
 	public boolean canPlaceItem(int slot, ItemStack stack) {
-		if (slot == SLOT_COVER) {
-			return this.isValidCover(stack);
-		}
-
-		if (slot >= SLOT_PAGE_START && slot < TOTAL_SLOTS) {
-			return stack.is(MystcraftItems.PAGE);
-		}
-
-		return false;
+		return slot == SLOT_COVER && this.isValidCover(stack);
 	}
 
 	@Override
 	public void clearContent() {
 		this.items.clear();
+		this.pages.clear();
 		this.pendingTitle = "";
 		this.setChangedAndSync();
 	}
