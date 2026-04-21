@@ -1,0 +1,94 @@
+{
+  "pages": [
+    {
+      "id": "block_s_andesite_block",
+      "translation_key": "symbol.mystcraft-sc.block_s_andesite_block",
+      "origin": "Mystcraft",
+      "category": "block/structure",
+      "card_rank": 1,
+      "poem_words": ["Modifier", "Constraint", "Structure", "Polished Andesite Block"],
+      "tested": 0,
+      "value": "minecraft:polished_andesite"
+    },
+    {
+      "id": "block_s_granite_block",
+      "translation_key": "symbol.mystcraft-sc.block_s_granite_block",
+      "origin": "Mystcraft",
+      "category": "block/structure",
+      "card_rank": 1,
+      "poem_words": ["Modifier", "Constraint", "Structure", "Polished Granite Block"],
+      "tested": 0,
+      "value": "minecraft:polished_granite"
+    },
+    {
+      "id": "block_s_diorite_block",
+      "translation_key": "symbol.mystcraft-sc.block_s_diorite_block",
+      "origin": "Mystcraft",
+      "category": "block/structure",
+      "card_rank": 1,
+      "poem_words": ["Modifier", "Constraint", "Structure", "Polished Diorite Block"],
+      "tested": 0,
+      "value": "minecraft:polished_diorite"
+    },
+    {
+      "id": "block_s_oak_log",
+      "translation_key": "symbol.mystcraft-sc.block_s_oak_log",
+      "origin": "Mystcraft",
+      "category": "block/structure",
+      "card_rank": 1,
+      "poem_words": ["Modifier", "Constraint", "Structure", "Oak Log"],
+      "tested": 0,
+      "value": "minecraft:oak_log"
+    },
+    {
+      "id": "block_s_dark_oak_log",
+      "translation_key": "symbol.mystcraft-sc.block_s_dark_oak_log",
+      "origin": "Mystcraft",
+      "category": "block/structure",
+      "card_rank": 1,
+      "poem_words": ["Modifier", "Constraint", "Structure", "Dark Oak Log"],
+      "tested": 0,
+      "value": "minecraft:dark_oak_log"
+    },
+    {
+      "id": "block_s_spruce_log",
+      "translation_key": "symbol.mystcraft-sc.block_s_spruce_log",
+      "origin": "Mystcraft",
+      "category": "block/structure",
+      "card_rank": 1,
+      "poem_words": ["Modifier", "Constraint", "Structure", "Spruce Log"],
+      "tested": 0,
+      "value": "minecraft:spruce_log"
+    },
+    {
+      "id": "block_s_jungle_log",
+      "translation_key": "symbol.mystcraft-sc.block_s_jungle_log",
+      "origin": "Mystcraft",
+      "category": "block/structure",
+      "card_rank": 1,
+      "poem_words": ["Modifier", "Constraint", "Structure", "Jungle Log"],
+      "tested": 0,
+      "value": "minecraft:jungle_log"
+    },
+    {
+      "id": "block_s_birch_log",
+      "translation_key": "symbol.mystcraft-sc.block_s_birch_log",
+      "origin": "Mystcraft",
+      "category": "block/structure",
+      "card_rank": 1,
+      "poem_words": ["Modifier", "Constraint", "Structure", "Birch Log"],
+      "tested": 0,
+      "value": "minecraft:birch_log"
+    },
+    {
+      "id": "block_s_acacia_log",
+      "translation_key": "symbol.mystcraft-sc.block_s_acacia_log",
+      "origin": "Mystcraft",
+      "category": "block/structure",
+      "card_rank": 1,
+      "poem_words": ["Modifier", "Constraint", "Structure", "Acacia Log"],
+      "tested": 0,
+      "value": "minecraft:acacia_log"
+    }
+  ]
+}

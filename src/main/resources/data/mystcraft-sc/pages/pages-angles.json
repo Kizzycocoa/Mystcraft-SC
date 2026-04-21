@@ -1,0 +1,84 @@
+{
+  "pages": [
+    {
+      "id": "angle_nadir",
+      "translation_key": "symbol.mystcraft-sc.angle_nadir",
+      "origin": "Mystcraft",
+      "category": "modifier/angle",
+      "card_rank": 1,
+      "poem_words": ["Transform", "Cycle", "System", "Rebirth"],
+      "tested": 0,
+      "value": 0.0
+    },
+    {
+      "id": "angle_rising",
+      "translation_key": "symbol.mystcraft-sc.angle_rising",
+      "origin": "Mystcraft",
+      "category": "modifier/angle",
+      "card_rank": 1,
+      "poem_words": ["Transform", "Cycle", "System", "Growth"],
+      "tested": 0,
+      "value": 90.0
+    },
+    {
+      "id": "angle_noon",
+      "translation_key": "symbol.mystcraft-sc.angle_noon",
+      "origin": "Mystcraft",
+      "category": "modifier/angle",
+      "card_rank": 1,
+      "poem_words": ["Transform", "Cycle", "System", "Harmony"],
+      "tested": 0,
+      "value": 180.0
+    },
+    {
+      "id": "angle_setting",
+      "translation_key": "symbol.mystcraft-sc.angle_setting",
+      "origin": "Mystcraft",
+      "category": "modifier/angle",
+      "card_rank": 1,
+      "poem_words": ["Transform", "Cycle", "System", "Future"],
+      "tested": 0,
+      "value": 270.0
+    },
+    {
+      "id": "angle_waning_day",
+      "translation_key": "symbol.mystcraft-sc.angle_waning_day",
+      "origin": "Myst Library",
+      "category": "modifier/angle",
+      "card_rank": 1,
+      "poem_words": ["Transform", "Cycle", "Waning Day Phase", "Waning Day Phase"],
+      "tested": 0,
+      "value": 225.0
+    },
+    {
+      "id": "angle_waning_night",
+      "translation_key": "symbol.mystcraft-sc.angle_waning_night",
+      "origin": "Myst Library",
+      "category": "modifier/angle",
+      "card_rank": 1,
+      "poem_words": ["Transform", "Cycle", "Waning Night Phase", "Waning Night Phase"],
+      "tested": 0,
+      "value": 45.0
+    },
+    {
+      "id": "angle_waxing_day",
+      "translation_key": "symbol.mystcraft-sc.angle_waxing_day",
+      "origin": "Myst Library",
+      "category": "modifier/angle",
+      "card_rank": 1,
+      "poem_words": ["Transform", "Cycle", "Waxing Day Phase", "Waxing Day Phase"],
+      "tested": 0,
+      "value": 135.0
+    },
+    {
+      "id": "angle_waxing_night",
+      "translation_key": "symbol.mystcraft-sc.angle_waxing_night",
+      "origin": "Myst Library",
+      "category": "modifier/angle",
+      "card_rank": 1,
+      "poem_words": ["Transform", "Cycle", "Waxing Night Phase", "Waxing Night Phase"],
+      "tested": 0,
+      "value": 315.0
+    }
+  ]
+}

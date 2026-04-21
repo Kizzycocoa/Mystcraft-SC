@@ -1,0 +1,34 @@
+{
+  "pages": [
+    {
+      "id": "tilt_zero",
+      "translation_key": "symbol.mystcraft-sc.tilt_zero",
+      "origin": "More Mystcraft",
+      "category": "modifier/tilt",
+      "card_rank": 2,
+      "poem_words": ["Transform", "Motion", "Zero Tilt", "Zero Tilt"],
+      "tested": 0,
+      "value": 0.0
+    },
+    {
+      "id": "tilt_half",
+      "translation_key": "symbol.mystcraft-sc.tilt_half",
+      "origin": "More Mystcraft",
+      "category": "modifier/tilt",
+      "card_rank": 2,
+      "poem_words": ["Transform", "Motion", "Half Tilt", "Half Tilt"],
+      "tested": 0,
+      "value": 45.0
+    },
+    {
+      "id": "tilt_full",
+      "translation_key": "symbol.mystcraft-sc.tilt_full",
+      "origin": "More Mystcraft",
+      "category": "modifier/tilt",
+      "card_rank": 2,
+      "poem_words": ["Transform", "Motion", "Full Tilt", "Full Tilt"],
+      "tested": 0,
+      "value": 90.0
+    }
+  ]
+}

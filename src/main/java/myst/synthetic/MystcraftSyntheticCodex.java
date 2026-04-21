@@ -16,7 +16,7 @@ import myst.synthetic.ink.InkStatusEffects;
 import myst.synthetic.page.symbol.source.MystcraftGeneratedPageSymbols;
 import myst.synthetic.item.MystcraftCauldronInteractions;
 
-import myst.synthetic.page.symbol.DirectionPageLoader;
+import myst.synthetic.page.symbol.DatapackPageLoader;
 
 public class MystcraftSyntheticCodex implements ModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger("mystcraft-sc");
@@ -31,7 +31,7 @@ public class MystcraftSyntheticCodex implements ModInitializer {
 		MystcraftPageWords.initialize();
 		MystcraftPageSymbols.initialize();
 
-		DirectionPageLoader.initialize();
+		DatapackPageLoader.initialize();
 
 		MystcraftBlocks.initialize();
 		MystcraftEntities.initialize();

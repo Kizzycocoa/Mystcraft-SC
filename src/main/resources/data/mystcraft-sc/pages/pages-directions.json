@@ -3,6 +3,7 @@
     {
       "id": "dir_north",
       "translation_key": "symbol.mystcraft-sc.dir_north",
+      "origin": "Mystcraft",
       "category": "modifier/direction",
       "card_rank": 1,
       "poem_words": ["Transform", "Flow", "Motion", "Control"],
@@ -12,6 +13,7 @@
     {
       "id": "dir_east",
       "translation_key": "symbol.mystcraft-sc.dir_east",
+      "origin": "Mystcraft",
       "category": "modifier/direction",
       "card_rank": 1,
       "poem_words": ["Transform", "Flow", "Motion", "Tradition"],
@@ -21,6 +23,7 @@
     {
       "id": "dir_south",
       "translation_key": "symbol.mystcraft-sc.dir_south",
+      "origin": "Mystcraft",
       "category": "modifier/direction",
       "card_rank": 1,
       "poem_words": ["Transform", "Flow", "Motion", "Chaos"],
@@ -30,6 +33,7 @@
     {
       "id": "dir_west",
       "translation_key": "symbol.mystcraft-sc.dir_west",
+      "origin": "Mystcraft",
       "category": "modifier/direction",
       "card_rank": 1,
       "poem_words": ["Transform", "Flow", "Motion", "Change"],
@@ -39,6 +43,7 @@
     {
       "id": "dir_northeast",
       "translation_key": "symbol.mystcraft-sc.dir_northeast",
+      "origin": "Myst Library",
       "category": "modifier/direction",
       "card_rank": 1,
       "poem_words": ["Transform", "Motion", "Northeast Direction", "Northeast Direction"],
@@ -48,6 +53,7 @@
     {
       "id": "dir_northwest",
       "translation_key": "symbol.mystcraft-sc.dir_northwest",
+      "origin": "Myst Library",
       "category": "modifier/direction",
       "card_rank": 1,
       "poem_words": ["Transform", "Motion", "Northwest Direction", "Northwest Direction"],
@@ -57,6 +63,7 @@
     {
       "id": "dir_southeast",
       "translation_key": "symbol.mystcraft-sc.dir_southeast",
+      "origin": "Myst Library",
       "category": "modifier/direction",
       "card_rank": 1,
       "poem_words": ["Transform", "Motion", "Southeast Direction", "Southeast Direction"],
@@ -66,6 +73,7 @@
     {
       "id": "dir_southwest",
       "translation_key": "symbol.mystcraft-sc.dir_southwest",
+      "origin": "Myst Library",
       "category": "modifier/direction",
       "card_rank": 1,
       "poem_words": ["Transform", "Motion", "Southwest Direction", "Southwest Direction"],

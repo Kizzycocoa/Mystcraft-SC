@@ -1,0 +1,244 @@
+{
+  "pages": [
+    {
+      "id": "feature_medium_dungeons",
+      "translation_key": "symbol.mystcraft-sc.feature_medium_dungeons",
+      "origin": "Mystcraft",
+      "category": "feature/medium",
+      "card_rank": 1,
+      "poem_words": ["Civilization", "Constraint", "Chain", "Resurrect"],
+      "tested": 0,
+      "value": "dungeons"
+    },
+    {
+      "id": "feature_medium_ravines",
+      "translation_key": "symbol.mystcraft-sc.feature_medium_ravines",
+      "origin": "Mystcraft",
+      "category": "feature/medium",
+      "card_rank": 1,
+      "poem_words": ["Terrain", "Transform", "Void", "Weave"],
+      "tested": 0,
+      "value": "ravines"
+    },
+    {
+      "id": "feature_medium_strongholds",
+      "translation_key": "symbol.mystcraft-sc.feature_medium_strongholds",
+      "origin": "Mystcraft",
+      "category": "feature/medium",
+      "card_rank": 1,
+      "poem_words": ["Civilization", "Wisdom", "Future", "Honor"],
+      "tested": 0,
+      "value": "strongholds"
+    },
+    {
+      "id": "feature_medium_villages",
+      "translation_key": "symbol.mystcraft-sc.feature_medium_villages",
+      "origin": "Mystcraft",
+      "category": "feature/medium",
+      "card_rank": 1,
+      "poem_words": ["Civilization", "Society", "Harmony", "Nurture"],
+      "tested": 0,
+      "value": "villages"
+    },
+    {
+      "id": "feature_medium_spikes",
+      "translation_key": "symbol.mystcraft-sc.feature_medium_spikes",
+      "origin": "Mystcraft",
+      "category": "feature/medium",
+      "card_rank": 1,
+      "poem_words": ["Nature", "Encourage", "Entropy", "Static"],
+      "tested": 0,
+      "value": "spikes"
+    },
+    {
+      "id": "feature_medium_mineshafts",
+      "translation_key": "symbol.mystcraft-sc.feature_medium_mineshafts",
+      "origin": "Mystcraft",
+      "category": "feature/medium",
+      "card_rank": 1,
+      "poem_words": ["Civilization", "Machine", "Motion", "Tradition"],
+      "tested": 0,
+      "value": "mineshafts"
+    },
+    {
+      "id": "feature_medium_spheres",
+      "translation_key": "symbol.mystcraft-sc.feature_medium_spheres",
+      "origin": "Mystcraft",
+      "category": "feature/medium",
+      "card_rank": 1,
+      "poem_words": ["Terrain", "Transform", "Form", "Cycle"],
+      "tested": 0,
+      "value": "spheres"
+    },
+    {
+      "id": "feature_medium_nether_fortresses",
+      "translation_key": "symbol.mystcraft-sc.feature_medium_nether_fortresses",
+      "origin": "Mystcraft",
+      "category": "feature/medium",
+      "card_rank": 1,
+      "poem_words": ["Civilization", "Machine", "Power", "Entropy"],
+      "tested": 0,
+      "value": "nether_fortresses"
+    },
+    {
+      "id": "feature_medium_abandoned_studies",
+      "translation_key": "symbol.mystcraft-sc.feature_medium_abandoned_studies",
+      "origin": "More Mystcraft",
+      "category": "feature/medium",
+      "card_rank": 1,
+      "poem_words": ["Civilization", "Possibility", "Power", "Wisdom,"],
+      "tested": 0,
+      "value": "abandoned_studies"
+    },
+    {
+      "id": "feature_medium_ocean_monuments",
+      "translation_key": "symbol.mystcraft-sc.feature_medium_ocean_monuments",
+      "origin": "More Mystcraft",
+      "category": "feature/medium",
+      "card_rank": 1,
+      "poem_words": ["Civilization", "Machine", "Power", "Entropy"],
+      "tested": 0,
+      "value": "ocean_monuments"
+    },
+    {
+      "id": "feature_medium_pyramids",
+      "translation_key": "symbol.mystcraft-sc.feature_medium_pyramids",
+      "origin": "More Mystcraft",
+      "category": "feature/medium",
+      "card_rank": 1,
+      "poem_words": ["Civilization", "Constraint", "Creativity", "Elevate"],
+      "tested": 0,
+      "value": "pyramids"
+    },
+    {
+      "id": "feature_medium_trial_chambers",
+      "translation_key": "symbol.mystcraft-sc.feature_medium_trial_chambers",
+      "origin": "Mystcraft:SC",
+      "category": "feature/medium",
+      "card_rank": 1,
+      "poem_words": ["Nature", "Flow", "Static", "Explore"],
+      "tested": 0,
+      "value": "trial_chambers"
+    },
+    {
+      "id": "feature_medium_woodland_mansions",
+      "translation_key": "symbol.mystcraft-sc.feature_medium_woodland_mansions",
+      "origin": "Mystcraft:SC",
+      "category": "feature/medium",
+      "card_rank": 1,
+      "poem_words": ["Nature", "Flow", "Static", "Explore"],
+      "tested": 0,
+      "value": "woodland_mansions"
+    },
+    {
+      "id": "feature_medium_bastions",
+      "translation_key": "symbol.mystcraft-sc.feature_medium_bastions",
+      "origin": "Mystcraft:SC",
+      "category": "feature/medium",
+      "card_rank": 1,
+      "poem_words": ["Nature", "Flow", "Static", "Explore"],
+      "tested": 0,
+      "value": "bastions"
+    },
+    {
+      "id": "feature_medium_ancient_cities",
+      "translation_key": "symbol.mystcraft-sc.feature_medium_ancient_cities",
+      "origin": "Mystcraft:SC",
+      "category": "feature/medium",
+      "card_rank": 1,
+      "poem_words": ["Nature", "Flow", "Static", "Explore"],
+      "tested": 0,
+      "value": "ancient_cities"
+    },
+    {
+      "id": "feature_medium_end_cities",
+      "translation_key": "symbol.mystcraft-sc.feature_medium_end_cities",
+      "origin": "Mystcraft:SC",
+      "category": "feature/medium",
+      "card_rank": 1,
+      "poem_words": ["Nature", "Flow", "Static", "Explore"],
+      "tested": 0,
+      "value": "end_cities"
+    },
+    {
+      "id": "feature_medium_temples",
+      "translation_key": "symbol.mystcraft-sc.feature_medium_temples",
+      "origin": "Mystcraft:SC",
+      "category": "feature/medium",
+      "card_rank": 1,
+      "poem_words": ["Nature", "Flow", "Static", "Explore"],
+      "tested": 0,
+      "value": "temples"
+    },
+    {
+      "id": "feature_medium_pillager_outposts",
+      "translation_key": "symbol.mystcraft-sc.feature_medium_pillager_outposts",
+      "origin": "Mystcraft:SC",
+      "category": "feature/medium",
+      "card_rank": 1,
+      "poem_words": ["Nature", "Flow", "Static", "Explore"],
+      "tested": 0,
+      "value": "pillager_outposts"
+    },
+    {
+      "id": "feature_medium_shipwrecks",
+      "translation_key": "symbol.mystcraft-sc.feature_medium_shipwrecks",
+      "origin": "Mystcraft:SC",
+      "category": "feature/medium",
+      "card_rank": 1,
+      "poem_words": ["Nature", "Flow", "Static", "Explore"],
+      "tested": 0,
+      "value": "shipwrecks"
+    },
+    {
+      "id": "feature_medium_ocean_ruins",
+      "translation_key": "symbol.mystcraft-sc.feature_medium_ocean_ruins",
+      "origin": "Mystcraft:SC",
+      "category": "feature/medium",
+      "card_rank": 1,
+      "poem_words": ["Nature", "Flow", "Static", "Explore"],
+      "tested": 0,
+      "value": "ocean_ruins"
+    },
+    {
+      "id": "feature_medium_trail_ruins",
+      "translation_key": "symbol.mystcraft-sc.feature_medium_trail_ruins",
+      "origin": "Mystcraft:SC",
+      "category": "feature/medium",
+      "card_rank": 1,
+      "poem_words": ["Nature", "Flow", "Static", "Explore"],
+      "tested": 0,
+      "value": "trail_ruins"
+    },
+    {
+      "id": "feature_medium_geodes",
+      "translation_key": "symbol.mystcraft-sc.feature_medium_geodes",
+      "origin": "Mystcraft:SC",
+      "category": "feature/medium",
+      "card_rank": 1,
+      "poem_words": ["Nature", "Flow", "Static", "Explore"],
+      "tested": 0,
+      "value": "geodes"
+    },
+    {
+      "id": "feature_medium_libraries",
+      "translation_key": "symbol.mystcraft-sc.feature_medium_libraries",
+      "origin": "Mystcraft:SC",
+      "category": "feature/medium",
+      "card_rank": 1,
+      "poem_words": ["Civilization", "Power", "Wisdom", "Tradition"],
+      "tested": 0,
+      "value": "libraries"
+    },
+    {
+      "id": "feature_medium_dummy",
+      "translation_key": "symbol.mystcraft-sc.feature_medium_dummy",
+      "origin": "Mystcraft",
+      "category": "feature/medium",
+      "card_rank": 1,
+      "poem_words": ["Contradict", "Chaos", "Exist", "Balance"],
+      "tested": 0,
+      "value": "dummy_medium"
+    }
+  ]
+}

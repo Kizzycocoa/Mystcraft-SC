@@ -1,0 +1,114 @@
+{
+  "pages": [
+    {
+      "id": "feature_small_crystals",
+      "translation_key": "symbol.mystcraft-sc.feature_small_crystals",
+      "origin": "Mystcraft",
+      "category": "feature/small",
+      "card_rank": 1,
+      "poem_words": ["Nature", "Encourage", "Growth", "Static"],
+      "tested": 0,
+      "value": "crystals"
+    },
+    {
+      "id": "feature_small_star_fissure",
+      "translation_key": "symbol.mystcraft-sc.feature_small_star_fissure",
+      "origin": "Mystcraft",
+      "category": "feature/small",
+      "card_rank": 1,
+      "poem_words": ["Nature", "Harmony", "Mutual", "Void"],
+      "tested": 0,
+      "value": "star_fissure"
+    },
+    {
+      "id": "feature_small_surface_lakes",
+      "translation_key": "symbol.mystcraft-sc.feature_small_surface_lakes",
+      "origin": "Mystcraft",
+      "category": "feature/small",
+      "card_rank": 1,
+      "poem_words": ["Nature", "Flow", "Static", "Elevate"],
+      "tested": 0,
+      "value": "surface_lakes"
+    },
+    {
+      "id": "feature_small_obelisks",
+      "translation_key": "symbol.mystcraft-sc.feature_small_obelisks",
+      "origin": "Mystcraft",
+      "category": "feature/small",
+      "card_rank": 1,
+      "poem_words": ["Civilization", "Resilience", "Static", "Form"],
+      "tested": 0,
+      "value": "obelisks"
+    },
+    {
+      "id": "feature_small_deep_lakes",
+      "translation_key": "symbol.mystcraft-sc.feature_small_deep_lakes",
+      "origin": "Mystcraft",
+      "category": "feature/small",
+      "card_rank": 1,
+      "poem_words": ["Nature", "Flow", "Static", "Explore"],
+      "tested": 0,
+      "value": "deep_lakes"
+    },
+    {
+      "id": "feature_small_witch_huts",
+      "translation_key": "symbol.mystcraft-sc.feature_small_witch_huts",
+      "origin": "Mystcraft:SC",
+      "category": "feature/small",
+      "card_rank": 1,
+      "poem_words": ["Nature", "Flow", "Static", "Explore"],
+      "tested": 0,
+      "value": "witch_huts"
+    },
+    {
+      "id": "feature_small_ruined_portals",
+      "translation_key": "symbol.mystcraft-sc.feature_small_ruined_portals",
+      "origin": "Mystcraft:SC",
+      "category": "feature/small",
+      "card_rank": 1,
+      "poem_words": ["Nature", "Flow", "Static", "Explore"],
+      "tested": 0,
+      "value": "ruined_portals"
+    },
+    {
+      "id": "feature_small_fossils",
+      "translation_key": "symbol.mystcraft-sc.feature_small_fossils",
+      "origin": "Mystcraft:SC",
+      "category": "feature/small",
+      "card_rank": 1,
+      "poem_words": ["Nature", "Flow", "Static", "Explore"],
+      "tested": 0,
+      "value": "fossils"
+    },
+    {
+      "id": "feature_small_igloos",
+      "translation_key": "symbol.mystcraft-sc.feature_small_igloos",
+      "origin": "Mystcraft:SC",
+      "category": "feature/small",
+      "card_rank": 1,
+      "poem_words": ["Nature", "Flow", "Static", "Explore"],
+      "tested": 0,
+      "value": "igloos"
+    },
+    {
+      "id": "feature_small_buried_treasure",
+      "translation_key": "symbol.mystcraft-sc.feature_small_buried_treasure",
+      "origin": "Mystcraft:SC",
+      "category": "feature/small",
+      "card_rank": 1,
+      "poem_words": ["Nature", "Flow", "Static", "Explore"],
+      "tested": 0,
+      "value": "buried_treasure"
+    },
+    {
+      "id": "feature_small_dummy",
+      "translation_key": "symbol.mystcraft-sc.feature_small_dummy",
+      "origin": "Mystcraft",
+      "category": "feature/small",
+      "card_rank": 1,
+      "poem_words": ["Contradict", "Chaos", "Exist", "Form"],
+      "tested": 0,
+      "value": "dummy_small"
+    }
+  ]
+}

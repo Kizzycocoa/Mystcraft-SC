@@ -2,6 +2,12 @@ package myst.synthetic.component;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import myst.synthetic.page.PageValue;
+import myst.synthetic.page.emblem.PageEmblemResolver;
+import myst.synthetic.page.emblem.ResolvedPageEmblem;
+import myst.synthetic.page.emblem.ResolvedPageWord;
+import myst.synthetic.page.symbol.PageSymbol;
+import myst.synthetic.page.symbol.PageSymbolRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.network.chat.Component;
@@ -17,18 +23,13 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
-import myst.synthetic.page.emblem.PageEmblemResolver;
-import myst.synthetic.page.emblem.ResolvedPageEmblem;
-import myst.synthetic.page.emblem.ResolvedPageWord;
-import myst.synthetic.page.symbol.PageSymbol;
-import myst.synthetic.page.symbol.PageSymbolRegistry;
 
 public record PageDataComponent(
         boolean linkPanel,
         @Nullable String symbolId,
         List<String> linkProperties,
         Map<String, Integer> quality,
-        @Nullable Float value
+        @Nullable PageValue value
 ) implements TooltipProvider {
 
     public static final PageDataComponent EMPTY = new PageDataComponent(false, null, List.of(), Map.of(), null);
@@ -40,12 +41,12 @@ public record PageDataComponent(
             ),
             Codec.STRING.listOf().optionalFieldOf("link_properties", List.of()).forGetter(PageDataComponent::linkProperties),
             Codec.unboundedMap(Codec.STRING, Codec.INT).optionalFieldOf("quality", Map.of()).forGetter(PageDataComponent::quality),
-            Codec.FLOAT.optionalFieldOf("value").forGetter(component -> java.util.Optional.ofNullable(component.value()))
+            PageValue.CODEC.optionalFieldOf("value").forGetter(component -> java.util.Optional.ofNullable(component.value()))
     ).apply(instance, (linkPanel, symbolId, linkProperties, quality, value) -> {
         String normalizedSymbol = (symbolId == null || symbolId.isBlank()) ? null : symbolId;
         List<String> cleanedProperties = sanitizeProperties(linkProperties);
         Map<String, Integer> cleanedQuality = sanitizeQuality(quality);
-        Float cleanedValue = sanitizeValue(value.orElse(null));
+        PageValue cleanedValue = value.orElse(null);
 
         if (normalizedSymbol != null) {
             return new PageDataComponent(false, normalizedSymbol, List.of(), cleanedQuality, cleanedValue);
@@ -55,19 +56,9 @@ public record PageDataComponent(
         return new PageDataComponent(isLinkPanel, null, cleanedProperties, cleanedQuality, cleanedValue);
     }));
 
-    public PageDataComponent(
-            boolean linkPanel,
-            @Nullable String symbolId,
-            List<String> linkProperties,
-            Map<String, Integer> quality
-    ) {
-        this(linkPanel, symbolId, linkProperties, quality, null);
-    }
-
     public PageDataComponent {
         linkProperties = sanitizeProperties(linkProperties);
         quality = sanitizeQuality(quality);
-        value = sanitizeValue(value);
 
         if (symbolId != null && symbolId.isBlank()) {
             symbolId = null;
@@ -111,7 +102,7 @@ public record PageDataComponent(
     }
 
     public PageDataComponent withoutSymbol() {
-        return new PageDataComponent(this.linkPanel, null, this.linkProperties, this.quality, null);
+        return new PageDataComponent(this.linkPanel, null, this.linkProperties, this.quality, this.value);
     }
 
     public PageDataComponent asLinkPanel() {
@@ -153,12 +144,8 @@ public record PageDataComponent(
         return new PageDataComponent(this.linkPanel, this.symbolId, this.linkProperties, map, this.value);
     }
 
-    public PageDataComponent withValue(@Nullable Float value) {
+    public PageDataComponent withValue(@Nullable PageValue value) {
         return new PageDataComponent(this.linkPanel, this.symbolId, this.linkProperties, this.quality, value);
-    }
-
-    public PageDataComponent withoutValue() {
-        return new PageDataComponent(this.linkPanel, this.symbolId, this.linkProperties, this.quality, null);
     }
 
     @Nullable
@@ -171,8 +158,8 @@ public record PageDataComponent(
 
     public int getTotalQuality() {
         int sum = 0;
-        for (int entryValue : this.quality.values()) {
-            sum += entryValue;
+        for (int qualityValue : this.quality.values()) {
+            sum += qualityValue;
         }
         return sum;
     }
@@ -236,9 +223,18 @@ public record PageDataComponent(
                     .withStyle(ChatFormatting.GRAY));
         }
 
-        if (this.value != null) {
-            textConsumer.accept(Component.literal("Value: " + this.value)
-                    .withStyle(ChatFormatting.DARK_AQUA));
+        if (value != null) {
+            if (value.isScalar()) {
+                textConsumer.accept(Component.literal("Value: " + value.scalarOrNull())
+                        .withStyle(ChatFormatting.DARK_AQUA));
+            } else if (value.isVector()) {
+                List<Float> vector = value.vectorOrNull();
+                textConsumer.accept(Component.literal("Value: [" + vector.get(0) + ", " + vector.get(1) + ", " + vector.get(2) + "]")
+                        .withStyle(ChatFormatting.DARK_AQUA));
+            } else if (value.isText()) {
+                textConsumer.accept(Component.literal("Value: " + value.textOrNull())
+                        .withStyle(ChatFormatting.DARK_AQUA));
+            }
         }
 
         int totalQuality = getTotalQuality();
@@ -271,21 +267,13 @@ public record PageDataComponent(
         LinkedHashMap<String, Integer> cleaned = new LinkedHashMap<>();
         for (Map.Entry<String, Integer> entry : quality.entrySet()) {
             String key = entry.getKey();
-            Integer entryValue = entry.getValue();
+            Integer qualityValue = entry.getValue();
 
-            if (key != null && !key.isBlank() && entryValue != null) {
-                cleaned.put(key, entryValue);
+            if (key != null && !key.isBlank() && qualityValue != null) {
+                cleaned.put(key, qualityValue);
             }
         }
 
         return Map.copyOf(cleaned);
-    }
-
-    @Nullable
-    private static Float sanitizeValue(@Nullable Float value) {
-        if (value == null || !Float.isFinite(value)) {
-            return null;
-        }
-        return value;
     }
 }

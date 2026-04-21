@@ -1,0 +1,54 @@
+{
+  "pages": [
+    {
+      "id": "size_tiny",
+      "translation_key": "symbol.mystcraft-sc.size_tiny",
+      "origin": "More Mystcraft",
+      "category": "modifier/size",
+      "card_rank": 2,
+      "poem_words": ["Control", "Form", "Tiny Size", "Tiny Size"],
+      "tested": 0,
+      "value": 0.25
+    },
+    {
+      "id": "size_small",
+      "translation_key": "symbol.mystcraft-sc.size_small",
+      "origin": "More Mystcraft",
+      "category": "modifier/size",
+      "card_rank": 2,
+      "poem_words": ["Control", "Form", "Small Size", "Small Size"],
+      "tested": 0,
+      "value": 0.5
+    },
+    {
+      "id": "size_medium",
+      "translation_key": "symbol.mystcraft-sc.size_medium",
+      "origin": "More Mystcraft",
+      "category": "modifier/size",
+      "card_rank": 2,
+      "poem_words": ["Control", "Form", "Medium Size", "Medium Size"],
+      "tested": 0,
+      "value": 1.0
+    },
+    {
+      "id": "size_large",
+      "translation_key": "symbol.mystcraft-sc.size_large",
+      "origin": "More Mystcraft",
+      "category": "modifier/size",
+      "card_rank": 2,
+      "poem_words": ["Control", "Form", "Large Size", "Large Size"],
+      "tested": 0,
+      "value": 2.0
+    },
+    {
+      "id": "size_huge",
+      "translation_key": "symbol.mystcraft-sc.size_huge",
+      "origin": "More Mystcraft",
+      "category": "modifier/size",
+      "card_rank": 2,
+      "poem_words": ["Control", "Form", "Huge Size", "Huge Size"],
+      "tested": 0,
+      "value": 3.0
+    }
+  ]
+}

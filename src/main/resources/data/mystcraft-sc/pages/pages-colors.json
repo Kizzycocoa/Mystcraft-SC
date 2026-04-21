@@ -1,0 +1,224 @@
+{
+  "pages": [
+    {
+      "id": "color_black",
+      "translation_key": "symbol.mystcraft-sc.color_black",
+      "origin": "Mystcraft",
+      "category": "color",
+      "card_rank": 1,
+      "poem_words": ["Transform", "Image", "Weave", "Black Color"],
+      "tested": 0,
+      "value": [0.0, 0.0, 0.0]
+    },
+    {
+      "id": "color_blue",
+      "translation_key": "symbol.mystcraft-sc.color_blue",
+      "origin": "Mystcraft",
+      "category": "color",
+      "card_rank": 1,
+      "poem_words": ["Transform", "Image", "Weave", "Blue Color"],
+      "tested": 0,
+      "value": [0.0, 0.0, 1.0]
+    },
+    {
+      "id": "color_cyan",
+      "translation_key": "symbol.mystcraft-sc.color_cyan",
+      "origin": "Mystcraft",
+      "category": "color",
+      "card_rank": 1,
+      "poem_words": ["Transform", "Image", "Weave", "Cyan Color"],
+      "tested": 0,
+      "value": [0.0, 1.0, 1.0]
+    },
+    {
+      "id": "color_dark_green",
+      "translation_key": "symbol.mystcraft-sc.color_dark_green",
+      "origin": "Mystcraft",
+      "category": "color",
+      "card_rank": 1,
+      "poem_words": ["Transform", "Image", "Weave", "Dark Green Color"],
+      "tested": 0,
+      "value": [0.0, 0.5, 0.0]
+    },
+    {
+      "id": "color_green",
+      "translation_key": "symbol.mystcraft-sc.color_green",
+      "origin": "Mystcraft",
+      "category": "color",
+      "card_rank": 1,
+      "poem_words": ["Transform", "Image", "Weave", "Green Color"],
+      "tested": 0,
+      "value": [0.0, 1.0, 0.0]
+    },
+    {
+      "id": "color_grey",
+      "translation_key": "symbol.mystcraft-sc.color_grey",
+      "origin": "Mystcraft",
+      "category": "color",
+      "card_rank": 1,
+      "poem_words": ["Transform", "Image", "Weave", "Grey Color"],
+      "tested": 0,
+      "value": [0.5, 0.5, 0.5]
+    },
+    {
+      "id": "color_magenta",
+      "translation_key": "symbol.mystcraft-sc.color_magenta",
+      "origin": "Mystcraft",
+      "category": "color",
+      "card_rank": 1,
+      "poem_words": ["Transform", "Image", "Weave", "Magenta Color"],
+      "tested": 0,
+      "value": [1.0, 0.0, 1.0]
+    },
+    {
+      "id": "color_maroon",
+      "translation_key": "symbol.mystcraft-sc.color_maroon",
+      "origin": "Mystcraft",
+      "category": "color",
+      "card_rank": 1,
+      "poem_words": ["Transform", "Image", "Weave", "Maroon Color"],
+      "tested": 0,
+      "value": [0.5, 0.0, 0.0]
+    },
+    {
+      "id": "color_navy",
+      "translation_key": "symbol.mystcraft-sc.color_navy",
+      "origin": "Mystcraft",
+      "category": "color",
+      "card_rank": 1,
+      "poem_words": ["Transform", "Image", "Weave", "Navy Color"],
+      "tested": 0,
+      "value": [0.0, 0.0, 0.5]
+    },
+    {
+      "id": "color_olive",
+      "translation_key": "symbol.mystcraft-sc.color_olive",
+      "origin": "Mystcraft",
+      "category": "color",
+      "card_rank": 1,
+      "poem_words": ["Transform", "Image", "Weave", "Olive Color"],
+      "tested": 0,
+      "value": [0.5, 0.5, 0.0]
+    },
+    {
+      "id": "color_purple",
+      "translation_key": "symbol.mystcraft-sc.color_purple",
+      "origin": "Mystcraft",
+      "category": "color",
+      "card_rank": 1,
+      "poem_words": ["Transform", "Image", "Weave", "Purple Color"],
+      "tested": 0,
+      "value": [0.5, 0.0, 0.5]
+    },
+    {
+      "id": "color_red",
+      "translation_key": "symbol.mystcraft-sc.color_red",
+      "origin": "Mystcraft",
+      "category": "color",
+      "card_rank": 1,
+      "poem_words": ["Transform", "Image", "Weave", "Red Color"],
+      "tested": 0,
+      "value": [1.0, 0.0, 0.0]
+    },
+    {
+      "id": "color_silver",
+      "translation_key": "symbol.mystcraft-sc.color_silver",
+      "origin": "Mystcraft",
+      "category": "color",
+      "card_rank": 1,
+      "poem_words": ["Transform", "Image", "Weave", "Silver Color"],
+      "tested": 0,
+      "value": [0.75, 0.75, 0.75]
+    },
+    {
+      "id": "color_teal",
+      "translation_key": "symbol.mystcraft-sc.color_teal",
+      "origin": "Mystcraft",
+      "category": "color",
+      "card_rank": 1,
+      "poem_words": ["Transform", "Image", "Weave", "Teal Color"],
+      "tested": 0,
+      "value": [0.0, 0.5, 0.5]
+    },
+    {
+      "id": "color_white",
+      "translation_key": "symbol.mystcraft-sc.color_white",
+      "origin": "Mystcraft",
+      "category": "color",
+      "card_rank": 1,
+      "poem_words": ["Transform", "Image", "Weave", "White Color"],
+      "tested": 0,
+      "value": [1.0, 1.0, 1.0]
+    },
+    {
+      "id": "color_yellow",
+      "translation_key": "symbol.mystcraft-sc.color_yellow",
+      "origin": "Mystcraft",
+      "category": "color",
+      "card_rank": 1,
+      "poem_words": ["Transform", "Image", "Weave", "Yellow Color"],
+      "tested": 0,
+      "value": [1.0, 1.0, 0.0]
+    },
+    {
+      "id": "color_baby_blue",
+      "translation_key": "symbol.mystcraft-sc.color_baby_blue",
+      "origin": "Myst Library",
+      "category": "color",
+      "card_rank": 1,
+      "poem_words": ["Transform", "Image", "Weave", "Baby Blue Color"],
+      "tested": 0,
+      "value": [0.75, 0.875, 1.0]
+    },
+    {
+      "id": "color_citrus",
+      "translation_key": "symbol.mystcraft-sc.color_citrus",
+      "origin": "Myst Library",
+      "category": "color",
+      "card_rank": 1,
+      "poem_words": ["Transform", "Image", "Weave", "Citrus Color"],
+      "tested": 0,
+      "value": [1.0, 0.875, 0.0]
+    },
+    {
+      "id": "color_dark_grey",
+      "translation_key": "symbol.mystcraft-sc.color_dark_grey",
+      "origin": "Myst Library",
+      "category": "color",
+      "card_rank": 1,
+      "poem_words": ["Transform", "Image", "Weave", "Dark Grey Color"],
+      "tested": 0,
+      "value": [0.25, 0.25, 0.25]
+    },
+    {
+      "id": "color_lime",
+      "translation_key": "symbol.mystcraft-sc.color_lime",
+      "origin": "Myst Library",
+      "category": "color",
+      "card_rank": 1,
+      "poem_words": ["Transform", "Image", "Weave", "Lime Color"],
+      "tested": 0,
+      "value": [0.5, 1.0, 0.0]
+    },
+    {
+      "id": "color_orange",
+      "translation_key": "symbol.mystcraft-sc.color_orange",
+      "origin": "Myst Library",
+      "category": "color",
+      "card_rank": 1,
+      "poem_words": ["Transform", "Image", "Weave", "Orange Color"],
+      "tested": 0,
+      "value": [1.0, 0.5, 0.0]
+    },
+    {
+      "id": "color_pink",
+      "translation_key": "symbol.mystcraft-sc.color_pink",
+      "origin": "Myst Library",
+      "category": "color",
+      "card_rank": 1,
+      "poem_words": ["Transform", "Image", "Weave", "Pink Color"],
+      "tested": 0,
+      "value": [1.0, 0.75, 0.75]
+    }
+  ]
+}

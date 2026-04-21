@@ -1,0 +1,54 @@
+{
+  "pages": [
+    {
+      "id": "eff_accelerated",
+      "translation_key": "symbol.mystcraft-sc.eff_accelerated",
+      "origin": "Mystcraft",
+      "category": "effect",
+      "card_rank": 1,
+      "poem_words": ["Survival", "Dynamic", "Change", "Spur"],
+      "tested": 0,
+      "value": "accelerated"
+    },
+    {
+      "id": "eff_explosions",
+      "translation_key": "symbol.mystcraft-sc.eff_explosions",
+      "origin": "Mystcraft",
+      "category": "effect",
+      "card_rank": 3,
+      "poem_words": ["Survival", "Sacrifice", "Power", "Force"],
+      "tested": 0,
+      "value": "explosions"
+    },
+    {
+      "id": "eff_lightning",
+      "translation_key": "symbol.mystcraft-sc.eff_lightning",
+      "origin": "Mystcraft",
+      "category": "effect",
+      "card_rank": 3,
+      "poem_words": ["Survival", "Sacrifice", "Power", "Energy"],
+      "tested": 0,
+      "value": "lightning"
+    },
+    {
+      "id": "eff_meteor",
+      "translation_key": "symbol.mystcraft-sc.eff_meteor",
+      "origin": "Mystcraft",
+      "category": "effect",
+      "card_rank": 3,
+      "poem_words": ["Survival", "Sacrifice", "Power", "Momentum"],
+      "tested": 0,
+      "value": "meteor"
+    },
+    {
+      "id": "eff_scorch",
+      "translation_key": "symbol.mystcraft-sc.eff_scorch",
+      "origin": "Mystcraft",
+      "category": "effect",
+      "card_rank": 3,
+      "poem_words": ["Survival", "Sacrifice", "Power", "Chaos"],
+      "tested": 0,
+      "value": "scorch"
+    }
+  ]
+}

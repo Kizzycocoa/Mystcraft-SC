@@ -1,0 +1,104 @@
+{
+  "pages": [
+    {
+      "id": "terrain_normal",
+      "translation_key": "symbol.mystcraft-sc.terrain_normal",
+      "origin": "Mystcraft",
+      "category": "terrain",
+      "card_rank": 1,
+      "poem_words": ["Terrain", "Form", "Tradition", "Flow"],
+      "tested": 0,
+      "value": "normal"
+    },
+    {
+      "id": "terrain_flat",
+      "translation_key": "symbol.mystcraft-sc.terrain_flat",
+      "origin": "Mystcraft",
+      "category": "terrain",
+      "card_rank": 1,
+      "poem_words": ["Terrain", "Form", "Inhibit", "Motion"],
+      "tested": 0,
+      "value": "flat"
+    },
+    {
+      "id": "terrain_amplified",
+      "translation_key": "symbol.mystcraft-sc.terrain_amplified",
+      "origin": "Mystcraft",
+      "category": "terrain",
+      "card_rank": 1,
+      "poem_words": ["Terrain", "Form", "Tradition", "Spur"],
+      "tested": 0,
+      "value": "amplified"
+    },
+    {
+      "id": "terrain_nether",
+      "translation_key": "symbol.mystcraft-sc.terrain_nether",
+      "origin": "Mystcraft",
+      "category": "terrain",
+      "card_rank": 1,
+      "poem_words": ["Terrain", "Form", "Constraint", "Entropy"],
+      "tested": 0,
+      "value": "nether"
+    },
+    {
+      "id": "terrain_end",
+      "translation_key": "symbol.mystcraft-sc.terrain_end",
+      "origin": "Mystcraft",
+      "category": "terrain",
+      "card_rank": 1,
+      "poem_words": ["Terrain", "Form", "Ethereal", "Flow"],
+      "tested": 0,
+      "value": "end"
+    },
+    {
+      "id": "terrain_void",
+      "translation_key": "symbol.mystcraft-sc.terrain_void",
+      "origin": "Mystcraft",
+      "category": "terrain",
+      "card_rank": 1,
+      "poem_words": ["Terrain", "Form", "Infinite", "Void"],
+      "tested": 0,
+      "value": "void"
+    },
+    {
+      "id": "terrain_island",
+      "translation_key": "symbol.mystcraft-sc.terrain_island",
+      "origin": "Mystcraft",
+      "category": "terrain",
+      "card_rank": 1,
+      "poem_words": ["Terrain", "Form", "Ethereal", "Flow"],
+      "tested": 0,
+      "value": "island"
+    },
+    {
+      "id": "terrain_skylands",
+      "translation_key": "symbol.mystcraft-sc.terrain_skylands",
+      "origin": "Mystcraft",
+      "category": "terrain",
+      "card_rank": 1,
+      "poem_words": ["Terrain", "Transform", "Void", "Elevate"],
+      "tested": 0,
+      "value": "skylands"
+    },
+    {
+      "id": "terrain_maze",
+      "translation_key": "symbol.mystcraft-sc.terrain_maze",
+      "origin": "More Mystcraft",
+      "category": "terrain",
+      "card_rank": 1,
+      "poem_words": ["Terrain", "Form", "Infinite", "Maze"],
+      "tested": 0,
+      "value": "maze"
+    },
+    {
+      "id": "terrain_backrooms",
+      "translation_key": "symbol.mystcraft-sc.terrain_backrooms",
+      "origin": "Mystcraft:SC",
+      "category": "terrain",
+      "card_rank": 1,
+      "poem_words": ["Terrain", "Form", "Infinite", "Maze"],
+      "tested": 0,
+      "value": "backrooms"
+    }
+  ]
+}

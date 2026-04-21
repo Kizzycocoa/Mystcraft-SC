@@ -1,0 +1,94 @@
+{
+  "pages": [
+    {
+      "id": "length_zero",
+      "translation_key": "symbol.mystcraft-sc.length_zero",
+      "origin": "Mystcraft",
+      "category": "modifier/length",
+      "card_rank": 1,
+      "poem_words": ["Transform", "Time", "System", "Inhibit"],
+      "tested": 0,
+      "value": 0.0
+    },
+    {
+      "id": "length_half",
+      "translation_key": "symbol.mystcraft-sc.length_half",
+      "origin": "Mystcraft",
+      "category": "modifier/length",
+      "card_rank": 1,
+      "poem_words": ["Transform", "Time", "System", "Stimulate"],
+      "tested": 0,
+      "value": 0.5
+    },
+    {
+      "id": "length_full",
+      "translation_key": "symbol.mystcraft-sc.length_full",
+      "origin": "Mystcraft",
+      "category": "modifier/length",
+      "card_rank": 1,
+      "poem_words": ["Transform", "Time", "System", "Balance"],
+      "tested": 0,
+      "value": 1.0
+    },
+    {
+      "id": "length_double",
+      "translation_key": "symbol.mystcraft-sc.length_double",
+      "origin": "Mystcraft",
+      "category": "modifier/length",
+      "card_rank": 1,
+      "poem_words": ["Transform", "Time", "System", "Sacrifice"],
+      "tested": 0,
+      "value": 2.0
+    },
+    {
+      "id": "length_fifth",
+      "translation_key": "symbol.mystcraft-sc.length_fifth",
+      "origin": "Myst Library",
+      "category": "modifier/length",
+      "card_rank": 1,
+      "poem_words": ["Transform", "Time", "System", "One Fifth Length"],
+      "tested": 0,
+      "value": 0.2
+    },
+    {
+      "id": "length_third",
+      "translation_key": "symbol.mystcraft-sc.length_third",
+      "origin": "Myst Library",
+      "category": "modifier/length",
+      "card_rank": 1,
+      "poem_words": ["Transform", "Time", "System", "One Third Length"],
+      "tested": 0,
+      "value": 0.33333334
+    },
+    {
+      "id": "length_triple",
+      "translation_key": "symbol.mystcraft-sc.length_triple",
+      "origin": "Myst Library",
+      "category": "modifier/length",
+      "card_rank": 1,
+      "poem_words": ["Transform", "Time", "System", "Triple Length"],
+      "tested": 0,
+      "value": 3.0
+    },
+    {
+      "id": "length_quintuple",
+      "translation_key": "symbol.mystcraft-sc.length_quintuple",
+      "origin": "Myst Library",
+      "category": "modifier/length",
+      "card_rank": 1,
+      "poem_words": ["Transform", "Time", "System", "Quintuple Length"],
+      "tested": 0,
+      "value": 5.0
+    },
+    {
+      "id": "length_real",
+      "translation_key": "symbol.mystcraft-sc.length_real",
+      "origin": "Myst Library",
+      "category": "modifier/length",
+      "card_rank": 1,
+      "poem_words": ["Transform", "Time", "System", "Real Length"],
+      "tested": 0,
+      "value": 72.0
+    }
+  ]
+}

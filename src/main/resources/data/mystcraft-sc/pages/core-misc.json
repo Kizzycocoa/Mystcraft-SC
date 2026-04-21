@@ -1,0 +1,34 @@
+{
+  "pages": [
+    {
+      "id": "clear_mods",
+      "translation_key": "symbol.mystcraft-sc.clear_mods",
+      "origin": "Mystcraft",
+      "category": "misc",
+      "card_rank": 1,
+      "poem_words": ["Contradict", "Transform", "Change", "Void"],
+      "tested": 0,
+      "value": "clear_mods"
+    },
+    {
+      "id": "gradient_color",
+      "translation_key": "symbol.mystcraft-sc.gradient_color",
+      "origin": "Mystcraft",
+      "category": "misc",
+      "card_rank": 1,
+      "poem_words": ["Transform", "Image", "Merge", "Weave"],
+      "tested": 0,
+      "value": "gradient_color"
+    },
+    {
+      "id": "horizon_color",
+      "translation_key": "symbol.mystcraft-sc.horizon_color",
+      "origin": "Mystcraft",
+      "category": "misc",
+      "card_rank": 1,
+      "poem_words": ["Transform", "Image", "Celestial", "Change"],
+      "tested": 0,
+      "value": "horizon_color"
+    }
+  ]
+}

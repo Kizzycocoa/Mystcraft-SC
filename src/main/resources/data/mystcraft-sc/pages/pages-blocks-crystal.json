@@ -1,0 +1,74 @@
+{
+  "pages": [
+    {
+      "id": "block_c_ice",
+      "translation_key": "symbol.mystcraft-sc.block_c_ice",
+      "origin": "Mystcraft",
+      "category": "block/crystal",
+      "card_rank": 1,
+      "poem_words": ["Modifier", "Constraint", "Chain", "Ice Block"],
+      "tested": 0,
+      "value": "minecraft:ice"
+    },
+    {
+      "id": "block_c_packed_ice",
+      "translation_key": "symbol.mystcraft-sc.block_c_packed_ice",
+      "origin": "Mystcraft",
+      "category": "block/crystal",
+      "card_rank": 1,
+      "poem_words": ["Modifier", "Constraint", "Chain", "Packed Ice Block"],
+      "tested": 0,
+      "value": "minecraft:packed_ice"
+    },
+    {
+      "id": "block_c_glass",
+      "translation_key": "symbol.mystcraft-sc.block_c_glass",
+      "origin": "Mystcraft",
+      "category": "block/crystal",
+      "card_rank": 1,
+      "poem_words": ["Modifier", "Constraint", "Chain", "Glass Block"],
+      "tested": 0,
+      "value": "minecraft:glass"
+    },
+    {
+      "id": "block_c_snow",
+      "translation_key": "symbol.mystcraft-sc.block_c_snow",
+      "origin": "Mystcraft",
+      "category": "block/crystal",
+      "card_rank": 1,
+      "poem_words": ["Modifier", "Constraint", "Chain", "Snow Block"],
+      "tested": 0,
+      "value": "minecraft:snow_block"
+    },
+    {
+      "id": "block_c_obsidian",
+      "translation_key": "symbol.mystcraft-sc.block_c_obsidian",
+      "origin": "Mystcraft",
+      "category": "block/crystal",
+      "card_rank": 1,
+      "poem_words": ["Modifier", "Constraint", "Chain", "Obsidian Block"],
+      "tested": 0,
+      "value": "minecraft:obsidian"
+    },
+    {
+      "id": "block_c_glowstone",
+      "translation_key": "symbol.mystcraft-sc.block_c_glowstone",
+      "origin": "Mystcraft",
+      "category": "block/crystal",
+      "card_rank": 1,
+      "poem_words": ["Modifier", "Constraint", "Chain", "Glowstone Block"],
+      "tested": 0,
+      "value": "minecraft:glowstone"
+    },
+    {
+      "id": "block_c_crystal",
+      "translation_key": "symbol.mystcraft-sc.block_c_crystal",
+      "origin": "Mystcraft",
+      "category": "block/crystal",
+      "card_rank": 1,
+      "poem_words": ["Modifier", "Constraint", "Chain", "Crystal Block"],
+      "tested": 0,
+      "value": "mystcraft-sc:crystal"
+    }
+  ]
+}

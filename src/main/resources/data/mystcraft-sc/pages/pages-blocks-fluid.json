@@ -1,0 +1,14 @@
+{
+  "pages": [
+    {
+      "id": "block_f_gravel",
+      "translation_key": "symbol.mystcraft-sc.block_f_gravel",
+      "origin": "Mystcraft",
+      "category": "block/fluid",
+      "card_rank": 1,
+      "poem_words": ["Modifier", "Constraint", "Sea", "Gravel Block"],
+      "tested": 0,
+      "value": "minecraft:gravel"
+    }
+  ]
+}

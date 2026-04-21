@@ -1,0 +1,84 @@
+{
+  "pages": [
+    {
+      "id": "block_o_diamond",
+      "translation_key": "symbol.mystcraft-sc.block_o_diamond",
+      "origin": "Mystcraft",
+      "category": "block/ore",
+      "card_rank": 1,
+      "poem_words": ["Modifier", "Constraint", "Ore", "Diamond Ore"],
+      "tested": 0,
+      "value": "minecraft:diamond_ore"
+    },
+    {
+      "id": "block_o_gold",
+      "translation_key": "symbol.mystcraft-sc.block_o_gold",
+      "origin": "Mystcraft",
+      "category": "block/ore",
+      "card_rank": 1,
+      "poem_words": ["Modifier", "Constraint", "Ore", "Gold Ore"],
+      "tested": 0,
+      "value": "minecraft:gold_ore"
+    },
+    {
+      "id": "block_o_iron",
+      "translation_key": "symbol.mystcraft-sc.block_o_iron",
+      "origin": "Mystcraft",
+      "category": "block/ore",
+      "card_rank": 1,
+      "poem_words": ["Modifier", "Constraint", "Ore", "Iron Ore"],
+      "tested": 0,
+      "value": "minecraft:iron_ore"
+    },
+    {
+      "id": "block_o_coal",
+      "translation_key": "symbol.mystcraft-sc.block_o_coal",
+      "origin": "Mystcraft",
+      "category": "block/ore",
+      "card_rank": 1,
+      "poem_words": ["Modifier", "Constraint", "Ore", "Coal Ore"],
+      "tested": 0,
+      "value": "minecraft:coal_ore"
+    },
+    {
+      "id": "block_o_redstone",
+      "translation_key": "symbol.mystcraft-sc.block_o_redstone",
+      "origin": "Mystcraft",
+      "category": "block/ore",
+      "card_rank": 1,
+      "poem_words": ["Modifier", "Constraint", "Ore", "Redstone Ore"],
+      "tested": 0,
+      "value": "minecraft:redstone_ore"
+    },
+    {
+      "id": "block_o_lapis",
+      "translation_key": "symbol.mystcraft-sc.block_o_lapis",
+      "origin": "Mystcraft",
+      "category": "block/ore",
+      "card_rank": 1,
+      "poem_words": ["Modifier", "Constraint", "Ore", "Lapis Lazuli Ore"],
+      "tested": 0,
+      "value": "minecraft:lapis_ore"
+    },
+    {
+      "id": "block_o_emerald",
+      "translation_key": "symbol.mystcraft-sc.block_o_emerald",
+      "origin": "Mystcraft",
+      "category": "block/ore",
+      "card_rank": 1,
+      "poem_words": ["Modifier", "Constraint", "Ore", "Emerald Ore"],
+      "tested": 0,
+      "value": "minecraft:emerald_ore"
+    },
+    {
+      "id": "block_o_quartz",
+      "translation_key": "symbol.mystcraft-sc.block_o_quartz",
+      "origin": "Mystcraft",
+      "category": "block/ore",
+      "card_rank": 1,
+      "poem_words": ["Modifier", "Constraint", "Chain", "Quartz Ore"],
+      "tested": 0,
+      "value": "minecraft:nether_quartz_ore"
+    }
+  ]
+}

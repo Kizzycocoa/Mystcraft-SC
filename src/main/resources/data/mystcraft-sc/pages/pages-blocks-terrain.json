@@ -1,0 +1,84 @@
+{
+  "pages": [
+    {
+      "id": "block_t_dirt",
+      "translation_key": "symbol.mystcraft-sc.block_t_dirt",
+      "origin": "Mystcraft",
+      "category": "block/terrain",
+      "card_rank": 1,
+      "poem_words": ["Modifier", "Constraint", "Terrain", "Dirt Block"],
+      "tested": 0,
+      "value": "minecraft:dirt"
+    },
+    {
+      "id": "block_t_stone",
+      "translation_key": "symbol.mystcraft-sc.block_t_stone",
+      "origin": "Mystcraft",
+      "category": "block/terrain",
+      "card_rank": 1,
+      "poem_words": ["Modifier", "Constraint", "Terrain", "Stone Block_0"],
+      "tested": 0,
+      "value": "minecraft:stone"
+    },
+    {
+      "id": "block_t_andesite",
+      "translation_key": "symbol.mystcraft-sc.block_t_andesite",
+      "origin": "Mystcraft",
+      "category": "block/terrain",
+      "card_rank": 1,
+      "poem_words": ["Modifier", "Constraint", "Terrain", "Andesite Block"],
+      "tested": 0,
+      "value": "minecraft:andesite"
+    },
+    {
+      "id": "block_t_granite",
+      "translation_key": "symbol.mystcraft-sc.block_t_granite",
+      "origin": "Mystcraft",
+      "category": "block/terrain",
+      "card_rank": 1,
+      "poem_words": ["Modifier", "Constraint", "Terrain", "Granite Block"],
+      "tested": 0,
+      "value": "minecraft:granite"
+    },
+    {
+      "id": "block_t_diorite",
+      "translation_key": "symbol.mystcraft-sc.block_t_diorite",
+      "origin": "Mystcraft",
+      "category": "block/terrain",
+      "card_rank": 1,
+      "poem_words": ["Modifier", "Constraint", "Terrain", "Diorite Block"],
+      "tested": 0,
+      "value": "minecraft:diorite"
+    },
+    {
+      "id": "block_t_sandstone",
+      "translation_key": "symbol.mystcraft-sc.block_t_sandstone",
+      "origin": "Mystcraft",
+      "category": "block/terrain",
+      "card_rank": 1,
+      "poem_words": ["Modifier", "Constraint", "Terrain", "Sandstone Block"],
+      "tested": 0,
+      "value": "minecraft:sandstone"
+    },
+    {
+      "id": "block_t_netherrack",
+      "translation_key": "symbol.mystcraft-sc.block_t_netherrack",
+      "origin": "Mystcraft",
+      "category": "block/terrain",
+      "card_rank": 1,
+      "poem_words": ["Modifier", "Constraint", "Terrain", "Netherrack Block"],
+      "tested": 0,
+      "value": "minecraft:netherrack"
+    },
+    {
+      "id": "block_t_end_stone",
+      "translation_key": "symbol.mystcraft-sc.block_t_end_stone",
+      "origin": "Mystcraft",
+      "category": "block/terrain",
+      "card_rank": 1,
+      "poem_words": ["Modifier", "Constraint", "Terrain", "End Stone Block"],
+      "tested": 0,
+      "value": "minecraft:end_stone"
+    }
+  ]
+}

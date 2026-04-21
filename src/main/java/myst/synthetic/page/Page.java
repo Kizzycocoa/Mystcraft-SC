@@ -69,11 +69,11 @@ public final class Page {
     public static void setSymbol(ItemStack page, @Nullable Identifier symbol) {
         PageDataComponent data = getPageData(page).withSymbol(symbol);
 
-        if (symbol == null) {
-            data = data.withoutValue();
-        } else {
+        if (symbol != null) {
             PageSymbol pageSymbol = PageSymbolRegistry.get(symbol);
             data = data.withValue(pageSymbol == null ? null : pageSymbol.value());
+        } else {
+            data = data.withValue(null);
         }
 
         setPageData(page, data);
@@ -85,7 +85,7 @@ public final class Page {
     }
 
     public static void clearSymbol(ItemStack page) {
-        setPageData(page, getPageData(page).withoutSymbol().withoutValue());
+        setPageData(page, getPageData(page).withoutSymbol().withValue(null));
     }
 
     public static void setQuality(ItemStack page, String trait, int quality) {
@@ -105,12 +105,12 @@ public final class Page {
         return getPageData(page).getTotalQuality();
     }
 
-    public static void setValue(ItemStack page, @Nullable Float value) {
+    public static void setValue(ItemStack page, @Nullable PageValue value) {
         setPageData(page, getPageData(page).withValue(value));
     }
 
     @Nullable
-    public static Float getValue(ItemStack page) {
+    public static PageValue getValue(ItemStack page) {
         PageDataComponent data = getPageData(page);
         if (data.value() != null) {
             return data.value();
@@ -125,8 +125,22 @@ public final class Page {
         return symbol == null ? null : symbol.value();
     }
 
-    public static void clearValue(ItemStack page) {
-        setPageData(page, getPageData(page).withoutValue());
+    @Nullable
+    public static Float getScalarValue(ItemStack page) {
+        PageValue value = getValue(page);
+        return value == null ? null : value.scalarOrNull();
+    }
+
+    @Nullable
+    public static List<Float> getVectorValue(ItemStack page) {
+        PageValue value = getValue(page);
+        return value == null ? null : value.vectorOrNull();
+    }
+
+    @Nullable
+    public static String getTextValue(ItemStack page) {
+        PageValue value = getValue(page);
+        return value == null ? null : value.textOrNull();
     }
 
     public static ItemStack createPage() {

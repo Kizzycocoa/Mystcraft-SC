@@ -1,5 +1,6 @@
 package myst.synthetic.page.symbol;
 
+import myst.synthetic.page.PageValue;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
@@ -9,31 +10,30 @@ import java.util.List;
 public record PageSymbol(
         Identifier id,
         @Nullable String translationKey,
+        String origin,
         String category,
         int cardRank,
         List<String> poemWords,
         int tested,
-        @Nullable Float value
+        @Nullable PageValue value
 ) {
 
     public PageSymbol(
             Identifier id,
             @Nullable String translationKey,
+            String origin,
             String category,
             int cardRank,
             List<String> poemWords,
             int tested
     ) {
-        this(id, translationKey, category, cardRank, poemWords, tested, null);
+        this(id, translationKey, origin, category, cardRank, poemWords, tested, null);
     }
 
     public PageSymbol {
         poemWords = List.copyOf(poemWords);
+        origin = origin == null ? "" : origin;
         category = category == null ? "" : category;
-
-        if (value != null && !Float.isFinite(value)) {
-            value = null;
-        }
     }
 
     public String rootCategory() {

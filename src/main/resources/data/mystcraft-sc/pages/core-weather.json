@@ -1,0 +1,64 @@
+{
+  "pages": [
+    {
+      "id": "weather_nat",
+      "translation_key": "symbol.mystcraft-sc.weather_nat",
+      "origin": "Mystcraft",
+      "category": "weather/type",
+      "card_rank": 1,
+      "poem_words": ["Sustain", "Dynamic", "Tradition", "Balance"],
+      "tested": 0,
+      "value": "natural"
+    },
+    {
+      "id": "weather_off",
+      "translation_key": "symbol.mystcraft-sc.weather_off",
+      "origin": "Mystcraft",
+      "category": "weather/type",
+      "card_rank": 1,
+      "poem_words": ["Sustain", "Static", "Stimulate", "Energy"],
+      "tested": 0,
+      "value": "off"
+    },
+    {
+      "id": "weather_rain",
+      "translation_key": "symbol.mystcraft-sc.weather_rain",
+      "origin": "Mystcraft",
+      "category": "weather/type",
+      "card_rank": 1,
+      "poem_words": ["Sustain", "Static", "Rebirth", "Growth"],
+      "tested": 0,
+      "value": "rain"
+    },
+    {
+      "id": "weather_snow",
+      "translation_key": "symbol.mystcraft-sc.weather_snow",
+      "origin": "Mystcraft",
+      "category": "weather/type",
+      "card_rank": 1,
+      "poem_words": ["Sustain", "Static", "Inhibit", "Energy"],
+      "tested": 0,
+      "value": "snow"
+    },
+    {
+      "id": "weather_storm",
+      "translation_key": "symbol.mystcraft-sc.weather_storm",
+      "origin": "Mystcraft",
+      "category": "weather/type",
+      "card_rank": 1,
+      "poem_words": ["Sustain", "Static", "Nature", "Power"],
+      "tested": 0,
+      "value": "storm"
+    },
+    {
+      "id": "weather_overcast",
+      "translation_key": "symbol.mystcraft-sc.weather_overcast",
+      "origin": "Mystcraft",
+      "category": "weather/type",
+      "card_rank": 1,
+      "poem_words": ["Sustain", "Static", "Believe", "Motion"],
+      "tested": 0,
+      "value": "overcast"
+    }
+  ]
+}

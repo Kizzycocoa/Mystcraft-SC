@@ -1,0 +1,114 @@
+{
+  "pages": [
+    {
+      "id": "bio_con_nat",
+      "translation_key": "symbol.mystcraft-sc.bio_con_nat",
+      "origin": "Mystcraft",
+      "category": "biocontrol",
+      "card_rank": 2,
+      "poem_words": ["Constraint", "Nature", "Tradition", "Sustain"],
+      "tested": 0,
+      "value": "natural"
+    },
+    {
+      "id": "bio_con_single",
+      "translation_key": "symbol.mystcraft-sc.bio_con_single",
+      "origin": "Mystcraft",
+      "category": "biocontrol",
+      "card_rank": 2,
+      "poem_words": ["Constraint", "Nature", "Infinite", "Static"],
+      "tested": 0,
+      "value": "single"
+    },
+    {
+      "id": "bio_con_grid",
+      "translation_key": "symbol.mystcraft-sc.bio_con_grid",
+      "origin": "Mystcraft",
+      "category": "biocontrol",
+      "card_rank": 2,
+      "poem_words": ["Constraint", "Nature", "Chain", "Mutual"],
+      "tested": 0,
+      "value": "grid"
+    },
+    {
+      "id": "bio_con_tiled",
+      "translation_key": "symbol.mystcraft-sc.bio_con_tiled",
+      "origin": "Mystcraft",
+      "category": "biocontrol",
+      "card_rank": 2,
+      "poem_words": ["Constraint", "Nature", "Chain", "Contradict"],
+      "tested": 0,
+      "value": "tiled"
+    },
+    {
+      "id": "bio_con_patchy",
+      "translation_key": "symbol.mystcraft-sc.bio_con_patchy",
+      "origin": "Mystcraft",
+      "category": "biocontrol",
+      "card_rank": 2,
+      "poem_words": ["Constraint", "Nature", "Weave", "Tradition"],
+      "tested": 0,
+      "value": "patchy"
+    },
+    {
+      "id": "bio_con_boxes",
+      "translation_key": "symbol.mystcraft-sc.bio_con_boxes",
+      "origin": "More Mystcraft",
+      "category": "biocontrol",
+      "card_rank": 2,
+      "poem_words": ["Constraint", "Nature", "Cycle", "Boxes Biome Distribution"],
+      "tested": 0,
+      "value": "boxes"
+    },
+    {
+      "id": "bio_con_island",
+      "translation_key": "symbol.mystcraft-sc.bio_con_island",
+      "origin": "More Mystcraft",
+      "category": "biocontrol",
+      "card_rank": 2,
+      "poem_words": ["Constraint", "Nature", "Weave", "Island Biome Distribution"],
+      "tested": 0,
+      "value": "island"
+    },
+    {
+      "id": "bio_con_ewband",
+      "translation_key": "symbol.mystcraft-sc.bio_con_ewband",
+      "origin": "More Mystcraft",
+      "category": "biocontrol",
+      "card_rank": 2,
+      "poem_words": ["Constraint", "Nature", "Cycle", "East-West Bands Biome Distribution"],
+      "tested": 0,
+      "value": "east_west_bands"
+    },
+    {
+      "id": "bio_con_nsband",
+      "translation_key": "symbol.mystcraft-sc.bio_con_nsband",
+      "origin": "More Mystcraft",
+      "category": "biocontrol",
+      "card_rank": 2,
+      "poem_words": ["Constraint", "Nature", "Cycle", "North-South Bands Biome Distribution"],
+      "tested": 0,
+      "value": "north_south_bands"
+    },
+    {
+      "id": "bio_con_rings",
+      "translation_key": "symbol.mystcraft-sc.bio_con_rings",
+      "origin": "More Mystcraft",
+      "category": "biocontrol",
+      "card_rank": 2,
+      "poem_words": ["Constraint", "Nature", "Cycle", "Rings Biome Distribution"],
+      "tested": 0,
+      "value": "rings"
+    },
+    {
+      "id": "bio_con_maze",
+      "translation_key": "symbol.mystcraft-sc.bio_con_maze",
+      "origin": "More Mystcraft",
+      "category": "biocontrol",
+      "card_rank": 2,
+      "poem_words": ["Constraint", "Nature", "Weave", "Maze Biome Distribution"],
+      "tested": 0,
+      "value": "maze"
+    }
+  ]
+}

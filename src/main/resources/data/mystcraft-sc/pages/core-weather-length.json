@@ -1,0 +1,34 @@
+{
+  "pages": [
+    {
+      "id": "weather_constant",
+      "translation_key": "symbol.mystcraft-sc.weather_constant",
+      "origin": "Mystcraft",
+      "category": "weather/length",
+      "card_rank": 1,
+      "poem_words": ["Sustain", "Static", "Tradition", "Stimulate"],
+      "tested": 0,
+      "value": "constant"
+    },
+    {
+      "id": "weather_fast",
+      "translation_key": "symbol.mystcraft-sc.weather_fast",
+      "origin": "Mystcraft",
+      "category": "weather/length",
+      "card_rank": 1,
+      "poem_words": ["Sustain", "Dynamic", "Tradition", "Spur"],
+      "tested": 0,
+      "value": "fast"
+    },
+    {
+      "id": "weather_slow",
+      "translation_key": "symbol.mystcraft-sc.weather_slow",
+      "origin": "Mystcraft",
+      "category": "weather/length",
+      "card_rank": 1,
+      "poem_words": ["Sustain", "Dynamic", "Tradition", "Inhibit"],
+      "tested": 0,
+      "value": "slow"
+    }
+  ]
+}

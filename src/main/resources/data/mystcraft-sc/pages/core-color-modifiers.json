@@ -1,0 +1,144 @@
+{
+  "pages": [
+    {
+      "id": "recolor_cloud",
+      "translation_key": "symbol.mystcraft-sc.recolor_cloud",
+      "origin": "Mystcraft",
+      "category": "recolor",
+      "card_rank": 1,
+      "poem_words": ["Image", "Entropy", "Believe", "Weave"],
+      "tested": 0,
+      "value": "cloud"
+    },
+    {
+      "id": "recolor_cloud_nat",
+      "translation_key": "symbol.mystcraft-sc.recolor_cloud_nat",
+      "origin": "Mystcraft",
+      "category": "recolor",
+      "card_rank": 1,
+      "poem_words": ["Image", "Entropy", "Believe", "Nature"],
+      "tested": 0,
+      "value": "cloud_natural"
+    },
+    {
+      "id": "recolor_fog",
+      "translation_key": "symbol.mystcraft-sc.recolor_fog",
+      "origin": "Mystcraft",
+      "category": "recolor",
+      "card_rank": 1,
+      "poem_words": ["Image", "Entropy", "Explore", "Weave"],
+      "tested": 0,
+      "value": "fog"
+    },
+    {
+      "id": "recolor_fog_nat",
+      "translation_key": "symbol.mystcraft-sc.recolor_fog_nat",
+      "origin": "Mystcraft",
+      "category": "recolor",
+      "card_rank": 1,
+      "poem_words": ["Image", "Entropy", "Explore", "Nature"],
+      "tested": 0,
+      "value": "fog_natural"
+    },
+    {
+      "id": "recolor_foliage",
+      "translation_key": "symbol.mystcraft-sc.recolor_foliage",
+      "origin": "Mystcraft",
+      "category": "recolor",
+      "card_rank": 1,
+      "poem_words": ["Image", "Growth", "Elevate", "Weave"],
+      "tested": 0,
+      "value": "foliage"
+    },
+    {
+      "id": "recolor_foliage_nat",
+      "translation_key": "symbol.mystcraft-sc.recolor_foliage_nat",
+      "origin": "Mystcraft",
+      "category": "recolor",
+      "card_rank": 1,
+      "poem_words": ["Image", "Growth", "Elevate", "Nature"],
+      "tested": 0,
+      "value": "foliage_natural"
+    },
+    {
+      "id": "recolor_grass",
+      "translation_key": "symbol.mystcraft-sc.recolor_grass",
+      "origin": "Mystcraft",
+      "category": "recolor",
+      "card_rank": 1,
+      "poem_words": ["Image", "Growth", "Resilience", "Weave"],
+      "tested": 0,
+      "value": "grass"
+    },
+    {
+      "id": "recolor_grass_nat",
+      "translation_key": "symbol.mystcraft-sc.recolor_grass_nat",
+      "origin": "Mystcraft",
+      "category": "recolor",
+      "card_rank": 1,
+      "poem_words": ["Image", "Growth", "Resilience", "Nature"],
+      "tested": 0,
+      "value": "grass_natural"
+    },
+    {
+      "id": "recolor_sky",
+      "translation_key": "symbol.mystcraft-sc.recolor_sky",
+      "origin": "Mystcraft",
+      "category": "recolor",
+      "card_rank": 1,
+      "poem_words": ["Image", "Celestial", "Harmony", "Weave"],
+      "tested": 0,
+      "value": "sky"
+    },
+    {
+      "id": "recolor_sky_nat",
+      "translation_key": "symbol.mystcraft-sc.recolor_sky_nat",
+      "origin": "Mystcraft",
+      "category": "recolor",
+      "card_rank": 1,
+      "poem_words": ["Image", "Celestial", "Harmony", "Nature"],
+      "tested": 0,
+      "value": "sky_natural"
+    },
+    {
+      "id": "recolor_night_sky",
+      "translation_key": "symbol.mystcraft-sc.recolor_night_sky",
+      "origin": "Mystcraft",
+      "category": "recolor",
+      "card_rank": 1,
+      "poem_words": ["Image", "Celestial", "Contradict", "Weave"],
+      "tested": 0,
+      "value": "night_sky"
+    },
+    {
+      "id": "recolor_night_sky_nat",
+      "translation_key": "symbol.mystcraft-sc.recolor_night_sky_nat",
+      "origin": "Mystcraft:SC",
+      "category": "recolor",
+      "card_rank": 1,
+      "poem_words": ["Image", "Celestial", "Contradict", "Nature"],
+      "tested": 0,
+      "value": "night_sky_natural"
+    },
+    {
+      "id": "recolor_water",
+      "translation_key": "symbol.mystcraft-sc.recolor_water",
+      "origin": "Mystcraft",
+      "category": "recolor",
+      "card_rank": 1,
+      "poem_words": ["Image", "Flow", "Constraint", "Weave"],
+      "tested": 0,
+      "value": "water"
+    },
+    {
+      "id": "recolor_water_nat",
+      "translation_key": "symbol.mystcraft-sc.recolor_water_nat",
+      "origin": "Mystcraft",
+      "category": "recolor",
+      "card_rank": 1,
+      "poem_words": ["Image", "Flow", "Constraint", "Nature"],
+      "tested": 0,
+      "value": "water_natural"
+    }
+  ]
+}

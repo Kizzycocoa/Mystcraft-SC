@@ -1,0 +1,84 @@
+{
+  "pages": [
+    {
+      "id": "feature_large_caves",
+      "translation_key": "symbol.mystcraft-sc.feature_large_caves",
+      "origin": "Mystcraft",
+      "category": "feature/large",
+      "card_rank": 1,
+      "poem_words": ["Terrain", "Transform", "Void", "Flow"],
+      "tested": 0,
+      "value": "caves"
+    },
+    {
+      "id": "feature_large_float_islands",
+      "translation_key": "symbol.mystcraft-sc.feature_large_float_islands",
+      "origin": "Mystcraft",
+      "category": "feature/large",
+      "card_rank": 1,
+      "poem_words": ["Terrain", "Transform", "Form", "Celestial"],
+      "tested": 0,
+      "value": "float_islands"
+    },
+    {
+      "id": "feature_large_tendrils",
+      "translation_key": "symbol.mystcraft-sc.feature_large_tendrils",
+      "origin": "Mystcraft",
+      "category": "feature/large",
+      "card_rank": 1,
+      "poem_words": ["Terrain", "Transform", "Growth", "Flow"],
+      "tested": 0,
+      "value": "tendrils"
+    },
+    {
+      "id": "feature_large_huge_trees",
+      "translation_key": "symbol.mystcraft-sc.feature_large_huge_trees",
+      "origin": "Mystcraft",
+      "category": "feature/large",
+      "card_rank": 1,
+      "poem_words": ["Nature", "Stimulate", "Spur", "Elevate"],
+      "tested": 0,
+      "value": "huge_trees"
+    },
+    {
+      "id": "feature_large_gigantic_trees",
+      "translation_key": "symbol.mystcraft-sc.feature_large_gigantic_trees",
+      "origin": "More Mystcraft",
+      "category": "feature/large",
+      "card_rank": 1,
+      "poem_words": ["Nature", "Stimulate", "Spur", "Elevate"],
+      "tested": 0,
+      "value": "gigantic_trees"
+    },
+    {
+      "id": "feature_large_dense_ore",
+      "translation_key": "symbol.mystcraft-sc.feature_large_dense_ore",
+      "origin": "Mystcraft",
+      "category": "feature/large",
+      "card_rank": 3,
+      "poem_words": ["Survival", "Stimulate", "Machine", "Chaos"],
+      "tested": 0,
+      "value": "dense_ore"
+    },
+    {
+      "id": "feature_large_lacking_ore",
+      "translation_key": "symbol.mystcraft-sc.feature_large_lacking_ore",
+      "origin": "More Mystcraft",
+      "category": "feature/large",
+      "card_rank": 3,
+      "poem_words": ["Nature", "Possibility", "Form", "Void"],
+      "tested": 0,
+      "value": "lacking_ore"
+    },
+    {
+      "id": "feature_large_dummy",
+      "translation_key": "symbol.mystcraft-sc.feature_large_dummy",
+      "origin": "Mystcraft",
+      "category": "feature/large",
+      "card_rank": 1,
+      "poem_words": ["Contradict", "Chaos", "Exist", "Terrain"],
+      "tested": 0,
+      "value": "dummy_large"
+    }
+  ]
+}
