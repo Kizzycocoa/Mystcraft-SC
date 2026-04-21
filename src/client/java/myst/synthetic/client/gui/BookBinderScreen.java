@@ -43,16 +43,16 @@ public class BookBinderScreen extends AbstractContainerScreen<BookBinderMenu> {
     private static final int STRIP_W = GUI_W - 14;
     private static final int STRIP_H = 40;
 
-    private static final int ARROW_W = STRIP_H / 5; // legacy-style = 8
-    private static final int PAGE_W = 25;
+    private static final int ARROW_W = 8;
+    private static final int PAGE_W = 24;
     private static final int PAGE_H = 34;
     private static final int PAGE_GAP = 2;
+    private static final int VISIBLE_PAGES = 6;
 
     private static final int MISSING_ICON_X = 27;
     private static final int MISSING_ICON_Y = 26;
     private static final int MISSING_ICON_W = 18;
     private static final int MISSING_ICON_H = 18;
-
     private static final int MISSING_ICON_U = 176;
     private static final int MISSING_ICON_V = 0;
     private static final int MISSING_ICON_SRC_W = 30;
@@ -78,13 +78,15 @@ public class BookBinderScreen extends AbstractContainerScreen<BookBinderMenu> {
 
         this.titleBox = new EditBox(
                 this.font,
-                this.leftPos + TITLE_X + 2,
-                this.topPos + TITLE_Y + 2,
-                TITLE_W - 4,
-                TITLE_H - 4,
+                this.leftPos + TITLE_X + 3,
+                this.topPos + TITLE_Y + 3,
+                TITLE_W - 6,
+                TITLE_H - 6,
                 Component.literal("Book Title")
         );
         this.titleBox.setBordered(false);
+        this.titleBox.setTextColor(0xFFFFFF);
+        this.titleBox.setTextColorUneditable(0xFFFFFF);
         this.titleBox.setMaxLength(21);
         this.titleBox.setValue(this.menu.getSyncedTitle());
         this.lastSentTitle = this.titleBox.getValue();
@@ -133,12 +135,12 @@ public class BookBinderScreen extends AbstractContainerScreen<BookBinderMenu> {
             return true;
         }
 
-        if (input.key() == 263) { // left
+        if (input.key() == 263) {
             this.scroll = Math.max(0, this.scroll - 1);
             return true;
         }
 
-        if (input.key() == 262) { // right
+        if (input.key() == 262) {
             int maxScroll = Math.max(0, this.menu.getPageCount() - 1);
             this.scroll = Math.min(maxScroll, this.scroll + 1);
             return true;
@@ -172,8 +174,26 @@ public class BookBinderScreen extends AbstractContainerScreen<BookBinderMenu> {
                 256
         );
 
+        drawTitleBox(guiGraphics);
         drawPageStrip(guiGraphics, mouseX, mouseY);
         drawMissingPanelWarning(guiGraphics, mouseX, mouseY);
+    }
+
+    private void drawTitleBox(GuiGraphics guiGraphics) {
+        int x1 = this.leftPos + TITLE_X;
+        int y1 = this.topPos + TITLE_Y;
+        int x2 = x1 + TITLE_W;
+        int y2 = y1 + TITLE_H;
+
+        guiGraphics.fill(x1, y1, x2, y2, 0xFF000000);
+        guiGraphics.fill(x1, y1, x2, y1 + 1, 0xFFFF0000);
+        guiGraphics.fill(x1, y2 - 1, x2, y2, 0xFFFF0000);
+        guiGraphics.fill(x1, y1, x1 + 1, y2, 0xFFFF0000);
+        guiGraphics.fill(x2 - 1, y1, x2, y2, 0xFFFF0000);
+
+        if (this.titleBox != null && this.titleBox.getValue().isEmpty() && !this.titleBox.isFocused()) {
+            guiGraphics.drawString(this.font, "Name...", x1 + 4, y1 + 3, 0x808080, false);
+        }
     }
 
     private void drawPageStrip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
@@ -183,26 +203,23 @@ public class BookBinderScreen extends AbstractContainerScreen<BookBinderMenu> {
         guiGraphics.fill(stripLeft, stripTop, stripLeft + STRIP_W, stripTop + STRIP_H, 0xAA000000);
 
         int hoveredIndex = getHoveredPageIndex(mouseX, mouseY);
-
-        int drawX = stripLeft + 2;
+        int drawX = stripLeft + ARROW_W + 1;
         int drawY = stripTop + 3;
-
         int pageCount = this.menu.getPageCount();
 
-        for (int visible = 0; ; visible++) {
-            int x = drawX + visible * (PAGE_W + PAGE_GAP);
-            if (x + PAGE_W > stripLeft + STRIP_W - ARROW_W) {
+        for (int visible = 0; visible < VISIBLE_PAGES; visible++) {
+            int index = this.scroll + visible;
+            if (index >= pageCount) {
                 break;
             }
 
-            int index = this.scroll + visible;
-            boolean hasPage = index < pageCount;
-            ItemStack stack = hasPage ? this.menu.getPageAt(index) : ItemStack.EMPTY;
+            int x = drawX + visible * (PAGE_W + PAGE_GAP);
+            ItemStack stack = this.menu.getPageAt(index);
 
             guiGraphics.pose().pushMatrix();
             guiGraphics.pose().translate(x, drawY);
             guiGraphics.pose().scale(PAGE_W / (float) PageCardRenderer.CARD_WIDTH, PAGE_H / (float) PageCardRenderer.CARD_HEIGHT);
-            PageCardRenderer.drawPageCard(guiGraphics, 0, 0, stack, !hasPage, hoveredIndex == index);
+            PageCardRenderer.drawPageCard(guiGraphics, 0, 0, stack, false, hoveredIndex == index);
             guiGraphics.pose().popMatrix();
         }
 
@@ -230,23 +247,29 @@ public class BookBinderScreen extends AbstractContainerScreen<BookBinderMenu> {
         int x = this.leftPos + MISSING_ICON_X;
         int y = this.topPos + MISSING_ICON_Y;
 
+        guiGraphics.pose().pushMatrix();
+        guiGraphics.pose().translate(x, y);
+        guiGraphics.pose().scale(MISSING_ICON_W / (float) MISSING_ICON_SRC_W, MISSING_ICON_H / (float) MISSING_ICON_SRC_H);
         guiGraphics.blit(
                 RenderPipelines.GUI_TEXTURED,
                 TEXTURE,
-                x,
-                y,
+                0,
+                0,
                 MISSING_ICON_U,
                 MISSING_ICON_V,
-                MISSING_ICON_W,
-                MISSING_ICON_H,
+                MISSING_ICON_SRC_W,
+                MISSING_ICON_SRC_H,
                 256,
                 256
         );
+        guiGraphics.pose().popMatrix();
 
         float alpha = getMissingPanelPulseAlpha();
-        int overlayAlpha = Math.max(0, Math.min(255, (int) (alpha * 255.0F)));
-        int overlay = (overlayAlpha << 24) | (0xFF << 16) | (0x80 << 8) | 0x80;
-        guiGraphics.fill(x, y, x + MISSING_ICON_W, y + MISSING_ICON_H, overlay);
+        if (alpha > 0.0F) {
+            int overlayAlpha = Math.max(0, Math.min(255, (int) (alpha * 255.0F)));
+            int overlay = (overlayAlpha << 24) | (0xFF << 16) | (0x80 << 8) | 0x80;
+            guiGraphics.fill(x, y, x + MISSING_ICON_W, y + MISSING_ICON_H, overlay);
+        }
 
         if (mouseX >= x && mouseX < x + MISSING_ICON_W && mouseY >= y && mouseY < y + MISSING_ICON_H) {
             List<ClientTooltipComponent> tooltip = new ArrayList<>();
@@ -265,13 +288,11 @@ public class BookBinderScreen extends AbstractContainerScreen<BookBinderMenu> {
     }
 
     private float getMissingPanelPulseAlpha() {
-        long time = System.currentTimeMillis();
-        float alpha = (time % 4000L) / 2000.0F;
+        float alpha = (System.currentTimeMillis() % 4000L) / 2000.0F;
         if (alpha > 1.0F) {
             alpha = 2.0F - alpha;
         }
-        alpha += 0.3F;
-        return Math.min(alpha, 1.0F);
+        return alpha * 0.7F;
     }
 
     @Override
@@ -386,20 +407,14 @@ public class BookBinderScreen extends AbstractContainerScreen<BookBinderMenu> {
             return -1;
         }
 
-        int stripLeft = this.leftPos + STRIP_X;
-        int stripTop = this.topPos + STRIP_Y;
+        int stripLeft = this.leftPos + STRIP_X + ARROW_W + 1;
+        int stripTop = this.topPos + STRIP_Y + 3;
 
-        int pageStartX = stripLeft + 2;
-        int pageStartY = stripTop + 3;
-
-        for (int visible = 0; ; visible++) {
-            int x = pageStartX + visible * (PAGE_W + PAGE_GAP);
-            if (x + PAGE_W > stripLeft + STRIP_W - ARROW_W) {
-                break;
-            }
-
-            if (mouseX >= x && mouseX < x + PAGE_W && mouseY >= pageStartY && mouseY < pageStartY + PAGE_H) {
-                return this.scroll + visible;
+        for (int visible = 0; visible < VISIBLE_PAGES; visible++) {
+            int x = stripLeft + visible * (PAGE_W + PAGE_GAP);
+            if (mouseX >= x && mouseX < x + PAGE_W && mouseY >= stripTop && mouseY < stripTop + PAGE_H) {
+                int index = this.scroll + visible;
+                return index < this.menu.getPageCount() ? index : -1;
             }
         }
 
@@ -407,8 +422,8 @@ public class BookBinderScreen extends AbstractContainerScreen<BookBinderMenu> {
     }
 
     private boolean isOverStrip(double mouseX, double mouseY) {
-        return mouseX >= this.leftPos + STRIP_X
-                && mouseX < this.leftPos + STRIP_X + STRIP_W
+        return mouseX >= this.leftPos + STRIP_X + ARROW_W
+                && mouseX < this.leftPos + STRIP_X + STRIP_W - ARROW_W
                 && mouseY >= this.topPos + STRIP_Y
                 && mouseY < this.topPos + STRIP_Y + STRIP_H;
     }

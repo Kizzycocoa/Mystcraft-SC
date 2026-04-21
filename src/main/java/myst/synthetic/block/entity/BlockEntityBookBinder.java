@@ -52,6 +52,18 @@ public class BlockEntityBookBinder extends BlockEntity implements Container, Men
 				return pendingTitle.charAt(charIndex);
 			}
 
+			if (index == BookBinderMenu.DATA_POS_X) {
+				return worldPosition.getX();
+			}
+
+			if (index == BookBinderMenu.DATA_POS_Y) {
+				return worldPosition.getY();
+			}
+
+			if (index == BookBinderMenu.DATA_POS_Z) {
+				return worldPosition.getZ();
+			}
+
 			return 0;
 		}
 
