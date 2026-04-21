@@ -22,6 +22,7 @@ public final class BiomePageSymbolSource {
                             "generated/biome/" + biomeId.getNamespace() + "/" + biomeId.getPath()
                     ),
                     null,
+                    "Minecraft",
                     "biome",
                     1,
                     GeneratedPageSymbolUtil.biomeWords(biomeId),

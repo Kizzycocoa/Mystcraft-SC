@@ -27,6 +27,7 @@ public final class CelestialPageSymbolSource implements PageSymbolSource {
         PageSymbolRegistry.register(new PageSymbol(
                 Identifier.fromNamespaceAndPath("mystcraft-sc", "generated/celestial/" + path),
                 null,
+                "Mystcraft",
                 "celestial",
                 rank,
                 List.of(w1, w2, w3, w4),
