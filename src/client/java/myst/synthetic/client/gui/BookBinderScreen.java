@@ -21,7 +21,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import com.mojang.blaze3d.systems.RenderSystem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -247,10 +246,8 @@ public class BookBinderScreen extends AbstractContainerScreen<BookBinderMenu> {
     }
 
     private void drawMissingPanelWarning(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-
         ItemStack first = this.menu.getPageAt(0);
         boolean missing = first.isEmpty() || !Page.isLinkPanel(first);
-
         if (!missing) {
             return;
         }
@@ -259,38 +256,45 @@ public class BookBinderScreen extends AbstractContainerScreen<BookBinderMenu> {
         int y = this.topPos + MISSING_ICON_Y;
 
         float alpha = getMissingPanelPulseAlpha();
+        int color = ((int) (alpha * 255.0F) << 24) | 0xFFFF8080;
 
-        int fadeMask = ((int)((1f - alpha) * 255) << 24) | 0xFFFFFF;
-        int redMask  = ((int)(alpha * 255) << 24) | 0xFF8080;
+        guiGraphics.pose().pushMatrix();
+        guiGraphics.pose().translate(x, y);
+        guiGraphics.pose().scale(
+                MISSING_ICON_W / (float) MISSING_ICON_SRC_W,
+                MISSING_ICON_H / (float) MISSING_ICON_SRC_H
+        );
 
         guiGraphics.blit(
                 RenderPipelines.GUI_TEXTURED,
                 TEXTURE,
-                x,
-                y,
+                0,
+                0,
                 MISSING_ICON_U,
                 MISSING_ICON_V,
                 MISSING_ICON_SRC_W,
                 MISSING_ICON_SRC_H,
                 256,
-                256
+                256,
+                color
         );
 
-        guiGraphics.fill(
-                x,
-                y,
-                x + MISSING_ICON_SRC_W,
-                y + MISSING_ICON_SRC_H,
-                fadeMask
-        );
+        guiGraphics.pose().popMatrix();
 
-        guiGraphics.fill(
-                x,
-                y,
-                x + MISSING_ICON_SRC_W,
-                y + MISSING_ICON_SRC_H,
-                redMask
-        );
+        if (mouseX >= x && mouseX < x + MISSING_ICON_W && mouseY >= y && mouseY < y + MISSING_ICON_H) {
+            List<ClientTooltipComponent> tooltip = new ArrayList<>();
+            tooltip.add(new ClientTextTooltip(Component.literal("Missing Link Panel").getVisualOrderText()));
+            tooltip.add(new ClientTextTooltip(Component.literal("Add a link panel as the first page of the book.").getVisualOrderText()));
+
+            guiGraphics.renderTooltip(
+                    this.font,
+                    tooltip,
+                    mouseX,
+                    mouseY,
+                    DefaultTooltipPositioner.INSTANCE,
+                    null
+            );
+        }
     }
 
     private float getMissingPanelPulseAlpha() {
@@ -308,7 +312,7 @@ public class BookBinderScreen extends AbstractContainerScreen<BookBinderMenu> {
         int y1 = this.topPos + TITLE_Y;
         super.render(guiGraphics, mouseX, mouseY, partialTick);
         if (this.titleBox != null && this.titleBox.getValue().isEmpty() && !this.titleBox.isFocused()) {
-            guiGraphics.drawString(this.font, "Age Name...", x1 + 4, y1 + 3, 0x808080, false);
+            guiGraphics.drawString(this.font, "Age Name...", x1 + 4, y1 + 3, 0xFF808080, false);
         }
         this.renderPageTooltip(guiGraphics, mouseX, mouseY);
     }
