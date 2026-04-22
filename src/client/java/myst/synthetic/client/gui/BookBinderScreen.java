@@ -257,6 +257,7 @@ public class BookBinderScreen extends AbstractContainerScreen<BookBinderMenu> {
         int y = this.topPos + MISSING_ICON_Y;
 
         float alpha = getMissingPanelPulseAlpha();
+        int color = ((int) (alpha * 255.0F) << 24) | 0xFF8080;
 
         guiGraphics.pose().pushMatrix();
         guiGraphics.pose().translate(x, y);
@@ -275,21 +276,11 @@ public class BookBinderScreen extends AbstractContainerScreen<BookBinderMenu> {
                 MISSING_ICON_SRC_W,
                 MISSING_ICON_SRC_H,
                 256,
-                256
+                256,
+                color
         );
 
         guiGraphics.pose().popMatrix();
-
-        int hideAlpha = Math.max(0, Math.min(255, (int) ((1.0F - alpha) * 255.0F)));
-        int hideMask = (hideAlpha << 24);
-
-        guiGraphics.fill(
-                x,
-                y,
-                x + MISSING_ICON_W,
-                y + MISSING_ICON_H,
-                hideMask
-        );
 
         if (mouseX >= x && mouseX < x + MISSING_ICON_W && mouseY >= y && mouseY < y + MISSING_ICON_H) {
             List<ClientTooltipComponent> tooltip = new ArrayList<>();
