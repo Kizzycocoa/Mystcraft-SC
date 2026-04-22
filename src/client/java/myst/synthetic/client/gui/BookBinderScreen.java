@@ -196,9 +196,6 @@ public class BookBinderScreen extends AbstractContainerScreen<BookBinderMenu> {
         guiGraphics.fill(x1, y1, x1 + 1, y2, borderColor);
         guiGraphics.fill(x2 - 1, y1, x2, y2, borderColor);
 
-        if (this.titleBox != null && this.titleBox.getValue().isEmpty() && !this.titleBox.isFocused()) {
-            guiGraphics.drawString(this.font, "Age Name...", x1 + 4, y1 + 3, 0x808080, false);
-        }
     }
 
     private boolean isMouseOverTitleBox(int mouseX, int mouseY) {
@@ -262,12 +259,9 @@ public class BookBinderScreen extends AbstractContainerScreen<BookBinderMenu> {
         int y = this.topPos + MISSING_ICON_Y;
 
         float alpha = getMissingPanelPulseAlpha();
-        if (alpha <= 0.01F) {
-            return;
-        }
 
-        int overlayAlpha = (int)(alpha * 255.0F);
-        int tint = (overlayAlpha << 24) | 0xFF8080;
+        int fadeMask = ((int)((1f - alpha) * 255) << 24) | 0xFFFFFF;
+        int redMask  = ((int)(alpha * 255) << 24) | 0xFF8080;
 
         guiGraphics.blit(
                 RenderPipelines.GUI_TEXTURED,
@@ -276,8 +270,8 @@ public class BookBinderScreen extends AbstractContainerScreen<BookBinderMenu> {
                 y,
                 MISSING_ICON_U,
                 MISSING_ICON_V,
-                MISSING_ICON_W,
-                MISSING_ICON_H,
+                MISSING_ICON_SRC_W,
+                MISSING_ICON_SRC_H,
                 256,
                 256
         );
@@ -285,9 +279,17 @@ public class BookBinderScreen extends AbstractContainerScreen<BookBinderMenu> {
         guiGraphics.fill(
                 x,
                 y,
-                x + MISSING_ICON_W,
-                y + MISSING_ICON_H,
-                tint
+                x + MISSING_ICON_SRC_W,
+                y + MISSING_ICON_SRC_H,
+                fadeMask
+        );
+
+        guiGraphics.fill(
+                x,
+                y,
+                x + MISSING_ICON_SRC_W,
+                y + MISSING_ICON_SRC_H,
+                redMask
         );
     }
 
@@ -302,7 +304,12 @@ public class BookBinderScreen extends AbstractContainerScreen<BookBinderMenu> {
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        int x1 = this.leftPos + TITLE_X;
+        int y1 = this.topPos + TITLE_Y;
         super.render(guiGraphics, mouseX, mouseY, partialTick);
+        if (this.titleBox != null && this.titleBox.getValue().isEmpty() && !this.titleBox.isFocused()) {
+            guiGraphics.drawString(this.font, "Age Name...", x1 + 4, y1 + 3, 0x808080, false);
+        }
         this.renderPageTooltip(guiGraphics, mouseX, mouseY);
     }
 
