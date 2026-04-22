@@ -57,6 +57,7 @@ public class BookBinderScreen extends AbstractContainerScreen<BookBinderMenu> {
     private static final int MISSING_ICON_V = 0;
     private static final int MISSING_ICON_SRC_W = 30;
     private static final int MISSING_ICON_SRC_H = 40;
+    private static final int MISSING_ICON_RED_V = MISSING_ICON_V + MISSING_ICON_SRC_H;
 
     private EditBox titleBox;
     private int scroll = 0;
@@ -256,7 +257,6 @@ public class BookBinderScreen extends AbstractContainerScreen<BookBinderMenu> {
         int y = this.topPos + MISSING_ICON_Y;
 
         float alpha = getMissingPanelPulseAlpha();
-        int color = ((int) (alpha * 255.0F) << 24) | 0xFFFF8080;
 
         guiGraphics.pose().pushMatrix();
         guiGraphics.pose().translate(x, y);
@@ -271,15 +271,25 @@ public class BookBinderScreen extends AbstractContainerScreen<BookBinderMenu> {
                 0,
                 0,
                 MISSING_ICON_U,
-                MISSING_ICON_V,
+                MISSING_ICON_RED_V,
                 MISSING_ICON_SRC_W,
                 MISSING_ICON_SRC_H,
                 256,
-                256,
-                color
+                256
         );
 
         guiGraphics.pose().popMatrix();
+
+        int hideAlpha = Math.max(0, Math.min(255, (int) ((1.0F - alpha) * 255.0F)));
+        int hideMask = (hideAlpha << 24);
+
+        guiGraphics.fill(
+                x,
+                y,
+                x + MISSING_ICON_W,
+                y + MISSING_ICON_H,
+                hideMask
+        );
 
         if (mouseX >= x && mouseX < x + MISSING_ICON_W && mouseY >= y && mouseY < y + MISSING_ICON_H) {
             List<ClientTooltipComponent> tooltip = new ArrayList<>();
@@ -302,8 +312,7 @@ public class BookBinderScreen extends AbstractContainerScreen<BookBinderMenu> {
         if (alpha > 1.0F) {
             alpha = 2.0F - alpha;
         }
-        alpha += 0.3F;
-        return Math.min(alpha, 1.0F);
+        return alpha;
     }
 
     @Override
@@ -312,7 +321,7 @@ public class BookBinderScreen extends AbstractContainerScreen<BookBinderMenu> {
         int y1 = this.topPos + TITLE_Y;
         super.render(guiGraphics, mouseX, mouseY, partialTick);
         if (this.titleBox != null && this.titleBox.getValue().isEmpty() && !this.titleBox.isFocused()) {
-            guiGraphics.drawString(this.font, "Age Name...", x1 + 4, y1 + 3, 0xFF808080, false);
+            guiGraphics.drawString(this.font, "Age Name...", x1 + 3, y1 + 3, 0xFF808080, false);
         }
         this.renderPageTooltip(guiGraphics, mouseX, mouseY);
     }
