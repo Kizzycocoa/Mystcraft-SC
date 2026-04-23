@@ -15,6 +15,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.Nullable;
+import java.util.Optional;
 
 import java.util.List;
 
@@ -337,27 +338,34 @@ public class BookBinderMenu extends AbstractContainerMenu {
         }
 
         @Override
-        public ItemStack remove(int amount) {
-            return ItemStack.EMPTY;
-        }
-
-        @Override
-        public void onTake(Player player, ItemStack stack) {
+        public Optional<ItemStack> tryRemove(int min, int max, Player player) {
             BlockEntityBookBinder binder = getBinder();
-            if (binder == null || !binder.canBuildItem()) {
-                return;
+            if (binder == null || !binder.canBuildItem() || !this.mayPickup(player)) {
+                return Optional.empty();
             }
 
             ItemStack crafted = binder.buildBook(player);
             if (crafted.isEmpty()) {
-                return;
-            }
-
-            if (!player.getInventory().add(crafted)) {
-                player.drop(crafted, false);
+                return Optional.empty();
             }
 
             updateCraftResult();
+            return Optional.of(crafted);
+        }
+
+        @Override
+        public ItemStack safeTake(int min, int max, Player player) {
+            return this.tryRemove(min, max, player).orElse(ItemStack.EMPTY);
+        }
+
+        @Override
+        public void onTake(Player player, ItemStack stack) {
+            updateCraftResult();
+        }
+
+        @Override
+        public ItemStack remove(int amount) {
+            return ItemStack.EMPTY;
         }
 
         @Override
