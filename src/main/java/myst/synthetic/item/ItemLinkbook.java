@@ -51,10 +51,10 @@ public class ItemLinkbook extends Item {
 			return false;
 		}
 
-		if (!bookStack.is(MystcraftItems.LINKBOOK)) {
+		if (!bookStack.is(MystcraftItems.LINKBOOK) && !bookStack.is(MystcraftItems.AGEBOOK)) {
 			return false;
 		}
-
+		
 		if (!incomingStack.is(MystcraftItems.BOOKMARK)) {
 			return false;
 		}
