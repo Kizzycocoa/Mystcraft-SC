@@ -56,6 +56,7 @@ public class MystcraftSyntheticCodex implements ModInitializer {
 		ServerLifecycleEvents.SERVER_STARTING.register(server -> {
 			MystcraftGeneratedPageSymbols.initializeBiomes(server.registryAccess());
 			StructurePoolAdder.inject(server);
+			LOGGER.info("Mystcraft age registry system ready.");
 		});
 	}
 }

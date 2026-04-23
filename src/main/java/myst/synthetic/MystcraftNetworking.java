@@ -20,6 +20,8 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
 import myst.synthetic.item.BookBookmarkUtil;
+import myst.synthetic.world.dimension.AgeDimensionManager;
+import net.minecraft.server.level.ServerLevel;
 
 public final class MystcraftNetworking {
 
@@ -41,8 +43,22 @@ public final class MystcraftNetworking {
                 InteractionHand hand = payload.mainHand() ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
                 ItemStack stack = player.getItemInHand(hand);
 
-                if (!stack.is(MystcraftItems.LINKBOOK)) {
+                if (!stack.is(MystcraftItems.LINKBOOK) && !stack.is(MystcraftItems.AGEBOOK)) {
                     return;
+                }
+
+                if (stack.is(MystcraftItems.AGEBOOK)) {
+                    CustomData initialCustomData = stack.get(DataComponents.CUSTOM_DATA);
+                    CompoundTag initialTag = initialCustomData == null ? new CompoundTag() : initialCustomData.copyTag();
+                    LinkOptions initialInfo = new LinkOptions(initialTag);
+
+                    String initialTargetDimension = initialInfo.getDimensionUID();
+                    if (initialTargetDimension == null || initialTargetDimension.isBlank()) {
+                        ServerLevel created = new AgeDimensionManager().getOrCreateAgeLevel(context.server(), stack);
+                        if (created == null) {
+                            return;
+                        }
+                    }
                 }
 
                 CustomData customData = stack.get(DataComponents.CUSTOM_DATA);

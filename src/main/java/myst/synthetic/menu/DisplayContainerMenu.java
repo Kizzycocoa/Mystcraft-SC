@@ -22,6 +22,9 @@ import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.component.WritableBookContent;
 import net.minecraft.world.item.component.WrittenBookContent;
 import myst.synthetic.item.BookBookmarkUtil;
+import myst.synthetic.item.ItemAgebook;
+import myst.synthetic.world.dimension.AgeDimensionManager;
+import net.minecraft.server.level.ServerLevel;
 
 public class DisplayContainerMenu extends AbstractContainerMenu {
 
@@ -231,6 +234,24 @@ public class DisplayContainerMenu extends AbstractContainerMenu {
                     return false;
                 }
 
+                if (stack.is(MystcraftItems.AGEBOOK)) {
+                    CustomData initialCustomData = stack.get(DataComponents.CUSTOM_DATA);
+                    CompoundTag initialTag = initialCustomData == null ? new CompoundTag() : initialCustomData.copyTag();
+                    LinkOptions initialInfo = new LinkOptions(initialTag);
+
+                    String initialTargetDimension = initialInfo.getDimensionUID();
+                    if (initialTargetDimension == null || initialTargetDimension.isBlank()) {
+                        if (player.level().isClientSide()) {
+                            return false;
+                        }
+
+                        ServerLevel created = new AgeDimensionManager().getOrCreateAgeLevel(player.getServer(), stack);
+                        if (created == null) {
+                            return false;
+                        }
+                    }
+                }
+
                 CustomData customData = stack.get(DataComponents.CUSTOM_DATA);
                 if (customData == null) {
                     return false;
@@ -257,6 +278,9 @@ public class DisplayContainerMenu extends AbstractContainerMenu {
                         player.drop(carried, false);
                     }
                 }
+
+                this.container.setChanged();
+                this.broadcastChanges();
 
                 LinkController.travelEntity(player.level(), player, info);
                 return true;
