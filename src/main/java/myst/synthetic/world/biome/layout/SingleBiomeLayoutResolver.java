@@ -6,7 +6,6 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.biome.Biome;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -18,12 +17,7 @@ public final class SingleBiomeLayoutResolver {
     private static final String GENERATED_BIOME_PREFIX = "mystcraft-sc:generated/biome/";
 
     public Identifier resolveBiome(AgebookDataComponent agebookData, RegistryAccess registryAccess, long seed) {
-        Identifier fromPages = resolveReferencedBiomeFromPages(agebookData.pages());
-        if (fromPages != null) {
-            return fromPages;
-        }
-
-        return chooseSeededFallbackBiome(registryAccess, seed);
+        return resolveBiome(agebookData == null ? List.of() : agebookData.pages(), registryAccess, seed);
     }
 
     public Identifier resolveBiome(List<ItemStack> pages, RegistryAccess registryAccess, long seed) {
@@ -40,6 +34,8 @@ public final class SingleBiomeLayoutResolver {
             return null;
         }
 
+        Identifier firstLooseBiome = null;
+
         for (int i = 0; i < pages.size(); i++) {
             ItemStack stack = pages.get(i);
             if (stack == null || stack.isEmpty() || !Page.isSymbolPage(stack)) {
@@ -47,6 +43,11 @@ public final class SingleBiomeLayoutResolver {
             }
 
             Identifier symbolId = Page.getSymbol(stack);
+            Identifier looseBiome = decodeGeneratedBiomeSymbol(symbolId);
+            if (looseBiome != null && firstLooseBiome == null) {
+                firstLooseBiome = looseBiome;
+            }
+
             if (!isSingleBiomeControl(symbolId)) {
                 continue;
             }
@@ -57,7 +58,7 @@ public final class SingleBiomeLayoutResolver {
             }
         }
 
-        return null;
+        return firstLooseBiome;
     }
 
     private Identifier findPreviousBiomeSymbol(List<ItemStack> pages, int fromExclusive) {
