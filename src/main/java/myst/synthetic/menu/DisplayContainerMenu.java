@@ -245,7 +245,11 @@ public class DisplayContainerMenu extends AbstractContainerMenu {
                             return false;
                         }
 
-                        ServerLevel created = new AgeDimensionManager().getOrCreateAgeLevel(player.getServer(), stack);
+                        if (player.level().getServer() == null) {
+                            return false;
+                        }
+
+                        ServerLevel created = new AgeDimensionManager().getOrCreateAgeLevel(player.level().getServer(), stack);
                         if (created == null) {
                             return false;
                         }
