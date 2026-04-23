@@ -22,6 +22,10 @@ import net.minecraft.world.item.component.CustomData;
 import myst.synthetic.item.BookBookmarkUtil;
 import myst.synthetic.world.dimension.AgeDimensionManager;
 import net.minecraft.server.level.ServerLevel;
+import myst.synthetic.network.DisplayContainerUseLinkPayload;
+import myst.synthetic.block.entity.BlockEntityDisplayContainer;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 public final class MystcraftNetworking {
 
@@ -35,6 +39,7 @@ public final class MystcraftNetworking {
         PayloadTypeRegistry.playC2S().register(LinkBookBookmarkExtractPayload.ID, LinkBookBookmarkExtractPayload.CODEC);
         PayloadTypeRegistry.playC2S().register(WritingDeskTitlePayload.ID, WritingDeskTitlePayload.CODEC);
         PayloadTypeRegistry.playC2S().register(BookBinderTitlePayload.ID, BookBinderTitlePayload.CODEC);
+        PayloadTypeRegistry.playC2S().register(DisplayContainerUseLinkPayload.ID, DisplayContainerUseLinkPayload.CODEC);
 
         ServerPlayNetworking.registerGlobalReceiver(LinkBookUsePayload.ID, (payload, context) -> {
             var player = context.player();
@@ -105,6 +110,64 @@ public final class MystcraftNetworking {
                 }
 
                 player.inventoryMenu.broadcastChanges();
+            });
+        });
+
+        ServerPlayNetworking.registerGlobalReceiver(DisplayContainerUseLinkPayload.ID, (payload, context) -> {
+            var player = context.player();
+
+            context.server().execute(() -> {
+                BlockPos pos = payload.pos();
+
+                if (!player.level().isLoaded(pos)) {
+                    return;
+                }
+
+                BlockEntity blockEntity = player.level().getBlockEntity(pos);
+                if (!(blockEntity instanceof BlockEntityDisplayContainer displayContainer)) {
+                    return;
+                }
+
+                ItemStack stack = displayContainer.getStoredItem();
+                if (!stack.is(MystcraftItems.LINKBOOK) && !stack.is(MystcraftItems.AGEBOOK)) {
+                    return;
+                }
+
+                if (stack.is(MystcraftItems.AGEBOOK)) {
+                    CustomData initialCustomData = stack.get(DataComponents.CUSTOM_DATA);
+                    CompoundTag initialTag = initialCustomData == null ? new CompoundTag() : initialCustomData.copyTag();
+                    LinkOptions initialInfo = new LinkOptions(initialTag);
+
+                    String initialTargetDimension = initialInfo.getDimensionUID();
+                    if (initialTargetDimension == null || initialTargetDimension.isBlank()) {
+                        ServerLevel created = new AgeDimensionManager().getOrCreateAgeLevel(context.server(), stack);
+                        if (created == null) {
+                            return;
+                        }
+
+                        displayContainer.setChanged();
+                    }
+                }
+
+                CustomData customData = stack.get(DataComponents.CUSTOM_DATA);
+                if (customData == null) {
+                    return;
+                }
+
+                CompoundTag tag = customData.copyTag();
+                LinkOptions info = new LinkOptions(tag);
+
+                String targetDimension = info.getDimensionUID();
+                if (targetDimension == null || targetDimension.isBlank()) {
+                    return;
+                }
+
+                String currentDimension = extractDimensionId(player.level().dimension().toString());
+                if (currentDimension.equals(targetDimension)) {
+                    return;
+                }
+
+                LinkController.travelEntity(player.level(), player, info);
             });
         });
 

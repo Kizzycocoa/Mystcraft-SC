@@ -10,6 +10,7 @@ import myst.synthetic.item.ItemAgebook;
 import myst.synthetic.network.DisplayContainerExtractPayload;
 import myst.synthetic.network.LinkBookBookmarkExtractPayload;
 import myst.synthetic.network.LinkBookUsePayload;
+import myst.synthetic.network.DisplayContainerUseLinkPayload;
 import myst.synthetic.page.Page;
 import myst.synthetic.page.symbol.PageSymbol;
 import myst.synthetic.page.symbol.PageSymbolRegistry;
@@ -32,6 +33,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.CustomData;
 import org.jetbrains.annotations.Nullable;
+import net.minecraft.world.InteractionHand;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -462,11 +464,29 @@ public class LinkBookScreen extends Screen {
     private void onLinkPanelClicked() {
         Minecraft client = Minecraft.getInstance();
         if (client.player == null) {
+            this.onClose();
             return;
         }
 
-        boolean mainHand = client.player.getMainHandItem().is(this.bookStack.getItem());
-        ClientPlayNetworking.send(new LinkBookUsePayload(mainHand));
+        if (this.containerPos != null) {
+            ClientPlayNetworking.send(new DisplayContainerUseLinkPayload(this.containerPos));
+            this.onClose();
+            return;
+        }
+
+        InteractionHand hand = null;
+
+        if (ItemStack.isSameItemSameComponents(client.player.getMainHandItem(), this.bookStack)) {
+            hand = InteractionHand.MAIN_HAND;
+        } else if (ItemStack.isSameItemSameComponents(client.player.getOffhandItem(), this.bookStack)) {
+            hand = InteractionHand.OFF_HAND;
+        }
+
+        if (hand == null) {
+            return;
+        }
+
+        ClientPlayNetworking.send(new LinkBookUsePayload(hand == InteractionHand.MAIN_HAND));
 
         this.onClose();
     }
