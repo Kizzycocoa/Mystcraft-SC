@@ -337,16 +337,47 @@ public class BookBinderMenu extends AbstractContainerMenu {
         }
 
         @Override
+        public ItemStack remove(int amount) {
+            return ItemStack.EMPTY;
+        }
+
+        @Override
         public void onTake(Player player, ItemStack stack) {
             BlockEntityBookBinder binder = getBinder();
-            if (binder == null) {
+            if (binder == null || !binder.canBuildItem()) {
                 return;
             }
 
             ItemStack crafted = binder.buildBook(player);
-            this.set(crafted.isEmpty() ? ItemStack.EMPTY : crafted.copy());
+            if (crafted.isEmpty()) {
+                return;
+            }
+
+            if (!player.getInventory().add(crafted)) {
+                player.drop(crafted, false);
+            }
+
             updateCraftResult();
-            super.onTake(player, stack);
+        }
+
+        @Override
+        public ItemStack getItem() {
+            BlockEntityBookBinder binder = getBinder();
+            return binder == null ? ItemStack.EMPTY : binder.getCraftedItemPreview();
+        }
+
+        @Override
+        public boolean hasItem() {
+            return !getItem().isEmpty();
+        }
+
+        @Override
+        public void set(ItemStack stack) {
+        }
+
+        @Override
+        public void setChanged() {
+            updateCraftResult();
         }
     }
 }

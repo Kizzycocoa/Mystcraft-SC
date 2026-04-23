@@ -207,7 +207,7 @@ public class LinkBookScreen extends Screen {
         }
 
         ItemStack page = getCurrentPageStack();
-        if (!page.isEmpty() && Page.isLinkPanel(page)) {
+        if (this.currentPageIndex == 0) {
             LinkPanelGuiRenderer.drawCutoutPanelPage(guiGraphics, x, y, getBookTag());
         } else if (!page.isEmpty()) {
             LinkPanelGuiRenderer.drawSolidRightPage(guiGraphics, x, y);

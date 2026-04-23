@@ -72,6 +72,13 @@ public class SingleSlotScreen extends AbstractContainerScreen<DisplayContainerMe
             return;
         }
 
+        if (isLinkBookMode()) {
+            if (this.minecraft != null) {
+                this.minecraft.setScreen(new LinkBookScreen(this.menu.getDisplayStack(), this.menu.getBlockPos()));
+            }
+            return;
+        }
+
         updateLayout();
     }
 
