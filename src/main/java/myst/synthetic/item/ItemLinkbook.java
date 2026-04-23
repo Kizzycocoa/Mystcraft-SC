@@ -54,7 +54,7 @@ public class ItemLinkbook extends Item {
 		if (!bookStack.is(MystcraftItems.LINKBOOK) && !bookStack.is(MystcraftItems.AGEBOOK)) {
 			return false;
 		}
-		
+
 		if (!incomingStack.is(MystcraftItems.BOOKMARK)) {
 			return false;
 		}

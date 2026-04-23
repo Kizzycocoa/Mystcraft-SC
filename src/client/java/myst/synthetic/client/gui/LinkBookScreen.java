@@ -132,12 +132,21 @@ public class LinkBookScreen extends Screen {
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        boolean hoveringBookmark = false;
+
+        if (this.currentPageIndex > 0) {
+            drawBookmarkIfPresent(guiGraphics, mouseX, mouseY);
+        }
+
         drawBook(guiGraphics, mouseX, mouseY);
         drawBookText(guiGraphics);
 
         boolean hoveringContainer = false;
-        boolean hoveringBookmark = drawBookmarkIfPresent(guiGraphics, mouseX, mouseY);
         boolean hoveringPage = isMouseOverCurrentPage(mouseX, mouseY);
+
+        if (this.currentPageIndex == 0) {
+            hoveringBookmark = drawBookmarkIfPresent(guiGraphics, mouseX, mouseY);
+        }
 
         if (this.containerPos != null) {
             hoveringContainer = drawContainerSlot(guiGraphics, mouseX, mouseY);
@@ -415,6 +424,10 @@ public class LinkBookScreen extends Screen {
     }
 
     private boolean isMouseOverBookmark(double mouseX, double mouseY) {
+        if (this.currentPageIndex != 0) {
+            return false;
+        }
+
         if (!BookBookmarkUtil.hasBookmark(this.bookStack)) {
             return false;
         }
