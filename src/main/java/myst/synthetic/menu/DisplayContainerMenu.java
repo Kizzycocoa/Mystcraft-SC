@@ -25,6 +25,7 @@ import myst.synthetic.item.BookBookmarkUtil;
 import myst.synthetic.item.ItemAgebook;
 import myst.synthetic.world.dimension.AgeDimensionManager;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.network.chat.Component;
 
 public class DisplayContainerMenu extends AbstractContainerMenu {
 
@@ -251,8 +252,12 @@ public class DisplayContainerMenu extends AbstractContainerMenu {
 
                         ServerLevel created = new AgeDimensionManager().getOrCreateAgeLevel(player.level().getServer(), stack);
                         if (created == null) {
+                            player.displayClientMessage(Component.literal("The descriptive book failed to form an Age."), true);
                             return false;
                         }
+
+                        player.displayClientMessage(Component.literal("The Age has been written. Use the panel again to link."), true);
+                        return true;
                     }
                 }
 

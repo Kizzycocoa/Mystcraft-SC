@@ -26,6 +26,7 @@ import myst.synthetic.network.DisplayContainerUseLinkPayload;
 import myst.synthetic.block.entity.BlockEntityDisplayContainer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.network.chat.Component;
 
 public final class MystcraftNetworking {
 
@@ -61,8 +62,14 @@ public final class MystcraftNetworking {
                     if (initialTargetDimension == null || initialTargetDimension.isBlank()) {
                         ServerLevel created = new AgeDimensionManager().getOrCreateAgeLevel(context.server(), stack);
                         if (created == null) {
+                            player.displayClientMessage(Component.literal("The descriptive book failed to form an Age."), true);
                             return;
                         }
+
+                        player.displayClientMessage(Component.literal("The Age has been written. Use the panel again to link."), true);
+                        player.containerMenu.broadcastChanges();
+                        player.inventoryMenu.broadcastChanges();
+                        return;
                     }
                 }
 
