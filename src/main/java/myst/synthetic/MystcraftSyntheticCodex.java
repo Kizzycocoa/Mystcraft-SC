@@ -15,7 +15,7 @@ import myst.synthetic.ink.InkFluidInteractions;
 import myst.synthetic.ink.InkStatusEffects;
 import myst.synthetic.page.symbol.source.MystcraftGeneratedPageSymbols;
 import myst.synthetic.item.MystcraftCauldronInteractions;
-
+import myst.synthetic.world.dimension.PendingAgeTeleportManager;
 import myst.synthetic.page.symbol.DatapackPageLoader;
 
 public class MystcraftSyntheticCodex implements ModInitializer {
@@ -24,6 +24,7 @@ public class MystcraftSyntheticCodex implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		MystcraftConfig.load();
+		PendingAgeTeleportManager.initialize();
 
 		MystcraftDataComponents.initialize();
 

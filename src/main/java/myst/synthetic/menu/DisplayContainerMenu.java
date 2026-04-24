@@ -22,10 +22,8 @@ import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.component.WritableBookContent;
 import net.minecraft.world.item.component.WrittenBookContent;
 import myst.synthetic.item.BookBookmarkUtil;
-import myst.synthetic.item.ItemAgebook;
-import myst.synthetic.world.dimension.AgeDimensionManager;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import myst.synthetic.world.dimension.PendingAgeTeleportManager;
 
 public class DisplayContainerMenu extends AbstractContainerMenu {
 
@@ -236,29 +234,16 @@ public class DisplayContainerMenu extends AbstractContainerMenu {
                 }
 
                 if (stack.is(MystcraftItems.AGEBOOK)) {
-                    CustomData initialCustomData = stack.get(DataComponents.CUSTOM_DATA);
-                    CompoundTag initialTag = initialCustomData == null ? new CompoundTag() : initialCustomData.copyTag();
-                    LinkOptions initialInfo = new LinkOptions(initialTag);
+                    if (player.level().isClientSide()) {
+                        return false;
+                    }
 
-                    String initialTargetDimension = initialInfo.getDimensionUID();
-                    if (initialTargetDimension == null || initialTargetDimension.isBlank()) {
-                        if (player.level().isClientSide()) {
-                            return false;
-                        }
-
-                        if (player.level().getServer() == null) {
-                            return false;
-                        }
-
-                        ServerLevel created = new AgeDimensionManager().getOrCreateAgeLevel(player.level().getServer(), stack);
-                        if (created == null) {
-                            player.displayClientMessage(Component.literal("The descriptive book failed to form an Age."), true);
-                            return false;
-                        }
-
-                        player.displayClientMessage(Component.literal("The Age has been written. Use the panel again to link."), true);
+                    if (player instanceof ServerPlayer serverPlayer) {
+                        PendingAgeTeleportManager.queue(serverPlayer, stack);
                         return true;
                     }
+
+                    return false;
                 }
 
                 CustomData customData = stack.get(DataComponents.CUSTOM_DATA);

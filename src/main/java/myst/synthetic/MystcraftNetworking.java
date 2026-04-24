@@ -27,6 +27,7 @@ import myst.synthetic.block.entity.BlockEntityDisplayContainer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.network.chat.Component;
+import myst.synthetic.world.dimension.PendingAgeTeleportManager;
 
 public final class MystcraftNetworking {
 
@@ -54,23 +55,8 @@ public final class MystcraftNetworking {
                 }
 
                 if (stack.is(MystcraftItems.AGEBOOK)) {
-                    CustomData initialCustomData = stack.get(DataComponents.CUSTOM_DATA);
-                    CompoundTag initialTag = initialCustomData == null ? new CompoundTag() : initialCustomData.copyTag();
-                    LinkOptions initialInfo = new LinkOptions(initialTag);
-
-                    String initialTargetDimension = initialInfo.getDimensionUID();
-                    if (initialTargetDimension == null || initialTargetDimension.isBlank()) {
-                        ServerLevel created = new AgeDimensionManager().getOrCreateAgeLevel(context.server(), stack);
-                        if (created == null) {
-                            player.displayClientMessage(Component.literal("The descriptive book failed to form an Age."), true);
-                            return;
-                        }
-
-                        player.displayClientMessage(Component.literal("The Age has been written. Use the panel again to link."), true);
-                        player.containerMenu.broadcastChanges();
-                        player.inventoryMenu.broadcastChanges();
-                        return;
-                    }
+                    PendingAgeTeleportManager.queue(player, stack);
+                    return;
                 }
 
                 CustomData customData = stack.get(DataComponents.CUSTOM_DATA);
@@ -141,21 +127,9 @@ public final class MystcraftNetworking {
                 }
 
                 if (stack.is(MystcraftItems.AGEBOOK)) {
-                    CustomData initialCustomData = stack.get(DataComponents.CUSTOM_DATA);
-                    CompoundTag initialTag = initialCustomData == null ? new CompoundTag() : initialCustomData.copyTag();
-                    LinkOptions initialInfo = new LinkOptions(initialTag);
-
-                    String initialTargetDimension = initialInfo.getDimensionUID();
-                    if (initialTargetDimension == null || initialTargetDimension.isBlank()) {
-                        ServerLevel created = new AgeDimensionManager().getOrCreateAgeLevel(context.server(), stack);
-                        if (created == null) {
-                            return;
-                        }
-
-                        displayContainer.setChanged();
-                        player.displayClientMessage(Component.literal("The Age has been written. Use the panel again to link."), true);
-                        return;
-                    }
+                    PendingAgeTeleportManager.queue(player, stack);
+                    displayContainer.setChanged();
+                    return;
                 }
 
                 CustomData customData = stack.get(DataComponents.CUSTOM_DATA);
