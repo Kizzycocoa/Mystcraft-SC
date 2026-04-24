@@ -153,6 +153,8 @@ public final class MystcraftNetworking {
                         }
 
                         displayContainer.setChanged();
+                        player.displayClientMessage(Component.literal("The Age has been written. Use the panel again to link."), true);
+                        return;
                     }
                 }
 

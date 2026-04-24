@@ -10,7 +10,6 @@ import myst.synthetic.world.age.AgeRegistryData;
 import myst.synthetic.world.age.AgeSpec;
 import myst.synthetic.world.age.AgeSpecCompiler;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.GlobalPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -24,12 +23,7 @@ import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.storage.DerivedLevelData;
 import net.minecraft.world.level.storage.LevelStorageSource;
 import net.minecraft.world.level.storage.ServerLevelData;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
-import net.minecraft.world.level.storage.LevelData;
-import net.minecraft.world.level.storage.LevelData;
-import net.minecraft.world.level.storage.WritableLevelData;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -127,7 +121,6 @@ public final class AgeDimensionManager {
             );
 
             getLevelMap(server).put(levelKey, created);
-            materializeSpawnArea(created, spec);
 
             MystcraftSyntheticCodex.LOGGER.info(
                     "Created Mystcraft age level '{}' as '{}'",
@@ -180,64 +173,6 @@ public final class AgeDimensionManager {
         seed ^= ItemStack.hashItemAndComponents(agebook);
         seed ^= System.nanoTime();
         return seed;
-    }
-
-    private void materializeSpawnArea(ServerLevel level, AgeSpec spec) {
-        int groundY = Math.max(1, spec.resolvedGroundLevel());
-        int seaY = Math.max(groundY, 63);
-
-        BlockState top = Blocks.GRASS_BLOCK.defaultBlockState();
-        BlockState under = Blocks.DIRT.defaultBlockState();
-        BlockState base = Blocks.STONE.defaultBlockState();
-        BlockState fluid = Blocks.WATER.defaultBlockState();
-
-        String biomePath = spec.resolvedBiome().getPath();
-        if (biomePath.contains("desert") || biomePath.contains("beach")) {
-            top = Blocks.SAND.defaultBlockState();
-            under = Blocks.SAND.defaultBlockState();
-            base = Blocks.SANDSTONE.defaultBlockState();
-        } else if (biomePath.contains("badlands")) {
-            top = Blocks.RED_SAND.defaultBlockState();
-            under = Blocks.RED_SAND.defaultBlockState();
-            base = Blocks.RED_SANDSTONE.defaultBlockState();
-        } else if (biomePath.contains("deep_dark")) {
-            top = Blocks.DEEPSLATE.defaultBlockState();
-            under = Blocks.DEEPSLATE.defaultBlockState();
-            base = Blocks.DEEPSLATE.defaultBlockState();
-        }
-
-        BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
-
-        for (int x = -32; x <= 32; x++) {
-            for (int z = -32; z <= 32; z++) {
-                for (int y = 0; y <= seaY; y++) {
-                    BlockState state;
-
-                    if (y == 0) {
-                        state = Blocks.BEDROCK.defaultBlockState();
-                    } else if (y > groundY) {
-                        state = y <= seaY ? fluid : Blocks.AIR.defaultBlockState();
-                    } else if (y == groundY) {
-                        state = top;
-                    } else if (y >= groundY - 3) {
-                        state = under;
-                    } else {
-                        state = base;
-                    }
-
-                    pos.set(x, y, z);
-                    level.setBlock(pos, state, 3);
-                }
-            }
-        }
-
-        if (level.getLevelData() instanceof WritableLevelData writableLevelData) {
-            writableLevelData.setSpawn(new LevelData.RespawnData(
-                    GlobalPos.of(level.dimension(), new BlockPos(0, groundY + 1, 0)),
-                    0.0F,
-                    0.0F
-            ));
-        }
     }
 
     @SuppressWarnings("unchecked")
