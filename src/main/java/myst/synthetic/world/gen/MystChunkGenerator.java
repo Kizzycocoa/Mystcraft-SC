@@ -5,30 +5,24 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import myst.synthetic.MystcraftSyntheticCodex;
 import myst.synthetic.world.terrain.BedrockProfile;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.WorldGenRegion;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelHeightAccessor;
 import net.minecraft.world.level.NoiseColumn;
 import net.minecraft.world.level.StructureManager;
-import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.biome.BiomeManager;
 import net.minecraft.world.level.biome.FixedBiomeSource;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkGenerator;
-import net.minecraft.world.level.chunk.ChunkGeneratorStructureState;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.RandomState;
 import net.minecraft.world.level.levelgen.blending.Blender;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class MystChunkGenerator extends ChunkGenerator {
 
@@ -39,6 +33,11 @@ public class MystChunkGenerator extends ChunkGenerator {
     private static final int MIN_Y = 0;
     private static final int GEN_DEPTH = 384;
 
+    private static final AtomicInteger CONSTRUCTOR_LOGS = new AtomicInteger();
+    private static final AtomicInteger FILL_LOGS = new AtomicInteger();
+    private static final AtomicInteger HEIGHT_LOGS = new AtomicInteger();
+    private static final AtomicInteger COLUMN_LOGS = new AtomicInteger();
+
     private final MystChunkGeneratorSettings settings;
 
     public MystChunkGenerator(MystChunkGeneratorSettings settings) {
@@ -47,6 +46,17 @@ public class MystChunkGenerator extends ChunkGenerator {
                 holder -> holder.value().getGenerationSettings()
         );
         this.settings = settings;
+
+        if (CONSTRUCTOR_LOGS.getAndIncrement() < 20) {
+            MystcraftSyntheticCodex.LOGGER.info(
+                    "[MystGen] Constructed MystChunkGenerator: seed={}, biome={}, ground={}, sea={}, bedrock={}",
+                    settings.seed(),
+                    settings.biomeId(),
+                    settings.groundLevel(),
+                    settings.seaLevel(),
+                    settings.bedrockProfile()
+            );
+        }
     }
 
     public MystChunkGeneratorSettings settings() {
@@ -65,6 +75,16 @@ public class MystChunkGenerator extends ChunkGenerator {
             StructureManager structureManager,
             ChunkAccess chunk
     ) {
+        if (FILL_LOGS.getAndIncrement() < 200) {
+            MystcraftSyntheticCodex.LOGGER.info(
+                    "[MystGen] fillFromNoise chunk={}, biome={}, ground={}, sea={}",
+                    chunk.getPos(),
+                    this.settings.biomeId(),
+                    this.settings.groundLevel(),
+                    this.settings.seaLevel()
+            );
+        }
+
         buildChunk(chunk);
         return CompletableFuture.completedFuture(chunk);
     }
@@ -78,7 +98,6 @@ public class MystChunkGenerator extends ChunkGenerator {
             StructureManager structureManager,
             ChunkAccess chunk
     ) {
-        // First pass: Mystcraft flat Ages do not run vanilla carvers.
     }
 
     @Override
@@ -88,52 +107,10 @@ public class MystChunkGenerator extends ChunkGenerator {
             RandomState randomState,
             ChunkAccess chunk
     ) {
-        // First pass: fillFromNoise already writes the full surface.
-    }
-
-    @Override
-    public void applyBiomeDecoration(
-            WorldGenLevel level,
-            ChunkAccess chunk,
-            StructureManager structureManager
-    ) {
-        /*
-         * Important:
-         * Do NOT let vanilla biome features decorate runtime Mystcraft Ages yet.
-         * Modern biome decoration can request neighbouring chunks/structures and
-         * appears to be the stage wedging the server after teleport.
-         */
-    }
-
-    @Override
-    public void createStructures(
-            RegistryAccess registryAccess,
-            ChunkGeneratorStructureState structureState,
-            StructureManager structureManager,
-            ChunkAccess chunk,
-            StructureTemplateManager structureTemplateManager,
-            ResourceKey<Level> dimension
-    ) {
-        // First pass: no structures.
-    }
-
-    @Override
-    public void createReferences(
-            WorldGenLevel level,
-            StructureManager structureManager,
-            ChunkAccess chunk
-    ) {
-        // First pass: no structure references.
     }
 
     @Override
     public void spawnOriginalMobs(WorldGenRegion region) {
-        // First pass: no special mob population.
-    }
-
-    @Override
-    public int getSpawnHeight(LevelHeightAccessor level) {
-        return this.settings.groundLevel() + 1;
     }
 
     @Override
@@ -159,6 +136,10 @@ public class MystChunkGenerator extends ChunkGenerator {
             LevelHeightAccessor level,
             RandomState randomState
     ) {
+        if (HEIGHT_LOGS.getAndIncrement() < 100) {
+            MystcraftSyntheticCodex.LOGGER.info("[MystGen] getBaseHeight x={}, z={}, type={}", x, z, heightmap);
+        }
+
         return Math.max(this.settings.groundLevel(), this.settings.seaLevel()) + 1;
     }
 
@@ -169,6 +150,10 @@ public class MystChunkGenerator extends ChunkGenerator {
             LevelHeightAccessor level,
             RandomState randomState
     ) {
+        if (COLUMN_LOGS.getAndIncrement() < 100) {
+            MystcraftSyntheticCodex.LOGGER.info("[MystGen] getBaseColumn x={}, z={}", x, z);
+        }
+
         BlockState[] states = new BlockState[this.getGenDepth()];
         for (int i = 0; i < states.length; i++) {
             states[i] = Blocks.AIR.defaultBlockState();
@@ -192,6 +177,7 @@ public class MystChunkGenerator extends ChunkGenerator {
         int startZ = chunk.getPos().getMinBlockZ();
 
         BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
+        ColumnMaterials materials = resolveColumnMaterials();
 
         for (int localX = 0; localX < 16; localX++) {
             int worldX = startX + localX;
@@ -199,11 +185,9 @@ public class MystChunkGenerator extends ChunkGenerator {
             for (int localZ = 0; localZ < 16; localZ++) {
                 int worldZ = startZ + localZ;
 
-                ColumnMaterials materials = resolveColumnMaterials();
                 boolean[] bedrockMask = buildBedrockMask(worldX, worldZ);
 
                 int maxY = Math.max(this.settings.groundLevel(), this.settings.seaLevel());
-
                 for (int y = this.getMinY(); y <= maxY; y++) {
                     BlockState state = pickStateForY(y, materials, bedrockMask);
                     if (state.isAir()) {
@@ -221,11 +205,7 @@ public class MystChunkGenerator extends ChunkGenerator {
         ColumnMaterials materials = resolveColumnMaterials();
         boolean[] bedrockMask = buildBedrockMask(worldX, worldZ);
 
-        int maxY = Math.min(
-                states.length - 1,
-                Math.max(this.settings.groundLevel(), this.settings.seaLevel())
-        );
-
+        int maxY = Math.min(states.length - 1, Math.max(this.settings.groundLevel(), this.settings.seaLevel()));
         for (int y = this.getMinY(); y <= maxY; y++) {
             BlockState state = pickStateForY(y, materials, bedrockMask);
             states[y - this.getMinY()] = state == null ? Blocks.AIR.defaultBlockState() : state;
@@ -233,10 +213,6 @@ public class MystChunkGenerator extends ChunkGenerator {
     }
 
     private BlockState pickStateForY(int y, ColumnMaterials materials, boolean[] bedrockMask) {
-        if (y < this.getMinY() || y >= this.getMinY() + this.getGenDepth()) {
-            return Blocks.AIR.defaultBlockState();
-        }
-
         if (this.settings.bedrockProfile() == BedrockProfile.VANILLA_FLOOR
                 && y >= 0
                 && y < bedrockMask.length
@@ -312,16 +288,6 @@ public class MystChunkGenerator extends ChunkGenerator {
                     Blocks.DEEPSLATE.defaultBlockState(),
                     Blocks.WATER.defaultBlockState(),
                     2
-            );
-        }
-
-        if (path.contains("ocean") || path.contains("river")) {
-            return new ColumnMaterials(
-                    Blocks.SAND.defaultBlockState(),
-                    Blocks.DIRT.defaultBlockState(),
-                    Blocks.STONE.defaultBlockState(),
-                    Blocks.WATER.defaultBlockState(),
-                    3
             );
         }
 

@@ -1,5 +1,8 @@
 package myst.synthetic.world.dimension;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import myst.synthetic.MystcraftItems;
 import myst.synthetic.MystcraftSyntheticCodex;
 import myst.synthetic.component.AgebookDataComponent;
@@ -9,6 +12,7 @@ import myst.synthetic.linking.LinkOptions;
 import myst.synthetic.world.age.AgeRegistryData;
 import myst.synthetic.world.age.AgeSpec;
 import myst.synthetic.world.age.AgeSpecCompiler;
+import myst.synthetic.world.age.AgeStoragePaths;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
@@ -21,27 +25,46 @@ import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.storage.DerivedLevelData;
+import net.minecraft.world.level.storage.LevelResource;
 import net.minecraft.world.level.storage.LevelStorageSource;
 import net.minecraft.world.level.storage.ServerLevelData;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 public final class AgeDimensionManager {
 
+    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+
     private final AgeSpecCompiler compiler = new AgeSpecCompiler();
     private final AgeLevelStemFactory levelStemFactory = new AgeLevelStemFactory();
 
     public ServerLevel getOrCreateAgeLevel(MinecraftServer server, ItemStack agebook) {
+        MystcraftSyntheticCodex.LOGGER.info("[MystAge] getOrCreateAgeLevel entered.");
+
         if (!agebook.is(MystcraftItems.AGEBOOK)) {
+            MystcraftSyntheticCodex.LOGGER.warn("[MystAge] Refused non-agebook stack: {}", agebook);
             return null;
         }
 
         AgebookDataComponent data = ItemAgebook.getData(agebook);
+        MystcraftSyntheticCodex.LOGGER.info(
+                "[MystAge] Agebook data: pages={}, display='{}', dimensionUid='{}', targetUuid='{}', seed={}",
+                data.pages().size(),
+                data.displayName(),
+                data.dimensionUid(),
+                data.targetUuid(),
+                data.seed()
+        );
+
         if (data.pages().isEmpty()) {
+            MystcraftSyntheticCodex.LOGGER.warn("[MystAge] Refused empty agebook.");
             return null;
         }
 
@@ -62,17 +85,38 @@ public final class AgeDimensionManager {
         }
         if (entry == null) {
             entry = registry.reserveOrGetExisting(targetUuid, seed, displayName);
+            MystcraftSyntheticCodex.LOGGER.info("[MystAge] Reserved new age entry: {}", entry.dimensionUid());
+        } else {
+            MystcraftSyntheticCodex.LOGGER.info("[MystAge] Reusing age entry: {}", entry.dimensionUid());
         }
 
         AgeSpec compiled = this.compiler.compile(data, server.registryAccess(), seed)
                 .withDimensionUid(entry.dimensionUid());
 
+        MystcraftSyntheticCodex.LOGGER.info(
+                "[MystAge] Compiled AgeSpec: dim={}, biome={}, terrain={}, ground={}, bedrock={}, ignored={}",
+                compiled.dimensionUid(),
+                compiled.resolvedBiome(),
+                compiled.terrain(),
+                compiled.resolvedGroundLevel(),
+                compiled.bedrockProfile(),
+                compiled.ignoredSymbols()
+        );
+
+        writeAgeSpec(server, entry.dimensionUid(), compiled);
+
         ServerLevel existing = server.getLevel(AgeDimensionKeys.levelKey(entry.dimensionUid()));
         if (existing == null) {
             existing = createAndRegisterAgeLevel(server, entry.dimensionUid(), compiled);
+        } else {
+            MystcraftSyntheticCodex.LOGGER.info(
+                    "[MystAge] Existing ServerLevel found for {}.",
+                    existing.dimension().identifier()
+            );
         }
 
         if (existing == null) {
+            MystcraftSyntheticCodex.LOGGER.error("[MystAge] Failed to obtain ServerLevel for {}.", entry.dimensionUid());
             return null;
         }
 
@@ -80,10 +124,18 @@ public final class AgeDimensionManager {
         if (resolvedTarget == null) {
             resolvedTarget = UUID.randomUUID();
             registry.bindTargetUuid(entry.dimensionUid(), resolvedTarget);
+            MystcraftSyntheticCodex.LOGGER.info("[MystAge] Bound new target UUID {}.", resolvedTarget);
         }
 
         bindAgebook(agebook, existing, compiled, resolvedTarget);
         registry.updateDisplayName(entry.dimensionUid(), compiled.displayName());
+
+        MystcraftSyntheticCodex.LOGGER.info(
+                "[MystAge] Age ready: dimUid={}, level={}, targetUuid={}",
+                entry.dimensionUid(),
+                existing.dimension().identifier(),
+                resolvedTarget
+        );
 
         return existing;
     }
@@ -100,8 +152,15 @@ public final class AgeDimensionManager {
                 return existing;
             }
 
+            MystcraftSyntheticCodex.LOGGER.info("[MystAge] Creating ServerLevel for {} / {}.", dimensionUid, levelKey.identifier());
+
             ServerLevel template = server.overworld();
             LevelStem stem = this.levelStemFactory.create(template, spec);
+
+            MystcraftSyntheticCodex.LOGGER.info(
+                    "[MystAge] LevelStem created. generator={}",
+                    stem.generator().getClass().getName()
+            );
 
             LevelStorageSource.LevelStorageAccess session = getStorageAccess(server);
             ServerLevelData levelData = new DerivedLevelData(server.getWorldData(), server.getWorldData().overworldData());
@@ -123,20 +182,29 @@ public final class AgeDimensionManager {
             getLevelMap(server).put(levelKey, created);
 
             MystcraftSyntheticCodex.LOGGER.info(
-                    "Created Mystcraft age level '{}' as '{}'",
+                    "[MystAge] Created Mystcraft age level '{}' as '{}'. mapContains={}",
                     dimensionUid,
-                    levelKey.identifier()
+                    levelKey.identifier(),
+                    server.getLevel(levelKey) != null
             );
 
             return created;
         } catch (Exception e) {
-            MystcraftSyntheticCodex.LOGGER.error("Failed to create Mystcraft age '{}'", dimensionUid, e);
+            MystcraftSyntheticCodex.LOGGER.error("[MystAge] Failed to create Mystcraft age '{}'.", dimensionUid, e);
             return null;
         }
     }
 
     private void bindAgebook(ItemStack agebook, ServerLevel level, AgeSpec spec, UUID targetUuid) {
         String levelId = level.dimension().identifier().toString();
+
+        MystcraftSyntheticCodex.LOGGER.info(
+                "[MystAge] Binding agebook to levelId={}, targetUuid={}, spawnY={}.",
+                levelId,
+                targetUuid,
+                spec.resolvedGroundLevel() + 1
+        );
+
         ItemAgebook.bindToGeneratedAge(agebook, levelId, targetUuid, spec.seed(), spec.displayName());
 
         CompoundTag tag = agebook.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
@@ -164,6 +232,39 @@ public final class AgeDimensionManager {
 
         if (!spec.displayName().isBlank()) {
             agebook.set(DataComponents.CUSTOM_NAME, Component.literal(spec.displayName()));
+        }
+    }
+
+    private void writeAgeSpec(MinecraftServer server, String dimensionUid, AgeSpec spec) {
+        try {
+            Path worldRoot = server.getWorldPath(LevelResource.ROOT);
+            Path folder = AgeStoragePaths.dimensionFolder(worldRoot, dimensionUid);
+            Files.createDirectories(folder);
+
+            JsonObject root = new JsonObject();
+            root.addProperty("format", 1);
+            root.addProperty("dimension_uid", dimensionUid);
+            root.addProperty("level_id", AgeDimensionKeys.levelIdString(dimensionUid));
+            root.addProperty("seed", spec.seed());
+            root.addProperty("display_name", spec.displayName());
+            root.addProperty("biome_layout", spec.biomeLayout().name());
+            root.addProperty("terrain", spec.terrain().name());
+            root.addProperty("resolved_biome", spec.resolvedBiome().toString());
+            root.addProperty("resolved_ground_level", spec.resolvedGroundLevel());
+            root.addProperty("bedrock_profile", spec.bedrockProfile().name());
+
+            var ignored = new com.google.gson.JsonArray();
+            for (var id : spec.ignoredSymbols()) {
+                ignored.add(id.toString());
+            }
+            root.add("ignored_symbols", ignored);
+
+            Path file = AgeStoragePaths.ageSpecFile(worldRoot, dimensionUid);
+            Files.writeString(file, GSON.toJson(root));
+
+            MystcraftSyntheticCodex.LOGGER.info("[MystAge] Wrote Age spec file: {}", file);
+        } catch (IOException e) {
+            MystcraftSyntheticCodex.LOGGER.error("[MystAge] Failed to write Age spec for {}.", dimensionUid, e);
         }
     }
 
