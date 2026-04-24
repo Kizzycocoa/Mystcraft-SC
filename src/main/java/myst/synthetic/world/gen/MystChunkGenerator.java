@@ -2,24 +2,32 @@ package myst.synthetic.world.gen;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import myst.synthetic.MystcraftSyntheticCodex;
 import myst.synthetic.world.terrain.BedrockProfile;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.WorldGenRegion;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelHeightAccessor;
 import net.minecraft.world.level.NoiseColumn;
 import net.minecraft.world.level.StructureManager;
+import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.biome.BiomeManager;
 import net.minecraft.world.level.biome.FixedBiomeSource;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.chunk.ChunkGeneratorStructureState;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.RandomState;
 import net.minecraft.world.level.levelgen.blending.Blender;
-import java.util.List;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class MystChunkGenerator extends ChunkGenerator {
@@ -51,6 +59,17 @@ public class MystChunkGenerator extends ChunkGenerator {
     }
 
     @Override
+    public CompletableFuture<ChunkAccess> fillFromNoise(
+            Blender blender,
+            RandomState randomState,
+            StructureManager structureManager,
+            ChunkAccess chunk
+    ) {
+        buildChunk(chunk);
+        return CompletableFuture.completedFuture(chunk);
+    }
+
+    @Override
     public void applyCarvers(
             WorldGenRegion region,
             long seed,
@@ -59,7 +78,7 @@ public class MystChunkGenerator extends ChunkGenerator {
             StructureManager structureManager,
             ChunkAccess chunk
     ) {
-        // First pass: no carving.
+        // First pass: Mystcraft flat Ages do not run vanilla carvers.
     }
 
     @Override
@@ -69,23 +88,52 @@ public class MystChunkGenerator extends ChunkGenerator {
             RandomState randomState,
             ChunkAccess chunk
     ) {
-        // First pass: fillFromNoise already places the complete flat terrain column.
+        // First pass: fillFromNoise already writes the full surface.
+    }
+
+    @Override
+    public void applyBiomeDecoration(
+            WorldGenLevel level,
+            ChunkAccess chunk,
+            StructureManager structureManager
+    ) {
+        /*
+         * Important:
+         * Do NOT let vanilla biome features decorate runtime Mystcraft Ages yet.
+         * Modern biome decoration can request neighbouring chunks/structures and
+         * appears to be the stage wedging the server after teleport.
+         */
+    }
+
+    @Override
+    public void createStructures(
+            RegistryAccess registryAccess,
+            ChunkGeneratorStructureState structureState,
+            StructureManager structureManager,
+            ChunkAccess chunk,
+            StructureTemplateManager structureTemplateManager,
+            ResourceKey<Level> dimension
+    ) {
+        // First pass: no structures.
+    }
+
+    @Override
+    public void createReferences(
+            WorldGenLevel level,
+            StructureManager structureManager,
+            ChunkAccess chunk
+    ) {
+        // First pass: no structure references.
     }
 
     @Override
     public void spawnOriginalMobs(WorldGenRegion region) {
-        // First pass: no special spawning behavior.
+        // First pass: no special mob population.
     }
 
     @Override
-    public CompletableFuture<ChunkAccess> fillFromNoise(
-            Blender blender,
-            RandomState randomState,
-            StructureManager structureManager,
-            ChunkAccess chunk
-    ) {
-        buildChunk(chunk);
-        return CompletableFuture.completedFuture(chunk);
+    public int getSpawnHeight(LevelHeightAccessor level) {
+        return this.settings.groundLevel() + 1;
     }
 
     @Override
@@ -130,6 +178,15 @@ public class MystChunkGenerator extends ChunkGenerator {
         return new NoiseColumn(this.getMinY(), states);
     }
 
+    @Override
+    public void addDebugScreenInfo(List<String> lines, RandomState randomState, BlockPos pos) {
+        lines.add("Mystcraft Generator");
+        lines.add("Biome: " + this.settings.biomeId());
+        lines.add("Ground Level: " + this.settings.groundLevel());
+        lines.add("Sea Level: " + this.settings.seaLevel());
+        lines.add("Bedrock Profile: " + this.settings.bedrockProfile().name());
+    }
+
     private void buildChunk(ChunkAccess chunk) {
         int startX = chunk.getPos().getMinBlockX();
         int startZ = chunk.getPos().getMinBlockZ();
@@ -146,6 +203,7 @@ public class MystChunkGenerator extends ChunkGenerator {
                 boolean[] bedrockMask = buildBedrockMask(worldX, worldZ);
 
                 int maxY = Math.max(this.settings.groundLevel(), this.settings.seaLevel());
+
                 for (int y = this.getMinY(); y <= maxY; y++) {
                     BlockState state = pickStateForY(y, materials, bedrockMask);
                     if (state.isAir()) {
@@ -163,7 +221,11 @@ public class MystChunkGenerator extends ChunkGenerator {
         ColumnMaterials materials = resolveColumnMaterials();
         boolean[] bedrockMask = buildBedrockMask(worldX, worldZ);
 
-        int maxY = Math.min(states.length - 1, Math.max(this.settings.groundLevel(), this.settings.seaLevel()));
+        int maxY = Math.min(
+                states.length - 1,
+                Math.max(this.settings.groundLevel(), this.settings.seaLevel())
+        );
+
         for (int y = this.getMinY(); y <= maxY; y++) {
             BlockState state = pickStateForY(y, materials, bedrockMask);
             states[y - this.getMinY()] = state == null ? Blocks.AIR.defaultBlockState() : state;
@@ -175,7 +237,10 @@ public class MystChunkGenerator extends ChunkGenerator {
             return Blocks.AIR.defaultBlockState();
         }
 
-        if (this.settings.bedrockProfile() == BedrockProfile.VANILLA_FLOOR && y >= 0 && y < bedrockMask.length && bedrockMask[y]) {
+        if (this.settings.bedrockProfile() == BedrockProfile.VANILLA_FLOOR
+                && y >= 0
+                && y < bedrockMask.length
+                && bedrockMask[y]) {
             return Blocks.BEDROCK.defaultBlockState();
         }
 
@@ -276,13 +341,5 @@ public class MystChunkGenerator extends ChunkGenerator {
             BlockState fluid,
             int underDepth
     ) {
-    }
-    @Override
-    public void addDebugScreenInfo(List<String> lines, RandomState randomState, BlockPos pos) {
-        lines.add("Mystcraft Generator");
-        lines.add("Biome: " + this.settings.biomeId());
-        lines.add("Ground Level: " + this.settings.groundLevel());
-        lines.add("Sea Level: " + this.settings.seaLevel());
-        lines.add("Bedrock Profile: " + this.settings.bedrockProfile().name());
     }
 }

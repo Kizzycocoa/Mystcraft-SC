@@ -26,7 +26,7 @@ public class MystcraftSyntheticCodex implements ModInitializer {
 	public void onInitialize() {
 		MystcraftConfig.load();
 		PendingAgeTeleportManager.initialize();
-        AgeChunkTerrainBootstrapper.initialize();
+        //AgeChunkTerrainBootstrapper.initialize();
 
 		MystcraftDataComponents.initialize();
 
