@@ -14,6 +14,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
+import myst.synthetic.world.dimension.AgeRuntimeProbe;
 
 import java.util.ArrayDeque;
 import java.util.Queue;
@@ -102,6 +103,12 @@ public final class PendingAgeTeleportManager {
         if (ageLevel == null) {
             player.displayClientMessage(Component.literal("The descriptive book failed to form an Age."), true);
             MystcraftSyntheticCodex.LOGGER.warn("Queued Mystcraft age creation failed: AgeDimensionManager returned null.");
+            return;
+        }
+
+        boolean chunkReady = AgeRuntimeProbe.forceSpawnChunk(ageLevel);
+        if (!chunkReady) {
+            player.displayClientMessage(Component.literal("The Age formed, but its spawn chunk failed to generate."), true);
             return;
         }
 
