@@ -1,6 +1,7 @@
 package myst.synthetic.linking;
 
 import myst.synthetic.MystcraftSyntheticCodex;
+import myst.synthetic.api.hook.LinkPropertyAPI;
 import myst.synthetic.api.linking.ILinkInfo;
 import myst.synthetic.config.MystcraftConfig;
 import net.minecraft.core.BlockPos;
@@ -16,7 +17,6 @@ import net.minecraft.world.level.portal.TeleportTransition;
 import net.minecraft.world.level.storage.LevelData;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
-import myst.synthetic.api.hook.LinkPropertyAPI;
 
 public final class LinkController {
 
@@ -29,12 +29,22 @@ public final class LinkController {
         }
 
         if (!(world instanceof ServerLevel origin)) {
+            MystcraftSyntheticCodex.LOGGER.warn("Mystcraft linking failed: origin was not a ServerLevel.");
             return false;
         }
 
         if (entity == null || info == null) {
+            MystcraftSyntheticCodex.LOGGER.warn("Mystcraft linking failed: entity or link info was null.");
             return false;
         }
+
+        String requestedDimension = info.getDimensionUID();
+
+        MystcraftSyntheticCodex.LOGGER.info(
+                "Mystcraft link requested from '{}' to '{}'.",
+                origin.dimension().identifier(),
+                requestedDimension
+        );
 
         ServerLevel destination = getDestinationWorld(origin.getServer(), info);
         if (destination == null) {
@@ -48,8 +58,13 @@ public final class LinkController {
         float yaw = info.getSpawnYaw();
         float pitch = entity.getXRot();
 
-        // TODO: Revisit once full legacy Mystcraft link effects are ported.
-        // Legacy Mystcraft had richer linking hooks/events/sounds here.
+        MystcraftSyntheticCodex.LOGGER.info(
+                "Mystcraft linking entity '{}' to '{}' at {}.",
+                entity.getScoreboardName(),
+                destination.dimension().identifier(),
+                targetPos
+        );
+
         TeleportTransition transition = new TeleportTransition(
                 destination,
                 targetVec,
@@ -129,8 +144,7 @@ public final class LinkController {
             return respawnData.pos();
         }
 
-        // TODO: Replace this with broader legacy-style safe-search logic.
-        return new BlockPos(0, level.getSeaLevel() + 1, 0);
+        return new BlockPos(0, Math.max(level.getSeaLevel() + 1, 65), 0);
     }
 
     private static boolean isSafeStandingPos(ServerLevel level, BlockPos pos) {
