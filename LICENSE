@@ -5,6 +5,13 @@ License Notice and Upstream Attribution
 This project is a modernization port of Mystcraft Legacy (1.12) and incorporates
 code and concepts from several Mystcraft-related sub-mods.
 
+This product contains trademarks and/or copyrighted works of Cyan. All rights reserved by Cyan. This product is not official and is not endorsed by Cyan.
+
+This project utilises transformative works of the following media under fair use, but shall remove them if requested by the rights holders:
+
+- Great Tree icon by Brian Fioca (Bookmark graphic)
+- Greeter's Guild Logo by Adel 'Ayli' Shafir (Banner Pattern)
+
 All included upstream components retain their original licenses.
 
 The following licensing groups apply.
@@ -15,10 +22,10 @@ LGPL-3.0 LICENSED COMPONENTS
 
 The following components are licensed under the GNU Lesser General Public License v3.0:
 
-* Mystcraft Legacy (1.12) — XCompWiz
-* Mystcraft Pages - Floydman
-* More Mystcraft - Floydman
-* LTTA - Floydman
+- Mystcraft Legacy (1.12) — XCompWiz
+- Mystcraft Pages - Floydman
+- More Mystcraft - Floydman
+- LTTA - Floydman
 
 Because this project is a derivative modernization port of Mystcraft Legacy,
 the overall project is distributed under LGPL-3.0.
@@ -88,9 +95,9 @@ MIT LICENSED COMPONENTS
 
 The following components are licensed under the MIT License:
 
-* MystLibrary - Veovis Muad'dib
-* Mystcraft Info - Veovis Muad'dib
-* Linking Tweaks - Veovis Muad'dib
+- MystLibrary - Veovis Muad'dib
+- Mystcraft Info - Veovis Muad'dib
+- Linking Tweaks - Veovis Muad'dib
 
 ---
 

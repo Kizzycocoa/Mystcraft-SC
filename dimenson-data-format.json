@@ -1,0 +1,137 @@
+{
+  "format": 1,
+  "dimension_uid": "DIM1",
+  "level_id": "mystcraft-sc:dim1",
+  "seed": 123456789,
+
+  "global": {
+    "celestials": {
+      "Suns": [
+        {
+          "type": "normal",
+          "direction": 0,
+          "angle": 0,
+          "length": 0,
+          "color": { "mode":"solid", "color":"FFFFFFFF" },
+          "tilt": 0,
+          "size": 0,
+          "horizon": { "mode":"solid", "color":"FFFFFFFF" }
+        }
+      ],
+      "Moons": [
+        {
+          "type": "normal",
+          "direction": 0,
+          "angle": 0,
+          "length": 0,
+          "color": { "mode":"solid", "color":"FFFFFFFF" },
+          "tilt": 0,
+          "size": 1,
+          "phase": 0
+        }
+      ],
+      "Stars": [
+        {
+          "type": "normal",
+          "direction": 0,
+          "angle": 0,
+          "length": 0,
+          "color": { "mode":"solid", "color":"FFFFFFFF" },
+          "tilt": 0,
+          "size": 1
+        }
+      ],
+      "Others": [
+        {
+          "type": "rainbow",
+          "direction": 0,
+          "color": { "mode":"solid", "color":"FFFFFFFF" },
+          "tilt": 0,
+          "size": 1
+        }
+      ]
+    },
+    "lighting": "bright",
+    "weather": {
+      "speed": "normal",
+      "type": "snow"
+    },
+    "cloud_height": 192,
+    "recolors": {
+      "water": { "mode":"solid", "color":"FFFFFFFF" },
+      "grass": { "mode":"solid", "color":"FFFFFFFF" },
+      "foliage": { "mode":"solid", "color":"FFFFFFFF" },
+      "sky": { "mode":"solid", "color":"FFFFFFFF" },
+      "night_sky": { "mode":"solid", "color":"FFFFFFFF" },
+      "cloud": { "mode":"solid", "color":"FFFFFFFF" },
+      "fog": { "mode":"solid", "color":"FFFFFFFF" }
+    },
+    "features": {
+      "formations": [
+        { "type": "tendrils", "block": "minecraft:dirt", "size": 1 }
+      ],
+      "structures": [
+        { "type": "villages" }, { "type": "abandoned_studies" }
+      ]
+    }
+  },
+
+  "regions": {
+    "overworld": {
+      "terrain": "flat",
+      "biomedist": "single",
+      "biomes": [
+        {
+          "biome": "minecraft:cherry_grove",
+          "weather": {
+            "speed": "normal",
+            "type": "snow"
+          },
+          "recolors": {
+            "water": { "mode":"solid", "color":"FFFFFFFF" },
+            "grass": { "mode":"gradient", "color":"FFFFFFFF", "stops": [ { "color":"FFFFFFFF", "length":"1" }, { "color":"FFFFFFFF", "length":"1" } ] },
+            "foliage": { "mode":"solid", "color":"FFFFFFFF" },
+            "sky": { "mode":"solid", "color":"FFFFFFFF" },
+            "night_sky": { "mode":"solid", "color":"FFFFFFFF" },
+            "cloud": { "mode":"solid", "color":"FFFFFFFF" },
+            "fog": { "mode":"solid", "color":"FFFFFFFF" }
+          },
+          "features": {
+            "formations": [
+              { "type": "tendrils", "block": "minecraft:dirt", "size": 1 }
+            ],
+            "structures": [
+              { "type": "villages" }, { "type": "abandoned_studies" }
+            ]
+          }
+        }
+      ]
+    },
+    "underworld": {
+      "terrain": "cave",
+      "biomedist": "single",
+      "biomes": [
+        {
+          "biome": "minecraft:cherry_grove",
+          "recolors": {
+            "water": { "mode":"solid", "color":"FFFFFFFF" },
+            "grass": { "mode":"gradient", "color":"FFFFFFFF", "stops": [ { "color":"FFFFFFFF", "length":"1" }, { "color":"FFFFFFFF", "length":"1" } ] },
+            "foliage": { "mode":"solid", "color":"FFFFFFFF" },
+            "sky": { "mode":"solid", "color":"FFFFFFFF" },
+            "night_sky": { "mode":"solid", "color":"FFFFFFFF" },
+            "cloud": { "mode":"solid", "color":"FFFFFFFF" },
+            "fog": { "mode":"solid", "color":"FFFFFFFF" }
+          },
+          "features": {
+            "formations": [
+              { "type": "tendrils", "block": "minecraft:dirt", "size": 1 }
+            ],
+            "structures": [
+              { "type": "villages" }, { "type": "abandoned_studies" }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

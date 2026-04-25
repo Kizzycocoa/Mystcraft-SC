@@ -8,10 +8,6 @@ import java.util.List;
 public final class MystcraftPageSymbols {
 
     public static final PageSymbol DEBUG_FULL = register("debug/full_symbol", "symbol.mystcraft-sc.debug.full_symbol", "Mystcraft:SC", "debug", 0, "DEBUG", "DEBUG", "DEBUG", "DEBUG", 0);
-    public static final PageSymbol COLOR_RAINBOW = register("color_rainbow", "symbol.mystcraft-sc.color_rainbow", "Mystcraft:SC", "color", 1, "Transform","Image","Weave","Rainbow Color",0);
-
-    private MystcraftPageSymbols() {
-    }
 
     public static void initialize() {
         MystcraftSyntheticCodex.LOGGER.info("Registered {} Mystcraft page symbols.", PageSymbolRegistry.size());

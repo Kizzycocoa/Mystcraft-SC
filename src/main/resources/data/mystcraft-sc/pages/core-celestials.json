@@ -99,16 +99,6 @@
       "poem_words": ["Celestial", "Image", "Stimulate", "Energy"],
       "tested": 0,
       "value": "sun_natural"
-    },
-    {
-      "id": "celestial_sun_tint",
-      "translation_key": "symbol.mystcraft-sc.celestial_sun_tint",
-      "origin": "More Mystcraft",
-      "category": "celestial/sun",
-      "card_rank": 1,
-      "poem_words": ["Celestial", "Image", "Stimulate", "Tinted Sun"],
-      "tested": 0,
-      "value": "sun_tinted"
     }
   ]
 }

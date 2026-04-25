@@ -24,9 +24,9 @@ public final class BiomePageSymbolSource {
                     null,
                     "Minecraft",
                     "biome",
-                    1,
+                    3,
                     GeneratedPageSymbolUtil.biomeWords(biomeId),
-                    0
+                    1
             ));
         }
     }
