@@ -6,6 +6,7 @@
       "origin": "Mystcraft",
       "category": "block/fluid",
       "card_rank": 1,
+      "lootTags": ["common", "trade"],
       "poem_words": ["Modifier", "Constraint", "Sea", "Gravel Block"],
       "tested": 0,
       "value": "minecraft:gravel"

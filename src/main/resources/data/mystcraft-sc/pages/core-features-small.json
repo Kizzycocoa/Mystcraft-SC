@@ -6,6 +6,7 @@
       "origin": "Mystcraft",
       "category": "feature/small",
       "card_rank": 1,
+      "lootTags": ["plains", "trade"],
       "poem_words": ["Nature", "Encourage", "Growth", "Static"],
       "tested": 0,
       "value": "crystals"
@@ -16,6 +17,7 @@
       "origin": "Mystcraft",
       "category": "feature/small",
       "card_rank": 1,
+      "lootTags": ["plains", "trade"],
       "poem_words": ["Nature", "Harmony", "Mutual", "Void"],
       "tested": 0,
       "value": "star_fissure"
@@ -26,6 +28,7 @@
       "origin": "Mystcraft",
       "category": "feature/small",
       "card_rank": 1,
+      "lootTags": ["plains", "trade"],
       "poem_words": ["Nature", "Flow", "Static", "Elevate"],
       "tested": 0,
       "value": "surface_lakes"
@@ -36,6 +39,7 @@
       "origin": "Mystcraft",
       "category": "feature/small",
       "card_rank": 1,
+      "lootTags": ["plains", "trade"],
       "poem_words": ["Civilization", "Resilience", "Static", "Form"],
       "tested": 0,
       "value": "obelisks"
@@ -46,6 +50,7 @@
       "origin": "Mystcraft",
       "category": "feature/small",
       "card_rank": 1,
+      "lootTags": ["plains", "trade"],
       "poem_words": ["Nature", "Flow", "Static", "Explore"],
       "tested": 0,
       "value": "deep_lakes"
@@ -56,6 +61,7 @@
       "origin": "Mystcraft:SC",
       "category": "feature/small",
       "card_rank": 1,
+      "lootTags": ["swamp", "trade"],
       "poem_words": ["Nature", "Flow", "Static", "Explore"],
       "tested": 0,
       "value": "witch_huts"
@@ -66,6 +72,7 @@
       "origin": "Mystcraft:SC",
       "category": "feature/small",
       "card_rank": 1,
+      "lootTags": ["plains", "trade", "nether"],
       "poem_words": ["Nature", "Flow", "Static", "Explore"],
       "tested": 0,
       "value": "ruined_portals"
@@ -76,6 +83,7 @@
       "origin": "Mystcraft:SC",
       "category": "feature/small",
       "card_rank": 1,
+      "lootTags": ["swamp", "trade"],
       "poem_words": ["Nature", "Flow", "Static", "Explore"],
       "tested": 0,
       "value": "fossils"
@@ -86,6 +94,7 @@
       "origin": "Mystcraft:SC",
       "category": "feature/small",
       "card_rank": 1,
+      "lootTags": ["plains", "trade", "cold"],
       "poem_words": ["Nature", "Flow", "Static", "Explore"],
       "tested": 0,
       "value": "igloos"
@@ -96,6 +105,7 @@
       "origin": "Mystcraft:SC",
       "category": "feature/small",
       "card_rank": 1,
+      "lootTags": ["special"],
       "poem_words": ["Nature", "Flow", "Static", "Explore"],
       "tested": 0,
       "value": "buried_treasure"
@@ -106,6 +116,7 @@
       "origin": "Mystcraft",
       "category": "feature/small",
       "card_rank": 1,
+      "lootTags": ["plains", "trade"],
       "poem_words": ["Contradict", "Chaos", "Exist", "Form"],
       "tested": 0,
       "value": "dummy_small"

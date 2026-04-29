@@ -6,6 +6,7 @@
       "origin": "More Mystcraft",
       "category": "modifier/tilt",
       "card_rank": 2,
+      "lootTags": ["taiga", "trade"],
       "poem_words": ["Transform", "Motion", "Zero Tilt", "Zero Tilt"],
       "tested": 0,
       "value": 0.0
@@ -16,6 +17,7 @@
       "origin": "More Mystcraft",
       "category": "modifier/tilt",
       "card_rank": 2,
+      "lootTags": ["taiga", "trade"],
       "poem_words": ["Transform", "Motion", "Half Tilt", "Half Tilt"],
       "tested": 0,
       "value": 45.0
@@ -26,6 +28,7 @@
       "origin": "More Mystcraft",
       "category": "modifier/tilt",
       "card_rank": 2,
+      "lootTags": ["taiga", "trade"],
       "poem_words": ["Transform", "Motion", "Full Tilt", "Full Tilt"],
       "tested": 0,
       "value": 90.0

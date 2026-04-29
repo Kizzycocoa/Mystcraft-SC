@@ -6,6 +6,7 @@
       "origin": "Mystcraft",
       "category": "lighting",
       "card_rank": 1,
+      "lootTags": ["swamp", "trade"],
       "poem_words": ["Ethereal", "Dynamic", "Cycle", "Balance"],
       "tested": 0,
       "value": "natural"
@@ -16,6 +17,7 @@
       "origin": "Mystcraft",
       "category": "lighting",
       "card_rank": 1,
+      "lootTags": ["swamp", "trade"],
       "poem_words": ["Ethereal", "Power", "Infinite", "Spur"],
       "tested": 0,
       "value": "bright"
@@ -26,6 +28,7 @@
       "origin": "Mystcraft",
       "category": "lighting",
       "card_rank": 1,
+      "lootTags": ["swamp", "trade"],
       "poem_words": ["Ethereal", "Void", "Constraint", "Inhibit"],
       "tested": 0,
       "value": "dark"

@@ -6,6 +6,7 @@
       "origin": "Mystcraft",
       "category": "block/terrain",
       "card_rank": 1,
+      "lootTags": ["common", "trade"],
       "poem_words": ["Modifier", "Constraint", "Terrain", "Dirt Block"],
       "tested": 0,
       "value": "minecraft:dirt"
@@ -16,6 +17,7 @@
       "origin": "Mystcraft",
       "category": "block/terrain",
       "card_rank": 1,
+      "lootTags": ["common", "trade"],
       "poem_words": ["Modifier", "Constraint", "Terrain", "Stone Block_0"],
       "tested": 0,
       "value": "minecraft:stone"
@@ -26,6 +28,7 @@
       "origin": "Mystcraft",
       "category": "block/terrain",
       "card_rank": 1,
+      "lootTags": ["common", "trade"],
       "poem_words": ["Modifier", "Constraint", "Terrain", "Andesite Block"],
       "tested": 0,
       "value": "minecraft:andesite"
@@ -36,6 +39,7 @@
       "origin": "Mystcraft",
       "category": "block/terrain",
       "card_rank": 1,
+      "lootTags": ["common", "trade"],
       "poem_words": ["Modifier", "Constraint", "Terrain", "Granite Block"],
       "tested": 0,
       "value": "minecraft:granite"
@@ -46,6 +50,7 @@
       "origin": "Mystcraft",
       "category": "block/terrain",
       "card_rank": 1,
+      "lootTags": ["common", "trade"],
       "poem_words": ["Modifier", "Constraint", "Terrain", "Diorite Block"],
       "tested": 0,
       "value": "minecraft:diorite"
@@ -56,6 +61,7 @@
       "origin": "Mystcraft",
       "category": "block/terrain",
       "card_rank": 1,
+      "lootTags": ["desert", "trade"],
       "poem_words": ["Modifier", "Constraint", "Terrain", "Sandstone Block"],
       "tested": 0,
       "value": "minecraft:sandstone"
@@ -66,6 +72,7 @@
       "origin": "Mystcraft",
       "category": "block/terrain",
       "card_rank": 1,
+      "lootTags": ["nether"],
       "poem_words": ["Modifier", "Constraint", "Terrain", "Netherrack Block"],
       "tested": 0,
       "value": "minecraft:netherrack"
@@ -76,6 +83,7 @@
       "origin": "Mystcraft",
       "category": "block/terrain",
       "card_rank": 1,
+      "lootTags": ["end"],
       "poem_words": ["Modifier", "Constraint", "Terrain", "End Stone Block"],
       "tested": 0,
       "value": "minecraft:end_stone"

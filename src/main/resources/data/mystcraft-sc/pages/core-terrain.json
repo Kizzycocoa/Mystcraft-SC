@@ -6,6 +6,7 @@
       "origin": "Mystcraft",
       "category": "terrain",
       "card_rank": 1,
+      "lootTags": ["snowy", "trade"],
       "poem_words": ["Terrain", "Form", "Tradition", "Flow"],
       "tested": 0,
       "value": "normal"
@@ -16,6 +17,7 @@
       "origin": "Mystcraft",
       "category": "terrain",
       "card_rank": 1,
+      "lootTags": ["snowy", "trade"],
       "poem_words": ["Terrain", "Form", "Inhibit", "Motion"],
       "tested": 0,
       "value": "flat"
@@ -26,6 +28,7 @@
       "origin": "Mystcraft",
       "category": "terrain",
       "card_rank": 1,
+      "lootTags": ["snowy", "trade"],
       "poem_words": ["Terrain", "Form", "Tradition", "Spur"],
       "tested": 0,
       "value": "amplified"
@@ -36,6 +39,7 @@
       "origin": "Mystcraft",
       "category": "terrain",
       "card_rank": 1,
+      "lootTags": ["snowy", "trade"],
       "poem_words": ["Terrain", "Form", "Constraint", "Entropy"],
       "tested": 0,
       "value": "nether"
@@ -46,6 +50,7 @@
       "origin": "Mystcraft",
       "category": "terrain",
       "card_rank": 1,
+      "lootTags": ["snowy", "trade"],
       "poem_words": ["Terrain", "Form", "Ethereal", "Flow"],
       "tested": 0,
       "value": "end"
@@ -56,6 +61,7 @@
       "origin": "Mystcraft",
       "category": "terrain",
       "card_rank": 1,
+      "lootTags": ["snowy", "trade"],
       "poem_words": ["Terrain", "Form", "Infinite", "Void"],
       "tested": 0,
       "value": "void"
@@ -66,6 +72,7 @@
       "origin": "Mystcraft",
       "category": "terrain",
       "card_rank": 1,
+      "lootTags": ["snowy", "trade"],
       "poem_words": ["Terrain", "Form", "Ethereal", "Flow"],
       "tested": 0,
       "value": "island"
@@ -76,6 +83,7 @@
       "origin": "Mystcraft",
       "category": "terrain",
       "card_rank": 1,
+      "lootTags": ["snowy", "trade"],
       "poem_words": ["Terrain", "Form", "Void", "Elevate"],
       "tested": 0,
       "value": "skylands"
@@ -85,7 +93,8 @@
       "translation_key": "symbol.mystcraft-sc.terrain_maze",
       "origin": "More Mystcraft",
       "category": "terrain",
-      "card_rank": 1,
+      "card_rank": 6,
+      "lootTags": ["special"],
       "poem_words": ["Terrain", "Form", "Infinite", "Maze"],
       "tested": 0,
       "value": "maze"
@@ -96,6 +105,7 @@
       "origin": "Mystcraft:SC",
       "category": "terrain",
       "card_rank": 1,
+      "lootTags": ["special"],
       "poem_words": ["Terrain", "Form", "Infinite", "Entropy"],
       "tested": 0,
       "value": "backrooms"
@@ -106,6 +116,7 @@
       "origin": "Mystcraft:SC",
       "category": "terrain",
       "card_rank": 1,
+      "lootTags": ["snowy", "trade"],
       "poem_words": ["Terrain", "Form", "Constraint", "Spur"],
       "tested": 0,
       "value": "underworld"

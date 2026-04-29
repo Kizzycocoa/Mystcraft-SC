@@ -31,6 +31,7 @@ public final class MystcraftPageSymbols {
                 origin,
                 category,
                 cardRank == null ? 0 : cardRank,
+                List.of(),
                 List.of(word1, word2, word3, word4),
                 tested == null ? 0 : tested
         ));

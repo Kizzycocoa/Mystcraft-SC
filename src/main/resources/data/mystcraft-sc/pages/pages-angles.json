@@ -6,6 +6,7 @@
       "origin": "Mystcraft",
       "category": "modifier/angle",
       "card_rank": 1,
+      "lootTags": ["savanna", "trade"],
       "poem_words": ["Transform", "Cycle", "System", "Rebirth"],
       "tested": 0,
       "value": 0.0
@@ -16,6 +17,7 @@
       "origin": "Mystcraft",
       "category": "modifier/angle",
       "card_rank": 1,
+      "lootTags": ["savanna", "trade"],
       "poem_words": ["Transform", "Cycle", "System", "Growth"],
       "tested": 0,
       "value": 90.0
@@ -26,6 +28,7 @@
       "origin": "Mystcraft",
       "category": "modifier/angle",
       "card_rank": 1,
+      "lootTags": ["savanna", "trade"],
       "poem_words": ["Transform", "Cycle", "System", "Harmony"],
       "tested": 0,
       "value": 180.0
@@ -36,6 +39,7 @@
       "origin": "Mystcraft",
       "category": "modifier/angle",
       "card_rank": 1,
+      "lootTags": ["savanna", "trade"],
       "poem_words": ["Transform", "Cycle", "System", "Future"],
       "tested": 0,
       "value": 270.0
@@ -46,6 +50,7 @@
       "origin": "Myst Library",
       "category": "modifier/angle",
       "card_rank": 1,
+      "lootTags": ["savanna", "trade"],
       "poem_words": ["Transform", "Cycle", "Waning Day Phase", "Waning Day Phase"],
       "tested": 0,
       "value": 225.0
@@ -56,6 +61,7 @@
       "origin": "Myst Library",
       "category": "modifier/angle",
       "card_rank": 1,
+      "lootTags": ["savanna", "trade"],
       "poem_words": ["Transform", "Cycle", "Waning Night Phase", "Waning Night Phase"],
       "tested": 0,
       "value": 45.0
@@ -66,6 +72,7 @@
       "origin": "Myst Library",
       "category": "modifier/angle",
       "card_rank": 1,
+      "lootTags": ["savanna", "trade"],
       "poem_words": ["Transform", "Cycle", "Waxing Day Phase", "Waxing Day Phase"],
       "tested": 0,
       "value": 135.0
@@ -76,6 +83,7 @@
       "origin": "Myst Library",
       "category": "modifier/angle",
       "card_rank": 1,
+      "lootTags": ["savanna", "trade"],
       "poem_words": ["Transform", "Cycle", "Waxing Night Phase", "Waxing Night Phase"],
       "tested": 0,
       "value": 315.0

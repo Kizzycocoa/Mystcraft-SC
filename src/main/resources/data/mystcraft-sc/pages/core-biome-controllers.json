@@ -6,6 +6,7 @@
       "origin": "Mystcraft",
       "category": "biocontrol",
       "card_rank": 2,
+      "lootTags": ["snowy", "trade"],
       "poem_words": ["Constraint", "Nature", "Tradition", "Sustain"],
       "tested": 0,
       "value": "natural"
@@ -15,7 +16,8 @@
       "translation_key": "symbol.mystcraft-sc.bio_con_single",
       "origin": "Mystcraft",
       "category": "biocontrol",
-      "card_rank": 2,
+      "card_rank": 3,
+      "lootTags": ["snowy", "trade"],
       "poem_words": ["Constraint", "Nature", "Infinite", "Static"],
       "tested": 0,
       "value": "single"
@@ -25,7 +27,8 @@
       "translation_key": "symbol.mystcraft-sc.bio_con_grid",
       "origin": "Mystcraft",
       "category": "biocontrol",
-      "card_rank": 2,
+      "card_rank": 4,
+      "lootTags": ["snowy", "trade"],
       "poem_words": ["Constraint", "Nature", "Chain", "Mutual"],
       "tested": 0,
       "value": "grid"
@@ -35,7 +38,8 @@
       "translation_key": "symbol.mystcraft-sc.bio_con_tiled",
       "origin": "Mystcraft",
       "category": "biocontrol",
-      "card_rank": 2,
+      "card_rank": 4,
+      "lootTags": ["snowy", "trade"],
       "poem_words": ["Constraint", "Nature", "Chain", "Contradict"],
       "tested": 0,
       "value": "tiled"
@@ -45,7 +49,8 @@
       "translation_key": "symbol.mystcraft-sc.bio_con_patchy",
       "origin": "Mystcraft",
       "category": "biocontrol",
-      "card_rank": 2,
+      "card_rank": 3,
+      "lootTags": ["snowy", "trade"],
       "poem_words": ["Constraint", "Nature", "Weave", "Tradition"],
       "tested": 0,
       "value": "patchy"
@@ -55,7 +60,8 @@
       "translation_key": "symbol.mystcraft-sc.bio_con_boxes",
       "origin": "More Mystcraft",
       "category": "biocontrol",
-      "card_rank": 2,
+      "card_rank": 4,
+      "lootTags": ["snowy", "trade"],
       "poem_words": ["Constraint", "Nature", "Cycle", "Boxes Biome Distribution"],
       "tested": 0,
       "value": "boxes"
@@ -65,37 +71,30 @@
       "translation_key": "symbol.mystcraft-sc.bio_con_island",
       "origin": "More Mystcraft",
       "category": "biocontrol",
-      "card_rank": 2,
+      "card_rank": 3,
+      "lootTags": ["snowy", "trade"],
       "poem_words": ["Constraint", "Nature", "Weave", "Island Biome Distribution"],
       "tested": 0,
       "value": "island"
     },
     {
-      "id": "bio_con_ewband",
-      "translation_key": "symbol.mystcraft-sc.bio_con_ewband",
+      "id": "bio_con_bands",
+      "translation_key": "symbol.mystcraft-sc.bio_con_bands",
       "origin": "More Mystcraft",
       "category": "biocontrol",
-      "card_rank": 2,
-      "poem_words": ["Constraint", "Nature", "Cycle", "East-West Bands Biome Distribution"],
+      "card_rank": 4,
+      "lootTags": ["snowy", "trade"],
+      "poem_words": ["Constraint", "Nature", "Cycle", "Bands Biome Distribution"],
       "tested": 0,
-      "value": "east_west_bands"
-    },
-    {
-      "id": "bio_con_nsband",
-      "translation_key": "symbol.mystcraft-sc.bio_con_nsband",
-      "origin": "More Mystcraft",
-      "category": "biocontrol",
-      "card_rank": 2,
-      "poem_words": ["Constraint", "Nature", "Cycle", "North-South Bands Biome Distribution"],
-      "tested": 0,
-      "value": "north_south_bands"
+      "value": "bands"
     },
     {
       "id": "bio_con_rings",
       "translation_key": "symbol.mystcraft-sc.bio_con_rings",
       "origin": "More Mystcraft",
       "category": "biocontrol",
-      "card_rank": 2,
+      "card_rank": 4,
+      "lootTags": ["snowy", "trade"],
       "poem_words": ["Constraint", "Nature", "Cycle", "Rings Biome Distribution"],
       "tested": 0,
       "value": "rings"
@@ -105,7 +104,8 @@
       "translation_key": "symbol.mystcraft-sc.bio_con_maze",
       "origin": "More Mystcraft",
       "category": "biocontrol",
-      "card_rank": 2,
+      "card_rank": 5,
+      "lootTags": ["snowy", "trade"],
       "poem_words": ["Constraint", "Nature", "Weave", "Maze Biome Distribution"],
       "tested": 0,
       "value": "maze"

@@ -6,6 +6,7 @@
       "origin": "Mystcraft",
       "category": "modifier/direction",
       "card_rank": 1,
+      "lootTags": ["snowy", "trade"],
       "poem_words": ["Transform", "Flow", "Motion", "Control"],
       "tested": 0,
       "value": 0.0
@@ -16,6 +17,7 @@
       "origin": "Mystcraft",
       "category": "modifier/direction",
       "card_rank": 1,
+      "lootTags": ["snowy", "trade"],
       "poem_words": ["Transform", "Flow", "Motion", "Tradition"],
       "tested": 0,
       "value": 90.0
@@ -26,6 +28,7 @@
       "origin": "Mystcraft",
       "category": "modifier/direction",
       "card_rank": 1,
+      "lootTags": ["snowy", "trade"],
       "poem_words": ["Transform", "Flow", "Motion", "Chaos"],
       "tested": 0,
       "value": 180.0
@@ -36,6 +39,7 @@
       "origin": "Mystcraft",
       "category": "modifier/direction",
       "card_rank": 1,
+      "lootTags": ["snowy", "trade"],
       "poem_words": ["Transform", "Flow", "Motion", "Change"],
       "tested": 0,
       "value": 270.0
@@ -46,6 +50,7 @@
       "origin": "Myst Library",
       "category": "modifier/direction",
       "card_rank": 1,
+      "lootTags": ["snowy", "trade"],
       "poem_words": ["Transform", "Motion", "Northeast Direction", "Northeast Direction"],
       "tested": 0,
       "value": 45.0
@@ -56,6 +61,7 @@
       "origin": "Myst Library",
       "category": "modifier/direction",
       "card_rank": 1,
+      "lootTags": ["snowy", "trade"],
       "poem_words": ["Transform", "Motion", "Northwest Direction", "Northwest Direction"],
       "tested": 0,
       "value": 315.0
@@ -66,6 +72,7 @@
       "origin": "Myst Library",
       "category": "modifier/direction",
       "card_rank": 1,
+      "lootTags": ["snowy", "trade"],
       "poem_words": ["Transform", "Motion", "Southeast Direction", "Southeast Direction"],
       "tested": 0,
       "value": 135.0
@@ -76,6 +83,7 @@
       "origin": "Myst Library",
       "category": "modifier/direction",
       "card_rank": 1,
+      "lootTags": ["snowy", "trade"],
       "poem_words": ["Transform", "Motion", "Southwest Direction", "Southwest Direction"],
       "tested": 0,
       "value": 225.0

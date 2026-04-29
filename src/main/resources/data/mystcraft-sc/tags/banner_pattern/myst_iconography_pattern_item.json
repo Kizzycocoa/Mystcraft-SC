@@ -1,0 +1,14 @@
+{
+  "replace": false,
+  "values": [
+    "mystcraft-sc:drc",
+    "mystcraft-sc:guildgreeters",
+    "mystcraft-sc:guildwriters",
+    "mystcraft-sc:guildwritersalt",
+    "mystcraft-sc:guildmaintainers",
+    "mystcraft-sc:guildsurveyors",
+    "mystcraft-sc:guildmessengers",
+    "mystcraft-sc:guildcartographers",
+    "mystcraft-sc:watcher"
+  ]
+}

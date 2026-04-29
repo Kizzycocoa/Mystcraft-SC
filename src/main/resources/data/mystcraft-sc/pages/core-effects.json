@@ -6,6 +6,7 @@
       "origin": "Mystcraft",
       "category": "effect",
       "card_rank": 1,
+      "lootTags": ["desert", "trade"],
       "poem_words": ["Survival", "Dynamic", "Change", "Spur"],
       "tested": 0,
       "value": "accelerated"
@@ -16,6 +17,7 @@
       "origin": "Mystcraft",
       "category": "effect",
       "card_rank": 3,
+      "lootTags": ["desert", "trade"],
       "poem_words": ["Survival", "Sacrifice", "Power", "Force"],
       "tested": 0,
       "value": "explosions"
@@ -26,6 +28,7 @@
       "origin": "Mystcraft",
       "category": "effect",
       "card_rank": 3,
+      "lootTags": ["desert", "trade"],
       "poem_words": ["Survival", "Sacrifice", "Power", "Energy"],
       "tested": 0,
       "value": "lightning"
@@ -36,6 +39,7 @@
       "origin": "Mystcraft",
       "category": "effect",
       "card_rank": 3,
+      "lootTags": ["desert", "trade"],
       "poem_words": ["Survival", "Sacrifice", "Power", "Momentum"],
       "tested": 0,
       "value": "meteor"
@@ -46,6 +50,7 @@
       "origin": "Mystcraft",
       "category": "effect",
       "card_rank": 3,
+      "lootTags": ["desert", "trade"],
       "poem_words": ["Survival", "Sacrifice", "Power", "Chaos"],
       "tested": 0,
       "value": "scorch"

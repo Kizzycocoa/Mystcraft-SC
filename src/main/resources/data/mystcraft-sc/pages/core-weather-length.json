@@ -6,6 +6,7 @@
       "origin": "Mystcraft",
       "category": "weather/length",
       "card_rank": 1,
+      "lootTags": ["swamp", "trade"],
       "poem_words": ["Sustain", "Static", "Tradition", "Stimulate"],
       "tested": 0,
       "value": "constant"
@@ -16,6 +17,7 @@
       "origin": "Mystcraft",
       "category": "weather/length",
       "card_rank": 1,
+      "lootTags": ["swamp", "trade"],
       "poem_words": ["Sustain", "Dynamic", "Tradition", "Spur"],
       "tested": 0,
       "value": "fast"
@@ -26,6 +28,7 @@
       "origin": "Mystcraft",
       "category": "weather/length",
       "card_rank": 1,
+      "lootTags": ["swamp", "trade"],
       "poem_words": ["Sustain", "Dynamic", "Tradition", "Inhibit"],
       "tested": 0,
       "value": "slow"

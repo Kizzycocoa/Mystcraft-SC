@@ -13,6 +13,7 @@ public record PageSymbol(
         String origin,
         String category,
         int cardRank,
+        List<String> lootTags,
         List<String> poemWords,
         int tested,
         @Nullable PageValue value
@@ -27,11 +28,32 @@ public record PageSymbol(
             List<String> poemWords,
             int tested
     ) {
-        this(id, translationKey, origin, category, cardRank, poemWords, tested, null);
+        this(id, translationKey, origin, category, cardRank, List.of(), poemWords, tested, null);
+    }
+
+    public PageSymbol(
+            Identifier id,
+            @Nullable String translationKey,
+            String origin,
+            String category,
+            int cardRank,
+            List<String> lootTags,
+            List<String> poemWords,
+            int tested
+    ) {
+        this(id, translationKey, origin, category, cardRank, lootTags, poemWords, tested, null);
     }
 
     public PageSymbol {
-        poemWords = List.copyOf(poemWords);
+        lootTags = lootTags == null ? List.of() : List.copyOf(
+                lootTags.stream()
+                        .filter(tag -> tag != null && !tag.isBlank())
+                        .map(String::trim)
+                        .distinct()
+                        .toList()
+        );
+
+        poemWords = poemWords == null ? List.of() : List.copyOf(poemWords);
         origin = origin == null ? "" : origin;
         category = category == null ? "" : category;
     }
@@ -39,6 +61,10 @@ public record PageSymbol(
     public String rootCategory() {
         int slash = category.indexOf('/');
         return slash >= 0 ? category.substring(0, slash) : category;
+    }
+
+    public boolean hasLootTag(String tag) {
+        return lootTags.contains(tag);
     }
 
     public boolean hasPoem() {

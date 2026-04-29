@@ -17,7 +17,7 @@ import myst.synthetic.page.symbol.source.MystcraftGeneratedPageSymbols;
 import myst.synthetic.item.MystcraftCauldronInteractions;
 import myst.synthetic.world.dimension.PendingAgeTeleportManager;
 import myst.synthetic.page.symbol.DatapackPageLoader;
-import myst.synthetic.world.gen.AgeChunkTerrainBootstrapper;
+import myst.synthetic.page.loot.PageLootPools;
 
 public class MystcraftSyntheticCodex implements ModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger("mystcraft-sc");
@@ -35,6 +35,7 @@ public class MystcraftSyntheticCodex implements ModInitializer {
 		MystcraftPageSymbols.initialize();
 
 		DatapackPageLoader.initialize();
+		PageLootPools.initialize();
 
 		MystcraftBlocks.initialize();
 		MystcraftEntities.initialize();

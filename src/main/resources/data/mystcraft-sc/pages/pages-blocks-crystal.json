@@ -6,6 +6,7 @@
       "origin": "Mystcraft",
       "category": "block/crystal",
       "card_rank": 1,
+      "lootTags": ["cold", "trade"],
       "poem_words": ["Modifier", "Constraint", "Chain", "Ice Block"],
       "tested": 0,
       "value": "minecraft:ice"
@@ -16,6 +17,7 @@
       "origin": "Mystcraft",
       "category": "block/crystal",
       "card_rank": 1,
+      "lootTags": ["cold", "trade"],
       "poem_words": ["Modifier", "Constraint", "Chain", "Packed Ice Block"],
       "tested": 0,
       "value": "minecraft:packed_ice"
@@ -26,6 +28,7 @@
       "origin": "Mystcraft",
       "category": "block/crystal",
       "card_rank": 1,
+      "lootTags": ["common", "trade"],
       "poem_words": ["Modifier", "Constraint", "Chain", "Glass Block"],
       "tested": 0,
       "value": "minecraft:glass"
@@ -36,6 +39,7 @@
       "origin": "Mystcraft",
       "category": "block/crystal",
       "card_rank": 1,
+      "lootTags": ["cold", "trade"],
       "poem_words": ["Modifier", "Constraint", "Chain", "Snow Block"],
       "tested": 0,
       "value": "minecraft:snow_block"
@@ -46,6 +50,7 @@
       "origin": "Mystcraft",
       "category": "block/crystal",
       "card_rank": 1,
+      "lootTags": ["common", "trade"],
       "poem_words": ["Modifier", "Constraint", "Chain", "Obsidian Block"],
       "tested": 0,
       "value": "minecraft:obsidian"
@@ -56,6 +61,7 @@
       "origin": "Mystcraft",
       "category": "block/crystal",
       "card_rank": 1,
+      "lootTags": ["nether"],
       "poem_words": ["Modifier", "Constraint", "Chain", "Glowstone Block"],
       "tested": 0,
       "value": "minecraft:glowstone"
@@ -66,6 +72,7 @@
       "origin": "Mystcraft",
       "category": "block/crystal",
       "card_rank": 1,
+      "lootTags": ["common", "trade"],
       "poem_words": ["Modifier", "Constraint", "Chain", "Crystal Block"],
       "tested": 0,
       "value": "mystcraft-sc:crystal"

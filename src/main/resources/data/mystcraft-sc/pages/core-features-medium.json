@@ -5,7 +5,8 @@
       "translation_key": "symbol.mystcraft-sc.feature_medium_dungeons",
       "origin": "Mystcraft",
       "category": "feature/medium",
-      "card_rank": 1,
+      "card_rank": 2,
+      "lootTags": ["plains", "trade"],
       "poem_words": ["Civilization", "Constraint", "Chain", "Resurrect"],
       "tested": 0,
       "value": "dungeons"
@@ -15,7 +16,8 @@
       "translation_key": "symbol.mystcraft-sc.feature_medium_ravines",
       "origin": "Mystcraft",
       "category": "feature/medium",
-      "card_rank": 1,
+      "card_rank": 2,
+      "lootTags": ["plains", "trade"],
       "poem_words": ["Terrain", "Transform", "Void", "Weave"],
       "tested": 0,
       "value": "ravines"
@@ -25,7 +27,8 @@
       "translation_key": "symbol.mystcraft-sc.feature_medium_strongholds",
       "origin": "Mystcraft",
       "category": "feature/medium",
-      "card_rank": 1,
+      "card_rank": 2,
+      "lootTags": ["plains", "trade"],
       "poem_words": ["Civilization", "Wisdom", "Future", "Honor"],
       "tested": 0,
       "value": "strongholds"
@@ -35,7 +38,8 @@
       "translation_key": "symbol.mystcraft-sc.feature_medium_villages",
       "origin": "Mystcraft",
       "category": "feature/medium",
-      "card_rank": 1,
+      "card_rank": 5,
+      "lootTags": ["plains", "trade"],
       "poem_words": ["Civilization", "Society", "Harmony", "Nurture"],
       "tested": 0,
       "value": "villages"
@@ -45,7 +49,8 @@
       "translation_key": "symbol.mystcraft-sc.feature_medium_spikes",
       "origin": "Mystcraft",
       "category": "feature/medium",
-      "card_rank": 1,
+      "card_rank": 2,
+      "lootTags": ["plains", "trade"],
       "poem_words": ["Nature", "Encourage", "Entropy", "Static"],
       "tested": 0,
       "value": "spikes"
@@ -55,7 +60,8 @@
       "translation_key": "symbol.mystcraft-sc.feature_medium_mineshafts",
       "origin": "Mystcraft",
       "category": "feature/medium",
-      "card_rank": 1,
+      "card_rank": 2,
+      "lootTags": ["plains", "trade"],
       "poem_words": ["Civilization", "Machine", "Motion", "Tradition"],
       "tested": 0,
       "value": "mineshafts"
@@ -65,7 +71,8 @@
       "translation_key": "symbol.mystcraft-sc.feature_medium_spheres",
       "origin": "Mystcraft",
       "category": "feature/medium",
-      "card_rank": 1,
+      "card_rank": 2,
+      "lootTags": ["plains", "trade"],
       "poem_words": ["Terrain", "Transform", "Form", "Cycle"],
       "tested": 0,
       "value": "spheres"
@@ -75,7 +82,8 @@
       "translation_key": "symbol.mystcraft-sc.feature_medium_nether_fortresses",
       "origin": "Mystcraft",
       "category": "feature/medium",
-      "card_rank": 1,
+      "card_rank": 3,
+      "lootTags": ["nether"],
       "poem_words": ["Civilization", "Machine", "Power", "Entropy"],
       "tested": 0,
       "value": "nether_fortresses"
@@ -85,7 +93,8 @@
       "translation_key": "symbol.mystcraft-sc.feature_medium_abandoned_studies",
       "origin": "More Mystcraft",
       "category": "feature/medium",
-      "card_rank": 1,
+      "card_rank": 2,
+      "lootTags": ["plains", "trade"],
       "poem_words": ["Civilization", "Possibility", "Power", "Wisdom,"],
       "tested": 0,
       "value": "abandoned_studies"
@@ -95,7 +104,8 @@
       "translation_key": "symbol.mystcraft-sc.feature_medium_ocean_monuments",
       "origin": "More Mystcraft",
       "category": "feature/medium",
-      "card_rank": 1,
+      "card_rank": 3,
+      "lootTags": ["plains", "trade"],
       "poem_words": ["Civilization", "Machine", "Power", "Entropy"],
       "tested": 0,
       "value": "ocean_monuments"
@@ -105,7 +115,8 @@
       "translation_key": "symbol.mystcraft-sc.feature_medium_pyramids",
       "origin": "More Mystcraft",
       "category": "feature/medium",
-      "card_rank": 1,
+      "card_rank": 2,
+      "lootTags": ["plains", "trade"],
       "poem_words": ["Civilization", "Constraint", "Creativity", "Elevate"],
       "tested": 0,
       "value": "pyramids"
@@ -115,7 +126,8 @@
       "translation_key": "symbol.mystcraft-sc.feature_medium_trial_chambers",
       "origin": "Mystcraft:SC",
       "category": "feature/medium",
-      "card_rank": 1,
+      "card_rank": 3,
+      "lootTags": ["special"],
       "poem_words": ["Nature", "Flow", "Static", "Explore"],
       "tested": 0,
       "value": "trial_chambers"
@@ -125,7 +137,8 @@
       "translation_key": "symbol.mystcraft-sc.feature_medium_woodland_mansions",
       "origin": "Mystcraft:SC",
       "category": "feature/medium",
-      "card_rank": 1,
+      "card_rank": 3,
+      "lootTags": ["special"],
       "poem_words": ["Nature", "Flow", "Static", "Explore"],
       "tested": 0,
       "value": "woodland_mansions"
@@ -136,6 +149,7 @@
       "origin": "Mystcraft:SC",
       "category": "feature/medium",
       "card_rank": 1,
+      "lootTags": ["nether"],
       "poem_words": ["Nature", "Flow", "Static", "Explore"],
       "tested": 0,
       "value": "bastions"
@@ -146,6 +160,7 @@
       "origin": "Mystcraft:SC",
       "category": "feature/medium",
       "card_rank": 1,
+      "lootTags": ["special"],
       "poem_words": ["Nature", "Flow", "Static", "Explore"],
       "tested": 0,
       "value": "ancient_cities"
@@ -156,6 +171,7 @@
       "origin": "Mystcraft:SC",
       "category": "feature/medium",
       "card_rank": 1,
+      "lootTags": ["end"],
       "poem_words": ["Nature", "Flow", "Static", "Explore"],
       "tested": 0,
       "value": "end_cities"
@@ -166,6 +182,7 @@
       "origin": "Mystcraft:SC",
       "category": "feature/medium",
       "card_rank": 1,
+      "lootTags": ["plains", "trade"],
       "poem_words": ["Nature", "Flow", "Static", "Explore"],
       "tested": 0,
       "value": "temples"
@@ -176,6 +193,7 @@
       "origin": "Mystcraft:SC",
       "category": "feature/medium",
       "card_rank": 1,
+      "lootTags": ["plains", "trade"],
       "poem_words": ["Nature", "Flow", "Static", "Explore"],
       "tested": 0,
       "value": "pillager_outposts"
@@ -186,6 +204,7 @@
       "origin": "Mystcraft:SC",
       "category": "feature/medium",
       "card_rank": 1,
+      "lootTags": ["plains", "trade"],
       "poem_words": ["Nature", "Flow", "Static", "Explore"],
       "tested": 0,
       "value": "shipwrecks"
@@ -196,6 +215,7 @@
       "origin": "Mystcraft:SC",
       "category": "feature/medium",
       "card_rank": 1,
+      "lootTags": ["special"],
       "poem_words": ["Nature", "Flow", "Static", "Explore"],
       "tested": 0,
       "value": "ocean_ruins"
@@ -206,6 +226,7 @@
       "origin": "Mystcraft:SC",
       "category": "feature/medium",
       "card_rank": 1,
+      "lootTags": ["special"],
       "poem_words": ["Nature", "Flow", "Static", "Explore"],
       "tested": 0,
       "value": "trail_ruins"
@@ -216,6 +237,7 @@
       "origin": "Mystcraft:SC",
       "category": "feature/medium",
       "card_rank": 1,
+      "lootTags": ["special"],
       "poem_words": ["Nature", "Flow", "Static", "Explore"],
       "tested": 0,
       "value": "geodes"
@@ -226,6 +248,7 @@
       "origin": "Mystcraft:SC",
       "category": "feature/medium",
       "card_rank": 1,
+      "lootTags": ["special"],
       "poem_words": ["Civilization", "Power", "Wisdom", "Tradition"],
       "tested": 0,
       "value": "libraries"
@@ -236,6 +259,7 @@
       "origin": "Mystcraft",
       "category": "feature/medium",
       "card_rank": 1,
+      "lootTags": ["plains", "trade"],
       "poem_words": ["Contradict", "Chaos", "Exist", "Balance"],
       "tested": 0,
       "value": "dummy_medium"

@@ -6,6 +6,7 @@
       "origin": "Mystcraft",
       "category": "recolor",
       "card_rank": 1,
+      "lootTags": ["swamp", "trade"],
       "poem_words": ["Image", "Entropy", "Believe", "Weave"],
       "tested": 0,
       "value": "cloud"
@@ -16,6 +17,7 @@
       "origin": "Mystcraft",
       "category": "recolor",
       "card_rank": 1,
+      "lootTags": ["swamp", "trade"],
       "poem_words": ["Image", "Entropy", "Believe", "Nature"],
       "tested": 0,
       "value": "cloud_natural"
@@ -26,6 +28,7 @@
       "origin": "Mystcraft",
       "category": "recolor",
       "card_rank": 1,
+      "lootTags": ["swamp", "trade"],
       "poem_words": ["Image", "Entropy", "Explore", "Weave"],
       "tested": 0,
       "value": "fog"
@@ -36,6 +39,7 @@
       "origin": "Mystcraft",
       "category": "recolor",
       "card_rank": 1,
+      "lootTags": ["swamp", "trade"],
       "poem_words": ["Image", "Entropy", "Explore", "Nature"],
       "tested": 0,
       "value": "fog_natural"
@@ -46,6 +50,7 @@
       "origin": "Mystcraft",
       "category": "recolor",
       "card_rank": 1,
+      "lootTags": ["swamp", "trade"],
       "poem_words": ["Image", "Growth", "Elevate", "Weave"],
       "tested": 0,
       "value": "foliage"
@@ -56,6 +61,7 @@
       "origin": "Mystcraft",
       "category": "recolor",
       "card_rank": 1,
+      "lootTags": ["swamp", "trade"],
       "poem_words": ["Image", "Growth", "Elevate", "Nature"],
       "tested": 0,
       "value": "foliage_natural"
@@ -66,6 +72,7 @@
       "origin": "Mystcraft",
       "category": "recolor",
       "card_rank": 1,
+      "lootTags": ["swamp", "trade"],
       "poem_words": ["Image", "Growth", "Resilience", "Weave"],
       "tested": 0,
       "value": "grass"
@@ -76,6 +83,7 @@
       "origin": "Mystcraft",
       "category": "recolor",
       "card_rank": 1,
+      "lootTags": ["swamp", "trade"],
       "poem_words": ["Image", "Growth", "Resilience", "Nature"],
       "tested": 0,
       "value": "grass_natural"
@@ -86,6 +94,7 @@
       "origin": "Mystcraft",
       "category": "recolor",
       "card_rank": 1,
+      "lootTags": ["swamp", "trade"],
       "poem_words": ["Image", "Celestial", "Harmony", "Weave"],
       "tested": 0,
       "value": "sky"
@@ -96,6 +105,7 @@
       "origin": "Mystcraft",
       "category": "recolor",
       "card_rank": 1,
+      "lootTags": ["swamp", "trade"],
       "poem_words": ["Image", "Celestial", "Harmony", "Nature"],
       "tested": 0,
       "value": "sky_natural"
@@ -106,6 +116,7 @@
       "origin": "Mystcraft",
       "category": "recolor",
       "card_rank": 1,
+      "lootTags": ["swamp", "trade"],
       "poem_words": ["Image", "Celestial", "Contradict", "Weave"],
       "tested": 0,
       "value": "night_sky"
@@ -116,6 +127,7 @@
       "origin": "Mystcraft:SC",
       "category": "recolor",
       "card_rank": 1,
+      "lootTags": ["swamp", "trade"],
       "poem_words": ["Image", "Celestial", "Contradict", "Nature"],
       "tested": 0,
       "value": "night_sky_natural"
@@ -126,6 +138,7 @@
       "origin": "Mystcraft",
       "category": "recolor",
       "card_rank": 1,
+      "lootTags": ["swamp", "trade"],
       "poem_words": ["Image", "Flow", "Constraint", "Weave"],
       "tested": 0,
       "value": "water"
@@ -136,6 +149,7 @@
       "origin": "Mystcraft",
       "category": "recolor",
       "card_rank": 1,
+      "lootTags": ["swamp", "trade"],
       "poem_words": ["Image", "Flow", "Constraint", "Nature"],
       "tested": 0,
       "value": "water_natural"

@@ -5,7 +5,8 @@
       "translation_key": "symbol.mystcraft-sc.celestial_rainbow",
       "origin": "Mystcraft",
       "category": "celestial/misc",
-      "card_rank": 1,
+      "card_rank": 3,
+      "lootTags": ["savanna", "trade"],
       "poem_words": ["Celestial", "Image", "Harmony", "Balance"],
       "tested": 0,
       "value": "rainbow"
@@ -15,7 +16,8 @@
       "translation_key": "symbol.mystcraft-sc.celestial_horizon",
       "origin": "Mystcraft",
       "category": "celestial/misc",
-      "card_rank": 1,
+      "card_rank": 3,
+      "lootTags": ["savanna", "trade"],
       "poem_words": ["Celestial", "Inhibit", "Image", "Void"],
       "tested": 0,
       "value": "horizon"
@@ -25,7 +27,8 @@
       "translation_key": "symbol.mystcraft-sc.celestial_moon_dark",
       "origin": "Mystcraft",
       "category": "celestial/moon",
-      "card_rank": 1,
+      "card_rank": 2,
+      "lootTags": ["savanna", "trade"],
       "poem_words": ["Celestial", "Void", "Inhibit", "Wisdom"],
       "tested": 0,
       "value": "moon_dark"
@@ -35,7 +38,8 @@
       "translation_key": "symbol.mystcraft-sc.celestial_moon_nat",
       "origin": "Mystcraft",
       "category": "celestial/moon",
-      "card_rank": 1,
+      "card_rank": 4,
+      "lootTags": ["savanna", "trade"],
       "poem_words": ["Celestial", "Image", "Cycle", "Wisdom"],
       "tested": 0,
       "value": "moon_natural"
@@ -45,7 +49,8 @@
       "translation_key": "symbol.mystcraft-sc.celestial_stars_dark",
       "origin": "Mystcraft",
       "category": "celestial/stars",
-      "card_rank": 1,
+      "card_rank": 2,
+      "lootTags": ["savanna", "trade"],
       "poem_words": ["Celestial", "Void", "Inhibit", "Order"],
       "tested": 0,
       "value": "stars_dark"
@@ -55,7 +60,8 @@
       "translation_key": "symbol.mystcraft-sc.celestial_stars_starfield",
       "origin": "Mystcraft",
       "category": "celestial/stars",
-      "card_rank": 1,
+      "card_rank": 5,
+      "lootTags": ["savanna", "trade"],
       "poem_words": ["Celestial", "Image", "Chaos", "Weave"],
       "tested": 0,
       "value": "stars_starfield"
@@ -65,7 +71,8 @@
       "translation_key": "symbol.mystcraft-sc.celestial_stars_nat",
       "origin": "Mystcraft",
       "category": "celestial/stars",
-      "card_rank": 1,
+      "card_rank": 4,
+      "lootTags": ["savanna", "trade"],
       "poem_words": ["Celestial", "Harmony", "Ethereal", "Order"],
       "tested": 0,
       "value": "stars_natural"
@@ -75,7 +82,8 @@
       "translation_key": "symbol.mystcraft-sc.celestial_stars_twinkle",
       "origin": "Mystcraft",
       "category": "celestial/stars",
-      "card_rank": 1,
+      "card_rank": 4,
+      "lootTags": ["savanna", "trade"],
       "poem_words": ["Celestial", "Harmony", "Ethereal", "Entropy"],
       "tested": 0,
       "value": "stars_twinkle"
@@ -85,7 +93,8 @@
       "translation_key": "symbol.mystcraft-sc.celestial_sun_dark",
       "origin": "Mystcraft",
       "category": "celestial/sun",
-      "card_rank": 1,
+      "card_rank": 2,
+      "lootTags": ["savanna", "trade"],
       "poem_words": ["Celestial", "Void", "Inhibit", "Energy"],
       "tested": 0,
       "value": "sun_dark"
@@ -95,7 +104,8 @@
       "translation_key": "symbol.mystcraft-sc.celestial_sun_nat",
       "origin": "Mystcraft",
       "category": "celestial/sun",
-      "card_rank": 1,
+      "card_rank": 4,
+      "lootTags": ["savanna", "trade"],
       "poem_words": ["Celestial", "Image", "Stimulate", "Energy"],
       "tested": 0,
       "value": "sun_natural"

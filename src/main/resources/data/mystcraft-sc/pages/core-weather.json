@@ -6,6 +6,7 @@
       "origin": "Mystcraft",
       "category": "weather/type",
       "card_rank": 1,
+      "lootTags": ["taiga", "trade"],
       "poem_words": ["Sustain", "Dynamic", "Tradition", "Balance"],
       "tested": 0,
       "value": "natural"
@@ -16,6 +17,7 @@
       "origin": "Mystcraft",
       "category": "weather/type",
       "card_rank": 1,
+      "lootTags": ["taiga", "trade"],
       "poem_words": ["Sustain", "Static", "Stimulate", "Energy"],
       "tested": 0,
       "value": "off"
@@ -26,6 +28,7 @@
       "origin": "Mystcraft",
       "category": "weather/type",
       "card_rank": 1,
+      "lootTags": ["taiga", "trade"],
       "poem_words": ["Sustain", "Static", "Rebirth", "Growth"],
       "tested": 0,
       "value": "rain"
@@ -36,6 +39,7 @@
       "origin": "Mystcraft",
       "category": "weather/type",
       "card_rank": 1,
+      "lootTags": ["taiga", "trade"],
       "poem_words": ["Sustain", "Static", "Inhibit", "Energy"],
       "tested": 0,
       "value": "snow"
@@ -46,6 +50,7 @@
       "origin": "Mystcraft",
       "category": "weather/type",
       "card_rank": 1,
+      "lootTags": ["taiga", "trade"],
       "poem_words": ["Sustain", "Static", "Nature", "Power"],
       "tested": 0,
       "value": "storm"
@@ -56,6 +61,7 @@
       "origin": "Mystcraft",
       "category": "weather/type",
       "card_rank": 1,
+      "lootTags": ["taiga", "trade"],
       "poem_words": ["Sustain", "Static", "Believe", "Motion"],
       "tested": 0,
       "value": "overcast"

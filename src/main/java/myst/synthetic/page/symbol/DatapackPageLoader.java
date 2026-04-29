@@ -140,6 +140,7 @@ public final class DatapackPageLoader {
                     definition.origin(),
                     definition.category(),
                     definition.cardRank(),
+                    definition.lootTags(),
                     definition.poemWords(),
                     definition.tested(),
                     definition.value()
@@ -196,6 +197,7 @@ public final class DatapackPageLoader {
             String origin = getString(object, "origin", "");
             String category = getString(object, "category", "");
             int cardRank = getInt(object, "card_rank", 1);
+            List<String> lootTags = getStringList(object, "loot_tags");
             int tested = getInt(object, "tested", 0);
             PageValue value = getPageValue(object.get("value"));
             List<String> poemWords = getStringList(object, "poem_words");
@@ -211,6 +213,7 @@ public final class DatapackPageLoader {
                     origin,
                     category,
                     cardRank,
+                    lootTags,
                     poemWords,
                     tested,
                     value
@@ -307,6 +310,7 @@ public final class DatapackPageLoader {
             String origin,
             String category,
             int cardRank,
+            List<String> lootTags,
             List<String> poemWords,
             int tested,
             PageValue value

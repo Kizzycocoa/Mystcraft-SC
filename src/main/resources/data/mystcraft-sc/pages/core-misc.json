@@ -5,7 +5,8 @@
       "translation_key": "symbol.mystcraft-sc.clear_mods",
       "origin": "Mystcraft",
       "category": "misc",
-      "card_rank": 1,
+      "card_rank": 5,
+      "lootTags": ["special"],
       "poem_words": ["Contradict", "Transform", "Change", "Void"],
       "tested": 0,
       "value": "clear_mods"
@@ -16,6 +17,7 @@
       "origin": "Mystcraft",
       "category": "misc",
       "card_rank": 1,
+      "lootTags": ["swamp", "trade"],
       "poem_words": ["Transform", "Image", "Merge", "Weave"],
       "tested": 0,
       "value": "gradient_color"
@@ -26,6 +28,7 @@
       "origin": "Mystcraft",
       "category": "misc",
       "card_rank": 1,
+      "lootTags": ["swamp", "trade"],
       "poem_words": ["Transform", "Image", "Celestial", "Change"],
       "tested": 0,
       "value": "horizon_color"

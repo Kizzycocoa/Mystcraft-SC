@@ -6,6 +6,7 @@
       "origin": "More Mystcraft",
       "category": "modifier/size",
       "card_rank": 2,
+      "lootTags": ["jungle", "trade"],
       "poem_words": ["Control", "Form", "Tiny Size", "Tiny Size"],
       "tested": 0,
       "value": 0.25
@@ -16,6 +17,7 @@
       "origin": "More Mystcraft",
       "category": "modifier/size",
       "card_rank": 2,
+      "lootTags": ["jungle", "trade"],
       "poem_words": ["Control", "Form", "Small Size", "Small Size"],
       "tested": 0,
       "value": 0.5
@@ -26,6 +28,7 @@
       "origin": "More Mystcraft",
       "category": "modifier/size",
       "card_rank": 2,
+      "lootTags": ["jungle", "trade"],
       "poem_words": ["Control", "Form", "Medium Size", "Medium Size"],
       "tested": 0,
       "value": 1.0
@@ -36,6 +39,7 @@
       "origin": "More Mystcraft",
       "category": "modifier/size",
       "card_rank": 2,
+      "lootTags": ["jungle", "trade"],
       "poem_words": ["Control", "Form", "Large Size", "Large Size"],
       "tested": 0,
       "value": 2.0
@@ -46,6 +50,7 @@
       "origin": "More Mystcraft",
       "category": "modifier/size",
       "card_rank": 2,
+      "lootTags": ["jungle", "trade"],
       "poem_words": ["Control", "Form", "Huge Size", "Huge Size"],
       "tested": 0,
       "value": 3.0

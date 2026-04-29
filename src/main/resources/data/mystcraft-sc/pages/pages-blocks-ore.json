@@ -6,6 +6,7 @@
       "origin": "Mystcraft",
       "category": "block/ore",
       "card_rank": 1,
+      "lootTags": ["jungle", "trade"],
       "poem_words": ["Modifier", "Constraint", "Ore", "Diamond Ore"],
       "tested": 0,
       "value": "minecraft:diamond_ore"
@@ -16,6 +17,7 @@
       "origin": "Mystcraft",
       "category": "block/ore",
       "card_rank": 1,
+      "lootTags": ["jungle", "trade"],
       "poem_words": ["Modifier", "Constraint", "Ore", "Gold Ore"],
       "tested": 0,
       "value": "minecraft:gold_ore"
@@ -26,6 +28,7 @@
       "origin": "Mystcraft",
       "category": "block/ore",
       "card_rank": 1,
+      "lootTags": ["jungle", "trade"],
       "poem_words": ["Modifier", "Constraint", "Ore", "Iron Ore"],
       "tested": 0,
       "value": "minecraft:iron_ore"
@@ -36,6 +39,7 @@
       "origin": "Mystcraft",
       "category": "block/ore",
       "card_rank": 1,
+      "lootTags": ["jungle", "trade"],
       "poem_words": ["Modifier", "Constraint", "Ore", "Coal Ore"],
       "tested": 0,
       "value": "minecraft:coal_ore"
@@ -46,6 +50,7 @@
       "origin": "Mystcraft",
       "category": "block/ore",
       "card_rank": 1,
+      "lootTags": ["jungle", "trade"],
       "poem_words": ["Modifier", "Constraint", "Ore", "Redstone Ore"],
       "tested": 0,
       "value": "minecraft:redstone_ore"
@@ -56,6 +61,7 @@
       "origin": "Mystcraft",
       "category": "block/ore",
       "card_rank": 1,
+      "lootTags": ["jungle", "trade"],
       "poem_words": ["Modifier", "Constraint", "Ore", "Lapis Lazuli Ore"],
       "tested": 0,
       "value": "minecraft:lapis_ore"
@@ -66,6 +72,7 @@
       "origin": "Mystcraft",
       "category": "block/ore",
       "card_rank": 1,
+      "lootTags": ["jungle", "trade"],
       "poem_words": ["Modifier", "Constraint", "Ore", "Emerald Ore"],
       "tested": 0,
       "value": "minecraft:emerald_ore"
@@ -76,6 +83,7 @@
       "origin": "Mystcraft",
       "category": "block/ore",
       "card_rank": 1,
+      "lootTags": ["nether"],
       "poem_words": ["Modifier", "Constraint", "Chain", "Quartz Ore"],
       "tested": 0,
       "value": "minecraft:nether_quartz_ore"
