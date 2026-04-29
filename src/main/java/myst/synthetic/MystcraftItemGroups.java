@@ -252,6 +252,7 @@ public class MystcraftItemGroups {
                         output.accept(MystcraftItems.BAHRO_LEATHER);
                         output.accept(MystcraftItems.MYST_POETRY_BANNER_PATTERN);
                         output.accept(MystcraftItems.MYST_NUMEROLOGY_BANNER_PATTERN);
+                        output.accept(MystcraftItems.MYST_ICONOGRAPHY_BANNER_PATTERN);
                         output.accept(MystcraftItems.GLASSES);
 
                         for (WoodType wood : WoodType.values()) {

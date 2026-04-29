@@ -101,6 +101,14 @@ public class MystcraftItems {
                     .component(DataComponents.PROVIDES_BANNER_PATTERNS, MystcraftBannerPatterns.MYST_NUMEROLOGY_PATTERN_ITEM)
     );
 
+    public static final Item MYST_ICONOGRAPHY_BANNER_PATTERN = register(
+            "myst_iconography_banner_pattern",
+            Item::new,
+            new Item.Properties()
+                    .stacksTo(1)
+                    .component(DataComponents.PROVIDES_BANNER_PATTERNS, MystcraftBannerPatterns.MYST_ICONOGRAPHY_PATTERN_ITEM)
+    );
+
     public static final Item GLASSES = register(
             "glasses",
             Item::new,

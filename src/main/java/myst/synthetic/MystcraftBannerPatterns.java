@@ -17,6 +17,11 @@ public final class MystcraftBannerPatterns {
             Identifier.fromNamespaceAndPath("mystcraft-sc", "myst_numerology_pattern_item")
     );
 
+    public static final TagKey<BannerPattern> MYST_ICONOGRAPHY_PATTERN_ITEM = TagKey.create(
+            Registries.BANNER_PATTERN,
+            Identifier.fromNamespaceAndPath("mystcraft-sc", "myst_iconography_pattern_item")
+    );
+
     private MystcraftBannerPatterns() {
     }
 
