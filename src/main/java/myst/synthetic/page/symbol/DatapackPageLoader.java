@@ -197,7 +197,7 @@ public final class DatapackPageLoader {
             String origin = getString(object, "origin", "");
             String category = getString(object, "category", "");
             int cardRank = getInt(object, "card_rank", 1);
-            List<String> lootTags = getStringList(object, "loot_tags");
+            List<String> lootTags = getStringListAny(object, "loot_tags", "lootTags");
             int tested = getInt(object, "tested", 0);
             PageValue value = getPageValue(object.get("value"));
             List<String> poemWords = getStringList(object, "poem_words");
@@ -299,6 +299,16 @@ public final class DatapackPageLoader {
             }
         }
         return List.copyOf(values);
+    }
+    private static List<String> getStringListAny(JsonObject object, String... keys) {
+        for (String key : keys) {
+            List<String> values = getStringList(object, key);
+            if (!values.isEmpty()) {
+                return values;
+            }
+        }
+
+        return List.of();
     }
 
     private record PageFileSpec(String fileName) {

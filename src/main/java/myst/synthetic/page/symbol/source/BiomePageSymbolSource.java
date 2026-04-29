@@ -80,19 +80,19 @@ public final class BiomePageSymbolSource {
         }
 
         if (biome == null) {
-            return List.of("neutral");
+            return List.of("neutral", "trade");
         }
 
         float temperature = biome.getBaseTemperature();
 
         if (temperature <= 0.2F) {
-            return List.of("cold");
+            return List.of("cold", "trade");
         }
 
         if (temperature >= 1.0F) {
-            return List.of("hot");
+            return List.of("hot", "trade");
         }
 
-        return List.of("neutral");
+        return List.of("neutral", "trade");
     }
 }
