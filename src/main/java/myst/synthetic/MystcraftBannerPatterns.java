@@ -22,6 +22,7 @@ public final class MystcraftBannerPatterns {
             Identifier.fromNamespaceAndPath("mystcraft-sc", "myst_iconography_pattern_item")
     );
 
+
     private MystcraftBannerPatterns() {
     }
 
