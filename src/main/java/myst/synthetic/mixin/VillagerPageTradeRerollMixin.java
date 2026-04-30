@@ -10,68 +10,80 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 @Mixin(Villager.class)
 public abstract class VillagerPageTradeRerollMixin {
 
 	@Unique
-	private final List<PageTradeSlot> mystcraft_sc$pageTradesToReroll = new ArrayList<>();
+	private final Map<Integer, Integer> mystcraft_sc$pageTradesToReroll = new LinkedHashMap<>();
 
-	@Inject(method = "restock", at = @At("HEAD"))
-	private void mystcraft_sc$captureUsedPageTrades(CallbackInfo ci) {
+	@Inject(method = "rewardTradeXp", at = @At("HEAD"))
+	private void mystcraft_sc$markPageTradeForReroll(MerchantOffer offer, CallbackInfo ci) {
 		Villager villager = (Villager) (Object) this;
-		this.mystcraft_sc$pageTradesToReroll.clear();
 
 		if (!ArchivistPageTradeReroller.isArchivist(villager)) {
 			return;
 		}
 
+		int rank = ArchivistPageTradeReroller.getSoldPageRank(offer);
+		if (rank <= 0) {
+			return;
+		}
+
 		MerchantOffers offers = villager.getOffers();
 		for (int i = 0; i < offers.size(); i++) {
-			MerchantOffer offer = offers.get(i);
-			if (!ArchivistPageTradeReroller.isUsedPageTrade(offer)) {
-				continue;
+			if (offers.get(i) == offer) {
+				this.mystcraft_sc$pageTradesToReroll.put(i, rank);
+				return;
 			}
-
-			int rank = ArchivistPageTradeReroller.getSoldPageRank(offer);
-			if (rank <= 0) {
-				continue;
-			}
-
-			this.mystcraft_sc$pageTradesToReroll.add(new PageTradeSlot(i, rank));
 		}
 	}
 
 	@Inject(method = "restock", at = @At("TAIL"))
-	private void mystcraft_sc$rerollUsedPageTrades(CallbackInfo ci) {
+	private void mystcraft_sc$rerollMarkedPageTradesAfterRestock(CallbackInfo ci) {
+		this.mystcraft_sc$rerollMarkedPageTrades();
+	}
+
+	@Inject(method = "catchUpDemand", at = @At("TAIL"))
+	private void mystcraft_sc$rerollMarkedPageTradesAfterCatchup(CallbackInfo ci) {
+		this.mystcraft_sc$rerollMarkedPageTrades();
+	}
+
+	@Unique
+	private void mystcraft_sc$rerollMarkedPageTrades() {
 		if (this.mystcraft_sc$pageTradesToReroll.isEmpty()) {
 			return;
 		}
 
 		Villager villager = (Villager) (Object) this;
+
+		if (!ArchivistPageTradeReroller.isArchivist(villager)) {
+			this.mystcraft_sc$pageTradesToReroll.clear();
+			return;
+		}
+
 		MerchantOffers offers = villager.getOffers();
 
-		for (PageTradeSlot slot : this.mystcraft_sc$pageTradesToReroll) {
-			if (slot.index() < 0 || slot.index() >= offers.size()) {
+		for (Map.Entry<Integer, Integer> entry : this.mystcraft_sc$pageTradesToReroll.entrySet()) {
+			int slot = entry.getKey();
+			int rank = entry.getValue();
+
+			if (slot < 0 || slot >= offers.size()) {
 				continue;
 			}
 
-			MerchantOffer currentOffer = offers.get(slot.index());
+			MerchantOffer currentOffer = offers.get(slot);
 			MerchantOffer replacement = ArchivistPageTradeReroller.rerollPageTrade(
 					villager,
 					currentOffer,
-					slot.rank()
+					rank
 			);
 
-			offers.set(slot.index(), replacement);
+			offers.set(slot, replacement);
 		}
 
 		this.mystcraft_sc$pageTradesToReroll.clear();
-	}
-
-	@Unique
-	private record PageTradeSlot(int index, int rank) {
 	}
 }
