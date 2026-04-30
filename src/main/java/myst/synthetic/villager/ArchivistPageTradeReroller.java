@@ -22,8 +22,7 @@ public final class ArchivistPageTradeReroller {
     }
 
     public static boolean isUsedPageTrade(MerchantOffer offer) {
-        return offer.getUses() < offer.getMaxUses()
-                && offer.getUses() > 0
+        return offer.getUses() > 0
                 && getSoldPageSymbol(offer) != null;
     }
 
