@@ -3,7 +3,8 @@
 	"package": "myst.synthetic.mixin",
 	"compatibilityLevel": "JAVA_21",
 	"mixins": [
-		"StructureTemplatePoolAccessor"
+		"StructureTemplatePoolAccessor",
+		"VillagerPageTradeRerollMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
