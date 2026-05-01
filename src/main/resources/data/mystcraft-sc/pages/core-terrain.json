@@ -111,15 +111,70 @@
       "value": "backrooms"
     },
     {
-      "id": "terrain_underworld",
-      "translation_key": "symbol.mystcraft-sc.terrain_underworld",
+      "id": "terrain_no_underworld",
+      "translation_key": "symbol.mystcraft-sc.terrain_no_underworld",
       "origin": "Mystcraft:SC",
       "category": "terrain",
       "card_rank": 1,
       "lootTags": ["snowy", "trade"],
-      "poem_words": ["Terrain", "Form", "Constraint", "Spur"],
+      "poem_words": ["Terrain", "Form", "Void", "Spur"],
       "tested": 0,
-      "value": "underworld"
+      "value": "nounderworld"
+    },
+    {
+      "id": "terrain_cave_underworld",
+      "translation_key": "symbol.mystcraft-sc.terrain_cave_underworld",
+      "origin": "Mystcraft:SC",
+      "category": "terrain",
+      "card_rank": 1,
+      "lootTags": ["snowy", "trade"],
+      "poem_words": ["Terrain", "Form", "Spur", "Tradition"],
+      "tested": 0,
+      "value": "underworldcave"
+    },
+    {
+      "id": "terrain_void_underworld",
+      "translation_key": "symbol.mystcraft-sc.terrain_void_underworld",
+      "origin": "Mystcraft:SC",
+      "category": "terrain",
+      "card_rank": 1,
+      "lootTags": ["snowy", "trade"],
+      "poem_words": ["Terrain", "Form", "Spur", "Void"],
+      "tested": 0,
+      "value": "underworldvoid"
+    },
+    {
+      "id": "terrain_stalactites_underworld",
+      "translation_key": "symbol.mystcraft-sc.terrain_stalactites_underworld",
+      "origin": "Mystcraft:SC",
+      "category": "terrain",
+      "card_rank": 1,
+      "lootTags": ["snowy", "trade"],
+      "poem_words": ["Terrain", "Form", "Spur", "Entropy"],
+      "tested": 0,
+      "value": "underworldstalactites"
+    },
+    {
+      "id": "terrain_core_underworld",
+      "translation_key": "symbol.mystcraft-sc.terrain_core_underworld",
+      "origin": "Mystcraft:SC",
+      "category": "terrain",
+      "card_rank": 1,
+      "lootTags": ["snowy", "trade"],
+      "poem_words": ["Terrain", "Form", "Spur", "Flow"],
+      "tested": 0,
+      "value": "underworldcore"
+    },
+    {
+      "id": "terrain_flat_underworld",
+      "translation_key": "symbol.mystcraft-sc.terrain_flat_underworld",
+      "origin": "Mystcraft:SC",
+      "category": "terrain",
+      "card_rank": 1,
+      "lootTags": ["snowy", "trade"],
+      "poem_words": ["Terrain", "Form", "Spur", "Inhibit"],
+      "tested": 0,
+      "value": "underworldflat"
     }
   ]
 }

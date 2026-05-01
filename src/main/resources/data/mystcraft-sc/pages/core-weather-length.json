@@ -23,6 +23,17 @@
       "value": "fast"
     },
     {
+      "id": "weather_erratic",
+      "translation_key": "symbol.mystcraft-sc.weather_erratic",
+      "origin": "Mystcraft",
+      "category": "weather/length",
+      "card_rank": 1,
+      "lootTags": ["swamp", "trade"],
+      "poem_words": ["Sustain", "Dynamic", "Tradition", "Chaos"],
+      "tested": 0,
+      "value": "erratic"
+    },
+    {
       "id": "weather_slow",
       "translation_key": "symbol.mystcraft-sc.weather_slow",
       "origin": "Mystcraft",
@@ -32,6 +43,17 @@
       "poem_words": ["Sustain", "Dynamic", "Tradition", "Inhibit"],
       "tested": 0,
       "value": "slow"
+    },
+    {
+      "id": "weather_standard",
+      "translation_key": "symbol.mystcraft-sc.weather_standard",
+      "origin": "Mystcraft",
+      "category": "weather/length",
+      "card_rank": 1,
+      "lootTags": ["swamp", "trade"],
+      "poem_words": ["Sustain", "Dynamic", "Tradition", "Harmony"],
+      "tested": 0,
+      "value": "standard"
     }
   ]
 }

@@ -1,0 +1,14 @@
+linking panel
+
+<[[normal weather speed, snow weather][white color, water color][white color, foliage color][white color, sky color][white color, night sky color][white color, cloud color][white color, fog color][white color, full length], [white color, full length] gradient] grass color][[dirt block][medium size] tendrils][villages][abandoned studies]] cherry grove biome] single biome, flat world>
+
+<[[white color, water color][white color, foliage color][white color, sky color][white color, night sky color][white color, cloud color][white color, fog color][white color, full length], [white color, full length] gradient] grass color][[dirt block][medium size] tendrils][villages][abandoned studies]] cherry grove biome] single biome, cave underworld>
+
+[white color, water color][white color, foliage color][white color, sky color][white color, night sky color][white color, cloud color][white color, fog color][white color, grass color][[dirt block][medium size] tendrils][villages][abandoned studies][full cloud height][normal weather speed, snow weather][bright lighting]
+
+[[north direction][zero tilt][medium size] rainbow]
+[[north direction][zero tilt][medium size][zero length][nadir phase][white color]normal stars]
+
+[[north direction][zero tilt][medium size][zero length][nadir phase][white color] normal moon]
+
+[[north direction][zero tilt][medium size][zero length][nadir phase][white color, horizon color*][white color] normal sun]

@@ -1,12 +1,14 @@
 {
-  "format": 1,
+  "age_data_version": 1,
   "dimension_uid": "DIM1",
   "level_id": "mystcraft-sc:dim1",
   "seed": 123456789,
-
+  "book_uuid": "...",
+  "book_title": "Age Name",
+  "compiler_version": 1,
   "global": {
     "celestials": {
-      "Suns": [
+      "suns": [
         {
           "type": "normal",
           "direction": 0,
@@ -18,7 +20,7 @@
           "horizon": { "mode":"solid", "color":"FFFFFFFF" }
         }
       ],
-      "Moons": [
+      "moons": [
         {
           "type": "normal",
           "direction": 0,
@@ -30,7 +32,7 @@
           "phase": 0
         }
       ],
-      "Stars": [
+      "stars": [
         {
           "type": "normal",
           "direction": 0,
@@ -41,7 +43,7 @@
           "size": 1
         }
       ],
-      "Others": [
+      "others": [
         {
           "type": "rainbow",
           "direction": 0,
@@ -79,7 +81,7 @@
   "regions": {
     "overworld": {
       "terrain": "flat",
-      "biomedist": "single",
+      "biome_layout": "single",
       "biomes": [
         {
           "biome": "minecraft:cherry_grove",
@@ -89,7 +91,7 @@
           },
           "recolors": {
             "water": { "mode":"solid", "color":"FFFFFFFF" },
-            "grass": { "mode":"gradient", "color":"FFFFFFFF", "stops": [ { "color":"FFFFFFFF", "length":"1" }, { "color":"FFFFFFFF", "length":"1" } ] },
+            "grass": { "mode":"gradient", "fallback":"FFFFFFFF", "stops": [ { "color":"FFFFFFFF", "length":1 }, { "color":"FFFFFFFF", "length":1 } ] },
             "foliage": { "mode":"solid", "color":"FFFFFFFF" },
             "sky": { "mode":"solid", "color":"FFFFFFFF" },
             "night_sky": { "mode":"solid", "color":"FFFFFFFF" },
@@ -109,13 +111,13 @@
     },
     "underworld": {
       "terrain": "cave",
-      "biomedist": "single",
+      "biome_layout": "single",
       "biomes": [
         {
           "biome": "minecraft:cherry_grove",
           "recolors": {
             "water": { "mode":"solid", "color":"FFFFFFFF" },
-            "grass": { "mode":"gradient", "color":"FFFFFFFF", "stops": [ { "color":"FFFFFFFF", "length":"1" }, { "color":"FFFFFFFF", "length":"1" } ] },
+            "grass": { "mode":"gradient", "fallback":"FFFFFFFF", "stops": [ { "color":"FFFFFFFF", "length":1 }, { "color":"FFFFFFFF", "length":1 } ] },
             "foliage": { "mode":"solid", "color":"FFFFFFFF" },
             "sky": { "mode":"solid", "color":"FFFFFFFF" },
             "night_sky": { "mode":"solid", "color":"FFFFFFFF" },
