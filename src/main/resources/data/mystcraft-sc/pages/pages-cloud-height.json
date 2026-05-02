@@ -12,6 +12,17 @@
       "value": 0.0
     },
     {
+      "id": "cloud_sea",
+      "translation_key": "symbol.mystcraft-sc.cloud_sea",
+      "origin": "More Mystcraft",
+      "category": "cloud",
+      "card_rank": 2,
+      "lootTags": ["jungle", "trade"],
+      "poem_words": ["Transform", "Motion", "Sea-Level Cloud Height", "Sea-Level, Cloud Height"],
+      "tested": 0,
+      "value": 64.0
+    },
+    {
       "id": "cloud_half",
       "translation_key": "symbol.mystcraft-sc.cloud_half",
       "origin": "More Mystcraft",
@@ -20,7 +31,18 @@
       "lootTags": ["jungle", "trade"],
       "poem_words": ["Transform", "Motion", "Half Cloud Height", "Half Cloud Height"],
       "tested": 0,
-      "value": 70.0
+      "value": 96.0
+    },
+    {
+      "id": "cloud_normal",
+      "translation_key": "symbol.mystcraft-sc.cloud_normal",
+      "origin": "More Mystcraft",
+      "category": "cloud",
+      "card_rank": 2,
+      "lootTags": ["jungle", "trade"],
+      "poem_words": ["Transform", "Motion", "Normal Cloud Height", "Normal Cloud Height"],
+      "tested": 0,
+      "value": 192.0
     },
     {
       "id": "cloud_full",
@@ -31,7 +53,7 @@
       "lootTags": ["jungle", "trade"],
       "poem_words": ["Transform", "Motion", "Full Cloud Height", "Full Cloud Height"],
       "tested": 0,
-      "value": 127.0
+      "value": 319.0
     },
     {
       "id": "cloud_double",
@@ -42,7 +64,7 @@
       "lootTags": ["jungle", "trade"],
       "poem_words": ["Transform", "Motion", "Double Cloud Height", "Double Cloud Height"],
       "tested": 0,
-      "value": 255.0
+      "value": 384.0
     },
     {
       "id": "cloud_deep",
@@ -53,7 +75,18 @@
       "lootTags": ["jungle", "trade"],
       "poem_words": ["Transform", "Motion", "Deep Cloud Height", "Deep Cloud Height"],
       "tested": 0,
-      "value": -51.0
+      "value": -64.0
+    },
+    {
+      "id": "cloud_none",
+      "translation_key": "symbol.mystcraft-sc.cloud_none",
+      "origin": "Mystcraft:SC",
+      "category": "cloud",
+      "card_rank": 2,
+      "lootTags": ["jungle", "trade"],
+      "poem_words": ["Transform", "Motion", "No Clouds", "No Clouds"],
+      "tested": 0,
+      "value": "noclouds"
     }
   ]
 }

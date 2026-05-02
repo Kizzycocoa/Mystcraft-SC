@@ -331,6 +331,7 @@ public final class MystcraftConfig {
         putBoolean(defaults, CATEGORY_RENDER, "fast_rainbows", true);
 
         putBoolean(defaults, CATEGORY_DEBUG, "pages.export_previews", false);
+        putBoolean(defaults, CATEGORY_DEBUG, "age_compiler.trace_pages", true);
 
         return defaults;
     }

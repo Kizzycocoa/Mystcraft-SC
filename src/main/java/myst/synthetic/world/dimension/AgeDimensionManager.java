@@ -13,6 +13,7 @@ import myst.synthetic.world.age.AgeRegistryData;
 import myst.synthetic.world.age.AgeSpec;
 import myst.synthetic.world.age.AgeSpecCompiler;
 import myst.synthetic.world.age.AgeStoragePaths;
+import myst.synthetic.world.age.AgeDataFileCompiler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
@@ -42,7 +43,7 @@ public final class AgeDimensionManager {
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
-    private final AgeSpecCompiler compiler = new AgeSpecCompiler();
+    private final AgeDataFileCompiler ageDataCompiler = new AgeDataFileCompiler();
     private final AgeLevelStemFactory levelStemFactory = new AgeLevelStemFactory();
 
     public ServerLevel getOrCreateAgeLevel(MinecraftServer server, ItemStack agebook) {
@@ -90,20 +91,27 @@ public final class AgeDimensionManager {
             MystcraftSyntheticCodex.LOGGER.info("[MystAge] Reusing age entry: {}", entry.dimensionUid());
         }
 
-        AgeSpec compiled = this.compiler.compile(data, server.registryAccess(), seed)
-                .withDimensionUid(entry.dimensionUid());
+        AgeDataFileCompiler.Result compiledResult = this.ageDataCompiler.compile(
+                data,
+                server.registryAccess(),
+                seed,
+                entry.dimensionUid(),
+                AgeDimensionKeys.levelIdString(entry.dimensionUid()),
+                entry.targetUuid()
+        );
+
+        AgeSpec compiled = compiledResult.spec();
 
         MystcraftSyntheticCodex.LOGGER.info(
-                "[MystAge] Compiled AgeSpec: dim={}, biome={}, terrain={}, ground={}, bedrock={}, ignored={}",
+                "[MystAge] Compiled Age data: dim={}, biome={}, terrain={}, ground={}, bedrock={}",
                 compiled.dimensionUid(),
                 compiled.resolvedBiome(),
                 compiled.terrain(),
                 compiled.resolvedGroundLevel(),
-                compiled.bedrockProfile(),
-                compiled.ignoredSymbols()
+                compiled.bedrockProfile()
         );
 
-        writeAgeSpec(server, entry.dimensionUid(), compiled);
+        writeAgeData(server, entry.dimensionUid(), compiledResult.document());
 
         ServerLevel existing = server.getLevel(AgeDimensionKeys.levelKey(entry.dimensionUid()));
         if (existing == null) {
@@ -235,36 +243,18 @@ public final class AgeDimensionManager {
         }
     }
 
-    private void writeAgeSpec(MinecraftServer server, String dimensionUid, AgeSpec spec) {
+    private void writeAgeData(MinecraftServer server, String dimensionUid, JsonObject document) {
         try {
             Path worldRoot = server.getWorldPath(LevelResource.ROOT);
             Path folder = AgeStoragePaths.dimensionFolder(worldRoot, dimensionUid);
             Files.createDirectories(folder);
 
-            JsonObject root = new JsonObject();
-            root.addProperty("format", 1);
-            root.addProperty("dimension_uid", dimensionUid);
-            root.addProperty("level_id", AgeDimensionKeys.levelIdString(dimensionUid));
-            root.addProperty("seed", spec.seed());
-            root.addProperty("display_name", spec.displayName());
-            root.addProperty("biome_layout", spec.biomeLayout().name());
-            root.addProperty("terrain", spec.terrain().name());
-            root.addProperty("resolved_biome", spec.resolvedBiome().toString());
-            root.addProperty("resolved_ground_level", spec.resolvedGroundLevel());
-            root.addProperty("bedrock_profile", spec.bedrockProfile().name());
+            Path file = AgeStoragePaths.ageDataFile(worldRoot, dimensionUid);
+            Files.writeString(file, GSON.toJson(document));
 
-            var ignored = new com.google.gson.JsonArray();
-            for (var id : spec.ignoredSymbols()) {
-                ignored.add(id.toString());
-            }
-            root.add("ignored_symbols", ignored);
-
-            Path file = AgeStoragePaths.ageSpecFile(worldRoot, dimensionUid);
-            Files.writeString(file, GSON.toJson(root));
-
-            MystcraftSyntheticCodex.LOGGER.info("[MystAge] Wrote Age spec file: {}", file);
+            MystcraftSyntheticCodex.LOGGER.info("[MystAge] Wrote Age data file: {}", file);
         } catch (IOException e) {
-            MystcraftSyntheticCodex.LOGGER.error("[MystAge] Failed to write Age spec for {}.", dimensionUid, e);
+            MystcraftSyntheticCodex.LOGGER.error("[MystAge] Failed to write Age data for {}.", dimensionUid, e);
         }
     }
 

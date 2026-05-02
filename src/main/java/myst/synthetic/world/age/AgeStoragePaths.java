@@ -38,7 +38,11 @@ public final class AgeStoragePaths {
     }
 
     public static Path ageSpecFile(Path worldRoot, String dimensionUid) {
-        return dimensionFolder(worldRoot, dimensionUid).resolve("age_spec.json");
+        return ageDataFile(worldRoot, dimensionUid);
+    }
+
+    public static Path ageDataFile(Path worldRoot, String dimensionUid) {
+        return dimensionFolder(worldRoot, dimensionUid).resolve("age_data.json");
     }
 
     public static Path metadataFile(Path worldRoot, String dimensionUid) {
