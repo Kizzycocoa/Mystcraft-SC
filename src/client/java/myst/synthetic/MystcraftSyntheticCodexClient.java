@@ -36,6 +36,10 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
+import myst.synthetic.client.age.MystClientAgeRenderData;
+import myst.synthetic.network.AgeRenderDataPayload;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+
 public class MystcraftSyntheticCodexClient implements ClientModInitializer {
 
 	@Override
@@ -44,6 +48,10 @@ public class MystcraftSyntheticCodexClient implements ClientModInitializer {
 		ComponentTooltipAppenderRegistry.addAfter(DataComponents.CUSTOM_NAME, MystcraftDataComponents.FOLDER_DATA);
 		ComponentTooltipAppenderRegistry.addAfter(DataComponents.CUSTOM_NAME, MystcraftDataComponents.PORTFOLIO_DATA);
 		ComponentTooltipAppenderRegistry.addAfter(DataComponents.CUSTOM_NAME, MystcraftDataComponents.AGEBOOK_DATA);
+
+		ClientPlayNetworking.registerGlobalReceiver(AgeRenderDataPayload.ID, (payload, context) ->
+				context.client().execute(() -> MystClientAgeRenderData.apply(payload))
+		);
 
 		BlockEntityRenderers.register(MystcraftBlockEntities.STAR_FISSURE, StarFissureBlockEntityRenderer::new);
 		BlockEntityRenderers.register(MystcraftBlockEntities.SLANT_BOARD, SlantBoardBlockEntityRenderer::new);

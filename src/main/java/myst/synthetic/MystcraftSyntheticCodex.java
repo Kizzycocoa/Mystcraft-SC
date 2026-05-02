@@ -18,6 +18,7 @@ import myst.synthetic.item.MystcraftCauldronInteractions;
 import myst.synthetic.world.dimension.PendingAgeTeleportManager;
 import myst.synthetic.page.symbol.DatapackPageLoader;
 import myst.synthetic.page.loot.PageLootPools;
+import myst.synthetic.command.MystcraftCommands;
 
 public class MystcraftSyntheticCodex implements ModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger("mystcraft-sc");
@@ -47,6 +48,7 @@ public class MystcraftSyntheticCodex implements ModInitializer {
 		MystcraftRecipeSerializers.initialize();
 		MystcraftCauldronInteractions.initialize();
 		MystcraftNetworking.initialize();
+		MystcraftCommands.initialize();
 		MystcraftPoiTypes.initialize();
 		MystcraftVillagerProfessions.initialize();
 		MystcraftVillagerTrades.initialize();

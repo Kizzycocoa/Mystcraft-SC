@@ -28,6 +28,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.network.chat.Component;
 import myst.synthetic.world.dimension.PendingAgeTeleportManager;
+import myst.synthetic.network.AgeRenderDataPayload;
 
 public final class MystcraftNetworking {
 
@@ -42,6 +43,7 @@ public final class MystcraftNetworking {
         PayloadTypeRegistry.playC2S().register(WritingDeskTitlePayload.ID, WritingDeskTitlePayload.CODEC);
         PayloadTypeRegistry.playC2S().register(BookBinderTitlePayload.ID, BookBinderTitlePayload.CODEC);
         PayloadTypeRegistry.playC2S().register(DisplayContainerUseLinkPayload.ID, DisplayContainerUseLinkPayload.CODEC);
+        PayloadTypeRegistry.playS2C().register(AgeRenderDataPayload.ID, AgeRenderDataPayload.CODEC);
 
         ServerPlayNetworking.registerGlobalReceiver(LinkBookUsePayload.ID, (payload, context) -> {
             var player = context.player();

@@ -4,6 +4,7 @@ import myst.synthetic.MystcraftItems;
 import myst.synthetic.MystcraftSyntheticCodex;
 import myst.synthetic.linking.LinkController;
 import myst.synthetic.linking.LinkOptions;
+import myst.synthetic.world.age.AgeRenderDataSynchronizer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
@@ -269,6 +270,7 @@ public final class PendingAgeTeleportManager {
         );
 
         LinkController.travelEntity(player.level(), player, info);
+        AgeRenderDataSynchronizer.sendForCurrentLevel(player);
     }
 
     private static ServerLevel getQueuedAgeLevel(MinecraftServer server, PendingTeleport pending) {

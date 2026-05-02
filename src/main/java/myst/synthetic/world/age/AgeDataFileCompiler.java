@@ -304,6 +304,30 @@ public final class AgeDataFileCompiler {
                 }
             }
 
+            if (isGradient(token)) {
+                ColorObject gradient = pending.consumeGradient(trace, token);
+                if (gradient != null) {
+                    pending.addGradient(gradient);
+                    if (trace) {
+                        MystcraftSyntheticCodex.LOGGER.info(
+                                "[MystAgeCompiler] {} page {} built gradient {} -> pending={}",
+                                kind.name().toLowerCase(Locale.ROOT),
+                                token.pageIndex,
+                                gradient.describe(),
+                                pending.describe()
+                        );
+                    }
+                } else {
+                    MystcraftSyntheticCodex.LOGGER.warn(
+                            "[MystAgeCompiler] {} gradient page {} had no valid colour/length pairs to consume.",
+                            kind.name().toLowerCase(Locale.ROOT),
+                            token.pageIndex
+                    );
+                }
+                index++;
+                continue;
+            }
+
             if (tryConsumeScopedToken(token, pending, region.pendingBiomeScope(), trace)) {
                 sawAnyRegionContent = true;
                 index++;
