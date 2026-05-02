@@ -8,8 +8,8 @@ import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(CloudRenderer.class)
@@ -24,18 +24,21 @@ public abstract class CloudRendererMixin {
 			CloudStatus mode,
 			float cloudHeight,
 			Vec3 cameraPos,
-			float cloudPhase,
+			long ticks,
+			float tickDelta,
 			CallbackInfo ci
 	) {
 		if (!mystcraft$loggedCloudRenderCall) {
 			mystcraft$loggedCloudRenderCall = true;
 
 			MystcraftSyntheticCodex.LOGGER.info(
-					"[MystAgeRenderClient] CloudRenderer.render called: mode={}, vanillaCloudHeight={}, adjustedCloudHeight={}, cameraY={}, hasAgeCloudHeight={}",
+					"[MystAgeRenderClient] CloudRenderer.render called: mode={}, vanillaCloudHeight={}, adjustedCloudHeight={}, cameraY={}, ticks={}, tickDelta={}, hasAgeCloudHeight={}",
 					mode,
 					cloudHeight,
 					MystClientAgeRenderData.adjustCloudHeight(cloudHeight),
 					cameraPos.y,
+					ticks,
+					tickDelta,
 					MystClientAgeRenderData.hasCloudHeight()
 			);
 		}
