@@ -14,10 +14,18 @@ import myst.synthetic.world.age.AgeSpec;
 import myst.synthetic.world.age.AgeSpecCompiler;
 import myst.synthetic.world.age.AgeStoragePaths;
 import myst.synthetic.world.age.AgeDataFileCompiler;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+import myst.synthetic.world.biome.layout.BiomeLayoutKind;
+import myst.synthetic.world.terrain.BedrockProfile;
+import myst.synthetic.world.terrain.TerrainKind;
+import java.io.Reader;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.RandomSequences;
@@ -45,6 +53,50 @@ public final class AgeDimensionManager {
 
     private final AgeDataFileCompiler ageDataCompiler = new AgeDataFileCompiler();
     private final AgeLevelStemFactory levelStemFactory = new AgeLevelStemFactory();
+
+    public void bootstrapSavedAges(MinecraftServer server) {
+        AgeRegistryData registry = AgeRegistryData.get(server.overworld());
+
+        if (registry.ages().isEmpty()) {
+            MystcraftSyntheticCodex.LOGGER.info("[MystAge] No saved Mystcraft Ages to bootstrap.");
+            return;
+        }
+
+        MystcraftSyntheticCodex.LOGGER.info(
+                "[MystAge] Bootstrapping {} saved Mystcraft Age(s).",
+                registry.ages().size()
+        );
+
+        for (AgeRegistryData.AgeEntry entry : registry.ages().values()) {
+            String dimensionUid = entry.dimensionUid();
+
+            if (server.getLevel(AgeDimensionKeys.levelKey(dimensionUid)) != null) {
+                MystcraftSyntheticCodex.LOGGER.info("[MystAge] Saved Age {} is already registered.", dimensionUid);
+                continue;
+            }
+
+            AgeSpec spec = readAgeSpecFromDataFile(server, entry);
+            if (spec == null) {
+                MystcraftSyntheticCodex.LOGGER.warn(
+                        "[MystAge] Could not bootstrap {} because its age_data.json could not be read.",
+                        dimensionUid
+                );
+                continue;
+            }
+
+            ServerLevel level = createAndRegisterAgeLevel(server, dimensionUid, spec);
+
+            if (level == null) {
+                MystcraftSyntheticCodex.LOGGER.error("[MystAge] Failed to bootstrap saved Age {}.", dimensionUid);
+            } else {
+                MystcraftSyntheticCodex.LOGGER.info(
+                        "[MystAge] Bootstrapped saved Age {} as {}.",
+                        dimensionUid,
+                        level.dimension().identifier()
+                );
+            }
+        }
+    }
 
     public ServerLevel getOrCreateAgeLevel(MinecraftServer server, ItemStack agebook) {
         MystcraftSyntheticCodex.LOGGER.info("[MystAge] getOrCreateAgeLevel entered.");
@@ -265,7 +317,69 @@ public final class AgeDimensionManager {
         seed ^= System.nanoTime();
         return seed;
     }
+    @Nullable
+    private AgeSpec readAgeSpecFromDataFile(MinecraftServer server, AgeRegistryData.AgeEntry entry) {
+        String dimensionUid = entry.dimensionUid();
 
+        Path file = AgeStoragePaths.ageDataFile(
+                server.getWorldPath(LevelResource.ROOT),
+                dimensionUid
+        );
+
+        if (!Files.isRegularFile(file)) {
+            MystcraftSyntheticCodex.LOGGER.warn("[MystAge] Missing age data file for {}: {}", dimensionUid, file);
+            return null;
+        }
+
+        try (Reader reader = Files.newBufferedReader(file)) {
+            JsonObject root = JsonParser.parseReader(reader).getAsJsonObject();
+
+            long seed = readLong(root, "seed", entry.seed());
+            String title = readString(root, "book_title", entry.displayName());
+
+            JsonObject regions = readObject(root, "regions");
+            JsonObject overworld = readObject(regions, "overworld");
+
+            String terrain = readString(overworld, "terrain", "flat");
+            String biomeLayout = readString(overworld, "biome_layout", "single");
+
+            Identifier biome = readFirstRegionBiome(overworld);
+            if (biome == null) {
+                biome = Identifier.fromNamespaceAndPath("minecraft", "plains");
+            }
+
+            TerrainKind terrainKind = "flat".equalsIgnoreCase(terrain)
+                    ? TerrainKind.FLAT
+                    : TerrainKind.FLAT;
+
+            BiomeLayoutKind biomeLayoutKind = "single".equalsIgnoreCase(biomeLayout)
+                    ? BiomeLayoutKind.SINGLE_BIOME
+                    : BiomeLayoutKind.SINGLE_BIOME;
+
+            BedrockProfile bedrockProfile = readObject(regions, "underworld") == null
+                    ? BedrockProfile.VANILLA_FLOOR
+                    : BedrockProfile.VANILLA_FLOOR;
+
+            AgeSpec provisional = new AgeSpec.Builder(seed, title)
+                    .dimensionUid(dimensionUid)
+                    .terrain(terrainKind)
+                    .biomeLayout(biomeLayoutKind)
+                    .resolvedBiome(biome)
+                    .bedrockProfile(bedrockProfile)
+                    .build();
+
+            /*
+             * For now, flat terrain is always resolved through the same settings path
+             * as a newly compiled Age. Later this can read explicit terrain settings
+             * from age_data.json once the schema grows them.
+             */
+            return provisional;
+
+        } catch (Exception e) {
+            MystcraftSyntheticCodex.LOGGER.error("[MystAge] Failed reading age data file for {}.", dimensionUid, e);
+            return null;
+        }
+    }
     @SuppressWarnings("unchecked")
     private Map<net.minecraft.resources.ResourceKey<Level>, ServerLevel> getLevelMap(MinecraftServer server) throws Exception {
         Field field = MinecraftServer.class.getDeclaredField("levels");
@@ -289,5 +403,78 @@ public final class AgeDimensionManager {
         } catch (IllegalArgumentException ignored) {
             return null;
         }
+    }
+    @Nullable
+    private static JsonObject readObject(@Nullable JsonObject parent, String key) {
+        if (parent == null) {
+            return null;
+        }
+
+        JsonElement element = parent.get(key);
+        return element != null && element.isJsonObject() ? element.getAsJsonObject() : null;
+    }
+
+    @Nullable
+    private static JsonArray readArray(@Nullable JsonObject parent, String key) {
+        if (parent == null) {
+            return null;
+        }
+
+        JsonElement element = parent.get(key);
+        return element != null && element.isJsonArray() ? element.getAsJsonArray() : null;
+    }
+
+    private static String readString(@Nullable JsonObject parent, String key, String fallback) {
+        if (parent == null) {
+            return fallback;
+        }
+
+        JsonElement element = parent.get(key);
+        if (element == null || !element.isJsonPrimitive()) {
+            return fallback;
+        }
+
+        try {
+            return element.getAsString();
+        } catch (Exception ignored) {
+            return fallback;
+        }
+    }
+
+    private static long readLong(@Nullable JsonObject parent, String key, long fallback) {
+        if (parent == null) {
+            return fallback;
+        }
+
+        JsonElement element = parent.get(key);
+        if (element == null || !element.isJsonPrimitive()) {
+            return fallback;
+        }
+
+        try {
+            return element.getAsLong();
+        } catch (Exception ignored) {
+            return fallback;
+        }
+    }
+
+    @Nullable
+    private static Identifier readFirstRegionBiome(@Nullable JsonObject region) {
+        JsonArray biomes = readArray(region, "biomes");
+        if (biomes == null || biomes.isEmpty()) {
+            return null;
+        }
+
+        JsonElement first = biomes.get(0);
+        if (first == null || !first.isJsonObject()) {
+            return null;
+        }
+
+        String biomeText = readString(first.getAsJsonObject(), "biome", "");
+        if (biomeText.isBlank()) {
+            return null;
+        }
+
+        return Identifier.tryParse(biomeText);
     }
 }

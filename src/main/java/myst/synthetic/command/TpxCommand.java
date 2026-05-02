@@ -154,9 +154,9 @@ public final class TpxCommand {
         BlockPos head = pos.above();
         BlockPos ground = pos.below();
 
-        return level.getBlockState(pos).canBeReplaced()
-                && level.getBlockState(head).canBeReplaced()
-                && !level.getBlockState(ground).isAir();
+        return level.getBlockState(pos).getCollisionShape(level, pos).isEmpty()
+                && level.getBlockState(head).getCollisionShape(level, head).isEmpty()
+                && !level.getBlockState(ground).getCollisionShape(level, ground).isEmpty();
     }
 
     private static ServerLevel resolveLevel(MinecraftServer server, String rawDimension) {

@@ -8,8 +8,8 @@ import net.minecraft.resources.Identifier;
 
 public record AgeRenderDataPayload(
         String dimensionId,
-        boolean hasMoonDirection,
-        float moonDirection
+        boolean hasCloudHeight,
+        float cloudHeight
 ) implements CustomPacketPayload {
 
     public static final Identifier PAYLOAD_ID = Identifier.fromNamespaceAndPath("mystcraft-sc", "age_render_data");
@@ -20,9 +20,9 @@ public record AgeRenderDataPayload(
                     ByteBufCodecs.STRING_UTF8,
                     AgeRenderDataPayload::dimensionId,
                     ByteBufCodecs.BOOL,
-                    AgeRenderDataPayload::hasMoonDirection,
+                    AgeRenderDataPayload::hasCloudHeight,
                     ByteBufCodecs.FLOAT,
-                    AgeRenderDataPayload::moonDirection,
+                    AgeRenderDataPayload::cloudHeight,
                     AgeRenderDataPayload::new
             );
 

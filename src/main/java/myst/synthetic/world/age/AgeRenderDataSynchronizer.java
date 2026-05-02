@@ -1,6 +1,5 @@
 package myst.synthetic.world.age;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -58,24 +57,24 @@ public final class AgeRenderDataSynchronizer {
         }
 
         String dimensionUid = AgeDimensionKeys.toDimensionUid(dimensionId.toString());
-        Float moonDirection = readFirstMoonDirection(level.getServer(), dimensionUid);
+        Float cloudHeight = readCloudHeight(level.getServer(), dimensionUid);
 
         ServerPlayNetworking.send(player, new AgeRenderDataPayload(
                 dimensionId.toString(),
-                moonDirection != null,
-                moonDirection == null ? 0.0F : moonDirection
+                cloudHeight != null,
+                cloudHeight == null ? 0.0F : cloudHeight
         ));
 
         MystcraftSyntheticCodex.LOGGER.info(
-                "[MystAgeRender] Sent render data for '{}' in '{}': moonDirection={}",
+                "[MystAgeRender] Sent render data for '{}' in '{}': cloudHeight={}",
                 player.getScoreboardName(),
                 dimensionId,
-                moonDirection == null ? "<none>" : moonDirection
+                cloudHeight == null ? "<none>" : cloudHeight
         );
     }
 
     @Nullable
-    private static Float readFirstMoonDirection(MinecraftServer server, @Nullable String dimensionUid) {
+    private static Float readCloudHeight(MinecraftServer server, @Nullable String dimensionUid) {
         if (server == null || dimensionUid == null || dimensionUid.isBlank()) {
             return null;
         }
@@ -94,31 +93,30 @@ public final class AgeRenderDataSynchronizer {
 
         try (Reader reader = Files.newBufferedReader(ageDataFile)) {
             JsonObject root = JsonParser.parseReader(reader).getAsJsonObject();
-
             JsonObject global = getObject(root, "global");
-            JsonObject celestials = getObject(global, "celestials");
-            JsonArray moons = getArray(celestials, "moons");
 
-            if (moons == null || moons.isEmpty()) {
+            if (global == null) {
                 return null;
             }
 
-            JsonElement first = moons.get(0);
-            if (!first.isJsonObject()) {
+            JsonElement cloudHeight = global.get("cloud_height");
+            if (cloudHeight == null || !cloudHeight.isJsonPrimitive()) {
                 return null;
             }
 
-            JsonObject moon = first.getAsJsonObject();
-            JsonElement direction = moon.get("direction");
-
-            if (direction == null || !direction.isJsonPrimitive() || !direction.getAsJsonPrimitive().isNumber()) {
-                return null;
+            if (cloudHeight.getAsJsonPrimitive().isNumber()) {
+                return cloudHeight.getAsFloat();
             }
 
-            return direction.getAsFloat();
+            /*
+             * "none" exists in the age-data shape, but disabling cloud rendering
+             * needs a different hook than height adjustment. Leave it as vanilla
+             * for now rather than pretending a height can fully disable clouds.
+             */
+            return null;
         } catch (IOException | IllegalStateException | ClassCastException e) {
             MystcraftSyntheticCodex.LOGGER.error(
-                    "[MystAgeRender] Failed reading moon render data for {}.",
+                    "[MystAgeRender] Failed reading cloud render data for {}.",
                     dimensionUid,
                     e
             );
@@ -134,15 +132,5 @@ public final class AgeRenderDataSynchronizer {
 
         JsonElement element = parent.get(key);
         return element != null && element.isJsonObject() ? element.getAsJsonObject() : null;
-    }
-
-    @Nullable
-    private static JsonArray getArray(@Nullable JsonObject parent, String key) {
-        if (parent == null) {
-            return null;
-        }
-
-        JsonElement element = parent.get(key);
-        return element != null && element.isJsonArray() ? element.getAsJsonArray() : null;
     }
 }

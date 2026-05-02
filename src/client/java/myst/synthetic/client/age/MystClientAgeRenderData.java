@@ -6,60 +6,57 @@ import org.jetbrains.annotations.Nullable;
 
 public final class MystClientAgeRenderData {
 
+    /*
+     * Modern vanilla-ish baseline for the Age data format.
+     *
+     * We do NOT force clouds to exactly this number. Instead:
+     *
+     * renderedHeight = vanillaRuntimeHeight + (ageHeight - 192)
+     *
+     * That way, if the game's actual current default is slightly above 192,
+     * that trailing vanilla offset is preserved.
+     */
+    public static final float AGE_DATA_DEFAULT_CLOUD_HEIGHT = 192.0F;
+
     private static @Nullable String currentDimensionId = null;
-    private static boolean hasMoonDirection = false;
-    private static float moonDirection = 0.0F;
+    private static boolean hasCloudHeight = false;
+    private static float cloudHeight = AGE_DATA_DEFAULT_CLOUD_HEIGHT;
 
     private MystClientAgeRenderData() {
     }
 
     public static void apply(AgeRenderDataPayload payload) {
         currentDimensionId = payload.dimensionId();
-        hasMoonDirection = payload.hasMoonDirection();
-        moonDirection = normalizeDegrees(payload.moonDirection());
+        hasCloudHeight = payload.hasCloudHeight();
+        cloudHeight = payload.cloudHeight();
 
         MystcraftSyntheticCodex.LOGGER.info(
-                "[MystAgeRenderClient] Applied render data: dimension={}, hasMoonDirection={}, moonDirection={}",
+                "[MystAgeRenderClient] Applied render data: dimension={}, hasCloudHeight={}, cloudHeight={}",
                 currentDimensionId,
-                hasMoonDirection,
-                moonDirection
+                hasCloudHeight,
+                cloudHeight
         );
     }
 
     public static void reset() {
         currentDimensionId = null;
-        hasMoonDirection = false;
-        moonDirection = 0.0F;
+        hasCloudHeight = false;
+        cloudHeight = AGE_DATA_DEFAULT_CLOUD_HEIGHT;
     }
 
-    public static boolean hasMoonDirection() {
-        return hasMoonDirection;
+    public static boolean hasCloudHeight() {
+        return hasCloudHeight;
     }
 
-    public static float moonDirection() {
-        return moonDirection;
+    public static float cloudHeight() {
+        return cloudHeight;
     }
 
-    public static float adjustMoonAngle(float vanillaMoonAngle) {
-        if (!hasMoonDirection) {
-            return vanillaMoonAngle;
+    public static float adjustCloudHeight(float vanillaCloudHeight) {
+        if (!hasCloudHeight) {
+            return vanillaCloudHeight;
         }
 
-        /*
-         * First-pass interpretation:
-         * direction is treated as an orbit-angle offset.
-         *
-         * If testing shows the visual direction is rotated, this is the single
-         * place to tune sign/offset without touching the packet/parser path.
-         */
-        return vanillaMoonAngle + moonDirection;
-    }
-
-    private static float normalizeDegrees(float degrees) {
-        float value = degrees % 360.0F;
-        if (value < 0.0F) {
-            value += 360.0F;
-        }
-        return value;
+        return vanillaCloudHeight + (cloudHeight - AGE_DATA_DEFAULT_CLOUD_HEIGHT);
     }
 }

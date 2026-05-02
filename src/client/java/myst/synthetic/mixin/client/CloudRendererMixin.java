@@ -1,21 +1,21 @@
 package myst.synthetic.mixin.client;
 
 import myst.synthetic.client.age.MystClientAgeRenderData;
-import net.minecraft.client.renderer.SkyRenderer;
+import net.minecraft.client.renderer.CloudRenderer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
-@Mixin(SkyRenderer.class)
-public abstract class SkyRendererMixin {
+@Mixin(CloudRenderer.class)
+public abstract class CloudRendererMixin {
 
 	@ModifyVariable(
-			method = "renderSunMoonAndStars",
+			method = "renderClouds",
 			at = @At("HEAD"),
-			ordinal = 1,
+			ordinal = 0,
 			argsOnly = true
 	)
-	private float mystcraft$applyMoonDirection(float vanillaMoonAngle) {
-		return MystClientAgeRenderData.adjustMoonAngle(vanillaMoonAngle);
+	private float mystcraft$applyAgeCloudHeight(float vanillaCloudHeight) {
+		return MystClientAgeRenderData.adjustCloudHeight(vanillaCloudHeight);
 	}
 }

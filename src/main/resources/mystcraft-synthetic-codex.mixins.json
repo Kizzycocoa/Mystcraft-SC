@@ -1,15 +1,12 @@
 {
 	"required": true,
-	"package": "myst.synthetic.mixin",
+	"package": "myst.synthetic.mixin.client",
 	"compatibilityLevel": "JAVA_21",
-	"mixins": [
-		"StructureTemplatePoolAccessor",
-		"VillagerPageTradeRerollMixin"
+	"client": [
+		"SpecialModelRenderersMixin",
+		"CloudRendererMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
-	},
-	"overwrites": {
-		"requireAnnotations": true
 	}
 }

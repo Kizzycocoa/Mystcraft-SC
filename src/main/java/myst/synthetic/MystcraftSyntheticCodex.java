@@ -19,6 +19,9 @@ import myst.synthetic.world.dimension.PendingAgeTeleportManager;
 import myst.synthetic.page.symbol.DatapackPageLoader;
 import myst.synthetic.page.loot.PageLootPools;
 import myst.synthetic.command.MystcraftCommands;
+import myst.synthetic.world.dimension.AgeDimensionManager;
+import myst.synthetic.world.age.AgeRenderDataSynchronizer;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 
 public class MystcraftSyntheticCodex implements ModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger("mystcraft-sc");
@@ -64,5 +67,11 @@ public class MystcraftSyntheticCodex implements ModInitializer {
 			StructurePoolAdder.inject(server);
 			LOGGER.info("Mystcraft age registry system ready.");
 		});
+		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
+			new AgeDimensionManager().bootstrapSavedAges(server);
+		});
+		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) ->
+				server.execute(() -> AgeRenderDataSynchronizer.sendForCurrentLevel(handler.player))
+		);
 	}
 }
