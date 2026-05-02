@@ -143,36 +143,69 @@ public final class AgeDimensionManager {
             MystcraftSyntheticCodex.LOGGER.info("[MystAge] Reusing age entry: {}", entry.dimensionUid());
         }
 
-        AgeDataFileCompiler.Result compiledResult = this.ageDataCompiler.compile(
-                data,
-                server.registryAccess(),
-                seed,
-                entry.dimensionUid(),
-                AgeDimensionKeys.levelIdString(entry.dimensionUid()),
-                entry.targetUuid()
-        );
-
-        AgeSpec compiled = compiledResult.spec();
-
-        MystcraftSyntheticCodex.LOGGER.info(
-                "[MystAge] Compiled Age data: dim={}, biome={}, terrain={}, ground={}, bedrock={}",
-                compiled.dimensionUid(),
-                compiled.resolvedBiome(),
-                compiled.terrain(),
-                compiled.resolvedGroundLevel(),
-                compiled.bedrockProfile()
-        );
-
-        writeAgeData(server, entry.dimensionUid(), compiledResult.document());
-
         ServerLevel existing = server.getLevel(AgeDimensionKeys.levelKey(entry.dimensionUid()));
-        if (existing == null) {
-            existing = createAndRegisterAgeLevel(server, entry.dimensionUid(), compiled);
-        } else {
+
+        boolean alreadyBoundToThisAge = dimensionUid != null
+                && dimensionUid.equals(entry.dimensionUid())
+                && data.targetUuid() != null
+                && !data.targetUuid().isBlank();
+
+        AgeSpec compiled;
+
+        if (alreadyBoundToThisAge && existing != null) {
+            compiled = readAgeSpecFromDataFile(server, entry);
+            if (compiled == null) {
+                MystcraftSyntheticCodex.LOGGER.warn(
+                        "[MystAge] Bound Age {} had no readable age_data.json; falling back to a fresh compile, but not ideal.",
+                        entry.dimensionUid()
+                );
+
+                AgeDataFileCompiler.Result fallbackCompile = this.ageDataCompiler.compile(
+                        data,
+                        server.registryAccess(),
+                        seed,
+                        entry.dimensionUid(),
+                        AgeDimensionKeys.levelIdString(entry.dimensionUid()),
+                        entry.targetUuid()
+                );
+                compiled = fallbackCompile.spec();
+            }
+
             MystcraftSyntheticCodex.LOGGER.info(
-                    "[MystAge] Existing ServerLevel found for {}.",
+                    "[MystAge] Reusing bound Age {} without rewriting age_data.json.",
                     existing.dimension().identifier()
             );
+        } else {
+            AgeDataFileCompiler.Result compiledResult = this.ageDataCompiler.compile(
+                    data,
+                    server.registryAccess(),
+                    seed,
+                    entry.dimensionUid(),
+                    AgeDimensionKeys.levelIdString(entry.dimensionUid()),
+                    entry.targetUuid()
+            );
+
+            compiled = compiledResult.spec();
+
+            MystcraftSyntheticCodex.LOGGER.info(
+                    "[MystAge] Compiled Age data: dim={}, biome={}, terrain={}, ground={}, bedrock={}",
+                    compiled.dimensionUid(),
+                    compiled.resolvedBiome(),
+                    compiled.terrain(),
+                    compiled.resolvedGroundLevel(),
+                    compiled.bedrockProfile()
+            );
+
+            writeAgeData(server, entry.dimensionUid(), compiledResult.document());
+
+            if (existing == null) {
+                existing = createAndRegisterAgeLevel(server, entry.dimensionUid(), compiled);
+            } else {
+                MystcraftSyntheticCodex.LOGGER.info(
+                        "[MystAge] Existing ServerLevel found for {}.",
+                        existing.dimension().identifier()
+                );
+            }
         }
 
         if (existing == null) {
