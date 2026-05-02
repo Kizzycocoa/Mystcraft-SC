@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 public abstract class CloudRendererMixin {
 
 	@ModifyVariable(
-			method = "renderClouds",
+			method = "render",
 			at = @At("HEAD"),
 			ordinal = 0,
 			argsOnly = true
