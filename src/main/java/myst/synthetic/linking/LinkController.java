@@ -17,6 +17,9 @@ import net.minecraft.world.level.portal.TeleportTransition;
 import net.minecraft.world.level.storage.LevelData;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Relative;
+import java.util.Set;
 
 public final class LinkController {
 
@@ -72,8 +75,6 @@ public final class LinkController {
         BlockPos safeTarget = findSafeLanding(destination, targetPos);
         Vec3 targetVec = Vec3.atBottomCenterOf(safeTarget);
 
-        float pitch = entity.getXRot();
-
         MystcraftSyntheticCodex.LOGGER.info(
                 "Mystcraft direct linking entity '{}' to '{}' at {}.",
                 entity.getScoreboardName(),
@@ -81,12 +82,45 @@ public final class LinkController {
                 safeTarget
         );
 
+        if (entity instanceof ServerPlayer player) {
+            /*
+             * Use the player-specific dimension teleport path.
+             *
+             * The generic Entity.teleport(TeleportTransition) reports success for the
+             * Agebook path, but the client then times out waiting for chunks. The
+             * ServerPlayer overload is the vanilla command-style path for player
+             * dimension changes in this version.
+             */
+            player.closeContainer();
+            player.stopRiding();
+
+            boolean result = player.teleportTo(
+                    destination,
+                    targetVec.x,
+                    targetVec.y,
+                    targetVec.z,
+                    Set.of(),
+                    yaw,
+                    player.getXRot(),
+                    true
+            );
+
+            MystcraftSyntheticCodex.LOGGER.info(
+                    "Mystcraft player teleportTo result={} nowIn='{}' pos={}",
+                    result,
+                    player.level().dimension().identifier(),
+                    player.blockPosition()
+            );
+
+            return result;
+        }
+
         TeleportTransition transition = new TeleportTransition(
                 destination,
                 targetVec,
                 Vec3.ZERO,
                 yaw,
-                pitch,
+                entity.getXRot(),
                 TeleportTransition.PLAY_PORTAL_SOUND.then(TeleportTransition.PLACE_PORTAL_TICKET)
         );
 
