@@ -24,6 +24,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.portal.TeleportTransition;
 import net.minecraft.world.phys.Vec3;
+import myst.synthetic.linking.LinkController;
 
 import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
@@ -96,16 +97,9 @@ public final class TpxCommand {
                 targetPosition
         );
 
-        TeleportTransition transition = new TeleportTransition(
-                destination,
-                targetPosition,
-                Vec3.ZERO,
-                player.getYRot(),
-                player.getXRot(),
-                TeleportTransition.PLAY_PORTAL_SOUND.then(TeleportTransition.PLACE_PORTAL_TICKET)
-        );
+        BlockPos targetBlock = BlockPos.containing(targetPosition);
 
-        if (player.teleport(transition) == null) {
+        if (!LinkController.travelEntityToLevel(player, destination, targetBlock, player.getYRot())) {
             source.sendFailure(Component.literal("Teleport failed."));
             return 0;
         }

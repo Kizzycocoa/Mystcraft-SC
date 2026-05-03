@@ -53,16 +53,32 @@ public final class LinkController {
         }
 
         BlockPos targetPos = resolveTargetPos(destination, info, entity);
-        Vec3 targetVec = Vec3.atBottomCenterOf(targetPos);
-
         float yaw = info.getSpawnYaw();
+
+        return travelEntityToLevel(entity, destination, targetPos, yaw);
+    }
+
+    public static boolean travelEntityToLevel(Entity entity, ServerLevel destination, BlockPos targetPos, float yaw) {
+        if (entity == null || destination == null || targetPos == null) {
+            MystcraftSyntheticCodex.LOGGER.warn(
+                    "Mystcraft direct linking failed: entity={}, destination={}, targetPos={}",
+                    entity,
+                    destination == null ? "null" : destination.dimension().identifier(),
+                    targetPos
+            );
+            return false;
+        }
+
+        BlockPos safeTarget = findSafeLanding(destination, targetPos);
+        Vec3 targetVec = Vec3.atBottomCenterOf(safeTarget);
+
         float pitch = entity.getXRot();
 
         MystcraftSyntheticCodex.LOGGER.info(
-                "Mystcraft linking entity '{}' to '{}' at {}.",
+                "Mystcraft direct linking entity '{}' to '{}' at {}.",
                 entity.getScoreboardName(),
                 destination.dimension().identifier(),
-                targetPos
+                safeTarget
         );
 
         TeleportTransition transition = new TeleportTransition(
@@ -148,13 +164,12 @@ public final class LinkController {
     }
 
     private static boolean isSafeStandingPos(ServerLevel level, BlockPos pos) {
-        BlockPos feet = pos;
         BlockPos head = pos.above();
         BlockPos ground = pos.below();
 
-        return level.getBlockState(feet).canBeReplaced()
-                && level.getBlockState(head).canBeReplaced()
-                && !level.getBlockState(ground).isAir();
+        return level.getBlockState(pos).getCollisionShape(level, pos).isEmpty()
+                && level.getBlockState(head).getCollisionShape(level, head).isEmpty()
+                && !level.getBlockState(ground).getCollisionShape(level, ground).isEmpty();
     }
 
     private static @Nullable Identifier parseIdentifier(@Nullable String raw) {

@@ -16,6 +16,7 @@ import net.minecraft.server.level.TicketType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.core.BlockPos;
 
 import java.util.ArrayDeque;
 import java.util.Queue;
@@ -91,7 +92,7 @@ public final class PendingAgeTeleportManager {
                 case CREATE_AGE -> createAge(server, player, pending.agebook);
                 case ADD_TICKET -> addTicket(server, player, pending);
                 case WAIT_FOR_CHUNK -> waitForChunk(server, player, pending);
-                case TELEPORT -> teleport(player, pending.agebook);
+                case TELEPORT -> teleport(server, player, pending);
             }
         }
     }
@@ -234,42 +235,58 @@ public final class PendingAgeTeleportManager {
         ));
     }
 
-    private static void teleport(ServerPlayer player, ItemStack queuedAgebook) {
+    private static void teleport(MinecraftServer server, ServerPlayer player, PendingTeleport pending) {
         MystcraftSyntheticCodex.LOGGER.info(
-                "[MystAgeQueue] Processing queued teleport for '{}'.",
-                player.getScoreboardName()
+                "[MystAgeQueue] Processing queued resolved teleport for '{}'. target='{}'",
+                player.getScoreboardName(),
+                pending.levelId
         );
 
-        ItemStack liveAgebook = findLiveAgebook(player, queuedAgebook);
-        if (liveAgebook.isEmpty()) {
-            player.displayClientMessage(Component.literal("The descriptive book was lost before linking."), true);
-            MystcraftSyntheticCodex.LOGGER.warn("[MystAgeQueue] Live Agebook was not found for teleport.");
+        ServerLevel ageLevel = getQueuedAgeLevel(server, pending);
+        if (ageLevel == null) {
+            player.displayClientMessage(Component.literal("The Age exists in the book, but the server level could not be found."), true);
+            MystcraftSyntheticCodex.LOGGER.warn(
+                    "[MystAgeQueue] TELEPORT failed: queued destination level was null for '{}'.",
+                    pending.levelId
+            );
             return;
         }
 
-        CustomData customData = liveAgebook.get(DataComponents.CUSTOM_DATA);
-        if (customData == null) {
-            player.displayClientMessage(Component.literal("The descriptive book has no link target."), true);
-            MystcraftSyntheticCodex.LOGGER.warn("[MystAgeQueue] Agebook has no custom data.");
-            return;
-        }
-
-        CompoundTag tag = customData.copyTag();
-        LinkOptions info = new LinkOptions(tag);
-
-        String targetDimension = info.getDimensionUID();
-        if (targetDimension == null || targetDimension.isBlank()) {
-            player.displayClientMessage(Component.literal("The descriptive book has no dimension target."), true);
-            MystcraftSyntheticCodex.LOGGER.warn("[MystAgeQueue] Agebook has no dimension UID.");
-            return;
-        }
+        /*
+         * Important:
+         * The Age has already been resolved by createAge(...), and pending.levelId is
+         * the authoritative target for this queued action. Do not re-read CustomData
+         * from the book here. The live item may have changed components during binding,
+         * and we do not need book parsing at the final teleport stage anyway.
+         */
+        BlockPos target = new BlockPos(0, 65, 0);
 
         MystcraftSyntheticCodex.LOGGER.info(
-                "[MystAgeQueue] Calling LinkController.travelEntity to '{}'.",
-                targetDimension
+                "[MystAgeQueue] Direct queued Age teleport: player='{}', from='{}', to='{}', target={}, loadedChunks={}, pendingTasks={}, debug={}",
+                player.getScoreboardName(),
+                player.level().dimension().identifier(),
+                ageLevel.dimension().identifier(),
+                target,
+                ageLevel.getChunkSource().getLoadedChunksCount(),
+                ageLevel.getChunkSource().getPendingTasksCount(),
+                ageLevel.getChunkSource().getChunkDebugData(ChunkPos.ZERO)
         );
 
-        LinkController.travelEntity(player.level(), player, info);
+        boolean linked = LinkController.travelEntityToLevel(player, ageLevel, target, 0.0F);
+
+        MystcraftSyntheticCodex.LOGGER.info(
+                "[MystAgeQueue] Direct queued Age teleport result={} for '{}'. nowIn='{}' pos={}",
+                linked,
+                player.getScoreboardName(),
+                player.level().dimension().identifier(),
+                player.blockPosition()
+        );
+
+        if (!linked) {
+            player.displayClientMessage(Component.literal("The Age refused the link."), true);
+            return;
+        }
+
         AgeRenderDataSynchronizer.sendForCurrentLevel(player);
     }
 
