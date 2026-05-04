@@ -34,6 +34,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.CustomData;
 import org.jetbrains.annotations.Nullable;
 import net.minecraft.world.InteractionHand;
+import myst.synthetic.MystcraftSyntheticCodex;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,6 +68,7 @@ public class LinkBookScreen extends Screen {
     private int leftPos;
     private int topPos;
     private int currentPageIndex = 0;
+    private boolean mystcraft$linkInProgress = false;
 
     public LinkBookScreen(ItemStack bookStack) {
         this(bookStack, null);
@@ -462,15 +464,29 @@ public class LinkBookScreen extends Screen {
     }
 
     private void onLinkPanelClicked() {
+        if (this.mystcraft$linkInProgress) {
+            return;
+        }
+
+        this.mystcraft$linkInProgress = true;
+
         Minecraft client = Minecraft.getInstance();
         if (client.player == null) {
             this.onClose();
             return;
         }
 
+        /*
+         * Close the client-only book GUI before the server begins the dimension
+         * transfer. Sending first and closing after leaves a small but nasty window
+         * where the client is still inside this screen while the server is already
+         * processing a world transition.
+         */
         if (this.containerPos != null) {
-            ClientPlayNetworking.send(new DisplayContainerUseLinkPayload(this.containerPos));
+            BlockPos pos = this.containerPos;
             this.onClose();
+            MystcraftSyntheticCodex.LOGGER.info("[MystBookClient] Closed link book screen before sending display-container link packet.");
+            ClientPlayNetworking.send(new DisplayContainerUseLinkPayload(pos));
             return;
         }
 
@@ -483,12 +499,14 @@ public class LinkBookScreen extends Screen {
         }
 
         if (hand == null) {
+            this.mystcraft$linkInProgress = false;
             return;
         }
 
-        ClientPlayNetworking.send(new LinkBookUsePayload(hand == InteractionHand.MAIN_HAND));
-
+        boolean mainHand = hand == InteractionHand.MAIN_HAND;
         this.onClose();
+        MystcraftSyntheticCodex.LOGGER.info("[MystBookClient] Closed link book screen before sending handheld link packet.");
+        ClientPlayNetworking.send(new LinkBookUsePayload(mainHand));
     }
 
     private void pageLeft() {

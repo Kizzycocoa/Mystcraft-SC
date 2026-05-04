@@ -22,10 +22,13 @@ import java.util.ArrayDeque;
 import java.util.Queue;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.HashSet;
+import java.util.Set;
 
 public final class PendingAgeTeleportManager {
 
     private static final Queue<PendingTeleport> QUEUE = new ArrayDeque<>();
+    private static final Set<UUID> IN_FLIGHT = new HashSet<>();
 
     private static final int MAX_WARMUP_TICKS = 200;
     private static final int REQUIRED_STABLE_TICKS = 20;
@@ -51,8 +54,20 @@ public final class PendingAgeTeleportManager {
             return;
         }
 
+        UUID playerId = player.getUUID();
+
+        if (IN_FLIGHT.contains(playerId)) {
+            MystcraftSyntheticCodex.LOGGER.warn(
+                    "[MystAgeQueue] Ignored duplicate Age queue request for '{}'; teleport already in flight.",
+                    player.getScoreboardName()
+            );
+            return;
+        }
+
+        IN_FLIGHT.add(playerId);
+
         QUEUE.add(new PendingTeleport(
-                player.getUUID(),
+                playerId,
                 agebook.copy(),
                 Phase.CREATE_AGE,
                 1,
@@ -90,6 +105,7 @@ public final class PendingAgeTeleportManager {
             ServerPlayer player = server.getPlayerList().getPlayer(pending.playerId);
             if (player == null) {
                 MystcraftSyntheticCodex.LOGGER.warn("[MystAgeQueue] Player vanished before queued Age action.");
+                finish(pending.playerId);
                 continue;
             }
 
@@ -112,6 +128,7 @@ public final class PendingAgeTeleportManager {
         if (liveAgebook.isEmpty()) {
             player.displayClientMessage(Component.literal("The descriptive book was lost before the Age could form."), true);
             MystcraftSyntheticCodex.LOGGER.warn("[MystAgeQueue] Live Agebook was not found.");
+            finish(player.getUUID());
             return;
         }
 
@@ -119,6 +136,7 @@ public final class PendingAgeTeleportManager {
         if (ageLevel == null) {
             player.displayClientMessage(Component.literal("The descriptive book failed to form an Age."), true);
             MystcraftSyntheticCodex.LOGGER.warn("[MystAgeQueue] AgeDimensionManager returned null.");
+            finish(player.getUUID());
             return;
         }
 
@@ -144,6 +162,7 @@ public final class PendingAgeTeleportManager {
         if (ageLevel == null) {
             player.displayClientMessage(Component.literal("The Age exists in the book, but the server level could not be found."), true);
             MystcraftSyntheticCodex.LOGGER.warn("[MystAgeQueue] ADD_TICKET failed: age level was null for '{}'.", pending.levelId);
+            finish(pending.playerId);
             return;
         }
 
@@ -187,6 +206,7 @@ public final class PendingAgeTeleportManager {
         if (ageLevel == null) {
             player.displayClientMessage(Component.literal("The Age vanished before its spawn chunk loaded."), true);
             MystcraftSyntheticCodex.LOGGER.warn("[MystAgeQueue] WAIT_FOR_CHUNK failed: age level was null for '{}'.", pending.levelId);
+            finish(pending.playerId);
             return;
         }
 
@@ -241,6 +261,7 @@ public final class PendingAgeTeleportManager {
                     nextStableTicks,
                     ageLevel.getChunkSource().getChunkDebugData(ChunkPos.ZERO)
             );
+            finish(pending.playerId);
             return;
         }
 
@@ -269,6 +290,7 @@ public final class PendingAgeTeleportManager {
                     "[MystAgeQueue] TELEPORT failed: queued destination level was null for '{}'.",
                     pending.levelId
             );
+            finish(pending.playerId);
             return;
         }
 
@@ -304,10 +326,12 @@ public final class PendingAgeTeleportManager {
 
         if (!linked) {
             player.displayClientMessage(Component.literal("The Age refused the link."), true);
+            finish(pending.playerId);
             return;
         }
 
         AgeRenderDataSynchronizer.sendForCurrentLevel(player);
+        finish(pending.playerId);
     }
 
     private static ServerLevel getQueuedAgeLevel(MinecraftServer server, PendingTeleport pending) {
@@ -393,5 +417,8 @@ public final class PendingAgeTeleportManager {
                     this.stableTicks
             );
         }
+    }
+    private static void finish(UUID playerId) {
+        IN_FLIGHT.remove(playerId);
     }
 }
