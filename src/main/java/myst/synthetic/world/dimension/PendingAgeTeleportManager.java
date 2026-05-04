@@ -26,6 +26,10 @@ import java.util.concurrent.CompletableFuture;
 public final class PendingAgeTeleportManager {
 
     private static final Queue<PendingTeleport> QUEUE = new ArrayDeque<>();
+
+    private static final int MAX_WARMUP_TICKS = 200;
+    private static final int REQUIRED_STABLE_TICKS = 20;
+
     private static boolean initialized = false;
 
     private PendingAgeTeleportManager() {
@@ -53,6 +57,7 @@ public final class PendingAgeTeleportManager {
                 Phase.CREATE_AGE,
                 1,
                 null,
+                0,
                 0
         ));
 
@@ -129,6 +134,7 @@ public final class PendingAgeTeleportManager {
                 Phase.ADD_TICKET,
                 1,
                 ageLevel.dimension().identifier().toString(),
+                0,
                 0
         ));
     }
@@ -171,6 +177,7 @@ public final class PendingAgeTeleportManager {
                 Phase.WAIT_FOR_CHUNK,
                 1,
                 pending.levelId,
+                0,
                 0
         ));
     }
@@ -184,20 +191,30 @@ public final class PendingAgeTeleportManager {
         }
 
         var chunk = ageLevel.getChunkSource().getChunkNow(0, 0);
+        int pendingTasks = ageLevel.getChunkSource().getPendingTasksCount();
+        int loadedChunks = ageLevel.getChunkSource().getLoadedChunksCount();
+
+        boolean chunkReady = chunk != null;
+        boolean tasksIdle = pendingTasks == 0;
+        boolean stableThisTick = chunkReady && tasksIdle;
+
+        int nextStableTicks = stableThisTick ? pending.stableTicks + 1 : 0;
 
         MystcraftSyntheticCodex.LOGGER.info(
-                "[MystAgeQueue] Warmup tick {} for '{}': chunkNow={}, pendingTasks={}, loadedChunks={}, debug={}",
+                "[MystAgeQueue] Warmup tick {} for '{}': chunkNow={}, pendingTasks={}, loadedChunks={}, stableTicks={}/{}, debug={}",
                 pending.warmupTicks,
                 ageLevel.dimension().identifier(),
                 chunk == null ? "null" : chunk.getClass().getName(),
-                ageLevel.getChunkSource().getPendingTasksCount(),
-                ageLevel.getChunkSource().getLoadedChunksCount(),
+                pendingTasks,
+                loadedChunks,
+                nextStableTicks,
+                REQUIRED_STABLE_TICKS,
                 ageLevel.getChunkSource().getChunkDebugData(ChunkPos.ZERO)
         );
 
-        if (chunk != null) {
+        if (nextStableTicks >= REQUIRED_STABLE_TICKS) {
             MystcraftSyntheticCodex.LOGGER.info(
-                    "[MystAgeQueue] Spawn chunk is loaded for '{}'. Queuing teleport.",
+                    "[MystAgeQueue] Spawn chunk is stable for '{}'. Queuing teleport.",
                     ageLevel.dimension().identifier()
             );
 
@@ -207,19 +224,21 @@ public final class PendingAgeTeleportManager {
                     Phase.TELEPORT,
                     1,
                     pending.levelId,
-                    pending.warmupTicks
+                    pending.warmupTicks,
+                    nextStableTicks
             ));
             return;
         }
 
-        if (pending.warmupTicks >= 200) {
+        if (pending.warmupTicks >= MAX_WARMUP_TICKS) {
             player.displayClientMessage(Component.literal("The Age formed, but its spawn chunk never finished loading."), true);
             MystcraftSyntheticCodex.LOGGER.error(
-                    "[MystAgeQueue] Spawn chunk warmup timed out for '{}'. Generator={}, pendingTasks={}, loadedChunks={}, debug={}",
+                    "[MystAgeQueue] Spawn chunk warmup timed out for '{}'. Generator={}, pendingTasks={}, loadedChunks={}, stableTicks={}, debug={}",
                     ageLevel.dimension().identifier(),
                     ageLevel.getChunkSource().getGenerator().getClass().getName(),
-                    ageLevel.getChunkSource().getPendingTasksCount(),
-                    ageLevel.getChunkSource().getLoadedChunksCount(),
+                    pendingTasks,
+                    loadedChunks,
+                    nextStableTicks,
                     ageLevel.getChunkSource().getChunkDebugData(ChunkPos.ZERO)
             );
             return;
@@ -231,7 +250,8 @@ public final class PendingAgeTeleportManager {
                 Phase.WAIT_FOR_CHUNK,
                 1,
                 pending.levelId,
-                pending.warmupTicks + 1
+                pending.warmupTicks + 1,
+                nextStableTicks
         ));
     }
 
@@ -359,7 +379,8 @@ public final class PendingAgeTeleportManager {
             Phase phase,
             int delayTicks,
             String levelId,
-            int warmupTicks
+            int warmupTicks,
+            int stableTicks
     ) {
         private PendingTeleport withDelay(int delayTicks) {
             return new PendingTeleport(
@@ -368,7 +389,8 @@ public final class PendingAgeTeleportManager {
                     this.phase,
                     delayTicks,
                     this.levelId,
-                    this.warmupTicks
+                    this.warmupTicks,
+                    this.stableTicks
             );
         }
     }
