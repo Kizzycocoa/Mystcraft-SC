@@ -27,6 +27,7 @@ import myst.synthetic.linking.LinkController;
 
 import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
+import myst.synthetic.world.dimension.AgeRuntimeProbe;
 
 public final class TpxCommand {
 
@@ -98,10 +99,17 @@ public final class TpxCommand {
 
         BlockPos targetBlock = BlockPos.containing(targetPosition);
 
+        AgeRuntimeProbe.logPlayer(player, "TPX immediately before teleport / origin");
+        AgeRuntimeProbe.logServerLevelSet(server, destination, "TPX immediately before teleport / destination");
+        AgeRuntimeProbe.forceAndProbeSpawnChunk(destination, "TPX immediately before teleport");
+        AgeRuntimeProbe.logSpawnColumn(destination, targetBlock, "TPX immediately before teleport");
+
         if (!LinkController.travelEntityToLevel(player, destination, targetBlock, player.getYRot())) {
             source.sendFailure(Component.literal("Teleport failed."));
             return 0;
         }
+
+        AgeRuntimeProbe.logPlayer(player, "TPX immediately after teleport");
 
         AgeRenderDataSynchronizer.sendForLevel(player, destination);
 

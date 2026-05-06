@@ -281,6 +281,9 @@ public final class AgeDimensionManager {
                     server.getLevel(levelKey) != null
             );
 
+            AgeRuntimeProbe.logServerLevelSet(server, created, "after reflective level-map insertion");
+            AgeRuntimeProbe.forceAndProbeSpawnChunk(created, "after reflective level-map insertion");
+
             return created;
         } catch (Exception e) {
             MystcraftSyntheticCodex.LOGGER.error("[MystAge] Failed to create Mystcraft age '{}'.", dimensionUid, e);

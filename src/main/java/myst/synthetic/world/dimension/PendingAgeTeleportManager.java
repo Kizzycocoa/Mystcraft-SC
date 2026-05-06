@@ -114,6 +114,7 @@ public final class PendingAgeTeleportManager {
                 case ADD_TICKET -> addTicket(server, player, pending);
                 case WAIT_FOR_CHUNK -> waitForChunk(server, player, pending);
                 case TELEPORT -> teleport(server, player, pending);
+                case POST_TELEPORT_PROBE -> postTeleportProbe(server, player, pending);
             }
         }
     }
@@ -146,6 +147,9 @@ public final class PendingAgeTeleportManager {
                 ageLevel.getChunkSource().getGenerator().getClass().getName()
         );
 
+        AgeRuntimeProbe.logServerLevelSet(server, ageLevel, "Age queue after getOrCreateAgeLevel");
+        AgeRuntimeProbe.forceAndProbeSpawnChunk(ageLevel, "Age queue after getOrCreateAgeLevel");
+
         QUEUE.add(new PendingTeleport(
                 player.getUUID(),
                 liveAgebook.copy(),
@@ -167,6 +171,9 @@ public final class PendingAgeTeleportManager {
         }
 
         ChunkPos spawnChunk = ChunkPos.ZERO;
+
+        AgeRuntimeProbe.logServerLevelSet(server, ageLevel, "Age queue before portal ticket");
+        AgeRuntimeProbe.logSpawnColumn(ageLevel, new BlockPos(0, 65, 0), "Age queue before portal ticket");
 
         MystcraftSyntheticCodex.LOGGER.info(
                 "[MystAgeQueue] Adding non-blocking PORTAL loading ticket for '{}' chunk {}. pendingTasks={}, loadedChunks={}",
@@ -238,6 +245,9 @@ public final class PendingAgeTeleportManager {
                     ageLevel.dimension().identifier()
             );
 
+            AgeRuntimeProbe.logServerLevelSet(server, ageLevel, "Age queue stable before teleport");
+            AgeRuntimeProbe.logSpawnColumn(ageLevel, new BlockPos(0, 65, 0), "Age queue stable before teleport");
+
             QUEUE.add(new PendingTeleport(
                     pending.playerId,
                     pending.agebook,
@@ -303,6 +313,11 @@ public final class PendingAgeTeleportManager {
          */
         BlockPos target = new BlockPos(0, 65, 0);
 
+        AgeRuntimeProbe.logPlayer(player, "Age queue immediately before teleport / origin");
+        AgeRuntimeProbe.logServerLevelSet(server, ageLevel, "Age queue immediately before teleport / destination");
+        AgeRuntimeProbe.forceAndProbeSpawnChunk(ageLevel, "Age queue immediately before teleport");
+        AgeRuntimeProbe.logSpawnColumn(ageLevel, target, "Age queue immediately before teleport");
+
         MystcraftSyntheticCodex.LOGGER.info(
                 "[MystAgeQueue] Direct queued Age teleport: player='{}', from='{}', to='{}', target={}, loadedChunks={}, pendingTasks={}, debug={}",
                 player.getScoreboardName(),
@@ -324,6 +339,8 @@ public final class PendingAgeTeleportManager {
                 player.blockPosition()
         );
 
+        AgeRuntimeProbe.logPlayer(player, "Age queue immediately after teleport");
+
         if (!linked) {
             player.displayClientMessage(Component.literal("The Age refused the link."), true);
             finish(pending.playerId);
@@ -331,7 +348,63 @@ public final class PendingAgeTeleportManager {
         }
 
         AgeRenderDataSynchronizer.sendForCurrentLevel(player);
+
+        QUEUE.add(new PendingTeleport(
+                pending.playerId,
+                pending.agebook,
+                Phase.POST_TELEPORT_PROBE,
+                20,
+                pending.levelId,
+                1,
+                0
+        ));
+
+        AgeRenderDataSynchronizer.sendForCurrentLevel(player);
         finish(pending.playerId);
+    }
+
+    private static void postTeleportProbe(MinecraftServer server, ServerPlayer player, PendingTeleport pending) {
+        MystcraftSyntheticCodex.LOGGER.info(
+                "[MystAgeQueue] Running post-teleport probe {} for '{}'. Expected target='{}'",
+                pending.warmupTicks,
+                player.getScoreboardName(),
+                pending.levelId
+        );
+
+        AgeRuntimeProbe.logPlayer(player, "Age queue post-teleport probe " + pending.warmupTicks);
+
+        ServerLevel queuedLevel = getQueuedAgeLevel(server, pending);
+        if (queuedLevel != null) {
+            AgeRuntimeProbe.logServerLevelSet(server, queuedLevel, "Age queue post-teleport expected destination " + pending.warmupTicks);
+            AgeRuntimeProbe.logSpawnColumn(queuedLevel, new BlockPos(0, 65, 0), "Age queue post-teleport expected destination " + pending.warmupTicks);
+        } else {
+            MystcraftSyntheticCodex.LOGGER.warn(
+                    "[MystAgeQueue] Post-teleport probe {} could not find queued destination '{}'.",
+                    pending.warmupTicks,
+                    pending.levelId
+            );
+        }
+
+        if (pending.warmupTicks >= 4) {
+            finish(pending.playerId);
+            return;
+        }
+
+        int nextDelay = switch (pending.warmupTicks) {
+            case 1 -> 20;
+            case 2 -> 60;
+            default -> 100;
+        };
+
+        QUEUE.add(new PendingTeleport(
+                pending.playerId,
+                pending.agebook,
+                Phase.POST_TELEPORT_PROBE,
+                nextDelay,
+                pending.levelId,
+                pending.warmupTicks + 1,
+                pending.stableTicks
+        ));
     }
 
     private static ServerLevel getQueuedAgeLevel(MinecraftServer server, PendingTeleport pending) {
@@ -394,7 +467,8 @@ public final class PendingAgeTeleportManager {
         CREATE_AGE,
         ADD_TICKET,
         WAIT_FOR_CHUNK,
-        TELEPORT
+        TELEPORT,
+        POST_TELEPORT_PROBE
     }
 
     private record PendingTeleport(
