@@ -203,7 +203,7 @@ public final class AgeRuntimeProbe {
         );
 
         if (rawLevel instanceof ServerLevel serverLevel) {
-            logServerLevelSet(player.server, serverLevel, reason + " / player level");
+            logServerLevelSet(serverLevel.getServer(), serverLevel, reason + " / player level");
             logSpawnColumn(serverLevel, player.blockPosition(), reason + " / player column");
         }
     }
