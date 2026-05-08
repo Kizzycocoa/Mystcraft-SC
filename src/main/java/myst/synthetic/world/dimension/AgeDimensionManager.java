@@ -282,7 +282,7 @@ public final class AgeDimensionManager {
             );
 
             AgeRuntimeProbe.logServerLevelSet(server, created, "after reflective level-map insertion");
-            AgeRuntimeProbe.forceAndProbeSpawnChunk(created, "after reflective level-map insertion");
+            AgeRuntimeProbe.logSpawnColumnIfLoaded(created, new BlockPos(0, 65, 0), "after reflective level-map insertion / non-blocking");
 
             return created;
         } catch (Exception e) {

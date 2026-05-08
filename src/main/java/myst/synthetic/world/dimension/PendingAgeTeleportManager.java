@@ -358,9 +358,6 @@ public final class PendingAgeTeleportManager {
                 1,
                 0
         ));
-
-        AgeRenderDataSynchronizer.sendForCurrentLevel(player);
-        finish(pending.playerId);
     }
 
     private static void postTeleportProbe(MinecraftServer server, ServerPlayer player, PendingTeleport pending) {

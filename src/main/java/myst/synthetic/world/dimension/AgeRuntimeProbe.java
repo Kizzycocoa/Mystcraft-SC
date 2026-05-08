@@ -8,8 +8,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.chunk.ChunkAccess;
-import net.minecraft.world.level.chunk.status.ChunkStatus;
+import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.levelgen.Heightmap;
 
 public final class AgeRuntimeProbe {
@@ -60,10 +59,18 @@ public final class AgeRuntimeProbe {
         );
     }
 
+    /**
+     * Kept under the old name so existing debug calls still compile, but this is
+     * deliberately NON-BLOCKING now. Do not call ServerChunkCache#getChunk(..., true)
+     * from these probes; it can hang startup/login for runtime-created dimensions.
+     */
     public static boolean forceSpawnChunk(ServerLevel level) {
         return forceAndProbeSpawnChunk(level, "generic");
     }
 
+    /**
+     * Non-blocking despite the historical method name.
+     */
     public static boolean forceAndProbeSpawnChunk(ServerLevel level, String reason) {
         if (level == null) {
             MystcraftSyntheticCodex.LOGGER.warn("[MystProbe] Spawn chunk probe skipped for reason='{}': level was null.", reason);
@@ -71,50 +78,19 @@ public final class AgeRuntimeProbe {
         }
 
         MystcraftSyntheticCodex.LOGGER.info(
-                "[MystProbe] === Spawn chunk probe started reason='{}' level='{}' ===",
+                "[MystProbe] Non-blocking spawn chunk probe reason='{}' level='{}': pendingTasks={}, loadedChunks={}, chunkNow={}, debug={}",
                 reason,
-                level.dimension().identifier()
+                level.dimension().identifier(),
+                level.getChunkSource().getPendingTasksCount(),
+                level.getChunkSource().getLoadedChunksCount(),
+                className(level.getChunkSource().getChunkNow(0, 0)),
+                level.getChunkSource().getChunkDebugData(ChunkPos.ZERO)
         );
 
-        try {
-            MystcraftSyntheticCodex.LOGGER.info(
-                    "[MystProbe] Before FULL request: pendingTasks={}, loadedChunks={}, chunkNow={}, debug={}",
-                    level.getChunkSource().getPendingTasksCount(),
-                    level.getChunkSource().getLoadedChunksCount(),
-                    className(level.getChunkSource().getChunkNow(0, 0)),
-                    level.getChunkSource().getChunkDebugData(ChunkPos.ZERO)
-            );
-
-            ChunkAccess chunk = level.getChunkSource().getChunk(0, 0, ChunkStatus.FULL, true);
-
-            MystcraftSyntheticCodex.LOGGER.info(
-                    "[MystProbe] FULL chunk request returned: {}",
-                    className(chunk)
-            );
-
-            MystcraftSyntheticCodex.LOGGER.info(
-                    "[MystProbe] After FULL request: pendingTasks={}, loadedChunks={}, chunkNow={}, debug={}",
-                    level.getChunkSource().getPendingTasksCount(),
-                    level.getChunkSource().getLoadedChunksCount(),
-                    className(level.getChunkSource().getChunkNow(0, 0)),
-                    level.getChunkSource().getChunkDebugData(ChunkPos.ZERO)
-            );
-
-            if (chunk == null) {
-                MystcraftSyntheticCodex.LOGGER.error("[MystProbe] Spawn chunk is null after FULL request.");
-                return false;
-            }
-
-            logSpawnColumn(level, new BlockPos(0, 65, 0), reason + " / forced chunk");
-            MystcraftSyntheticCodex.LOGGER.info("[MystProbe] === Spawn chunk probe finished successfully reason='{}' ===", reason);
-            return true;
-        } catch (Throwable throwable) {
-            MystcraftSyntheticCodex.LOGGER.error("[MystProbe] Spawn chunk probe failed for reason='" + reason + "'.", throwable);
-            return false;
-        }
+        return logSpawnColumnIfLoaded(level, new BlockPos(0, 65, 0), reason + " / non-blocking");
     }
 
-    public static void logSpawnColumn(ServerLevel level, BlockPos target, String reason) {
+    public static boolean logSpawnColumnIfLoaded(ServerLevel level, BlockPos target, String reason) {
         if (level == null || target == null) {
             MystcraftSyntheticCodex.LOGGER.warn(
                     "[MystProbe] Spawn column probe skipped for reason='{}': level={}, target={}",
@@ -122,9 +98,42 @@ public final class AgeRuntimeProbe {
                     level,
                     target
             );
-            return;
+            return false;
         }
 
+        ChunkPos chunkPos = new ChunkPos(target);
+        LevelChunk chunk = level.getChunkSource().getChunkNow(chunkPos.x, chunkPos.z);
+
+        MystcraftSyntheticCodex.LOGGER.info(
+                "[MystProbe] Spawn column preflight reason='{}': level={}, target={}, chunk={}, pendingTasks={}, loadedChunks={}, chunkNow={}, debug={}",
+                reason,
+                level.dimension().identifier(),
+                target,
+                chunkPos,
+                level.getChunkSource().getPendingTasksCount(),
+                level.getChunkSource().getLoadedChunksCount(),
+                className(chunk),
+                level.getChunkSource().getChunkDebugData(chunkPos)
+        );
+
+        if (chunk == null) {
+            MystcraftSyntheticCodex.LOGGER.info(
+                    "[MystProbe] Spawn column skipped reason='{}': chunk {} is not loaded yet.",
+                    reason,
+                    chunkPos
+            );
+            return false;
+        }
+
+        logSpawnColumnLoaded(level, target, reason);
+        return true;
+    }
+
+    public static void logSpawnColumn(ServerLevel level, BlockPos target, String reason) {
+        logSpawnColumnIfLoaded(level, target, reason);
+    }
+
+    private static void logSpawnColumnLoaded(ServerLevel level, BlockPos target, String reason) {
         int x = target.getX();
         int z = target.getZ();
         ChunkPos chunkPos = new ChunkPos(target);
@@ -204,7 +213,7 @@ public final class AgeRuntimeProbe {
 
         if (rawLevel instanceof ServerLevel serverLevel) {
             logServerLevelSet(serverLevel.getServer(), serverLevel, reason + " / player level");
-            logSpawnColumn(serverLevel, player.blockPosition(), reason + " / player column");
+            logSpawnColumnIfLoaded(serverLevel, player.blockPosition(), reason + " / player column");
         }
     }
 
