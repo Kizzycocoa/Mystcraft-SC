@@ -20,6 +20,7 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Relative;
 import java.util.Set;
+import myst.synthetic.world.dimension.AgePlayerChunkTracker;
 
 public final class LinkController {
 
@@ -111,6 +112,15 @@ public final class LinkController {
                     player.level().dimension().identifier(),
                     player.blockPosition()
             );
+
+            if (result) {
+                AgePlayerChunkTracker.refreshAfterAgeTeleport(
+                        player,
+                        destination,
+                        safeTarget,
+                        "LinkController player teleport"
+                );
+            }
 
             return result;
         }
